@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using EventManagementAPI.Repositories;
 
 namespace EventManagementAPI.Controllers
 {
@@ -11,16 +12,18 @@ namespace EventManagementAPI.Controllers
     [Route("authentication")]
     public class AuthenticationController : ControllerBase
     {
-        public AuthenticationController()
-        {
+        private readonly IAuthenticationRepository _authenticationRepository;
 
+        public AuthenticationController(IAuthenticationRepository authenticationRepository)
+        {
+            _authenticationRepository = authenticationRepository;
         }
 
         [HttpPost]
         [Route("Authenticate")]
-        public string AuthenticateUser([FromBody] User user)
+        public bool AuthenticateUser([FromBody] User user)
         {
-            return user.Username;
+            return _authenticationRepository.validateUser(user);
         }
 
         [HttpPost]
