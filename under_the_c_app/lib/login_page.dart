@@ -9,6 +9,8 @@ class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  void signUserIn() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,6 +18,7 @@ class LoginPage extends StatelessWidget {
         body: SafeArea(
           child: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
                   height: 50,
@@ -81,7 +84,27 @@ class LoginPage extends StatelessWidget {
                 ),
 
                 // Sign In Button
-                const SignInButton(),
+                SignInButton(
+                  onTap: signUserIn,
+                ),
+
+                const SizedBox(
+                  height: 200,
+                ),
+
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Not registered yet?'),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      'Register Now',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                )
               ],
             ),
           ),
