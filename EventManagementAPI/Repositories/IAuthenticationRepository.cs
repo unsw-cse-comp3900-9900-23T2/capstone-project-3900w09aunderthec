@@ -1,12 +1,12 @@
-﻿using System;
-using EventManagementAPI.Models;
+﻿// using System;
+// using EventManagementAPI.Models;
 
-namespace EventManagementAPI.Repositories
-{
-	public interface IAuthenticationRepository
-	{
-        public bool validateUser(User user);
+// namespace EventManagementAPI.Repositories
+// {
+// 	public interface IAuthenticationRepository
+// 	{
+//         public bool validateUser(User user);
 
-    }
-}
+//     }
+// }
 
