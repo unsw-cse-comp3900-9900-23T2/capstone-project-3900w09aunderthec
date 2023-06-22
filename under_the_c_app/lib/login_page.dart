@@ -4,17 +4,58 @@ import 'package:under_the_c_app/components/sign_in.dart';
 
 import 'components/login_fields.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
+
   final passwordController = TextEditingController();
 
-  void signUserIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: usernameController.text,
-      password: passwordController.text,
+  void incorrectLoginMessage(error) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        switch (error.code) {
+          case 'invalid-email':
+            // Handle invalid email error
+            return const AlertDialog(
+              title: Text('Invalid Email'),
+            );
+          case 'user-not-found':
+            // Handle user not found error
+            return const AlertDialog(
+              title: Text('Unregistered Account, Please Register'),
+            );
+          case 'wrong-password':
+            // Handle wrong password error
+            return const AlertDialog(
+              title: Text('Incorrect Password, Please Retry'),
+            );
+          // Add more cases for other error codes as needed
+          default:
+            // Handle other errors
+            return const AlertDialog(
+              title: Text('Error Occurred, Try Restarting'),
+            );
+        }
+      },
     );
+  }
+
+  void signUserIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: usernameController.text,
+        password: passwordController.text,
+      );
+    } on FirebaseAuthException catch (error) {
+      incorrectLoginMessage(error);
+    }
   }
 
   @override
