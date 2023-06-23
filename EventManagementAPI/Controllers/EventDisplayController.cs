@@ -7,10 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
 
-    public class ListEventsRequestInfo {};
-    public class ShowEventDetailsRequestInfo {};
-    public class ListSimilarEventsRequestInfo {};
-    public class ListMyEventsRequestInfo {};
+    public class ListEventsRequestBody {
+        public string uid;
+    };
+    public class ShowEventDetailsRequestBody {
+        public string eventId;
+    };
+    public class ListSimilarEventsRequestBody {};
+    public class ListMyEventsRequestBody {};
 
     [ApiController]
     [Route("[controller]")]
@@ -18,25 +22,25 @@ namespace EventManagementAPI.Controllers{
     {
 
         [HttpPost("ListEvents")]
-        public String ListEvents([FromBody] ListEventsRequestInfo RequestBody) {
+        public String ListEvents([FromBody] ListEventsRequestBody RequestBody) {
 
             throw new NotImplementedException();
         }
 
         [HttpPost("ShowEventDetails")]
-        public String ShowEventDetails([FromBody] ShowEventDetailsRequestInfo RequestBody) {
+        public String ShowEventDetails([FromBody] ShowEventDetailsRequestBody RequestBody) {
 
             throw new NotImplementedException();
         }
 
         [HttpPost("ListSimilarEvents")]
-        public String ListSimilarEvents([FromBody] ListSimilarEventsRequestInfo RequestBody) {
+        public String ListSimilarEvents([FromBody] ListSimilarEventsRequestBody RequestBody) {
 
             throw new NotImplementedException();
         }
 
         [HttpPost("ListMyEvents")]
-        public String ListMyEvents([FromBody] ListMyEventsRequestInfo RequestBody) {
+        public String ListMyEvents([FromBody] ListMyEventsRequestBody RequestBody) {
 
             throw new NotImplementedException();
         }

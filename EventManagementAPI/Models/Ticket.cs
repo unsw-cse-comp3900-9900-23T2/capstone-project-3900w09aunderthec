@@ -5,6 +5,6 @@ namespace EventManagementAPI.Models
 	{
         public String name { get; set; }
         public Event toEvent { get; set; }
-        public int price { get; set; }
+        public Double price { get; set; }
     }
 }

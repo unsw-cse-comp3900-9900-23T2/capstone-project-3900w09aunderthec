@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
 
-    public class ShowTicketsRequestInfo {};
-    public class BookTicketsRequestInfo {};
+    public class ShowTicketsRequestBody {};
+    public class BookTicketsRequestBody {};
 
     [ApiController]
     [Route("[controller]")]
@@ -16,13 +16,13 @@ namespace EventManagementAPI.Controllers{
     {
 
         [HttpPost("ShowTickets")]
-        public String ShowTickets([FromBody] ShowTicketsRequestInfo RequestBody) {
+        public String ShowTickets([FromBody] ShowTicketsRequestBody RequestBody) {
 
             throw new NotImplementedException();
         }
 
         [HttpPost("BookTickets")]
-        public String BookTickets([FromBody] BookTicketsRequestInfo RequestBody) {
+        public String BookTickets([FromBody] BookTicketsRequestBody RequestBody) {
 
             throw new NotImplementedException();
         }
