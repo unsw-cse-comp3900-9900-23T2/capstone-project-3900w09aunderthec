@@ -41,6 +41,7 @@ namespace EventManagementAPI.Controllers{
     public class EventCreationController : ControllerBase
     {
 
+            // 'Event id counter' needs to be an incremented counter in the database
         private int eventIdCounter = 0;
 
         [HttpPost("GetTags")]
@@ -61,6 +62,7 @@ namespace EventManagementAPI.Controllers{
             // Line above should be used to gather authentication key when it is implemented
 
             eventIdCounter += 1;
+
             Event newEvent = new Event
             {
                 eventId = eventIdCounter,

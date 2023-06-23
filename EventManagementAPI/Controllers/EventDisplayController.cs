@@ -13,8 +13,13 @@ namespace EventManagementAPI.Controllers{
     public class ShowEventDetailsRequestBody {
         public string eventId;
     };
-    public class ListSimilarEventsRequestBody {};
-    public class ListMyEventsRequestBody {};
+    public class ListSimilarEventsRequestBody {
+        public string uid;
+        public string eventId;
+    };
+    public class ListMyEventsRequestBody {
+        public string uid;
+    };
 
     [ApiController]
     [Route("[controller]")]
