@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../config/app_router.dart';
 
-class NavigationBarCustom extends StatefulWidget {
+class NavigationBarCustom extends ConsumerStatefulWidget {
   const NavigationBarCustom({super.key});
 
   @override
-  State<NavigationBarCustom> createState() => _NavigationBarCustom();
+  ConsumerState<NavigationBarCustom> createState() => _NavigationBarCustom();
 }
 
-class _NavigationBarCustom extends State<NavigationBarCustom> {
+class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
   int currentPageIdx = 0;
 
   List<Widget> pages = <Widget>[
@@ -33,25 +36,40 @@ class _NavigationBarCustom extends State<NavigationBarCustom> {
     ),
   ];
 
+  // final router = ref.watch(routerProvider);
+
   @override
   Widget build(BuildContext context) {
-    return 
-      NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIdx = index;
-          });
-        },
-        selectedIndex: currentPageIdx,
-        destinations: const <Widget>[
-          NavigationDestination(
-              icon: Icon(Icons.analytics), label: "Analytics"),
-          NavigationDestination(icon: Icon(Icons.event), label: "My Events"),
-          NavigationDestination(
-              icon: Icon(Icons.create), label: "Create Events"),
-          NavigationDestination(
-              icon: Icon(Icons.create), label: "Create Events"),
-        ],
+    return NavigationBar(
+      onDestinationSelected: (int index) {
+        setState(() {
+          currentPageIdx = index;
+        });
+        switch (index) {
+          case 0:
+            ref.read(routerProvider).push('/analytics');
+            // routerProvider.read(routerProvider).push('/analytics');
+            break;
+          case 1:
+            ref.read(routerProvider).push('/events');
+            break;
+          case 2:
+            ref.read(routerProvider).push('/home');
+            break;
+          case 3:
+            ref.read(routerProvider).push('/profile');
+            break;
+          default:
+            break;
+        }
+      },
+      selectedIndex: currentPageIdx,
+      destinations: const <Widget>[
+        NavigationDestination(icon: Icon(Icons.analytics), label: "Analytics"),
+        NavigationDestination(icon: Icon(Icons.event), label: "Events"),
+        NavigationDestination(icon: Icon(Icons.home), label: "My Home"),
+        NavigationDestination(icon: Icon(Icons.person), label: "Profile"),
+      ],
     );
   }
 }

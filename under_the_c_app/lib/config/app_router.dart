@@ -5,6 +5,7 @@ import 'package:under_the_c_app/components/common/base_layout.dart';
 
 import '../login_page.dart';
 import '../main.dart';
+import '../pages/analytics.dart';
 import 'auth_state_provider.dart';
 
 final _key = GlobalKey<NavigatorState>();
@@ -19,11 +20,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/home',
           pageBuilder: (context, state) {
-            return const MaterialPage(
-                child: BaseLayout(body: RootPage(), title: "Root Page"));
-            // return const MaterialPage(
-            //   child: RootPage()
-            // );
+            return const MaterialPage(child: BaseLayout(body: AnalyticsPage()));
           }),
       GoRoute(
           path: '/',
