@@ -19,7 +19,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/home',
           pageBuilder: (context, state) {
             return const MaterialPage(
-              child: HomePage(),
+              child: RootPage(),
             );
           }),
       GoRoute(

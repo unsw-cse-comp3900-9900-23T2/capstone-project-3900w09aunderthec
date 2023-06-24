@@ -21,12 +21,32 @@ class _NavigationBarCustom extends State<NavigationBarCustom> {
         },
         selectedIndex: currentPageIdx,
         destinations: const <Widget>[
-          NavigationDestination(icon: Icon(Icons.analytics), label: "Analytics"),
+          NavigationDestination(
+              icon: Icon(Icons.analytics), label: "Analytics"),
           NavigationDestination(icon: Icon(Icons.event), label: "My Events"),
-          NavigationDestination(icon: Icon(Icons.create), label: "Create Events"),
-          NavigationDestination(icon: Icon(Icons.create), label: "Create Events"),
+          NavigationDestination(
+              icon: Icon(Icons.create), label: "Create Events"),
+          NavigationDestination(
+              icon: Icon(Icons.create), label: "Create Events"),
         ],
       ),
+      body: <Widget>[
+        Container(
+          color: Colors.red,
+          alignment: Alignment.center,
+          child: const Text('Page 1'),
+        ),
+        Container(
+          color: Colors.green,
+          alignment: Alignment.center,
+          child: const Text('Page 2'),
+        ),
+        Container(
+          color: Colors.blue,
+          alignment: Alignment.center,
+          child: const Text('Page 3'),
+        ),
+      ][currentPageIdx],
     );
   }
 }
