@@ -3,14 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 namespace EventManagementAPI.Models
 {
-	public class Customer : User
-	{
+    public class Hoster : User
+    {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int customerId { get; set; }
+        public int hostId { get; set; }
+        public ICollection<Event> events { get; set; }
         public ICollection<Subscription> subscriptions { get; set; }
-        public int loyaltyPoints { get; set; } = 0;
-        public int vipLevel { get; set; } = 0;
+        public string organisationName { get; set; }
     }
 }
-

@@ -4,19 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using EventManagementAPI.Repositories;
+// using EventManagementAPI.Repositories;
 
 namespace EventManagementAPI.Controllers
 {
 
-    public class ResetPasswordRequestInfo {
+    public class ResetPasswordRequestBody {
         public string Email {get; set;}
     };
-    public class LoginUserRequestInfo {
+    public class LoginUserRequestBody {
         public string Username {get; set;}
         public string Password {get; set;}
     };
-    public class RegisterUserRequestInfo {
+    public class RegisterUserRequestBody {
         public string Username {get; set;}
         public string Password {get; set;}
         public string Email {get; set;}
@@ -49,7 +49,7 @@ namespace EventManagementAPI.Controllers
         // }
 
         [HttpPost("ResetPassword")]
-        public String ResetPassword([FromBody] ResetPasswordRequestInfo RequestBody) {
+        public String ResetPassword([FromBody] ResetPasswordRequestBody RequestBody) {
 
             // Send password reset email. How difficult is this?
 
@@ -57,7 +57,7 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpPost("LoginUser")]
-        public String LoginUser([FromBody] LoginUserRequestInfo RequestBody) {
+        public String LoginUser([FromBody] LoginUserRequestBody RequestBody) {
 
             // Check details
             // Delete old session tokens
@@ -67,7 +67,7 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpPost("RegisterUser")]
-        public String RegisterUser([FromBody] RegisterUserRequestInfo RequestBody) {
+        public String RegisterUser([FromBody] RegisterUserRequestBody RequestBody) {
             Console.WriteLine(RequestBody.Password); // Deleteme
 
             // Check Email against Regex
