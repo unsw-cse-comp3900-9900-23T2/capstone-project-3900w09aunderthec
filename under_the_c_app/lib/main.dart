@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/config/app_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:under_the_c_app/components/common/navigation_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,13 +46,20 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Events"),
-        actions: [
-          ElevatedButton(onPressed: signOut, child: const Text('Log Out'))
-        ],
-      ),
-    );
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: const Text("Events"),
+    //     actions: [
+    //       ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
+    //     ],
+    //   ),
+    // );
+    return Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+          const Text("Events"),
+          ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
+        ]));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:under_the_c_app/components/common/base_layout.dart';
 
 import '../login_page.dart';
 import '../main.dart';
@@ -19,8 +20,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/home',
           pageBuilder: (context, state) {
             return const MaterialPage(
-              child: RootPage(),
-            );
+                child: BaseLayout(body: RootPage(), title: "Root Page"));
+            // return const MaterialPage(
+            //   child: RootPage()
+            // );
           }),
       GoRoute(
           path: '/',
