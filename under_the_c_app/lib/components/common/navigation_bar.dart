@@ -15,31 +15,6 @@ class NavigationBarCustom extends ConsumerStatefulWidget {
 class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
   int currentPageIdx = 2;
 
-  List<Widget> pages = <Widget>[
-    Container(
-      color: Colors.red,
-      alignment: Alignment.center,
-      child: const Text('Page 1'),
-    ),
-    Container(
-      color: Colors.green,
-      alignment: Alignment.center,
-      child: const Text('Page 2'),
-    ),
-    Container(
-      color: Colors.blue,
-      alignment: Alignment.center,
-      child: const Text('Page 3'),
-    ),
-    Container(
-      color: Colors.blue,
-      alignment: Alignment.center,
-      child: const Text('Page 4'),
-    ),
-  ];
-
-  // final router = ref.watch(routerProvider);
-
   @override
   Widget build(BuildContext context) {
     return NavigationBar(

@@ -31,28 +31,3 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
-
-// class RootPage extends StatefulWidget {
-//   const RootPage({super.key});
-
-//   @override
-//   State<RootPage> createState() => _RootPageState();
-// }
-
-// class _RootPageState extends State<RootPage> {
-//   void signOut() {
-//     FirebaseAuth.instance.signOut();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Home"),
-//         actions: [
-//           ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
-//         ],
-//       ),
-//     );
-//   }
-// }

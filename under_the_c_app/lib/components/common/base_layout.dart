@@ -14,13 +14,8 @@ class BaseLayout extends ConsumerWidget {
   void signOut() {
     FirebaseAuth.instance.signOut();
   }
-  // TODO: Change the body (refer chat GDP)
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final router = ref.watch(routerProvider);
-    // return Column(
-    //   children: [Expanded(child: body), const NavigationBarCustom()],
-    // );
     return Scaffold(
       appBar: AppBar(title: Text(title), actions: [
         ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
