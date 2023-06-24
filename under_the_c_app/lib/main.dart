@@ -31,14 +31,14 @@ class MyApp extends ConsumerWidget {
   }
 }
 
-class RootPage extends StatefulWidget {
-  const RootPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<RootPage> createState() => _RootPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _HomePageState extends State<HomePage> {
   void signOut() {
     FirebaseAuth.instance.signOut();
   }
