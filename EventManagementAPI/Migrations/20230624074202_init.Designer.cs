@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventManagementAPI.Migrations
 {
     [DbContext(typeof(MySqlContext))]
-    [Migration("20230624012335_init")]
+    [Migration("20230624074202_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -59,6 +59,38 @@ namespace EventManagementAPI.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfTickets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeCreated")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("Bookings");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.Property<int>("Id")
@@ -78,6 +110,39 @@ namespace EventManagementAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.User", b =>
@@ -150,6 +215,33 @@ namespace EventManagementAPI.Migrations
                     b.HasDiscriminator().HasValue("EventHost");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Address", "Address")
@@ -158,6 +250,17 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Event", "Event")
+                        .WithMany("Tickets")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.User", b =>
@@ -177,6 +280,11 @@ namespace EventManagementAPI.Migrations
 
                     b.Navigation("User")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

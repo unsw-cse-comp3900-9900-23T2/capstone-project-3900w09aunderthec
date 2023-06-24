@@ -9,6 +9,8 @@ namespace EventManagementAPI.Context
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<EventHost> EventHosts { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Address>()

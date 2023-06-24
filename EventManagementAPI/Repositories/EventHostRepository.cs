@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementAPI.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class EventHostRepository : IEventHostRepository
     {
         private readonly MySqlContext _dbContext;
 
-        public CustomerRepository(MySqlContext dbContext)
+        public EventHostRepository(MySqlContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<List<Customer>> GetAllCustomers()
+        public async Task<List<EventHost>> GetAllEventHosts()
         {
-            return await _dbContext.Customers.ToListAsync();
+            return await _dbContext.EventHosts.ToListAsync();
         }
     }
 }

@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManagementAPI.Models
 {
-    public class Event
+    public class Booking
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public int? AddressId { get; set; }
-        public Address Address { get; set; }
-        public ICollection<Ticket> Tickets { get; set; }
+        public Customer Customer { get; set; }
+        public Event Event { get; set; }
+        public Ticket Ticket { get; set; }
+        public int NumberOfTickets { get; set; }
+        public int TimeCreated { get; set; }
     }
 }
