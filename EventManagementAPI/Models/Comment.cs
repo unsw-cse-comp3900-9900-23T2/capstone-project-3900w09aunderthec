@@ -1,5 +1,8 @@
 using System;
 namespace EventManagementAPI.Models
+
+// Don't worry about comments for Sprint 1
+
 {
 	public class Comment
 	{
