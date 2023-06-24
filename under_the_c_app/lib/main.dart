@@ -46,20 +46,21 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text("Events"),
-    //     actions: [
-    //       ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
-    //     ],
-    //   ),
-    // );
-    return Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-          const Text("Events"),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Events"),
+        actions: [
           ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
-        ]));
+        ],
+      ),
+    );
+    //   return SafeArea(
+    //       child: Row(
+    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //           children: <Widget>[
+    //         const Text("Events"),
+    //         ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
+    //       ]));
+    // }
   }
 }
