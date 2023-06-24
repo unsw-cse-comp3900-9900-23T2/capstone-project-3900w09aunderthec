@@ -5,7 +5,7 @@ using EventManagementAPI.Models;
 
 namespace EventManagementAPI.Models
 {
-	public class User
+	public abstract class User
 	{
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

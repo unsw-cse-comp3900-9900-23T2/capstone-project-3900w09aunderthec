@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventManagementAPI.Migrations
 {
     [DbContext(typeof(MySqlContext))]
-    [Migration("20230624010435_init")]
+    [Migration("20230624012335_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -137,6 +137,17 @@ namespace EventManagementAPI.Migrations
                         .HasColumnType("longtext");
 
                     b.HasDiscriminator().HasValue("Customer");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.EventHost", b =>
+                {
+                    b.HasBaseType("EventManagementAPI.Models.User");
+
+                    b.Property<string>("OrganisationName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasDiscriminator().HasValue("EventHost");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>

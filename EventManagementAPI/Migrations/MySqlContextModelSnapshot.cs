@@ -136,6 +136,17 @@ namespace EventManagementAPI.Migrations
                     b.HasDiscriminator().HasValue("Customer");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.EventHost", b =>
+                {
+                    b.HasBaseType("EventManagementAPI.Models.User");
+
+                    b.Property<string>("OrganisationName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasDiscriminator().HasValue("EventHost");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Address", "Address")
