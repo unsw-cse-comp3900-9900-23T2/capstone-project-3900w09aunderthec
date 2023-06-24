@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/pages/analytics.dart';
+import 'package:under_the_c_app/pages/event.dart';
 import '../../config/app_router.dart';
 
 class NavigationBarCustom extends ConsumerStatefulWidget {
@@ -11,7 +13,7 @@ class NavigationBarCustom extends ConsumerStatefulWidget {
 }
 
 class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
-  int currentPageIdx = 0;
+  int currentPageIdx = 2;
 
   List<Widget> pages = <Widget>[
     Container(
@@ -47,17 +49,16 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
         });
         switch (index) {
           case 0:
-            ref.read(routerProvider).push('/analytics');
-            // routerProvider.read(routerProvider).push('/analytics');
+            context.go('/analytics');
             break;
           case 1:
-            ref.read(routerProvider).push('/events');
+            context.go('/events');
             break;
           case 2:
-            ref.read(routerProvider).push('/home');
+            context.go('/home');
             break;
           case 3:
-            ref.read(routerProvider).push('/profile');
+            context.go('/profile');
             break;
           default:
             break;
