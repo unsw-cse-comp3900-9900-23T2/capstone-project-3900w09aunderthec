@@ -74,8 +74,7 @@ namespace EventManagementAPI.Controllers{
                 privateEvent = RequestBody.privateEvent,
                 rating = null,
                 comments = new List<Comment>(),
-                tags = RequestBody.tags,
-                tickets = new List<Ticket>()
+                tags = RequestBody.tags
             };
 
             // Old code for unpacking condensed ticket information. May still be useful
@@ -107,8 +106,7 @@ namespace EventManagementAPI.Controllers{
                 privateEvent = RequestBody.privateEvent,
                 rating = null,
                 comments = new List<Comment>(),
-                tags = RequestBody.tags,
-                tickets = new List<Ticket>()
+                tags = RequestBody.tags
             };
 
             // get event with eventId from DB

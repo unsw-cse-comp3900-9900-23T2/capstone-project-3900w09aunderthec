@@ -8,6 +8,7 @@ namespace EventManagementAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int customerId { get; set; }
+        public ICollection<Subscription> subscriptions { get; set; }
         public int loyaltyPoints { get; set; } = 0;
         public int vipLevel { get; set; } = 0;
     }
