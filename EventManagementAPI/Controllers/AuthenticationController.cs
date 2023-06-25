@@ -17,8 +17,8 @@ namespace EventManagementAPI.Controllers
     //     public string Password {get; set;}
     // };
     public class RegisterUserRequestBody {
-        public string username = "no username";
-        public string email;
+        public string username {get; set;}= "no username";
+        public string email {get; set;}
         // public bool isHost = false;
     };
 
@@ -27,7 +27,7 @@ namespace EventManagementAPI.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly AuthenticationRepository _authenticationRepository;
-        
+
         public AuthenticationController(AuthenticationRepository authenticationRepository)
         {
             _authenticationRepository = authenticationRepository;
