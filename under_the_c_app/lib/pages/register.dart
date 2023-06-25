@@ -21,6 +21,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  int _userValue = 0;
+
   void incorrectRegisterMessage(error) {
     showDialog(
       context: context,
@@ -77,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
           body: jsonEncode({
             'Username': usernameController.text,
             'Email': emailController.text,
-            'Password': "pw"
+            'UserType': _userValue.toString()
           }),
         );
 
@@ -153,6 +155,34 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: passwordController,
                 hintText: 'Password',
                 obscureText: true,
+              ),
+
+              const SizedBox(
+                height: 10,
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Radio(
+                      value: 1,
+                      groupValue: _userValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _userValue = value!;
+                        });
+                      }),
+                  const Text('User'),
+                  Radio(
+                      value: 2,
+                      groupValue: _userValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _userValue = value!;
+                        });
+                      }),
+                  const Text('Host'),
+                ],
               ),
 
               const SizedBox(
