@@ -9,13 +9,21 @@ class HomePage extends StatelessWidget {
   // @TODO: Replace those temporary event testing data with real fetch
   final List<Event> events = [
     Event(
-        title: 'Event 1',
+        title: 'S',
+        imageUrl: 'images/events/money-event.jpg',
+        details: SubtitleDetails('Wed', '10:15', 'M', 's')),
+    Event(
+        title: 'Event',
         imageUrl: 'images/events/money-event.jpg',
         details: SubtitleDetails('Wed', '10:15', 'Maroubra', 'Syd')),
     Event(
-        title: 'Event 2',
+        title: 'Event this is a long long long long event',
         imageUrl: 'images/events/money-event.jpg',
         details: SubtitleDetails('Thu', '11:30', 'Bondi', 'Syd')),
+    Event(
+        title: 'Event 2',
+        imageUrl: 'images/events/money-event.jpg',
+        details: SubtitleDetails('Thu', '11:30', 'Queen Elizebeth', 'Sydney')),
   ];
 
   @override
@@ -27,7 +35,7 @@ class HomePage extends StatelessWidget {
         itemBuilder: (context, index) {
           final event = events[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
               width: 375,
               child: EventCard(

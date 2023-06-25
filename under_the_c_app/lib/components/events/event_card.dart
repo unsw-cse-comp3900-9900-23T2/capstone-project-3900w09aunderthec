@@ -65,25 +65,35 @@ class EventDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 19, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 1, bottom: 10),
+                child: EventSubtitle(),
+              ),
+            ],
+          ),
         ),
-      ),
-      subtitle: const Padding(
-        padding: EdgeInsets.only(top: 1, left: 12),
-        child: EventSubtitle(),
-      ),
-      trailing: IconButton(
-        icon: const Icon(Icons.favorite_border),
-        onPressed: () {
-          print('fav button clicked');
-        },
-      ),
+        const Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: Row(
+              children: [Icon(Icons.people), Icon(Icons.people)],
+            ))
+      ],
     );
   }
 }
@@ -132,11 +142,11 @@ class EventSubtitle extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   '${details.weekday} ${details.time} - ${details.suburb}, ${details.city}',
-                  style: const TextStyle(fontSize: 10),
+                  style: const TextStyle(fontSize: 10, letterSpacing: 0.4),
                 ),
               ],
             ),
@@ -160,7 +170,7 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 200,
+        height: 190,
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -179,8 +189,7 @@ class EventCard extends StatelessWidget {
                         Flexible(
                           child: EventSubtitleProvider(
                               subtitleDetails: details,
-                              child: const EventDetails(
-                                  title: 'Entertainment Event')),
+                              child: EventDetails(title: title)),
                         )
                       ],
                     )))
