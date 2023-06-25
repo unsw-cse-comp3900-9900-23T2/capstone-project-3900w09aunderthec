@@ -2,14 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 // import 'package:flutter_application_1/toggle_button.dart';
 // import 'toggle_button.dart';
 // import 'hover.dart';
-// import 'create_event.dart';
-=======
+import '../components/create_event.dart';
 import 'package:http/io_client.dart';
->>>>>>> e545a3829fb53618e54a113d0c8348cd8e6f6744
 
 class EventPage extends StatelessWidget {
   const EventPage({Key? key}) : super(key: key);
@@ -53,17 +50,40 @@ class EventPage extends StatelessWidget {
         alignment: Alignment.center,
         child: GestureDetector(
           onTap: getEvents,
-          child: const Text("Event Page"),
+          // child: const Text("Event Page"),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                  alignment: Alignment.topRight,
+                  child: ElevatedButton(
+                      onPressed: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CreateEventRoute()),
+                            ),
+                          },
+                      child: Text("Event Create"))),
+              // ElevatedButton(
+              //     onPressed: () => {
+              //           Navigator.push(
+              //             context,
+              //             MaterialPageRoute(
+              //                 builder: (context) => const CreateEventRoute()),
+              //           ),
+              //         },
+              //     child: Text("Event Create")),
+              Align(
+                alignment: Alignment.center,
+                child: Text("Event Page"),
+              ),
+            ],
+          ),
         ));
   }
 }
-// void main() {
-//   // runApp(const MyApp());
-//   runApp(const MaterialApp(
-//     title: "Create Event",
-//     home: HomeRoute(),
-//   ));
-// }
 
 // class HomeRoute extends StatelessWidget {
 //   const HomeRoute({super.key});
