@@ -17,59 +17,34 @@ namespace EventManagementAPI.Controllers
     //     public string Password {get; set;}
     // };
     public class RegisterUserRequestBody {
-        public string username {get; set;}= "no username";
+        public string username {get; set;} = "no username";
         public string email {get; set;}
-        // public bool isHost = false;
+        public bool isHost {get; set;} = false;
     };
 
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly AuthenticationRepository _authenticationRepository;
+        private readonly IAuthenticationRepository _authenticationRepository;
 
-        public AuthenticationController(AuthenticationRepository authenticationRepository)
+        public AuthenticationController(IAuthenticationRepository authenticationRepository)
         {
             _authenticationRepository = authenticationRepository;
         }
 
-        [HttpPost("ResetPassword")]
-        public String ResetPassword([FromBody] ResetPasswordRequestBody RequestBody) {
-
-            // Send password reset email. How difficult is this?
-
-            return "Awaiting implementation";
-        }
-
-        // [HttpPost("LoginUser")]
-        // public String LoginUser([FromBody] LoginUserRequestBody RequestBody) {
-
-        //     // Check details
-        //     // Delete old session tokens
-        //     // Return session token
-
-        //     return "Awaiting implementation";
-        // }
-
         [HttpPost("RegisterUser")]
         public IActionResult RegisterUser([FromBody] RegisterUserRequestBody RequestBody) {
-            Console.WriteLine(RequestBody.username); // Deleteme
 
             if (!_authenticationRepository.validateEmailRegex(RequestBody.email)) {
                 return BadRequest("That email is invalid.");
             }
 
             if (!_authenticationRepository.checkDuplicateEmails(RequestBody.email).Result) {
-                return BadRequest("That email is invalid.");
+                return BadRequest("That email is already in use.");
             }
 
-            _authenticationRepository.createUser(RequestBody.username, RequestBody.email, false); //RequestBody.isHost);
-            // Check Email against Regex
-            // Check username uniqueness
-            // If either fail, return informative fail string?
-            // Hash password, generate UID, generate session token
-            // Save user and token to database
-            // Return session token
+            _authenticationRepository.createUser(RequestBody.username, RequestBody.email, RequestBody.isHost);
 
             return Ok();
         }

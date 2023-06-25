@@ -9,7 +9,7 @@ namespace EventManagementAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int eventId { get; set; }
-
+ 
         // [ForeignKey("Hoster")]
         // public int hostIdRef { get; set; }
         // public Hoster host { get; set; }

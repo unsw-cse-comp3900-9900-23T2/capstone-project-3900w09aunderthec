@@ -1,14 +1,14 @@
-﻿using System;
-using EventManagementAPI.Context;
+﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
 using System.Text.RegularExpressions;
+using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementAPI.Repositories
 {
 	public class AuthenticationRepository : IAuthenticationRepository
 	{
-        readonly MySqlContext _dbContext;
+        private readonly MySqlContext _dbContext;
 
         public AuthenticationRepository(MySqlContext dbContext)
         {
@@ -33,7 +33,7 @@ namespace EventManagementAPI.Repositories
             return true;
         }
 
-        public async void createUser(String username, String email, Boolean isHost)
+        public async Task createUser(String username, String email, Boolean isHost)
         {
             if (isHost) {
                 _dbContext.Add(
@@ -49,6 +49,7 @@ namespace EventManagementAPI.Repositories
                     email = email,
                 });
             }
+            await _dbContext.SaveChangesAsync();
         }
 	}
 }
