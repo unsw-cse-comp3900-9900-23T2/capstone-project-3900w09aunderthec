@@ -32,7 +32,7 @@ class EventDate extends StatelessWidget {
         width: 60,
         height: 60,
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 197, 198, 236),
+            color: Color.fromARGB(255, 216, 216, 234),
             borderRadius: BorderRadius.circular(8)),
         child: Center(
           child: Padding(
@@ -174,7 +174,7 @@ class EventCard extends StatelessWidget {
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          color: Color.fromARGB(255, 238, 237, 240),
+          color: Color.fromARGB(255, 241, 241, 241),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Flexible(
