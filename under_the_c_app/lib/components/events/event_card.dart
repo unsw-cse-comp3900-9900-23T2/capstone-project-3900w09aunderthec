@@ -22,30 +22,13 @@ class EventImage extends StatelessWidget {
   }
 }
 
-class DateProvider extends InheritedWidget {
-  final String date;
-  const DateProvider({
-    Key? key,
-    required this.date,
-    required Widget child,
-  }) : super(key: key, child: child);
-
-  @override
-  bool updateShouldNotify(DateProvider oldWidget) => date != oldWidget.date;
-
-  static DateProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<DateProvider>();
-  }
-}
-
 class EventDate extends StatelessWidget {
-  const EventDate({Key? key}) : super(key: key);
+  final String dateTime;
+  const EventDate({Key? key, required this.dateTime}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    String date = DateProvider.of(context)!.date;
-
     // convert to string
-    MonthData monthData = timeStampToMonth(date);
+    MonthData monthData = timeStampToMonth(dateTime);
 
     return Container(
         width: 60,
@@ -77,8 +60,8 @@ class EventDate extends StatelessWidget {
   }
 }
 
-class EventDescription extends StatelessWidget {
-  const EventDescription({Key? key}) : super(key: key);
+class EventDetails extends StatelessWidget {
+  const EventDetails({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -133,25 +116,12 @@ class EventSubtitle extends StatelessWidget {
   }
 }
 
-class EventDetails extends StatelessWidget {
-  const EventDetails({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Flexible(
-        flex: 1,
-        child: Row(
-          children: [EventDate(), EventSubtitle()],
-        ));
-  }
-}
-
 class EventCard extends StatelessWidget {
   const EventCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return DateProvider(date: "2023-11-23 04:05:34", child: SizedBox(
+    return SizedBox(
         height: 200,
         width: 350,
         child: Card(
@@ -163,14 +133,15 @@ class EventCard extends StatelessWidget {
               children: [
                 EventImage(),
                 Expanded(
-                    child: Row(
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(left: 13), child: EventDate()),
-                    EventDescription()
-                  ],
-                ))
+                    child: Padding(
+                        padding: EdgeInsets.only(left: 13),
+                        child: Row(
+                          children: [
+                            EventDate(dateTime: "2023-11-23 04:05:34"),
+                            EventDetails()
+                          ],
+                        )))
               ]),
-        )));
+        ));
   }
 }
