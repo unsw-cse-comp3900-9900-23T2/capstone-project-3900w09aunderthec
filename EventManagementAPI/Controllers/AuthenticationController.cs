@@ -8,14 +8,6 @@ using EventManagementAPI.Repositories;
 
 namespace EventManagementAPI.Controllers
 {
-
-    public class ResetPasswordRequestBody {
-        public string email {get; set;}
-    };
-    // public class LoginUserRequestBody {
-    //     public string Username {get; set;}
-    //     public string Password {get; set;}
-    // };
     public class RegisterUserRequestBody {
         public string username {get; set;} = "no username";
         public string email {get; set;}

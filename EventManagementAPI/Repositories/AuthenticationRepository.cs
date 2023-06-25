@@ -36,14 +36,14 @@ namespace EventManagementAPI.Repositories
         public async Task createUser(String username, String email, Boolean isHost)
         {
             if (isHost) {
-                _dbContext.Add(
+                _dbContext.hosts.Add(
                 new Hoster{
                     username = username,
                     email = email,
                     organisationName = username
                 });
             } else {
-                _dbContext.Add(
+                _dbContext.customers.Add(
                 new Customer{
                     username = username,
                     email = email,
