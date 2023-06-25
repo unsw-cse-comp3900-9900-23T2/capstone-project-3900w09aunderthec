@@ -31,5 +31,11 @@ namespace EventManagementAPI.Repositories
                 .FirstOrDefaultAsync(e => e.eventId == id);
             return e;
         }
+
+        public async Task ModifyEvent(Event e)
+        {
+            _dbContext.events.Update(e);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

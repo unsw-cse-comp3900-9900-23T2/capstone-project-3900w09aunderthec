@@ -103,7 +103,7 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPost("ModifyEvent")]
-        public String ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
+        public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
 
             Event newEvent = new Event
             {
@@ -125,7 +125,8 @@ namespace EventManagementAPI.Controllers{
             // get host with hostUid
             // replace old event with newEvent
 
-            throw new NotImplementedException();
+            await _eventRepository.ModifyEvent(newEvent);
+            return Ok();
         }
 
     }
