@@ -24,8 +24,6 @@ class EventCard extends StatelessWidget {
                 ),
                 child: Image.asset(
                   'images/events/money-event.jpg',
-                  // width: 125,
-                  // height: 200,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -34,42 +32,75 @@ class EventCard extends StatelessWidget {
                 flex: 1,
                 child: Row(
                   children: [
-                    // const Text("Hello"),
-                    Expanded(
+                    Flexible(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 161, 163, 210),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 5),
+                                  child: Column(children: [
+                                    Text(
+                                      "APR",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                    Text(
+                                      "20",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 24,
+                                      ),
+                                    )
+                                  ]),
+                                ),
+                              )),
+                        )),
+                    Flexible(
+                        flex: 3,
                         child: ListTile(
-                      title: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Text(
-                            'Entertainment Event hehe',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 19, fontWeight: FontWeight.bold),
-                          )),
-                      subtitle: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Column(children: [
-                            Padding(
+                          title: const Padding(
                               padding: EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Thus 10:15 - New York, NY 2023',
-                                    style: TextStyle(fontSize: 10),
+                              child: Text(
+                                'Entertainment Event',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 19, fontWeight: FontWeight.bold),
+                              )),
+                          subtitle: const Padding(
+                              padding: EdgeInsets.only(top: 1, left: 12),
+                              child: Column(children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Thus 10:15 - New York, NY 2023',
+                                        style: TextStyle(fontSize: 10),
+                                      ),
+                                      // Text('3'),
+                                    ],
                                   ),
-                                  // Text('3'),
-                                ],
-                              ),
-                            )
-                          ])),
-                      trailing: IconButton(
-                          icon: const Icon(Icons.favorite_border),
-                          onPressed: () {
-                            // ignore: avoid_print
-                            print('fav button clicked');
-                          }),
-                    ))
+                                )
+                              ])),
+                          trailing: IconButton(
+                              icon: const Icon(Icons.favorite_border),
+                              onPressed: () {
+                                // ignore: avoid_print
+                                print('fav button clicked');
+                              }),
+                        ))
                   ],
                 ))
           ]),
