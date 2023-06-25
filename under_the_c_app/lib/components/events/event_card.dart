@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 
 class EventImage extends StatelessWidget {
   const EventImage({super.key});
@@ -21,30 +22,51 @@ class EventImage extends StatelessWidget {
   }
 }
 
+class DateProvider extends InheritedWidget {
+  final String date;
+  const DateProvider({
+    Key? key,
+    required this.date,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  @override
+  bool updateShouldNotify(DateProvider oldWidget) => date != oldWidget.date;
+
+  static DateProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<DateProvider>();
+  }
+}
+
 class EventDate extends StatelessWidget {
   const EventDate({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    String date = DateProvider.of(context)!.date;
+
+    // convert to string
+    MonthData monthData = timeStampToMonth(date);
+
     return Container(
         width: 60,
         height: 60,
         decoration: BoxDecoration(
             color: const Color.fromARGB(255, 161, 163, 210),
             borderRadius: BorderRadius.circular(8)),
-        child: const Center(
+        child: Center(
           child: Padding(
-            padding: EdgeInsets.only(top: 5),
+            padding: const EdgeInsets.only(top: 5),
             child: Column(children: [
               Text(
-                "APR",
-                style: TextStyle(
+                monthData.monthName,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                 ),
               ),
               Text(
-                "20",
-                style: TextStyle(
+                monthData.date.toString(),
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
@@ -129,7 +151,7 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return DateProvider(date: "2023-11-23 04:05:34", child: SizedBox(
         height: 200,
         width: 350,
         child: Card(
@@ -149,6 +171,6 @@ class EventCard extends StatelessWidget {
                   ],
                 ))
               ]),
-        ));
+        )));
   }
 }
