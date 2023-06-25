@@ -58,17 +58,19 @@ class EventDate extends StatelessWidget {
 }
 
 class EventDetails extends StatelessWidget {
-  const EventDetails({Key? key}) : super(key: key);
+  final String title;
+
+  const EventDetails({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Padding(
-        padding: EdgeInsets.only(top: 10),
+      title: Padding(
+        padding: const EdgeInsets.only(top: 10),
         child: Text(
-          'Entertainment Event',
+          title,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
         ),
       ),
       subtitle: const Padding(
@@ -85,24 +87,56 @@ class EventDetails extends StatelessWidget {
   }
 }
 
+class SubtitleDetails {
+  final String weekday;
+  final String time;
+  final String suburb;
+  final String city;
+  SubtitleDetails(this.weekday, this.time, this.suburb, this.city);
+}
+
+class EventSubtitleProvider extends InheritedWidget {
+  final SubtitleDetails subtitleDetails;
+
+  const EventSubtitleProvider({
+    Key? key,
+    required this.subtitleDetails,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  static EventSubtitleProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<EventSubtitleProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(covariant EventSubtitleProvider oldWidget) {
+    return subtitleDetails.weekday != oldWidget.subtitleDetails.weekday ||
+        subtitleDetails.time != oldWidget.subtitleDetails.time ||
+        subtitleDetails.suburb != oldWidget.subtitleDetails.suburb ||
+        subtitleDetails.city != oldWidget.subtitleDetails.city;
+  }
+}
+
 class EventSubtitle extends StatelessWidget {
   const EventSubtitle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-        padding: EdgeInsets.only(top: 1, left: 12),
+    EventSubtitleProvider? subtitleDetails = EventSubtitleProvider.of(context);
+    SubtitleDetails details = subtitleDetails!.subtitleDetails;
+
+    return Padding(
+        padding: const EdgeInsets.only(top: 1, left: 12),
         child: Column(children: [
           Padding(
-            padding: EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Thus 10:15 - New York, NY',
-                  style: TextStyle(fontSize: 10),
+                  '${details.weekday} ${details.time} - ${details.suburb}, ${details.city}',
+                  style: const TextStyle(fontSize: 10),
                 ),
-                // Text('3'),
               ],
             ),
           )
@@ -111,8 +145,10 @@ class EventSubtitle extends StatelessWidget {
 }
 
 class EventCard extends StatelessWidget {
-  const EventCard({Key? key}) : super(key: key);
+  // @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
+  EventCard({Key? key}) : super(key: key);
 
+  final SubtitleDetails details = SubtitleDetails('Wed', '10:15', 'Maroubra', 'Syd');
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -122,25 +158,26 @@ class EventCard extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           color: const Color.fromARGB(255, 189, 192, 245),
-          child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
-                  child: EventImage(),
-                ),
-                Flexible(
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 13),
-                        child: Row(
-                          children: [
-                            EventDate(dateTime: "2023-11-23 04:05:34"),
-                            // EventDetails(),
-                            Flexible(
-                              child: EventDetails(),
-                            )
-                          ],
-                        )))
-              ]),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            const Flexible(
+              child: EventImage(),
+            ),
+            Flexible(
+                child: Padding(
+                    padding: const EdgeInsets.only(left: 13),
+                    child: Row(
+                      children: [
+                        const EventDate(dateTime: "2023-11-21 04:05:34"),
+                        Flexible(
+                          child: EventSubtitleProvider(
+                              subtitleDetails: details,
+                              child: const EventDetails(
+                                  title: 'Entertainment Event')),
+                        )
+                      ],
+                    )))
+          ]),
         ));
   }
 }

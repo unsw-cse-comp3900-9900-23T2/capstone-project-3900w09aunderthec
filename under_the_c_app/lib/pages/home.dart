@@ -7,11 +7,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.lightGreen,
-        alignment: Alignment.center,
-        // child: const Text("Home Page"));
-        child: const EventCard(),
+      color: Colors.lightGreen,
+      alignment: Alignment.center,
+      // child: const Text("Home Page"));
+      child: EventCard(),
     );
   }
 }
-
