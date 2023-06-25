@@ -1,19 +1,29 @@
+// check if the event is made by event host
+// reuse event form from create_event
+// Have all values of most recent save
+// Save (Save button) or discard changes (everything else)
+
+// Another idea is to merge this with create_event
+
+/*
 import 'package:flutter/material.dart';
 import 'switch_button.dart';
 import 'dropdown_list.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'toggle_button.dart';
 
-// TODO: Compile all variables and submit to backend (make sure it matches database)
+// TODO: 
+// First, pull all previous variables
+// Resave all variables and submit to backend (make sure it matches database)
 
-class CreateEventRoute extends StatelessWidget {
-  const CreateEventRoute({super.key});
+class ModifyEventRoute extends StatelessWidget {
+  const ModifyEventRoute({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Event"),
+        title: const Text("Modify Event"),
       ),
       body: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,10 +46,11 @@ class MyCustomForm extends StatefulWidget {
 
 // Create a question and input box
 class FormFields extends StatelessWidget {
-  const FormFields({Key? key, required this.fieldName, required this.hint})
+  const FormFields({Key? key, required this.fieldName, required this.hint, required this.initial})
       : super(key: key);
   final String fieldName;
   final String hint;
+  final String initial;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +62,7 @@ class FormFields extends StatelessWidget {
             child: Text(fieldName),
           ),
           TextFormField(
+            initialValue: initial,
             decoration: InputDecoration(
                 border: const OutlineInputBorder(
                     borderSide: BorderSide(
@@ -132,7 +144,10 @@ class MyCustomFormState extends State<MyCustomForm> {
           ),
           // Title
           const FormFields(
-              fieldName: "Event Title", hint: "Enter the name of the event"),
+              fieldName: "Event Title", 
+              hint: "Enter the name of the event",
+              initial: {backend data}
+          ),
           // Location
           const FormFields(
               fieldName: "Event Location",
@@ -253,10 +268,6 @@ class MyCustomFormState extends State<MyCustomForm> {
               ],
             ),
           ),
-          // FormFields(
-          //     fieldName: "Refund Policy", hint: ""),
-          // FormFields(
-          //     fieldName: "Comments", hint: ""),
           // Event Tags
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -289,3 +300,5 @@ class MyCustomFormState extends State<MyCustomForm> {
     );
   }
 }
+
+*/

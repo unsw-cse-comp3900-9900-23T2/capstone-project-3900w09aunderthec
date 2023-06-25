@@ -55,7 +55,7 @@ class EventPage extends StatelessWidget {
             children: [
               Align(
                   alignment: Alignment.topRight,
-                  child: OutlinedButton(
+                  child: ElevatedButton(
                       onPressed: () => {
                             Navigator.push(
                               context,
