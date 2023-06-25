@@ -42,8 +42,6 @@ namespace EventManagementAPI.Controllers{
     public class EventCreationController : ControllerBase
     {
 
-            // 'Event id counter' needs to be an incremented counter in the database
-        private int eventIdCounter = 0;
         private readonly IEventRepository _eventRepository;
 
         public EventCreationController(IEventRepository eventRepository)
@@ -68,11 +66,9 @@ namespace EventManagementAPI.Controllers{
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
 
-            eventIdCounter += 1;
 
             Event newEvent = new Event
             {
-                eventId = eventIdCounter,
                 // hostIdRef = RequestBody.hostUid,
                 title = RequestBody.title,
                 time = RequestBody.time,
