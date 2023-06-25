@@ -9,28 +9,36 @@ class HomePage extends StatelessWidget {
   // @TODO: Replace those temporary event testing data with real fetch
   final List<Event> events = [
     Event(
-        title: 'S',
-        imageUrl: 'images/events/money-event.jpg',
-        details: SubtitleDetails('Wed', '10:15', 'M', 's')),
+      title: 'S',
+      imageUrl: 'images/events/money-event.jpg',
+      details: SubtitleDetails('Wed', '10:15', 'M', 's'),
+      isPrivate: true,
+    ),
     Event(
-        title: 'Event',
-        imageUrl: 'images/events/money-event.jpg',
-        details: SubtitleDetails('Wed', '10:15', 'Maroubra', 'Syd')),
+      isPrivate: true,
+      title: 'Event',
+      imageUrl: 'images/events/money-event.jpg',
+      details: SubtitleDetails('Wed', '10:15', 'Maroubra', 'Syd'),
+    ),
     Event(
-        title: 'Event this is a long long long long event',
-        imageUrl: 'images/events/money-event.jpg',
-        details: SubtitleDetails('Thu', '11:30', 'Bondi', 'Syd')),
+      title: 'Event this is a long long long long event',
+      imageUrl: 'images/events/money-event.jpg',
+      details: SubtitleDetails('Thu', '11:30', 'Bondi', 'Syd'),
+      isPrivate: true,
+    ),
     Event(
-        title: 'Event 2',
-        imageUrl: 'images/events/money-event.jpg',
-        details: SubtitleDetails('Thu', '11:30', 'Queen Elizebeth', 'Sydney')),
+      title: 'Event 2',
+      imageUrl: 'images/events/money-event.jpg',
+      details: SubtitleDetails('Thu', '11:30', 'Queen Elizebeth', 'Sydney'),
+      isPrivate: true,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightGreen,
-      alignment: Alignment.center,
+      // color: const Color.fromARGB(1, 179, 166, 244),
+      color: Color.fromARGB(255, 241, 241, 241),
       child: ListView.separated(
         itemBuilder: (context, index) {
           final event = events[index];
