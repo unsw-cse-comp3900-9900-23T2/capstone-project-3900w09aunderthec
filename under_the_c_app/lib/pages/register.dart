@@ -2,55 +2,78 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
+import 'package:http/http.dart' as http;
 
-import 'components/login_fields.dart';
+import '../components/login_fields.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
+  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void incorrectLoginMessage(error) {
+  void incorrectRegisterMessage(error) {
     showDialog(
       context: context,
       builder: (context) {
         switch (error.code) {
-          case 'invalid-email':
+          case 'auth/invalid-email':
             return const AlertDialog(
               title: Text('Invalid Email'),
             );
-          case 'user-not-found':
+          case 'auth/email-already-in-use':
             return const AlertDialog(
-              title: Text('Unregistered Account, Please Register'),
+              title: Text('Email has already been registered'),
             );
-          case 'wrong-password':
+          case 'auth/weak-password':
             return const AlertDialog(
-              title: Text('Incorrect Password, Please Retry'),
+              title: Text('Password too weak'),
             );
           default:
             // Handle other errors
             return const AlertDialog(
-              title: Text('Error Occurred, Try Restarting'),
+              title: Text('Error Occurred, Try Again'),
             );
         }
       },
     );
   }
 
-  void signUserIn() async {
+  void registerTheUser() async {
+    final registerUrl = Uri.parse('http:localhost');
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      // register the user to firebase
+      final userCredentials =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
+
+      // if successfully registered then let backend know
+      if (userCredentials != null) {
+        final response = await http.post(
+          registerUrl,
+          body: {
+            'Username': usernameController.text,
+            'Email': emailController.text,
+          },
+        );
+
+        // handle http response
+        if (response.statusCode != 200) {
+          print(
+              'User created, failed to notify db. Code: ${response.statusCode}');
+        }
+      }
     } on FirebaseAuthException catch (error) {
-      incorrectLoginMessage(error);
+      incorrectRegisterMessage(error);
     }
   }
 
@@ -86,6 +109,16 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(
                 height: 25,
+              ),
+
+              Login_Field(
+                controller: usernameController,
+                hintText: 'Username',
+                obscureText: false,
+              ),
+
+              const SizedBox(
+                height: 10,
               ),
 
               // Username Text Field
@@ -127,10 +160,10 @@ class _LoginPageState extends State<LoginPage> {
                 height: 10,
               ),
 
-              // Sign In Button
+              // Sign Up Button
               LogInButton(
-                text: "Sign In",
-                onTap: signUserIn,
+                text: "Register",
+                onTap: registerTheUser,
               ),
 
               const SizedBox(
@@ -140,16 +173,16 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Not registered yet?'),
+                  const Text('Already Registered?'),
                   const SizedBox(
                     width: 4,
                   ),
                   GestureDetector(
                     onTap: () {
-                      context.go('/register');
+                      context.go('/');
                     },
                     child: const Text(
-                      'Register Now',
+                      'Sign In',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )
