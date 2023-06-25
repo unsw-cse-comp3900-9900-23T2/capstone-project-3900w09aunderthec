@@ -3,6 +3,7 @@ using System;
 using EventManagementAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventManagementAPI.Migrations
 {
     [DbContext(typeof(MySqlContext))]
-    partial class MySqlContextModelSnapshot : ModelSnapshot
+    [Migration("20230625012532_init3")]
+    partial class init3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,15 +53,18 @@ namespace EventManagementAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("Hosteruid")
-                        .HasColumnType("int");
-
                     b.Property<bool>("allowRefunds")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("hostIdRef")
+                        .HasColumnType("int");
+
+                    b.Property<int>("hostuid")
+                        .HasColumnType("int");
 
                     b.Property<bool>("privateEvent")
                         .HasColumnType("tinyint(1)");
@@ -79,7 +85,7 @@ namespace EventManagementAPI.Migrations
 
                     b.HasKey("eventId");
 
-                    b.HasIndex("Hosteruid");
+                    b.HasIndex("hostuid");
 
                     b.ToTable("events");
                 });
@@ -143,9 +149,13 @@ namespace EventManagementAPI.Migrations
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
-                    b.HasOne("EventManagementAPI.Models.Hoster", null)
+                    b.HasOne("EventManagementAPI.Models.Hoster", "host")
                         .WithMany("events")
-                        .HasForeignKey("Hosteruid");
+                        .HasForeignKey("hostuid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("host");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
