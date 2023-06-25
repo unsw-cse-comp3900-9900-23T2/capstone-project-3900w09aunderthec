@@ -5,18 +5,15 @@ class EventImage extends StatelessWidget {
   const EventImage({super.key});
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      flex: 1,
-      child: ClipRRect(
-        // borderRadius: BorderRadius.circular(15.0),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(15),
-          topRight: Radius.circular(15),
-        ),
-        child: Image.asset(
-          'images/events/money-event.jpg',
-          fit: BoxFit.cover,
-        ),
+    return ClipRRect(
+      // borderRadius: BorderRadius.circular(15.0),
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
+      ),
+      child: Image.asset(
+        'images/events/money-event.jpg',
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -65,27 +62,24 @@ class EventDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      flex: 3,
-      child: ListTile(
-        title: const Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: Text(
-            'Entertainment Event',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-          ),
+    return ListTile(
+      title: const Padding(
+        padding: EdgeInsets.only(top: 10),
+        child: Text(
+          'Entertainment Event',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
         ),
-        subtitle: const Padding(
-          padding: EdgeInsets.only(top: 1, left: 12),
-          child: EventSubtitle(),
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.favorite_border),
-          onPressed: () {
-            print('fav button clicked');
-          },
-        ),
+      ),
+      subtitle: const Padding(
+        padding: EdgeInsets.only(top: 1, left: 12),
+        child: EventSubtitle(),
+      ),
+      trailing: IconButton(
+        icon: const Icon(Icons.favorite_border),
+        onPressed: () {
+          print('fav button clicked');
+        },
       ),
     );
   }
@@ -131,14 +125,19 @@ class EventCard extends StatelessWidget {
           child: const Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                EventImage(),
-                Expanded(
+                Flexible(
+                  child: EventImage(),
+                ),
+                Flexible(
                     child: Padding(
                         padding: EdgeInsets.only(left: 13),
                         child: Row(
                           children: [
                             EventDate(dateTime: "2023-11-23 04:05:34"),
-                            EventDetails()
+                            // EventDetails(),
+                            Flexible(
+                              child: EventDetails(),
+                            )
                           ],
                         )))
               ]),
