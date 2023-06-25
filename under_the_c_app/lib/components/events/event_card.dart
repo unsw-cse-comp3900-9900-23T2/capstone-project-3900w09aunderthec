@@ -145,18 +145,22 @@ class EventSubtitle extends StatelessWidget {
   }
 }
 
-// @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
 class EventCard extends StatelessWidget {
-  final String imageUrl = 'images/events/money-event.jpg';
-  EventCard({Key? key}) : super(key: key);
+  final String title;
+  final String imageUrl;
+  final SubtitleDetails details;
 
-  final SubtitleDetails details =
-      SubtitleDetails('Wed', '10:15', 'Maroubra', 'Syd');
+  const EventCard(
+      {Key? key,
+      required this.title,
+      required this.imageUrl,
+      required this.details})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
         height: 200,
-        width: 350,
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),

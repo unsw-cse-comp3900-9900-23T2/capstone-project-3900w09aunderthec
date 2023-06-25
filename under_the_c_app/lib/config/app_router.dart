@@ -32,7 +32,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/home',
           pageBuilder: (context, state) {
-            return const MaterialPage(child: BaseLayout(body: HomePage()));
+            return MaterialPage(child: BaseLayout(body: HomePage()));
           }),
       GoRoute(
           path: '/profile',
