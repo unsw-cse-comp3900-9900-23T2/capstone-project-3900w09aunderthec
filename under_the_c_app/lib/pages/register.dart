@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/sign_in.dart';
+import 'package:under_the_c_app/components/log_in_button.dart';
+import 'package:http/http.dart' as http;
 
 import '../components/login_fields.dart';
 
@@ -22,38 +23,55 @@ class _RegisterPageState extends State<RegisterPage> {
       context: context,
       builder: (context) {
         switch (error.code) {
-          case 'invalid-email':
-            // Handle invalid email error
+          case 'auth/invalid-email':
             return const AlertDialog(
               title: Text('Invalid Email'),
             );
-          case 'user-not-found':
-            // Handle user not found error
+          case 'auth/email-already-in-use':
             return const AlertDialog(
-              title: Text('Unregistered Account, Please Register'),
+              title: Text('Email has already been registered'),
             );
-          case 'wrong-password':
-            // Handle wrong password error
+          case 'auth/weak-password':
             return const AlertDialog(
-              title: Text('Incorrect Password, Please Retry'),
+              title: Text('Password too weak'),
             );
-          // Add more cases for other error codes as needed
           default:
             // Handle other errors
             return const AlertDialog(
-              title: Text('Error Occurred, Try Restarting'),
+              title: Text('Error Occurred, Try Again'),
             );
         }
       },
     );
   }
 
-  void registTheUser() async {
+  void registerTheUser() async {
+    final registerUrl = Uri.parse('http:localhost');
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      // register the user to firebase
+      final userCredentials =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
+
+      // if successfully registered then let backend know
+      if (userCredentials != null) {
+        final response = await http.post(
+          registerUrl,
+          body: {
+            'Username': usernameController.text,
+            'Email': emailController.text,
+          },
+        );
+
+        // handle http response
+        if (response.statusCode != 200) {
+          print(
+              'User created, failed to notify db. Code: ${response.statusCode}');
+        }
+      }
     } on FirebaseAuthException catch (error) {
       incorrectRegisterMessage(error);
     }
@@ -106,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
               // Username Text Field
               Login_Field(
                 controller: emailController,
-                hintText: 'Username',
+                hintText: 'Email',
                 obscureText: false,
               ),
 
@@ -142,9 +160,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 height: 10,
               ),
 
-              // Sign In Button
-              SignInButton(
-                onTap: registTheUser,
+              // Sign Up Button
+              LogInButton(
+                text: "Register",
+                onTap: registerTheUser,
               ),
 
               const SizedBox(

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/sign_in.dart';
+import 'package:under_the_c_app/components/log_in_button.dart';
 
 import 'components/login_fields.dart';
 
@@ -22,21 +22,17 @@ class _LoginPageState extends State<LoginPage> {
       builder: (context) {
         switch (error.code) {
           case 'invalid-email':
-            // Handle invalid email error
             return const AlertDialog(
               title: Text('Invalid Email'),
             );
           case 'user-not-found':
-            // Handle user not found error
             return const AlertDialog(
               title: Text('Unregistered Account, Please Register'),
             );
           case 'wrong-password':
-            // Handle wrong password error
             return const AlertDialog(
               title: Text('Incorrect Password, Please Retry'),
             );
-          // Add more cases for other error codes as needed
           default:
             // Handle other errors
             return const AlertDialog(
@@ -95,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               // Username Text Field
               Login_Field(
                 controller: emailController,
-                hintText: 'Username',
+                hintText: 'Email',
                 obscureText: false,
               ),
 
@@ -132,7 +128,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               // Sign In Button
-              SignInButton(
+              LogInButton(
+                text: "Sign In",
                 onTap: signUserIn,
               ),
 
