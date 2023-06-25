@@ -16,7 +16,7 @@ namespace EventManagementAPI.Repositories
 
         public async Task<List<Customer>> GetAllCustomers()
         {
-            return await _dbContext.Customers.ToListAsync();
+            return await _dbContext.customers.ToListAsync();
         }
     }
 }

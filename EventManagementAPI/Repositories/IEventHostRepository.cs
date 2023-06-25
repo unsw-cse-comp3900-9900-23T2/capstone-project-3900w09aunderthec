@@ -6,6 +6,6 @@ namespace EventManagementAPI.Repositories
 {
     public interface IEventHostRepository
     {
-        Task<List<EventHost>> GetAllEventHosts();
+        Task<List<Hoster>> GetAllEventHosts();
     }
 }

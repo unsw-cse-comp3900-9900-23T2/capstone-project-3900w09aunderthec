@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,12 +8,17 @@ namespace EventManagementAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public double Price { get; set; }
-        public string Description { get; set; }
-        public int Stock { get; set; }
-        public Event Event { get; set; }
-        public DateTime TimeCreated { get; set; } = DateTime.Now;
+        public int ticketId { get; set; }
+
+        [ForeignKey("Event")]
+        public int eventIdRef { get; set; }
+        public Event toEvent { get; set; }
+
+        [ForeignKey("Customer")]
+        public int customerIdRef { get; set; }
+        public Customer customer { get; set; }
+
+        public String name { get; set; }
+        public Double price { get; set; }
     }
 }

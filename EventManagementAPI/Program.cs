@@ -18,6 +18,7 @@ builder.Services.AddDbContext<MySqlContext>(options =>
 });
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
 var app = builder.Build();
 

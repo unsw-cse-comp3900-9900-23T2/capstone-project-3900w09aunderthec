@@ -8,11 +8,19 @@ namespace EventManagementAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public int? AddressId { get; set; }
-        public Address Address { get; set; }
-        public ICollection<Ticket> Tickets { get; set; }
+        public int eventId { get; set; }
+
+        // [ForeignKey("Hoster")]
+        // public int hostIdRef { get; set; }
+        // public Hoster host { get; set; }
+
+        public String title { get; set; }
+        public DateTime time { get; set; }
+        public String venue { get; set; }
+        public String description { get; set; }
+        public Boolean allowRefunds { get; set; }
+        public Boolean privateEvent { get; set; }
+        public Double? rating { get; set; }
+        // public List<String> tags { get; set; } = new List<String>();
     }
 }

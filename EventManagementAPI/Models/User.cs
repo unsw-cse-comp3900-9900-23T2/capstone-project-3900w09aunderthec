@@ -9,17 +9,11 @@ namespace EventManagementAPI.Models
 	{
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int uid { get; set; }
         [Required]
-        public string Email { get; set; }
+        public string email { get; set; }
         [Required]
-        public string Password { get; set; }
-        [Required]
-        public string Username { get; set; }
-        public string? PhoneNumber { get; set; }
-        public int? AddressId { get; set; }
-        public Address Address { get; set; }
-        public DateTime TimeCreated { get; set; } = DateTime.UtcNow;
+        public string username { get; set; }
     }
 }
 

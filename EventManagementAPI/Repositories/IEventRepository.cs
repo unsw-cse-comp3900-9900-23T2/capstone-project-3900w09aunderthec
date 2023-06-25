@@ -1,6 +1,13 @@
-﻿namespace EventManagementAPI.Repositories
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EventManagementAPI.Models;
+
+namespace EventManagementAPI.Repositories
 {
-    public class IEventRepository
+    public interface IEventRepository
     {
+        Task<List<Event>> GetAllEvents();
+        Task CreateAnEvent(Event e);
+        Task<Event> GetEventById(int id);
     }
 }
