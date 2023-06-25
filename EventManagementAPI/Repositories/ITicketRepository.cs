@@ -1,6 +1,13 @@
-﻿namespace EventManagementAPI.Repositories
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EventManagementAPI.Models;
+
+namespace EventManagementAPI.Repositories
 {
-    public class ITicketRepository
+    public interface ITicketRepository
     {
+        public Task<List<Ticket>> GetAllBookingTickets(int customerId);
+        public Task CreateBookingTicket();
+        public Task<Ticket> ShowEventTickets(int eventId);
     }
 }
