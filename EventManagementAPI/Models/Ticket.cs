@@ -20,5 +20,6 @@ namespace EventManagementAPI.Models
 
         public String name { get; set; }
         public Double price { get; set; }
+        public int numberOfTickets { get; set; }
     }
 }
