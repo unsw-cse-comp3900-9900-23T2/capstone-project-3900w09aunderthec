@@ -51,11 +51,17 @@ namespace EventManagementAPI.Controllers{
         [HttpPost("ListSimilarEvents")]
         public String ListSimilarEvents([FromBody] ListSimilarEventsRequestBody RequestBody) {
 
+            // Not being implemented in sprint 1
+
             throw new NotImplementedException();
         }
 
         [HttpPost("ListMyEvents")]
         public String ListMyEvents([FromBody] ListMyEventsRequestBody RequestBody) {
+
+            // As I write these descriptions, the more I realise that pretty much all this
+            // funcitonality will be handled by database queries
+            // Query the database for the given host's events and return them.
 
             throw new NotImplementedException();
         }
