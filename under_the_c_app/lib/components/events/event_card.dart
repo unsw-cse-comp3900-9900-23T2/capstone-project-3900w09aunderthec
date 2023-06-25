@@ -163,8 +163,8 @@ class EventCard extends StatelessWidget {
           color: const Color.fromARGB(255, 189, 192, 245),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            const Flexible(
-              child: EventImage(imageUrl),
+            Flexible(
+              child: EventImage(imageUrl: imageUrl),
             ),
             Flexible(
                 child: Padding(
