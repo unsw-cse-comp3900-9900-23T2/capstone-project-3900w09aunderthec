@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 
 class EventImage extends StatelessWidget {
-  const EventImage({super.key});
+  final String imageUrl;
+  const EventImage({super.key, required this.imageUrl});
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -12,7 +13,7 @@ class EventImage extends StatelessWidget {
         topRight: Radius.circular(15),
       ),
       child: Image.asset(
-        'images/events/money-event.jpg',
+        imageUrl,
         fit: BoxFit.cover,
       ),
     );
@@ -144,11 +145,13 @@ class EventSubtitle extends StatelessWidget {
   }
 }
 
+// @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
 class EventCard extends StatelessWidget {
-  // @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
+  final String imageUrl = 'images/events/money-event.jpg';
   EventCard({Key? key}) : super(key: key);
 
-  final SubtitleDetails details = SubtitleDetails('Wed', '10:15', 'Maroubra', 'Syd');
+  final SubtitleDetails details =
+      SubtitleDetails('Wed', '10:15', 'Maroubra', 'Syd');
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -161,7 +164,7 @@ class EventCard extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             const Flexible(
-              child: EventImage(),
+              child: EventImage(imageUrl),
             ),
             Flexible(
                 child: Padding(
