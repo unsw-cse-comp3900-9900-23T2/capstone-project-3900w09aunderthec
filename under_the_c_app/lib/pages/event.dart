@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 // import 'package:flutter_application_1/toggle_button.dart';
 // import 'toggle_button.dart';
-// import 'hover.dart';
 import '../components/create_event.dart';
 import 'package:http/io_client.dart';
 
@@ -56,7 +55,7 @@ class EventPage extends StatelessWidget {
             children: [
               Align(
                   alignment: Alignment.topRight,
-                  child: ElevatedButton(
+                  child: OutlinedButton(
                       onPressed: () => {
                             Navigator.push(
                               context,
@@ -65,17 +64,8 @@ class EventPage extends StatelessWidget {
                                       const CreateEventRoute()),
                             ),
                           },
-                      child: Text("Event Create"))),
-              // ElevatedButton(
-              //     onPressed: () => {
-              //           Navigator.push(
-              //             context,
-              //             MaterialPageRoute(
-              //                 builder: (context) => const CreateEventRoute()),
-              //           ),
-              //         },
-              //     child: Text("Event Create")),
-              Align(
+                      child: const Text("Create Event"))),
+              const Align(
                 alignment: Alignment.center,
                 child: Text("Event Page"),
               ),
@@ -84,35 +74,3 @@ class EventPage extends StatelessWidget {
         ));
   }
 }
-
-// class HomeRoute extends StatelessWidget {
-//   const HomeRoute({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Home"),
-//         actions: [
-//           Padding(
-//             padding: const EdgeInsets.only(right: 20.0),
-//             child: GestureDetector(onTap: () {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                     builder: (context) => const CreateEventRoute()),
-//               );
-//             }, child: HoverBuilder(builder: (isHovered) {
-//               return Icon(
-//                 Icons.add_outlined,
-//                 size: 20.0,
-//                 color: isHovered ? Colors.grey : Colors.white,
-//                 // child: const Text("Create event"),
-//               );
-//             })),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'toggle_button.dart';
 import 'switch_button.dart';
 import 'dropdown_list.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'toggle_button.dart';
 
 class CreateEventRoute extends StatelessWidget {
   const CreateEventRoute({super.key});
@@ -32,6 +32,7 @@ class MyCustomForm extends StatefulWidget {
   }
 }
 
+// Create a question and input box
 class FormFields extends StatelessWidget {
   const FormFields({Key? key, required this.fieldName, required this.hint})
       : super(key: key);
@@ -43,14 +44,10 @@ class FormFields extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Stopped working for some reason
-          /* 
           DefaultTextStyle(
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             child: Text(fieldName),
           ),
-          */
-          Text(fieldName),
           TextFormField(
             decoration: InputDecoration(
                 border: const OutlineInputBorder(
@@ -69,6 +66,7 @@ class FormFields extends StatelessWidget {
   }
 }
 
+// List for Tags
 List<DropdownMenuItem<String>> get droppedItems {
   List<DropdownMenuItem<String>> eventType = [
     const DropdownMenuItem(
@@ -111,6 +109,7 @@ List<DropdownMenuItem<String>> get droppedItems {
   return eventType;
 }
 
+// Create event form
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
 
@@ -129,21 +128,25 @@ class MyCustomFormState extends State<MyCustomForm> {
                   child: Text("Create Event Form"),
                 )),
           ),
-          // Fieds
+          // Title
           const FormFields(
               fieldName: "Event Title", hint: "Enter the name of the event"),
+          // Location
           const FormFields(
               fieldName: "Event Location",
               hint: "Enter the place where the event is held"),
+          // Description
           const FormFields(
               fieldName: "Event Description",
               hint: "Write a short summary of the event"),
-          // const FormFields(
-          //     fieldName: "Date & Time",
-          //     hint: "Enter the when the event is held"),
+          // Date & Time
+          // TODO: Change it up
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: Text("Date & Time"),
+            child: DefaultTextStyle(
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: Text("Date & Time"),
+            ),
           ),
           DateTimePicker(
             type: DateTimePickerType.dateTimeSeparate,
@@ -169,19 +172,26 @@ class MyCustomFormState extends State<MyCustomForm> {
             onSaved: (val) => print(val),
             */
           ),
-          // const ToggleButtonsUI(title: ""),
+          // Privacy Button
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: Text("Privacy"),
+            child: DefaultTextStyle(
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: Text("Privacy"),
+            ),
           ),
+          const ToggleButton(),
           const SwitchButton(),
 
+          // Ticket type
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: Text("Tickets"),
+            child: DefaultTextStyle(
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: Text("Tickets"),
+            ),
           ),
           Container(
-            // padding: const EdgeInsets.all(20.0),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             child: Table(
               border: TableBorder.all(color: Colors.black),
@@ -240,9 +250,13 @@ class MyCustomFormState extends State<MyCustomForm> {
           //     fieldName: "Refund Policy", hint: ""),
           // FormFields(
           //     fieldName: "Comments", hint: ""),
+          // Event Tags
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: Text("Event Tags"),
+            child: DefaultTextStyle(
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: Text("Event Tags"),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
