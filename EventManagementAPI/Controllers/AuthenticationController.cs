@@ -4,49 +4,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-// using EventManagementAPI.Repositories;
+using EventManagementAPI.Repositories;
 
 namespace EventManagementAPI.Controllers
 {
 
     public class ResetPasswordRequestBody {
-        public string Email {get; set;}
+        public string email {get; set;}
     };
-    public class LoginUserRequestBody {
-        public string Username {get; set;}
-        public string Password {get; set;}
-    };
+    // public class LoginUserRequestBody {
+    //     public string Username {get; set;}
+    //     public string Password {get; set;}
+    // };
     public class RegisterUserRequestBody {
-        public string Username {get; set;}
-        public string Password {get; set;}
-        public string Email {get; set;}
+        public string username = "no username";
+        public string email;
+        // public bool isHost = false;
     };
-
 
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        // private readonly IAuthenticationRepository _authenticationRepository;
-
-        // public AuthenticationController(IAuthenticationRepository authenticationRepository)
-        // {
-        //     _authenticationRepository = authenticationRepository;
-        // }
-
-        // [HttpPost]
-        // [Route("Authenticate")]
-        // public bool AuthenticateUser([FromBody] User user)
-        // {
-        //     return _authenticationRepository.validateUser(user);
-        // }
-
-        // [HttpPost]
-        // [Route("Register")]
-        // public bool RegisterUser()
-        // {
-        //     return true;
-        // }
+        private readonly AuthenticationRepository _authenticationRepository;
+        
+        public AuthenticationController(AuthenticationRepository authenticationRepository)
+        {
+            _authenticationRepository = authenticationRepository;
+        }
 
         [HttpPost("ResetPassword")]
         public String ResetPassword([FromBody] ResetPasswordRequestBody RequestBody) {
@@ -56,20 +41,29 @@ namespace EventManagementAPI.Controllers
             return "Awaiting implementation";
         }
 
-        [HttpPost("LoginUser")]
-        public String LoginUser([FromBody] LoginUserRequestBody RequestBody) {
+        // [HttpPost("LoginUser")]
+        // public String LoginUser([FromBody] LoginUserRequestBody RequestBody) {
 
-            // Check details
-            // Delete old session tokens
-            // Return session token
+        //     // Check details
+        //     // Delete old session tokens
+        //     // Return session token
 
-            return "Awaiting implementation";
-        }
+        //     return "Awaiting implementation";
+        // }
 
         [HttpPost("RegisterUser")]
-        public String RegisterUser([FromBody] RegisterUserRequestBody RequestBody) {
-            Console.WriteLine(RequestBody.Password); // Deleteme
+        public IActionResult RegisterUser([FromBody] RegisterUserRequestBody RequestBody) {
+            Console.WriteLine(RequestBody.username); // Deleteme
 
+            if (!_authenticationRepository.validateEmailRegex(RequestBody.email)) {
+                return BadRequest("That email is invalid.");
+            }
+
+            if (!_authenticationRepository.checkDuplicateEmails(RequestBody.email).Result) {
+                return BadRequest("That email is invalid.");
+            }
+
+            _authenticationRepository.createUser(RequestBody.username, RequestBody.email, false); //RequestBody.isHost);
             // Check Email against Regex
             // Check username uniqueness
             // If either fail, return informative fail string?
@@ -77,7 +71,7 @@ namespace EventManagementAPI.Controllers
             // Save user and token to database
             // Return session token
 
-            return "Awaiting implementation";
+            return Ok();
         }
 
     }
