@@ -3,20 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/sign_in.dart';
 
-import 'components/login_fields.dart';
+import '../components/login_fields.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
+  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void incorrectLoginMessage(error) {
+  void incorrectRegisterMessage(error) {
     showDialog(
       context: context,
       builder: (context) {
@@ -47,14 +48,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void signUserIn() async {
+  void registTheUser() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
     } on FirebaseAuthException catch (error) {
-      incorrectLoginMessage(error);
+      incorrectRegisterMessage(error);
     }
   }
 
@@ -90,6 +91,16 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(
                 height: 25,
+              ),
+
+              Login_Field(
+                controller: usernameController,
+                hintText: 'Username',
+                obscureText: false,
+              ),
+
+              const SizedBox(
+                height: 10,
               ),
 
               // Username Text Field
@@ -133,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
 
               // Sign In Button
               SignInButton(
-                onTap: signUserIn,
+                onTap: registTheUser,
               ),
 
               const SizedBox(
@@ -143,16 +154,16 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Not registered yet?'),
+                  const Text('Already Registered?'),
                   const SizedBox(
                     width: 4,
                   ),
                   GestureDetector(
                     onTap: () {
-                      context.go('/register');
+                      context.go('/');
                     },
                     child: const Text(
-                      'Register Now',
+                      'Sign In',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )
