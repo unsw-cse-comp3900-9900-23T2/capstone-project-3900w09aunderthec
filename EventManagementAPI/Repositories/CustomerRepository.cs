@@ -1,10 +1,11 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
+using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementAPI.Repositories
 {
-    public class CustomerRepository
+    public class CustomerRepository : ICustomerRepository
     {
         private readonly MySqlContext _dbContext;
 
