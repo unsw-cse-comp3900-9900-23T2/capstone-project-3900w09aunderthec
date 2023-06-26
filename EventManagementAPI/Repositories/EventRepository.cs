@@ -21,6 +21,11 @@ namespace EventManagementAPI.Repositories
 
         public async Task CreateAnEvent(Event e)
         {
+            if (!await _dbContext.hosts
+                .AnyAsync(h => h.uid == e.hosterFK)) {
+                throw new BadHttpRequestException("That host does not exist");
+            }
+                
             _dbContext.events.Add(e);
             await _dbContext.SaveChangesAsync();
         }
