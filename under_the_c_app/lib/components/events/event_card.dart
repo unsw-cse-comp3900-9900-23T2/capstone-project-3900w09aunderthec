@@ -31,32 +31,33 @@ class EventDate extends StatelessWidget {
     MonthData monthData = strToMonth(dateTime);
 
     return Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 216, 216, 234),
-            borderRadius: BorderRadius.circular(8)),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: Column(children: [
-              Text(
-                monthData.monthName,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 216, 216, 234),
+          borderRadius: BorderRadius.circular(8)),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Column(children: [
+            Text(
+              monthData.monthName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
               ),
-              Text(
-                monthData.date.toString(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              )
-            ]),
-          ),
-        ));
+            ),
+            Text(
+              monthData.date.toString(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            )
+          ]),
+        ),
+      ),
+    );
   }
 }
 
@@ -129,16 +130,10 @@ class EventSubtitle extends StatelessWidget {
     EventSubtitleProvider? subtitleDetails = EventSubtitleProvider.of(context);
     String time = subtitleDetails!.time;
     Address address = subtitleDetails.address;
-    DateTime dateTime = convertToDateTime(time);
 
-    // get Mon, Tues, Wed etc
-    String dayString = days[dateTime.weekday - 1];
-    String shortDayString = dayString.substring(0, 3);
-    String formattedDayString =
-        "${shortDayString[0].toUpperCase()}${shortDayString.substring(1).toLowerCase()}";
-
+    String weekday = getFirstThreeLettersWeekday(time);
     // get time until mins
-    String formatedTime = DateFormat('jm').format(dateTime);
+    String formatedTime = getHrMins(time);
 
     return Padding(
       padding: const EdgeInsets.only(top: 2, left: 12),
@@ -152,7 +147,7 @@ class EventSubtitle extends StatelessWidget {
                 SizedBox(
                   width: 200,
                   child: Text(
-                    '$formattedDayString $formatedTime - ${address.venue}, ${address.suburb}',
+                    '$weekday $formatedTime - ${address.venue}, ${address.suburb}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 10, letterSpacing: 0.4),
                   ),

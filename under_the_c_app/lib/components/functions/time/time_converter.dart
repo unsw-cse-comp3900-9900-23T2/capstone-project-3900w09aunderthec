@@ -1,3 +1,22 @@
+// High level APIs
+import 'package:intl/intl.dart';
+
+String getFirstThreeLettersWeekday(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  String dayString = days[dateTime.weekday - 1];
+  String shortDayString = dayString.substring(0, 3);
+  String formattedDayString =
+      "${shortDayString[0].toUpperCase()}${shortDayString.substring(1).toLowerCase()}";
+
+  return formattedDayString;
+}
+
+String getHrMins(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return DateFormat('jm').format(dateTime);;
+}
+
+// Lower level APIs
 DateTime convertToDateTime(String timestamp) {
   try {
     DateTime dateTime = DateTime.parse("2021-12-23 11:47:00");
@@ -7,6 +26,7 @@ DateTime convertToDateTime(String timestamp) {
     throw FormatException("Invalid timestamp format: $timestamp");
   }
 }
+
 
 MonthData strToMonth(String timestampStr) {
   DateTime dateTime = convertToDateTime(timestampStr);

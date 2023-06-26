@@ -31,9 +31,15 @@ class EventDetailsPage extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20, left: 30),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              event.title,
-              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            child: Column(
+              children: [
+                Text(
+                  event.title,
+                  style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                Text(event.time)
+              ],
             ),
           ),
         ),
