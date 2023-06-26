@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/components/common/navigation_bar.dart';
 import 'package:under_the_c_app/components/common/price.dart';
 import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
+import 'package:under_the_c_app/pages/main_pages/home.dart';
 
-class EventDetailsPage extends StatelessWidget {
-  final Event event;
-  const EventDetailsPage({Key? key, required this.event}) : super(key: key);
+class EventDetailsPage extends ConsumerWidget {
+  // final Event event;
+  const EventDetailsPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final event = ref.watch(eventProvider);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -119,7 +122,7 @@ class EventDetailsPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const NavigationBarCustom(),
+      // bottomNavigationBar: const NavigationBarCustom(),
     );
   }
 }

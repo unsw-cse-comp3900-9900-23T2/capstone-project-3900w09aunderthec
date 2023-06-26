@@ -14,6 +14,7 @@ class BaseLayout extends ConsumerWidget {
   void signOut() {
     FirebaseAuth.instance.signOut();
   }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -21,7 +22,7 @@ class BaseLayout extends ConsumerWidget {
         ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
       ]),
       body: body,
-      bottomNavigationBar: const NavigationBarCustom(),
+      // bottomNavigationBar: const NavigationBarCustom(),
     );
   }
 }

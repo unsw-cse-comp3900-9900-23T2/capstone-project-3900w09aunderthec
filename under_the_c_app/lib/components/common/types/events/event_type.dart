@@ -2,6 +2,7 @@ import 'package:under_the_c_app/components/common/types/location/address.dart';
 import 'package:under_the_c_app/components/common/types/users/host_type.dart';
 
 class Event {
+  final String eventId;
   final String title;
   final Host? host;
   final double price;
@@ -14,6 +15,7 @@ class Event {
 
   Event(
       {required this.title,
+      required this.eventId,
       this.host,
       String? imageUrl,
       String? description,
