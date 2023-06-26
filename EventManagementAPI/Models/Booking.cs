@@ -9,9 +9,11 @@ namespace EventManagementAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public Customer Customer { get; set; }
-        public Ticket Ticket { get; set; }
+        public int CustomerId { get; set; }
+        public Customer toCustomer { get; set; }
+        public int TicketId { get; set; }
+        public Ticket toTicket { get; set; }
         public int NumberOfTickets { get; set; }
-        public int TimeCreated { get; set; }
+        public DateTime TimeCreated { get; set; }
     }
 }

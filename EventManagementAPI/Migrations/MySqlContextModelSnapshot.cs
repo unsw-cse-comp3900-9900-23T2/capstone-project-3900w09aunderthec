@@ -19,6 +19,33 @@ namespace EventManagementAPI.Migrations
                 .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfTickets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("bookings");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Customer", b =>
                 {
                     b.Property<int>("uid")
@@ -124,9 +151,6 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("numberOfTickets")
-                        .HasColumnType("int");
-
                     b.Property<double>("price")
                         .HasColumnType("double");
 
@@ -138,6 +162,25 @@ namespace EventManagementAPI.Migrations
                     b.HasIndex("toEventeventId");
 
                     b.ToTable("tickets");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Customer", "toCustomer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Ticket", "toTicket")
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("toCustomer");
+
+                    b.Navigation("toTicket");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>

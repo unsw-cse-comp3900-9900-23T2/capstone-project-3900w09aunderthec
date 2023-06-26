@@ -6,8 +6,8 @@ namespace EventManagementAPI.Repositories
 {
     public interface ITicketRepository
     {
-        // public async Task<List<Ticket>> GetAllBookingTickets(int customerId);
         public Task CreateBookingTicket(Ticket t);
         public Task<List<Ticket>> ShowEventTickets(int eventId);
+        public Task<Ticket> GetTicketById(int ticketId);
     }
 }

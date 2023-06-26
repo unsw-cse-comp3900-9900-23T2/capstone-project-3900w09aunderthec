@@ -15,11 +15,6 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        // public Task<List<Ticket>> GetAllBookingTickets(int customerId)
-        // {
-
-        // }
-
         public async Task CreateBookingTicket(Ticket t)
         {
             _dbContext.tickets.Add(t);
@@ -28,11 +23,18 @@ namespace EventManagementAPI.Repositories
 
         public async Task<List<Ticket>> ShowEventTickets(int eventId)
         {
-            var tickets =await _dbContext.tickets
+            var tickets = await _dbContext.tickets
                 .Where(t => t.eventIdRef == eventId)
                 .ToListAsync();
 
             return tickets;
+        }
+
+        public async Task<Ticket> GetTicketById(int ticketId)
+        {
+            var t = await _dbContext.tickets.FindAsync(ticketId);
+
+            return t;
         }
     }
 }
