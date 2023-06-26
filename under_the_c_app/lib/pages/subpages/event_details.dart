@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:under_the_c_app/components/common/navigation_bar.dart';
+import 'package:under_the_c_app/components/common/price.dart';
 import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
@@ -45,6 +46,10 @@ class EventDetailsPage extends StatelessWidget {
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.6),
+                        ),
+                        const SizedBox(height: 8),
+                        PriceTag(
+                          price: event.price,
                         ),
                         const SizedBox(height: 8),
                         Text(

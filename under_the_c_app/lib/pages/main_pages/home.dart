@@ -21,6 +21,7 @@ class HomePage extends StatelessWidget {
           city: "Sydney",
           country: "Australia",
           postalCode: "2020"),
+      price: 0,
       description: loremIpsum(words: 100),
     ),
     Event(
@@ -33,12 +34,14 @@ class HomePage extends StatelessWidget {
           city: "Sydney",
           country: "Australia",
           postalCode: "2025"),
+      price: 1.5,
       description: loremIpsum(words: 15),
     ),
     Event(
       title: 'Event this is a long long long long event',
       imageUrl: 'images/events/money-event.jpg',
       time: "2023-02-24 03:33:45",
+      price: 4,
       address: Address(
           venue: "Seven Eleven",
           suburb: "Maroubra",
@@ -51,6 +54,7 @@ class HomePage extends StatelessWidget {
       title: 'Event 2',
       imageUrl: 'images/events/money-event.jpg',
       time: "2023-02-24 03:33:45",
+      price: 60,
       address: Address(
           venue: "Seven Eleven",
           suburb: "Maroubra",
