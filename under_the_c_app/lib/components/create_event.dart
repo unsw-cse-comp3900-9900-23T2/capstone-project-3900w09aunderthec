@@ -4,7 +4,7 @@ import 'dropdown_list.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'toggle_button.dart';
 
-// TODO: Compile all variables and submit to backend (make sure it matches database)
+// TODO: Save all variables and submit to backend (make sure it matches database)
 
 class CreateEventRoute extends StatelessWidget {
   const CreateEventRoute({super.key});
@@ -267,7 +267,11 @@ class MyCustomFormState extends State<MyCustomForm> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DropdownList(droppedItems: droppedItems),
+            child: DropdownList(
+              droppedItem: droppedItems,
+              initial: "Other",
+              onValueChanged: (String value) {},
+            ),
           ),
           // Submit Button
           Padding(

@@ -8,7 +8,6 @@ import 'package:under_the_c_app/pages/profile.dart';
 
 import '../login_page.dart';
 import '../pages/analytics.dart';
-import '../pages/register.dart';
 import 'auth_state_provider.dart';
 
 final _key = GlobalKey<NavigatorState>();
@@ -43,20 +42,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/',
           pageBuilder: (context, state) {
-            return const MaterialPage(
+            return MaterialPage(
               child: LoginPage(),
             );
-          }),
-      GoRoute(
-          path: '/register',
-          pageBuilder: (context, state) {
-            return const MaterialPage(child: RegisterPage());
           }),
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
-
-      // case for if the user is signed in
       if (authState.valueOrNull != null) {
         // only redirect to '/home' fi the current location is the root ('/')
         if (state.location == '/') {
@@ -64,16 +56,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         }
         // do not redirect if the user is navigation to another page
         return null;
-      }
-
-      // case for when the user isn't signed in
-      else {
-        // redirect to the login page or register page if there's no authenticated user
-        if (state.location == '/' || state.location == '/register') {
-          return state.location;
-        } else {
-          return '/';
-        }
+      } else {
+        // redirect to the login page if there's no authentificated user
+        return '/';
       }
     },
   );

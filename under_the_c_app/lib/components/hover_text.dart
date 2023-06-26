@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // https://stackoverflow.com/questions/73770245/how-to-hover-text-in-flutter
 
-class HoverBuilder extends StatefulWidget {
-  const HoverBuilder({
+class HoverTextBuilder extends StatefulWidget {
+  const HoverTextBuilder({
     required this.builder,
     Key? key,
   }) : super(key: key);
@@ -12,10 +12,10 @@ class HoverBuilder extends StatefulWidget {
   final Widget Function(bool isHovered) builder;
 
   @override
-  State<HoverBuilder> createState() => _HoverBuilderState();
+  State<HoverTextBuilder> createState() => _HoverBuilderTextState();
 }
 
-class _HoverBuilderState extends State<HoverBuilder> {
+class _HoverBuilderTextState extends State<HoverTextBuilder> {
   bool _isHovered = false;
   @override
   Widget build(BuildContext context) {

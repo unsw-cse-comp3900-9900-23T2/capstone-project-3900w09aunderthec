@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-
 import 'create_event.dart';
 
 class DropdownList extends StatefulWidget {
-  const DropdownList({super.key, required this.droppedItems});
+  const DropdownList({
+    super.key,
+    required this.droppedItem,
+    required this.initial,
+    required this.onValueChanged,
+  });
 
-  final List<DropdownMenuItem<String>> droppedItems;
-  // final String initial
+  final List<DropdownMenuItem<String>> droppedItem;
+  final String initial;
+  final ValueChanged<String> onValueChanged;
+
   @override
   State<DropdownList> createState() => _DropdownListState();
 }
@@ -18,16 +24,23 @@ class _DropdownListState extends State<DropdownList> {
   }
   else 
   */
-  String selectedValue = "Other";
+  String selectedValue = '';
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initial;
+  }
 
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
         value: selectedValue,
-        items: droppedItems,
+        items: widget.droppedItem,
         onChanged: (String? newValue) {
           setState(() {
             selectedValue = newValue!;
+            widget.onValueChanged(selectedValue);
           });
         });
   }

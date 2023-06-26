@@ -7,12 +7,18 @@ const List<Widget> eventTypes = <Widget>[
 
 class ToggleButton extends StatefulWidget {
   const ToggleButton({super.key});
+  // final bool privacy
 
   @override
   State<ToggleButton> createState() => _ToggleButtonState();
 }
 
 class _ToggleButtonState extends State<ToggleButton> {
+  /* 
+  if privacy
+    final List<bool> _selectedEventTypes = <bool>[true, false];
+  else
+  */
   final List<bool> _selectedEventTypes = <bool>[true, false];
 
   @override

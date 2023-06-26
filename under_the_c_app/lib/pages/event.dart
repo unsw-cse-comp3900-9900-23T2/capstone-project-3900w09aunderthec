@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-// import 'package:flutter_application_1/toggle_button.dart';
-// import 'toggle_button.dart';
+import 'package:under_the_c_app/components/book_tickets.dart';
 import '../components/create_event.dart';
 import 'package:http/io_client.dart';
 
@@ -69,6 +68,17 @@ class EventPage extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text("Event Page"),
               ),
+              Align(
+                  alignment: Alignment.topRight,
+                  child: ElevatedButton(
+                      onPressed: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BookTicketRoute()),
+                            ),
+                          },
+                      child: const Text("Book Tickets"))),
             ],
           ),
         ));
