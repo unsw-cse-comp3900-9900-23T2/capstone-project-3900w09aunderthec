@@ -1,31 +1,27 @@
-DateTime convertStringToDateTime(String timestamp) {
-  // Assuming the timestamp format is in "yyyy-MM-dd HH:mm:ss"
-
-  // Split the timestamp into date and time parts
-  List<String> parts = timestamp.split(' ');
-
-  // Split the date part into year, month, and day
-  List<String> dateParts = parts[0].split('-');
-  int year = int.parse(dateParts[0]);
-  int month = int.parse(dateParts[1]);
-  int day = int.parse(dateParts[2]);
-
-  // Split the time part into hour, minute, and second
-  List<String> timeParts = parts[1].split(':');
-  int hour = int.parse(timeParts[0]);
-  int minute = int.parse(timeParts[1]);
-  int second = int.parse(timeParts[2]);
-
-  // Create a DateTime object using the parsed values
-  DateTime dateTime = DateTime(year, month, day, hour, minute, second);
-
-  return dateTime;
+DateTime convertToDateTime(String timestamp) {
+  try {
+    DateTime dateTime = DateTime.parse("2021-12-23 11:47:00");
+    return dateTime;
+  } catch (e) {
+    // Handle the exception or provide a default value
+    throw FormatException("Invalid timestamp format: $timestamp");
+  }
 }
 
-MonthData timeStampToMonth(String timestampStr) {
-  DateTime dateTime = convertStringToDateTime(timestampStr);
+MonthData strToMonth(String timestampStr) {
+  DateTime dateTime = convertToDateTime(timestampStr);
   return getMonthData(dateTime);
 }
+
+List<String> days = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+];
 
 class MonthData {
   final int month;
