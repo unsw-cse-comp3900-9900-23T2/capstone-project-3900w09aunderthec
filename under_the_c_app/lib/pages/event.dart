@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:under_the_c_app/components/book_tickets.dart';
 import '../components/create_event.dart';
+import '../components/tickets.dart';
 import 'package:http/io_client.dart';
 
 class EventPage extends StatelessWidget {
@@ -75,7 +76,7 @@ class EventPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => BookTicketRoute()),
+                                  builder: (context) => TicketRoute()),
                             ),
                           },
                       child: const Text("Book Tickets"))),
