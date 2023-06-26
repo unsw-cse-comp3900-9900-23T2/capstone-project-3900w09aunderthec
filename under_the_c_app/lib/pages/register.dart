@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/io_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
 
 import '../components/login_fields.dart';
@@ -70,6 +71,10 @@ class _RegisterPageState extends State<RegisterPage> {
       // if successfully registered then let backend know
       if (userCredentials != null) {
         bool isHost = _userValue == 1 ? false : true;
+
+        // store the user type
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isHost', isHost);
 
         final response = await ioClient.post(
           registerUrl,

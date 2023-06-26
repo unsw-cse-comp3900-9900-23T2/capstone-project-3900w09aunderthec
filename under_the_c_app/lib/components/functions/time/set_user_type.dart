@@ -1,0 +1,35 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:http/io_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void setUserType(String email) async {
+  HttpClient client = HttpClient();
+  client.badCertificateCallback =
+      ((X509Certificate cert, String host, int port) => true);
+  var ioClient = IOClient(client);
+
+  final Url = Uri.https(
+      '10.0.2.2:7161', '/Authentication/GetUserType', {'email': email});
+  try {
+    // if successfully registered then let backend know
+    final response = await ioClient.get(Url, headers: {
+      "Access-Control-Allow-Origin": "*",
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    });
+
+    // handle http response
+    if (response.statusCode != 200) {
+      throw Exception('API Error: ${response}');
+    } else {
+      // store the user type
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isHost', jsonDecode(response.body));
+      print('User type set: ${response.body}');
+    }
+  } catch (e) {
+    print('$e');
+  }
+}
