@@ -5,6 +5,7 @@ import 'package:under_the_c_app/components/common/base_layout.dart';
 import 'package:under_the_c_app/pages/event.dart';
 import 'package:under_the_c_app/pages/home.dart';
 import 'package:under_the_c_app/pages/profile.dart';
+import 'package:under_the_c_app/pages/reset.dart';
 
 import '../login_page.dart';
 import '../pages/analytics.dart';
@@ -52,6 +53,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           pageBuilder: (context, state) {
             return const MaterialPage(child: RegisterPage());
           }),
+      GoRoute(
+          path: '/reset',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: ResetPasswordPage());
+          }),
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
@@ -69,7 +75,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       // case for when the user isn't signed in
       else {
         // redirect to the login page or register page if there's no authenticated user
-        if (state.location == '/' || state.location == '/register') {
+        if (state.location == '/' ||
+            state.location == '/register' ||
+            state.location == '/reset') {
           return state.location;
         } else {
           return '/';
