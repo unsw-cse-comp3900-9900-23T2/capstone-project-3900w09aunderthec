@@ -16,3 +16,19 @@ The downloads are huge and installation could take a while
 
 ## Running Flutter
 CD into the under_the_c_app folder and run the command flutter run --enable-software-rendering
+
+## MySQL Setup Windows
+ - Download MySQL Installer
+ - Use the Installer to download MySQL Server, MySQL Workbench, and Connector/NET, all most recent releases.
+ - Run MySQL Workbench. On the Welcome page there should be an entry under MySQL Connections called Local instance.
+ - Click on the local instance, and it should ask you to set a root password. Make it   mysql123456
+ - Once you are logged into the Local instance, up the top of the screen there is a cylinder looking button.
+ - Click on the cylinder to add a new Schema. Call it    underthec
+ - The database is instantiated. Go to a powershell terminal and CD into the \EventManagementAPI\ folder
+
+ - Run:
+ -  dotnet ef migrations add InitialCreate
+ -  dotnet ef database update
+
+ - You should be good to go. When the database is changed in future code updates, you will have to visit the
+ - underthec schema in MySQL Workbench and drop every table. Then, run the two lines of code above.

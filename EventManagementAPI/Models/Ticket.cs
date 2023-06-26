@@ -1,10 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+
 namespace EventManagementAPI.Models
 {
-	public class Ticket
-	{
+    public class Ticket
+    {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ticketId { get; set; }
@@ -19,5 +20,6 @@ namespace EventManagementAPI.Models
 
         public String name { get; set; }
         public Double price { get; set; }
+        public int numberOfTickets { get; set; }
     }
 }
