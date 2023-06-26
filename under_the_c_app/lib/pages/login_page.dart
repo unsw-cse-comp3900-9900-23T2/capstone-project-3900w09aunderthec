@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
+import 'package:under_the_c_app/main.dart';
 
 import '../components/functions/time/set_user_type.dart';
 import '../components/login_fields.dart';

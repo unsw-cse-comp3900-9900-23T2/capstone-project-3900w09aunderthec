@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/io_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
+import 'package:under_the_c_app/main.dart';
 
 import '../components/login_fields.dart';
 
@@ -73,8 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
         bool isHost = _userValue == 1 ? false : true;
 
         // store the user type
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('isHost', isHost);
+        sessionIsHost = isHost;
 
         final response = await ioClient.post(
           registerUrl,
@@ -95,8 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
           throw Exception(
               'User created, failed to notify db. ${response.statusCode}');
         } else {
-          // jsonDecode(response.body) for JSON payloads
-          print('RECEIVED MESSAGE: ${response.body}');
+          print('User Created in DB');
         }
       }
     } on FirebaseAuthException catch (error) {

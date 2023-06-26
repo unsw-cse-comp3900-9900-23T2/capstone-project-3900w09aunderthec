@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/components/common/base_layout.dart';
+import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/event.dart';
 import 'package:under_the_c_app/pages/home.dart';
@@ -73,6 +74,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         // only redirect to '/home' fi the current location is the root ('/')
         if (state.location == '/') {
           return '/home';
+        }
+
+        // not working for some reason
+        if (state.location == '/home' && sessionIsHost!) {
+          return '/homeHost';
         }
         // do not redirect if the user is navigation to another page
         return null;

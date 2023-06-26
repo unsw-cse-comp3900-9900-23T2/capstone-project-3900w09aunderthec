@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/io_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:under_the_c_app/main.dart';
 
 void setUserType(String email) async {
   HttpClient client = HttpClient();
@@ -25,8 +25,7 @@ void setUserType(String email) async {
       throw Exception('API Error: ${response}');
     } else {
       // store the user type
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isHost', jsonDecode(response.body));
+      sessionIsHost = jsonDecode(response.body);
       print('User type set: ${response.body}');
     }
   } catch (e) {
