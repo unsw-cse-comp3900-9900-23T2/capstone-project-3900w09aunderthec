@@ -28,15 +28,15 @@ class _RegisterPageState extends State<RegisterPage> {
       context: context,
       builder: (context) {
         switch (error.code) {
-          case 'auth/invalid-email':
+          case 'invalid-email':
             return const AlertDialog(
               title: Text('Invalid Email'),
             );
-          case 'auth/email-already-in-use':
+          case 'email-already-in-use':
             return const AlertDialog(
               title: Text('Email has already been registered'),
             );
-          case 'auth/weak-password':
+          case 'weak-password':
             return const AlertDialog(
               title: Text('Password too weak'),
             );
@@ -111,12 +111,12 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               // logo
               const Icon(
-                Icons.lock,
-                size: 50,
+                Icons.emoji_people,
+                size: 80,
               ),
 
               const SizedBox(
-                height: 50,
+                height: 20,
               ),
 
               // welcome message
@@ -194,9 +194,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      'Reset Password',
-                      style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                    GestureDetector(
+                      onTap: () {
+                        context.go('/reset');
+                      },
+                      child: Text(
+                        'Reset Password',
+                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                      ),
                     ),
                   ],
                 ),
