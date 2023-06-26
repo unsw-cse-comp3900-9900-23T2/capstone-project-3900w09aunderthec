@@ -11,9 +11,24 @@ String getFirstThreeLettersWeekday(String time) {
   return formattedDayString;
 }
 
-String getHrMins(String time) {
+String getTime(String time) {
   DateTime dateTime = convertToDateTime(time);
-  return DateFormat('jm').format(dateTime);;
+  return DateFormat('jm').format(dateTime);
+}
+
+String getMonthName(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return getMonthData(dateTime).monthName;
+}
+
+String getYear(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return dateTime.year.toString();
+}
+
+String getDay(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return dateTime.day.toString();
 }
 
 // Lower level APIs
@@ -26,7 +41,6 @@ DateTime convertToDateTime(String timestamp) {
     throw FormatException("Invalid timestamp format: $timestamp");
   }
 }
-
 
 MonthData strToMonth(String timestampStr) {
   DateTime dateTime = convertToDateTime(timestampStr);
@@ -59,40 +73,40 @@ MonthData getMonthData(DateTime dateTime) {
   String monthName = '';
   switch (month) {
     case 1:
-      monthName = 'JAN';
+      monthName = 'Jan';
       break;
     case 2:
-      monthName = 'FEB';
+      monthName = 'Feb';
       break;
     case 3:
-      monthName = 'MAR';
+      monthName = 'Mar';
       break;
     case 4:
-      monthName = 'APR';
+      monthName = 'Apr';
       break;
     case 5:
-      monthName = 'MAY';
+      monthName = 'May';
       break;
     case 6:
-      monthName = 'JUN';
+      monthName = 'Jun';
       break;
     case 7:
-      monthName = 'JUL';
+      monthName = 'Jul';
       break;
     case 8:
-      monthName = 'AUG';
+      monthName = 'Aug';
       break;
     case 9:
-      monthName = 'SEP';
+      monthName = 'Sep';
       break;
     case 10:
-      monthName = 'OCT';
+      monthName = 'Oct';
       break;
     case 11:
-      monthName = 'NOV';
+      monthName = 'Nov';
       break;
     case 12:
-      monthName = 'DEC';
+      monthName = 'Dec';
       break;
   }
 

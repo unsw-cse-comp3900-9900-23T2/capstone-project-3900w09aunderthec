@@ -133,7 +133,7 @@ class EventSubtitle extends StatelessWidget {
 
     String weekday = getFirstThreeLettersWeekday(time);
     // get time until mins
-    String formatedTime = getHrMins(time);
+    String formatedTime = getTime(time);
 
     return Padding(
       padding: const EdgeInsets.only(top: 2, left: 12),

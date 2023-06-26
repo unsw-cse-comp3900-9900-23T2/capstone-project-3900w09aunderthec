@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:under_the_c_app/components/common/types/events/event_type.dart';
+import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final Event event;
@@ -32,13 +33,20 @@ class EventDetailsPage extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   event.title,
                   style: const TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.bold),
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.6),
                 ),
-                Text(event.time)
+                const SizedBox(height: 8),
+                Text(
+                  '${getFirstThreeLettersWeekday(event.time)} ${getMonthName(event.time)} ${getDay(event.time)} ${getYear(event.time)} at ${getTime(event.time)}',
+                  style: const TextStyle(fontSize: 12, letterSpacing: 0.2),
+                )
               ],
             ),
           ),
