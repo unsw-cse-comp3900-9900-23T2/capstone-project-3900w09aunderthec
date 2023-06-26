@@ -20,6 +20,8 @@ builder.Services.AddDbContext<MySqlContext>(options =>
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 var app = builder.Build();
 

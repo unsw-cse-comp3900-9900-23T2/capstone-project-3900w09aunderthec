@@ -14,12 +14,7 @@ namespace EventManagementAPI.Models
         public int eventIdRef { get; set; }
         public Event toEvent { get; set; }
 
-        [ForeignKey("Customer")]
-        public int customerIdRef { get; set; }
-        public Customer customer { get; set; }
-
         public String name { get; set; }
         public Double price { get; set; }
-        public int numberOfTickets { get; set; }
     }
 }

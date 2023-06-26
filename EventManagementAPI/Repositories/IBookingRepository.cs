@@ -1,6 +1,13 @@
-﻿namespace EventManagementAPI.Repositories
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
+
+namespace EventManagementAPI.Repositories
 {
-    public class IBookingRepository
+    public interface IBookingRepository
     {
+        public Task MakeBooking(Booking b);
+        public Task<List<BookingResultDto>> GetBookings(int customerId);
     }
 }
