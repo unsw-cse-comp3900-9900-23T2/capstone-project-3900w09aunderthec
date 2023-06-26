@@ -126,6 +126,9 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("numberOfTickets")
+                        .HasColumnType("int");
+
                     b.Property<double>("price")
                         .HasColumnType("double");
 
