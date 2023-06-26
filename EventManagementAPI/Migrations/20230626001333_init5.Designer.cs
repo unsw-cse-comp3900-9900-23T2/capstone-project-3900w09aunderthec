@@ -3,6 +3,7 @@ using System;
 using EventManagementAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventManagementAPI.Migrations
 {
     [DbContext(typeof(MySqlContext))]
-    partial class MySqlContextModelSnapshot : ModelSnapshot
+    [Migration("20230626001333_init5")]
+    partial class init5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,6 +116,12 @@ namespace EventManagementAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("customerIdRef")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customeruid")
+                        .HasColumnType("int");
+
                     b.Property<int>("eventIdRef")
                         .HasColumnType("int");
 
@@ -128,6 +137,8 @@ namespace EventManagementAPI.Migrations
 
                     b.HasKey("ticketId");
 
+                    b.HasIndex("customeruid");
+
                     b.HasIndex("toEventeventId");
 
                     b.ToTable("tickets");
@@ -142,11 +153,19 @@ namespace EventManagementAPI.Migrations
 
             modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
                 {
+                    b.HasOne("EventManagementAPI.Models.Customer", "customer")
+                        .WithMany()
+                        .HasForeignKey("customeruid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EventManagementAPI.Models.Event", "toEvent")
                         .WithMany()
                         .HasForeignKey("toEventeventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("customer");
 
                     b.Navigation("toEvent");
                 });
