@@ -80,19 +80,11 @@ namespace EventManagementAPI.Controllers{
                 tags = RequestBody.tags
             };
 
-            // Old code for unpacking condensed ticket information. May still be useful
-            // foreach (var ticket in RequestBody.tickets) {
-            //     newEvent.tickets.AddRange(Enumerable.Repeat(new Ticket{
-            //         name = ticket.Item1,
-            //         price = ticket.Item2
-            //     }, ticket.Item3));
-            // }
-
-            // get host with uid hostUid from DB
-            // append event to host's list
-            // commit to DB
-
-            await _eventRepository.CreateAnEvent(newEvent);
+            try {
+                await _eventRepository.CreateAnEvent(newEvent);
+            } catch (BadHttpRequestException e) {
+                return BadRequest(e.Message);
+            }
 
             return Ok();
         }
