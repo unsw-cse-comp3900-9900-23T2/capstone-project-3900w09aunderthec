@@ -15,11 +15,13 @@ class CreateEventRoute extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Create Event"),
       ),
-      body: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MyCustomForm(),
-        ],
+      body: const SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MyCustomForm(),
+          ],
+        ),
       ),
     );
   }
@@ -46,9 +48,9 @@ class FormFields extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          DefaultTextStyle(
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            child: Text(fieldName),
+          Text(
+            fieldName,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           TextFormField(
             decoration: InputDecoration(
@@ -124,11 +126,10 @@ class MyCustomFormState extends State<MyCustomForm> {
         children: [
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DefaultTextStyle(
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                child: Center(
-                  child: Text("Create Event Form"),
-                )),
+            child: Center(
+              child: Text("Create Event Form",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ),
           ),
           // Title
           const FormFields(
@@ -145,10 +146,8 @@ class MyCustomFormState extends State<MyCustomForm> {
           // TODO: Change it up
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Date & Time"),
-            ),
+            child: Text("Date & Time",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
           DateTimePicker(
             type: DateTimePickerType.dateTimeSeparate,
@@ -177,9 +176,9 @@ class MyCustomFormState extends State<MyCustomForm> {
           // Privacy Button
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
+            child: Text(
+              "Privacy",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Privacy"),
             ),
           ),
           const Padding(
@@ -193,10 +192,8 @@ class MyCustomFormState extends State<MyCustomForm> {
           // Ticket type
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Tickets"),
-            ),
+            child: Text("Tickets",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -260,9 +257,9 @@ class MyCustomFormState extends State<MyCustomForm> {
           // Event Tags
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
+            child: Text(
+              "Event Tags",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Event Tags"),
             ),
           ),
           Padding(

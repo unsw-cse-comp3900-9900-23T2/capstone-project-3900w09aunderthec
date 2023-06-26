@@ -24,7 +24,7 @@ class BookTicketRoute extends StatelessWidget {
         children: [
           ListView(
             padding: const EdgeInsets.fromLTRB(
-                16.0, kToolbarHeight + 40.0, 16.0, 16.0),
+                16.0, kToolbarHeight + 60.0, 16.0, 16.0),
             children: [
               const Align(
                 child: Text(
@@ -162,7 +162,7 @@ class TicketTypes extends StatelessWidget {
           // Get rid of this
           // Column, type, price, sale end
           SizedBox(
-              width: 200,
+              width: 150,
               height: 100,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
