@@ -69,6 +69,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // if successfully registered then let backend know
       if (userCredentials != null) {
+        bool isHost = _userValue == 1 ? false : true;
+
         final response = await ioClient.post(
           registerUrl,
           headers: {
@@ -79,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
           body: jsonEncode({
             'Username': usernameController.text,
             'Email': emailController.text,
-            'UserType': _userValue.toString()
+            'UserType': isHost.toString()
           }),
         );
 
