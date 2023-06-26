@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'create_event.dart';
 
 class DropdownList extends StatefulWidget {
   const DropdownList({
