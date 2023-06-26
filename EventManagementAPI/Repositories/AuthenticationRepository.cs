@@ -49,7 +49,7 @@ namespace EventManagementAPI.Repositories
                     email = email,
                 });
             }
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
         }
 	}
 }

@@ -9,11 +9,11 @@ namespace EventManagementAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int eventId { get; set; }
- 
-        // [ForeignKey("Hoster")]
-        // public int hostIdRef { get; set; }
-        // public Hoster host { get; set; }
-
+        [ForeignKey("hosterFK")]
+        [Required]
+        public Hoster host { get; set; }
+        [Required]
+        public int hosterFK { get; set; }
         public String title { get; set; }
         public DateTime time { get; set; }
         public String venue { get; set; }
@@ -21,6 +21,6 @@ namespace EventManagementAPI.Models
         public Boolean allowRefunds { get; set; }
         public Boolean privateEvent { get; set; }
         public Double? rating { get; set; }
-        // public List<String> tags { get; set; } = new List<String>();
+        public String tags { get; set; }
     }
 }
