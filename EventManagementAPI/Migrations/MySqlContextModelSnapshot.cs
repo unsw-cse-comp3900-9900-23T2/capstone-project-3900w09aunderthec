@@ -50,9 +50,6 @@ namespace EventManagementAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("Hosteruid")
-                        .HasColumnType("int");
-
                     b.Property<bool>("allowRefunds")
                         .HasColumnType("tinyint(1)");
 
@@ -60,11 +57,18 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("hosterFK")
+                        .HasColumnType("int");
+
                     b.Property<bool>("privateEvent")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<double?>("rating")
                         .HasColumnType("double");
+
+                    b.Property<string>("tags")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("time")
                         .HasColumnType("datetime(6)");
@@ -79,7 +83,7 @@ namespace EventManagementAPI.Migrations
 
                     b.HasKey("eventId");
 
-                    b.HasIndex("Hosteruid");
+                    b.HasIndex("hosterFK");
 
                     b.ToTable("events");
                 });
@@ -120,6 +124,9 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("numberOfTickets")
+                        .HasColumnType("int");
+
                     b.Property<double>("price")
                         .HasColumnType("double");
 
@@ -135,9 +142,13 @@ namespace EventManagementAPI.Migrations
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
-                    b.HasOne("EventManagementAPI.Models.Hoster", null)
+                    b.HasOne("EventManagementAPI.Models.Hoster", "host")
                         .WithMany("events")
-                        .HasForeignKey("Hosteruid");
+                        .HasForeignKey("hosterFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("host");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>

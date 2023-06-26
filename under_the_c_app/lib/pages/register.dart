@@ -1,8 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/io_client.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
-import 'package:http/http.dart' as http;
 
 import '../components/login_fields.dart';
 
@@ -17,6 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+
+  int _userValue = 0;
 
   void incorrectRegisterMessage(error) {
     showDialog(
@@ -46,7 +51,13 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void registerTheUser() async {
-    final registerUrl = Uri.parse('http:localhost');
+    HttpClient client = HttpClient();
+    client.badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => true);
+    var ioClient = IOClient(client);
+
+    final registerUrl =
+        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser');
 
     try {
       // register the user to firebase
@@ -58,22 +69,33 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // if successfully registered then let backend know
       if (userCredentials != null) {
-        final response = await http.post(
+        final response = await ioClient.post(
           registerUrl,
-          body: {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          },
+          body: jsonEncode({
             'Username': usernameController.text,
             'Email': emailController.text,
-          },
+            'UserType': _userValue.toString()
+          }),
         );
 
         // handle http response
         if (response.statusCode != 200) {
-          print(
-              'User created, failed to notify db. Code: ${response.statusCode}');
+          throw Exception(
+              'User created, failed to notify db. ${response.statusCode}');
+        } else {
+          // jsonDecode(response.body) for JSON payloads
+          print('RECEIVED MESSAGE: ${response.body}');
         }
       }
     } on FirebaseAuthException catch (error) {
       incorrectRegisterMessage(error);
+    } catch (e) {
+      print('An error occured: $e');
     }
   }
 
@@ -87,14 +109,10 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 50,
-              ),
-
               // logo
               const Icon(
                 Icons.lock,
-                size: 100,
+                size: 50,
               ),
 
               const SizedBox(
@@ -143,6 +161,34 @@ class _RegisterPageState extends State<RegisterPage> {
                 height: 10,
               ),
 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Radio(
+                      value: 1,
+                      groupValue: _userValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _userValue = value!;
+                        });
+                      }),
+                  const Text('User'),
+                  Radio(
+                      value: 2,
+                      groupValue: _userValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _userValue = value!;
+                        });
+                      }),
+                  const Text('Host'),
+                ],
+              ),
+
+              const SizedBox(
+                height: 10,
+              ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
@@ -167,7 +213,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
 
               const SizedBox(
-                height: 200,
+                height: 100,
               ),
 
               Row(

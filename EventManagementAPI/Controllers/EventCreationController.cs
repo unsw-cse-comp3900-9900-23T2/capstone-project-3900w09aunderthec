@@ -14,14 +14,14 @@ namespace EventManagementAPI.Controllers{
         public String venue { get; set; }
     };
     public class CreateEventRequestBody {
-        // public int hostUid { get; set; }
+        public int uid { get; set; }
         public string title { get; set; }
         public DateTime time { get; set; }
         public string venue { get; set; }
         public string description { get; set; }
         public bool allowRefunds { get; set; }
         public bool privateEvent { get; set; }
-        // public List<String> tags;
+        public String tags { get; set; }
         // public List<Ticket> tickets;
     };
     public class ModifyEventRequestBody {
@@ -69,7 +69,7 @@ namespace EventManagementAPI.Controllers{
 
             Event newEvent = new Event
             {
-                // hostIdRef = RequestBody.hostUid,
+                hosterFK = RequestBody.uid,
                 title = RequestBody.title,
                 time = RequestBody.time,
                 venue = RequestBody.venue,
@@ -77,8 +77,7 @@ namespace EventManagementAPI.Controllers{
                 allowRefunds = RequestBody.allowRefunds,
                 privateEvent = RequestBody.privateEvent,
                 rating = null,
-                // comments = new List<Comment>(),
-                // tags = RequestBody.tags
+                tags = RequestBody.tags
             };
 
             // Old code for unpacking condensed ticket information. May still be useful
