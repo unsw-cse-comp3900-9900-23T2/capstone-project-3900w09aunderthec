@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:under_the_c_app/components/common/types/event_types.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
+import 'package:under_the_c_app/pages/subpages/event_details.dart';
 
 // @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
 class HomePage extends StatelessWidget {
@@ -49,51 +50,26 @@ class HomePage extends StatelessWidget {
                   )),
             ),
           ),
-          SliverList(delegate: SliverChildBuilderDelegate((context, index) {
+          SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
             final event = events[index];
             return SizedBox(
                 width: 375,
-                child: EventCard(
-                    title: event.title,
-                    imageUrl: event.imageUrl,
-                    details: event.details));
-          },
-          childCount: events.length))
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EventDetailsPage(event: event)));
+                  },
+                  child: EventCard(
+                      title: event.title,
+                      imageUrl: event.imageUrl,
+                      details: event.details),
+                ));
+          }, childCount: events.length))
         ],
       ),
     );
-    //   return Container(
-    //     color: const Color.fromARGB(255, 255, 255, 255),
-    //     alignment: Alignment.center,
-    //     padding: const EdgeInsets.all(15),
-    //     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    //       Padding(
-    //         padding: const EdgeInsets.only(bottom: 10, left: 4),
-    //         child: Title(
-    //             color: const Color.fromARGB(255, 255, 255, 255),
-    //             child: const Text(
-    //               "Upcoming Events",
-    //               style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 42, 23, 120)),
-    //             )),
-    //       ),
-    //       Expanded(
-    //           child: ListView.separated(
-    //         itemBuilder: (context, index) {
-    //           final event = events[index];
-    //           return SizedBox(
-    //             width: 375,
-    //             child: EventCard(
-    //               title: event.title,
-    //               imageUrl: event.imageUrl,
-    //               details: event.details,
-    //             ),
-    //           );
-    //         },
-    //         separatorBuilder: (context, index) => const SizedBox(height: 10.0),
-    //         itemCount: events.length,
-    //       ))
-    //     ]),
-    //   );
-    // }
   }
 }

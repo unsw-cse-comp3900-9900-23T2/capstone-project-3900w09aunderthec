@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/components/common/base_layout.dart';
-import 'package:under_the_c_app/pages/event.dart';
-import 'package:under_the_c_app/pages/home.dart';
-import 'package:under_the_c_app/pages/profile.dart';
+import 'package:under_the_c_app/pages/main_pages/analytics.dart';
+import 'package:under_the_c_app/pages/main_pages/event.dart';
+import 'package:under_the_c_app/pages/main_pages/home.dart';
+import 'package:under_the_c_app/pages/main_pages/profile.dart';
+import 'package:under_the_c_app/pages/main_pages/register.dart';
 
 import '../login_page.dart';
-import '../pages/analytics.dart';
-import '../pages/register.dart';
 import 'auth_state_provider.dart';
 
 final _key = GlobalKey<NavigatorState>();

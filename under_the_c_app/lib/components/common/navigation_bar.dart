@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/pages/analytics.dart';
-import 'package:under_the_c_app/pages/event.dart';
-import '../../config/app_router.dart';
 
 class NavigationBarCustom extends ConsumerStatefulWidget {
   const NavigationBarCustom({super.key});
