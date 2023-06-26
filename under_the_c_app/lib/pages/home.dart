@@ -28,48 +28,72 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // making a custom scrolling view
     return Container(
-      color: Color.fromARGB(255, 255, 255, 255),
+      color: const Color.fromARGB(255, 255, 255, 255),
       alignment: Alignment.center,
       padding: const EdgeInsets.all(15),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10, left: 4),
-          child: Title(
-              color: Color.fromARGB(255, 255, 255, 255),
-              child: const Text(
-                "Upcoming Events",
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 42, 23, 120)),
-              )),
-        ),
-        Expanded(
-            child: ListView.separated(
-          itemBuilder: (context, index) {
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10, left: 4),
+              child: Title(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  child: const Text(
+                    "Upcoming Events",
+                    style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 42, 23, 120)),
+                  )),
+            ),
+          ),
+          SliverList(delegate: SliverChildBuilderDelegate((context, index) {
             final event = events[index];
             return SizedBox(
-              width: 375,
-              child: EventCard(
-                title: event.title,
-                imageUrl: event.imageUrl,
-                details: event.details,
-              ),
-            );
-            // return Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            //   child: SizedBox(
-            //     width: 375,
-            //     child: EventCard(
-            //       title: event.title,
-            //       imageUrl: event.imageUrl,
-            //       details: event.details,
-            //     ),
-            //   ),
-            // );
+                width: 375,
+                child: EventCard(
+                    title: event.title,
+                    imageUrl: event.imageUrl,
+                    details: event.details));
           },
-          separatorBuilder: (context, index) => const SizedBox(height: 10.0),
-          itemCount: events.length,
-        ))
-      ]),
+          childCount: events.length))
+        ],
+      ),
     );
+    //   return Container(
+    //     color: const Color.fromARGB(255, 255, 255, 255),
+    //     alignment: Alignment.center,
+    //     padding: const EdgeInsets.all(15),
+    //     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    //       Padding(
+    //         padding: const EdgeInsets.only(bottom: 10, left: 4),
+    //         child: Title(
+    //             color: const Color.fromARGB(255, 255, 255, 255),
+    //             child: const Text(
+    //               "Upcoming Events",
+    //               style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 42, 23, 120)),
+    //             )),
+    //       ),
+    //       Expanded(
+    //           child: ListView.separated(
+    //         itemBuilder: (context, index) {
+    //           final event = events[index];
+    //           return SizedBox(
+    //             width: 375,
+    //             child: EventCard(
+    //               title: event.title,
+    //               imageUrl: event.imageUrl,
+    //               details: event.details,
+    //             ),
+    //           );
+    //         },
+    //         separatorBuilder: (context, index) => const SizedBox(height: 10.0),
+    //         itemCount: events.length,
+    //       ))
+    //     ]),
+    //   );
+    // }
   }
 }

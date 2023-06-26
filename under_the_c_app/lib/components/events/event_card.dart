@@ -32,7 +32,7 @@ class EventDate extends StatelessWidget {
         width: 60,
         height: 60,
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 216, 216, 234),
+            color: const Color.fromARGB(255, 216, 216, 234),
             borderRadius: BorderRadius.circular(8)),
         child: Center(
           child: Padding(
