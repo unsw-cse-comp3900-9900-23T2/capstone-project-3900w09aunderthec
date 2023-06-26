@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/components/common/types/event_types.dart';
+import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 import 'package:under_the_c_app/pages/subpages/event_details.dart';
 
@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
                   child: EventCard(
                       title: event.title,
                       imageUrl: event.imageUrl,
-                      details: event.details),
+                      details: event.description),
                 ));
           }, childCount: events.length))
         ],

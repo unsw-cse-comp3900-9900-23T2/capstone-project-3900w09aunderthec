@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:under_the_c_app/components/common/types/event_types.dart';
+import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final Event event;
@@ -29,10 +28,13 @@ class EventDetailsPage extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Text(
-            event.title,
-            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          padding: const EdgeInsets.only(top: 20, left: 30),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              event.title,
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ]),
