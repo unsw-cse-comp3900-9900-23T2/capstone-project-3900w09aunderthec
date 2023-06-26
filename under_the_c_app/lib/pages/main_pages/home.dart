@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 import 'package:under_the_c_app/components/common/types/location/address.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
@@ -11,45 +12,53 @@ class HomePage extends StatelessWidget {
   // @TODO: Replace those temporary event testing data with real fetch
   final List<Event> events = [
     Event(
-        title: 'S',
-        imageUrl: 'images/events/money-event.jpg',
-        time: "2023-02-24 03:33:45",
-        address: Address(
-            venue: "Elizebeth Hotel",
-            suburb: "George Str",
-            city: "Sydney",
-            country: "Australia",
-            postalCode: "2020")),
+      title: 'S',
+      imageUrl: 'images/events/money-event.jpg',
+      time: "2023-02-24 03:33:45",
+      address: Address(
+          venue: "Elizebeth Hotel",
+          suburb: "George Str",
+          city: "Sydney",
+          country: "Australia",
+          postalCode: "2020"),
+      description: loremIpsum(words: 100),
+    ),
     Event(
-        title: 'Event',
-        imageUrl: 'images/events/money-event.jpg',
-        time: "2023-01-24 03:33:45",
-        address: Address(
-            venue: "Seven Eleven",
-            suburb: "Maroubra",
-            city: "Sydney",
-            country: "Australia",
-            postalCode: "2025")),
+      title: 'Event',
+      imageUrl: 'images/events/money-event.jpg',
+      time: "2023-01-24 03:33:45",
+      address: Address(
+          venue: "Seven Eleven",
+          suburb: "Maroubra",
+          city: "Sydney",
+          country: "Australia",
+          postalCode: "2025"),
+      description: loremIpsum(words: 15),
+    ),
     Event(
-        title: 'Event this is a long long long long event',
-        imageUrl: 'images/events/money-event.jpg',
-        time: "2023-02-24 03:33:45",
-        address: Address(
-            venue: "Seven Eleven",
-            suburb: "Maroubra",
-            city: "Sydney",
-            country: "Australia",
-            postalCode: "2025")),
+      title: 'Event this is a long long long long event',
+      imageUrl: 'images/events/money-event.jpg',
+      time: "2023-02-24 03:33:45",
+      address: Address(
+          venue: "Seven Eleven",
+          suburb: "Maroubra",
+          city: "Sydney",
+          country: "Australia",
+          postalCode: "2025"),
+      description: loremIpsum(words: 500),
+    ),
     Event(
-        title: 'Event 2',
-        imageUrl: 'images/events/money-event.jpg',
-        time: "2023-02-24 03:33:45",
-        address: Address(
-            venue: "Seven Eleven",
-            suburb: "Maroubra",
-            city: "Sydney",
-            country: "Australia",
-            postalCode: "2025")),
+      title: 'Event 2',
+      imageUrl: 'images/events/money-event.jpg',
+      time: "2023-02-24 03:33:45",
+      address: Address(
+          venue: "Seven Eleven",
+          suburb: "Maroubra",
+          city: "Sydney",
+          country: "Australia",
+          postalCode: "2025"),
+      description: loremIpsum(words: 100),
+    ),
   ];
 
   @override
