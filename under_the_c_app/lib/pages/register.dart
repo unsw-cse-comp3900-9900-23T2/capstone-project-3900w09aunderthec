@@ -79,9 +79,9 @@ class _RegisterPageState extends State<RegisterPage> {
             'Accept': '*/*'
           },
           body: jsonEncode({
-            'Username': usernameController.text,
-            'Email': emailController.text,
-            'UserType': isHost.toString()
+            'username': usernameController.text,
+            'email': emailController.text,
+            'isHost': isHost
           }),
         );
 
