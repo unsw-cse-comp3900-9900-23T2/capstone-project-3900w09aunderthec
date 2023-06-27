@@ -6,6 +6,7 @@ namespace EventManagementAPI.Repositories
 {
     public interface ICustomerRepository
     {
-        Task<List<Customer>> GetAllCustomers();
+        public Task<List<Customer>> GetAllCustomers();
+        public Task<Customer> GetCustomerById(int customerId);
     }
 }
