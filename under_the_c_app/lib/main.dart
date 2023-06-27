@@ -8,7 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:under_the_c_app/components/common/navigation_bar.dart';
 
-<<<<<<< HEAD
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -17,9 +16,8 @@ class MyHttpOverrides extends HttpOverrides {
           (X509Certificate cert, String host, int port) => true;
   }
 }
-=======
+
 bool sessionIsHost = false;
->>>>>>> 9bdc852fbc7f88d2b714c34334e54b15d6e73c76
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
