@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/api/event.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
-import 'package:under_the_c_app/components/providers/event_providers.dart';
 
-// @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
-class HomePage extends ConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HostEventPage extends StatelessWidget {
+  const HostEventPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(eventsProvider);
-
-    return events.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (err, stack) => Text('Error: $err'),
-      data: (events) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
           color: const Color.fromARGB(255, 255, 255, 255),
           alignment: Alignment.center,
           padding: const EdgeInsets.all(15),
@@ -28,7 +22,7 @@ class HomePage extends ConsumerWidget {
                   child: Title(
                     color: const Color.fromARGB(255, 255, 255, 255),
                     child: const Text(
-                      "Upcoming Events",
+                      "My Hosted Events",
                       style: TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
@@ -40,7 +34,7 @@ class HomePage extends ConsumerWidget {
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final event = events[index];
+                  final event = hostedEvents[index];
 
                   return SizedBox(
                     width: 375,
@@ -60,12 +54,32 @@ class HomePage extends ConsumerWidget {
                       ),
                     ),
                   );
-                }, childCount: events.length),
+                }, childCount: hostedEvents.length),
               )
             ],
           ),
-        );
-      },
+        ),
+        // Align(
+        //   alignment: Alignment.bottomCenter,
+        //   child: Container(
+        //     padding: const EdgeInsets.all(20),
+        //     child: ElevatedButton(
+        //       onPressed: () {
+        //         print("Button clicked");
+        //         context.go('/event_booking/1');
+        //       },
+        //       style: TextButton.styleFrom(
+        //         minimumSize: const Size(150, 0),
+        //         padding: const EdgeInsets.all(20),
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(18),
+        //         ),
+        //       ),
+        //       child: const Text("Buy Ticket"),
+        //     ),
+        //   ),
+        // ),
+      ],
     );
   }
 }

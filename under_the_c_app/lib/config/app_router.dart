@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/common/base_layout.dart';
+import 'package:under_the_c_app/components/common/layout/base_layout.dart';
 import 'package:under_the_c_app/components/events/book_ticket.dart';
+import 'package:under_the_c_app/components/events/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
 import 'package:under_the_c_app/main.dart';
-import 'package:under_the_c_app/pages/main_pages/analytics.dart';
-import 'package:under_the_c_app/pages/main_pages/event.dart';
-import 'package:under_the_c_app/pages/main_pages/home.dart';
-import 'package:under_the_c_app/pages/main_pages/profile.dart';
-import 'package:under_the_c_app/pages/main_pages/register.dart';
+import 'package:under_the_c_app/pages/pages/analytics.dart';
+import 'package:under_the_c_app/pages/pages/customer_event_page.dart';
+import 'package:under_the_c_app/pages/pages/event.dart';
+import 'package:under_the_c_app/pages/pages/home.dart';
+import 'package:under_the_c_app/pages/pages/host_event_page.dart';
+import 'package:under_the_c_app/pages/pages/profile.dart';
+import 'package:under_the_c_app/pages/pages/register.dart';
 
 import '../pages/login_page.dart';
 import 'auth_state_provider.dart';
@@ -47,54 +50,74 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       ShellRoute(
-          navigatorKey: _shellNavigatorKey,
-          builder: (context, state, child) {
-            return BaseLayout(
-                body: child,
-                title: state.extra != null ? state.extra!.toString() : "");
-          },
-          routes: <RouteBase>[
-            GoRoute(
-              path: '/analytics',
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: AnalyticsPage());
-              },
-            ),
-            GoRoute(
-              path: '/events',
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: EventPage());
-              },
-            ),
-            GoRoute(
-              path: '/home',
-              pageBuilder: (context, state) {
-                return MaterialPage(child: HomePage());
-              },
-            ),
-            GoRoute(
-              path: '/profile',
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: ProfilePage());
-              },
-            ),
-            GoRoute(
-              path: '/event_details/:id',
+        navigatorKey: _shellNavigatorKey,
+        builder: (context, state, child) {
+          return BaseLayout(
+              body: child,
+              title: state.extra != null ? state.extra!.toString() : "",
+              isHost: sessionIsHost);
+        },
+        routes: <RouteBase>[
+          GoRoute(
+            path: '/analytics',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: AnalyticsPage());
+            },
+          ),
+          GoRoute(
+            path: '/host/events',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: HostEventPage());
+            },
+          ),
+          GoRoute(
+            path: '/customer/events',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: CustomerEventPage());
+            },
+          ),
+          GoRoute(
+            path: '/home',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: HomePage());
+            },
+          ),
+          GoRoute(
+            path: '/profile',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: ProfilePage());
+            },
+          ),
+          GoRoute(
+            path: '/event_details/:id',
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: EventDetailsPage(eventId: eventId));
+            },
+          ),
+          GoRoute(
+              path: '/event_booking/:id',
               pageBuilder: (context, state) {
                 final eventId = state.pathParameters['id'].toString();
-                return MaterialPage(child: EventDetailsPage(eventId: eventId));
-              },
-            ),
-            GoRoute(
-                path: '/event_booking/:id',
-                pageBuilder: (context, state) {
-                  final eventId = state.pathParameters['id'].toString();
-                  return MaterialPage(child: BookTicket(eventId: eventId));
-                }),
-          ]),
+                return MaterialPage(child: BookTicket(eventId: eventId));
+              }),
+          GoRoute(
+              path: '/event_add',
+              pageBuilder: (context, state) {
+                return MaterialPage(child: EventCreate());
+              }),
+        ],
+      ),
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
+<<<<<<< HEAD
+=======
+
+      print("app_route: sessionIsHost = ${sessionIsHost}");
+
+      // case for if the user is signed in
+>>>>>>> c2caf17fe702e6f4bea62e682765c8849758d41a
       if (authState.valueOrNull != null) {
         // only redirect to '/home' if the current location is the root ('/')
         if (state.location == '/' && sessionIsHost) {
