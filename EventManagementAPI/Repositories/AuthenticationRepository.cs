@@ -64,6 +64,6 @@ namespace EventManagementAPI.Repositories
                 return false;
             }
         }
-	}
+    }
 }
 

@@ -14,8 +14,6 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-bool sessionIsHost = true;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

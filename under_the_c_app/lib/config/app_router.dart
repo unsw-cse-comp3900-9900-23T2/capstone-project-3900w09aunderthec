@@ -5,6 +5,7 @@ import 'package:under_the_c_app/components/common/layout/base_layout.dart';
 import 'package:under_the_c_app/components/events/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/main_pages/analytics.dart';
@@ -50,13 +51,29 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const MaterialPage(child: RegisterPage());
         },
       ),
+      GoRoute(
+        path: '/reset',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: ResetPasswordPage());
+        },
+      ),
+      GoRoute(
+        path: '/guest',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+              child: BaseLayout(
+            body: GuestPage(),
+            isHost: sessionVariables.sessionIsHost,
+          ));
+        },
+      ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
           return BaseLayout(
               body: child,
               title: state.extra != null ? state.extra!.toString() : "",
-              isHost: sessionIsHost);
+              isHost: sessionVariables.sessionIsHost);
         },
         routes: <RouteBase>[
           GoRoute(
@@ -71,7 +88,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                   child: BaseLayout(
                 body: GuestPage(),
-                isHost: sessionIsHost,
+                isHost: sessionVariables.sessionIsHost,
               ));
             },
           ),
@@ -124,7 +141,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                   child: BaseLayout(
                 body: GuestPage(),
-                isHost: sessionIsHost,
+                isHost: sessionVariables.sessionIsHost,
               ));
             },
           ),
@@ -145,7 +162,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
 
-      print("app_route: sessionIsHost = ${sessionIsHost}");
+      print("app_route: sessionIsHost = ${sessionVariables.sessionIsHost}");
 
       // case for if the user is signed in
       if (authState.valueOrNull != null) {

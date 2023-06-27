@@ -5,8 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/io_client.dart';
+import 'package:under_the_c_app/components/functions/time/set_user_type.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
 import 'package:under_the_c_app/components/login_fields.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -71,8 +73,9 @@ class _RegisterPageState extends State<RegisterPage> {
       if (userCredentials != null) {
         bool isHost = _userValue == 1 ? false : true;
 
-        // store the user type
-        sessionIsHost = isHost;
+        // initialise session variables
+        setUserType(emailController.text);
+        sessionVariables.email = emailController.text;
 
         final response = await ioClient.post(
           registerUrl,
