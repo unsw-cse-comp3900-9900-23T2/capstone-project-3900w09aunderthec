@@ -25,7 +25,8 @@ class BookTicket extends StatelessWidget {
             Icons.arrow_back,
             color: Color.fromARGB(255, 33, 8, 83),
           ),
-          onPressed: () => context.go('/home'),
+          onPressed: () =>
+              context.go('/event_details/$eventId', extra: "Details"),
         ),
       ),
       // extendBody: true,

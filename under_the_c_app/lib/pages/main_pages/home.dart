@@ -24,7 +24,7 @@ class HomePage extends ConsumerWidget {
             slivers: <Widget>[
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10, left: 4),
+                  padding: const EdgeInsets.only(bottom: 12, left: 4),
                   child: Title(
                     color: const Color.fromARGB(255, 255, 255, 255),
                     child: const Text(

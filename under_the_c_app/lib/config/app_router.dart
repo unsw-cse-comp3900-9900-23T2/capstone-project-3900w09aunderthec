@@ -10,8 +10,8 @@ import 'package:under_the_c_app/pages/main_pages/event.dart';
 import 'package:under_the_c_app/pages/main_pages/home.dart';
 import 'package:under_the_c_app/pages/main_pages/profile.dart';
 import 'package:under_the_c_app/pages/main_pages/register.dart';
-import 'package:under_the_c_app/pages/subpages/book_ticket.dart';
-import 'package:under_the_c_app/pages/subpages/event_details.dart';
+import 'package:under_the_c_app/components/events/book_ticket.dart';
+import 'package:under_the_c_app/components/events/event_details.dart';
 
 import '../login_page.dart';
 import 'auth_state_provider.dart';

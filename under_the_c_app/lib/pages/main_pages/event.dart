@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/io_client.dart';
-import 'package:under_the_c_app/pages/subpages/book_ticket.dart';
+import 'package:under_the_c_app/components/events/book_ticket.dart';
 
 class EventPage extends StatelessWidget {
   const EventPage({Key? key}) : super(key: key);
