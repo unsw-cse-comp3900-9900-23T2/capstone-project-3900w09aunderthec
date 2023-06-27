@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/components/common/base_layout.dart';
+import 'package:under_the_c_app/main.dart';
+import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/event.dart';
 import 'package:under_the_c_app/pages/home.dart';
 import 'package:under_the_c_app/pages/profile.dart';
 import 'package:under_the_c_app/pages/reset.dart';
 
-import '../login_page.dart';
+import '../pages/login_page.dart';
 import '../pages/analytics.dart';
 import '../pages/register.dart';
 import 'auth_state_provider.dart';
@@ -54,6 +56,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             return const MaterialPage(child: RegisterPage());
           }),
       GoRoute(
+          path: '/guest',
+          pageBuilder: (context, state) {
+            return MaterialPage(child: BaseLayout(body: GuestPage()));
+          }),
+      GoRoute(
           path: '/reset',
           pageBuilder: (context, state) {
             return const MaterialPage(child: ResetPasswordPage());
@@ -68,6 +75,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         if (state.location == '/') {
           return '/home';
         }
+
+        // not working for some reason
+        if (state.location == '/home' && sessionIsHost!) {
+          return '/homeHost';
+        }
         // do not redirect if the user is navigation to another page
         return null;
       }
@@ -77,7 +89,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         // redirect to the login page or register page if there's no authenticated user
         if (state.location == '/' ||
             state.location == '/register' ||
-            state.location == '/reset') {
+            state.location == '/reset' ||
+            state.location.startsWith('/guest')) {
           return state.location;
         } else {
           return '/';

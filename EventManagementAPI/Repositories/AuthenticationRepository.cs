@@ -51,6 +51,19 @@ namespace EventManagementAPI.Repositories
             }
             _dbContext.SaveChanges();
         }
+
+        public async Task<bool> getUserType(String email)
+        {
+            bool emailExistsInHosts = await _dbContext.hosts.AnyAsync(h => h.email == email);
+
+            if (emailExistsInHosts)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
 	}
 }
 

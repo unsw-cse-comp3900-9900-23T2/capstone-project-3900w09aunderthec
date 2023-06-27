@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/io_client.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
+import 'package:under_the_c_app/main.dart';
 
 import '../components/login_fields.dart';
 
@@ -69,6 +70,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // if successfully registered then let backend know
       if (userCredentials != null) {
+        bool isHost = _userValue == 1 ? false : true;
+
+        // store the user type
+        sessionIsHost = isHost;
+
         final response = await ioClient.post(
           registerUrl,
           headers: {
@@ -77,9 +83,9 @@ class _RegisterPageState extends State<RegisterPage> {
             'Accept': '*/*'
           },
           body: jsonEncode({
-            'Username': usernameController.text,
-            'Email': emailController.text,
-            'UserType': _userValue.toString()
+            'username': usernameController.text,
+            'email': emailController.text,
+            'isHost': isHost
           }),
         );
 
@@ -88,8 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
           throw Exception(
               'User created, failed to notify db. ${response.statusCode}');
         } else {
-          // jsonDecode(response.body) for JSON payloads
-          print('RECEIVED MESSAGE: ${response.body}');
+          print('User Created in DB');
         }
       }
     } on FirebaseAuthException catch (error) {
