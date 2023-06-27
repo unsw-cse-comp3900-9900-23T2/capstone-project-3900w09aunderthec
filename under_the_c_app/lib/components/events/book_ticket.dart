@@ -1,12 +1,9 @@
 // Button in each individual event
 // Pull up data for tickets
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-// import 'package:under_the_c_app/components/common/types/event_types.dart';
-import '../components/ticket_confirmation.dart';
-import 'package:http/http.dart' as http;
+import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/events/ticket_confirmation.dart';
 
 const priceTextStyle = TextStyle(
   color: Colors.black,
@@ -14,43 +11,31 @@ const priceTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-class BookTicketRoute extends StatelessWidget {
-  const BookTicketRoute({super.key});
-
-//   Future<http.Response> fetchEventDetails() {
-//     final url = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
-//     return http.get(url);
-//   }
-
-//   Future<Event> fetchEvent() async {
-//   final url = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
-//   final response = await http
-//       .get(url);
-
-//   if (response.statusCode == 200) {
-//     // If the server did return a 200 OK response,
-//     // then parse the JSON.
-//     return Event.fromJson(jsonDecode(response.body));
-//   } else {
-//     // If the server did not return a 200 OK response,
-//     // then throw an exception.
-//     throw Exception('Failed to load album');
-//   }
-// }
-
+class BookTicket extends StatelessWidget {
+  final String eventId;
+  const BookTicket({super.key, required this.eventId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Book Tickets"),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 33, 8, 83),
+          ),
+          onPressed: () =>
+              context.go('/event_details/$eventId', extra: "Details"),
+        ),
       ),
-      extendBody: true,
+      // extendBody: true,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           ListView(
             padding: const EdgeInsets.fromLTRB(
-                16.0, kToolbarHeight + 60.0, 16.0, 16.0),
+                16.0, kToolbarHeight + 40.0, 16.0, 16.0),
             children: [
               const Align(
                 child: Text(
@@ -87,7 +72,7 @@ class BookTicketRoute extends StatelessWidget {
               TicketTypes(
                 item: Tickets(
                   type: "General Admission",
-                  price: 45,
+                  price: 145,
                   qty: 1,
                 ),
               ),
@@ -181,104 +166,82 @@ class TicketTypes extends StatelessWidget {
   const TicketTypes({Key? key, required this.item}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        children: [
-          // Get rid of this
-          // Column, type, price, sale end
-          SizedBox(
-              width: 150,
-              height: 100,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          flex: 1,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.type,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                "\$ ${(item.price).toString()}",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Text("Sales end on July 17, 2023"),
+            ],
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                height: 40.0,
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  IconButton(
+                    iconSize: 14.0,
+                    padding: const EdgeInsets.all(2.0),
+                    icon: const Icon(Icons.remove),
+                    onPressed: () {
+                      if (item.qty > 0) {
+                        item.qty--;
+                      }
+                    },
+                  ),
                   Text(
-                    item.type,
+                    "${item.qty}",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    "\$ ${(item.price).toString()}",
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  IconButton(
+                    iconSize: 14.0,
+                    padding: const EdgeInsets.all(2.0),
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      item.qty++;
+                    },
                   ),
-                  // Text("Sales end on Date - 1 day"),
-                  const Text("Sales end on July 17, 2023"),
-                ],
-              )),
-          const SizedBox(
-            width: 20.0,
+                ]),
+              )
+            ],
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Text(
-                //   item.type,
-                //   style: const TextStyle(
-                //     color: Colors.black,
-                //     fontSize: 20.0,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 5.0,
-                // ),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  height: 40.0,
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    IconButton(
-                      iconSize: 14.0,
-                      padding: const EdgeInsets.all(2.0),
-                      icon: const Icon(Icons.remove),
-                      onPressed: () {
-                        if (item.qty > 0) {
-                          item.qty--;
-                        }
-                      },
-                    ),
-                    Text(
-                      "${item.qty}",
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      iconSize: 14.0,
-                      padding: const EdgeInsets.all(2.0),
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        item.qty++;
-                      },
-                    ),
-                  ]),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(
-            width: 10.0,
-          ),
-          Text("\$${item.price * item.qty}", style: priceTextStyle),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

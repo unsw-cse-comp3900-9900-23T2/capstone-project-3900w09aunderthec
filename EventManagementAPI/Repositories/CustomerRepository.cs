@@ -18,5 +18,10 @@ namespace EventManagementAPI.Repositories
         {
             return await _dbContext.customers.ToListAsync();
         }
+
+        public async Task<Customer> GetCustomerById(int customerId)
+        {
+            return await _dbContext.customers.FindAsync(customerId);
+        }
     }
 }

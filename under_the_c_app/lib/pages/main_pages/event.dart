@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../components/create_event.dart';
-import '../components/book_tickets.dart';
+import '../../components/create_event.dart';
+import '../../components/book_tickets.dart';
 import 'package:http/io_client.dart';
 
 class EventPage extends StatelessWidget {
   const EventPage({Key? key}) : super(key: key);
 
+  // TO-DO based on the type of user fetch their events
   void getEvents() async {
     HttpClient client = HttpClient();
     client.badCertificateCallback =
@@ -26,7 +27,7 @@ class EventPage extends StatelessWidget {
           'Accept': '*/*'
         },
         body: jsonEncode({
-          // TO-DO change UID to possibly the email
+          // TODO: [PLHV-157] event.dart:getEvents(): change UID to possibly the email
           "uid": "1"
         }),
       );
