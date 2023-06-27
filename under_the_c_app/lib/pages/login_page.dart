@@ -47,12 +47,11 @@ class _LoginPageState extends State<LoginPage> {
 
   void signUserIn() async {
     try {
+      setUserType(emailController.text);
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-
-      setUserType(emailController.text);
     } on FirebaseAuthException catch (error) {
       incorrectLoginMessage(error);
     }
