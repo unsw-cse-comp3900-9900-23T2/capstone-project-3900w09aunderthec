@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'switch_button.dart';
 import 'dropdown_list.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -40,40 +41,6 @@ class MyCustomForm extends StatefulWidget {
   }
 }
 
-// Create a question and input box
-// class FormFields extends StatelessWidget {
-//   const FormFields({Key? key, required this.fieldName, required this.hint})
-//       : super(key: key);
-//   final String fieldName;
-//   final String hint;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-//         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-//           Text(
-//             fieldName,
-//             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//           ),
-//           TextFormField(
-//             decoration: InputDecoration(
-//                 border: const OutlineInputBorder(
-//                     borderSide: BorderSide(
-//                   width: 5,
-//                 )),
-//                 hintText: hint),
-//             validator: (value) {
-//               if (value == null || value.isEmpty) {
-//                 return 'Please fill out the required field';
-//               }
-//               return null;
-//             },
-//           ),
-//         ]));
-//   }
-// }
-
 // Create event form
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
@@ -88,24 +55,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   bool privateEvent = true;
   String tags = 'Other';
 
-  // Future<http.Response> createEvent() {
-  //   return http.post(
-  //     Uri.parse('https://jsonplaceholder.typicode.com/albums'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: jsonEncode(<String, String>{
-  //       // "uid": 0,
-  //       "title": "string",
-  //       "time": "2023-06-27T08:07:12.025Z",
-  //       "venue": "string",
-  //       "description": "string",
-  //       "allowRefunds": true,
-  //       "privateEvent": true,
-  //       "tags": "string"
-  //     }),
-  //   );
-  // }
   List<bool> selectedEventTypes = <bool>[true, false];
 
   void handleSelectionChanged(List<bool> newSelection) {
@@ -115,43 +64,25 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 
   Future<http.Response> createEvent() {
-    // final url =
-    //     'http://localhost:5154/EventCreation/CreateEvent'; // Replace with your API endpoint
-    print("Debugging Message: It reaches here");
-    print(title);
-    print(time);
-    print(venue);
-    print(description);
-    print(allowRefunds);
-    print(privateEvent);
-    print(tags);
+    // TODO: Fix datetime
+    // print(time);
+    // String formattedDate = DateFormat.yMMMEd().format(time);
+    // print(formattedDate);
 
-    final url =
-        //     Uri.http('http://localhost:5154/', '/EventCreation/CreateEvent');
-        Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
+    final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
-      // "uid": 1,
-      // 'title': title,
-      // // yyyy-MM-dd HH:mm:ss
-      // 'time': "2023-06-27 14:56:45",
-      // 'venue': venue,
-      // 'description': description,
-      // 'allowRefunds': allowRefunds,
-      // 'privateEvent': privateEvent,
-      // 'tags': "Other",
-      // 'tags': tags.split(',').map((tag) => tag.trim()).toList(),
       "uid": 1,
-      "title": "It works",
+      'title': title,
+      // yyyy-MM-dd HH:mm:ss
+      // 'time': "2023-06-27 14:56:45",
       "time": "2023-06-27T10:15:33.226Z",
-      "venue": "string",
-      "description": "string",
-      "allowRefunds": true,
-      "privateEvent": true,
-      "tags": "string"
+      'venue': venue,
+      'description': description,
+      'allowRefunds': allowRefunds,
+      'privateEvent': privateEvent,
+      'tags': tags,
     });
-
-    // return http.post(Uri.parse(url), headers: headers, body: body);
     return http.post(url, headers: headers, body: body);
   }
 
@@ -169,9 +100,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             ),
           ),
-          // Title
-          // const FormFields(
-          //     fieldName: "Event Title", hint: "Enter the name of the event"),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               child: Column(
@@ -201,10 +129,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                   ])),
 
-          // Location
-          // const FormFields(
-          //     fieldName: "Event Location",
-          //     hint: "Enter the place where the event is held"),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               child: Column(
@@ -233,10 +157,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                       },
                     ),
                   ])),
-          // Description
-          // const FormFields(
-          //     fieldName: "Event Description",
-          //     hint: "Write a short summary of the event"),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               child: Column(
@@ -316,7 +236,10 @@ class MyCustomFormState extends State<MyCustomForm> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             child: ToggleButton(
-              onSelectionChanged: handleSelectionChanged,
+              // onSelectionChanged: handleSelectionChanged,
+              onSelectionChanged: (handleSelectionChanged) {
+                privateEvent = handleSelectionChanged[0];
+              },
             ),
           ),
           // Old privacy button
