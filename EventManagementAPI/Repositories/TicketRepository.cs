@@ -36,5 +36,17 @@ namespace EventManagementAPI.Repositories
 
             return t;
         }
+
+        public async Task ModifyTicket(Ticket t)
+        {
+            _dbContext.tickets.Update(t);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteTicket(Ticket t)
+        {
+            _dbContext.tickets.Remove(t);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

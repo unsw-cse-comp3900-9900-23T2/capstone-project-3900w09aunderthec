@@ -35,5 +35,18 @@ namespace EventManagementAPI.Repositories
 
             return bookings;
         }
+
+        public async Task<Booking> GetBookingById(int bookingId)
+        {
+            var b = await _dbContext.bookings.FindAsync(bookingId);
+
+            return b;
+        }
+
+        public async Task RemoveBooking(Booking booking)
+        {
+            _dbContext.bookings.Remove(booking);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
