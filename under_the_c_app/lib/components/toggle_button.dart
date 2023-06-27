@@ -6,8 +6,11 @@ const List<Widget> eventTypes = <Widget>[
 ];
 
 class ToggleButton extends StatefulWidget {
-  const ToggleButton({super.key});
+  // const ToggleButton({super.key});
   // final bool privacy
+  final Function(List<bool>) onSelectionChanged;
+  const ToggleButton({Key? key, required this.onSelectionChanged})
+      : super(key: key);
 
   @override
   State<ToggleButton> createState() => _ToggleButtonState();
@@ -38,6 +41,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                     _selectedEventTypes[i] = i == index;
                   }
                 });
+                widget.onSelectionChanged(_selectedEventTypes);
               },
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               selectedBorderColor: Colors.red[700],

@@ -3,11 +3,14 @@ import 'switch_button.dart';
 import 'dropdown_list.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'toggle_button.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 // TODO: Save all variables and submit to backend (make sure it matches database)
 
 class CreateEventRoute extends StatelessWidget {
-  const CreateEventRoute({super.key});
+  // const CreateEventRoute({super.key});
+  const CreateEventRoute({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,8 @@ class CreateEventRoute extends StatelessWidget {
 }
 
 class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({super.key});
+  // const MyCustomForm({super.key});
+  const MyCustomForm({Key? key}) : super(key: key);
 
   @override
   MyCustomFormState createState() {
@@ -37,85 +41,119 @@ class MyCustomForm extends StatefulWidget {
 }
 
 // Create a question and input box
-class FormFields extends StatelessWidget {
-  const FormFields({Key? key, required this.fieldName, required this.hint})
-      : super(key: key);
-  final String fieldName;
-  final String hint;
+// class FormFields extends StatelessWidget {
+//   const FormFields({Key? key, required this.fieldName, required this.hint})
+//       : super(key: key);
+//   final String fieldName;
+//   final String hint;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            fieldName,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                  width: 5,
-                )),
-                hintText: hint),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please fill out the required field';
-              }
-              return null;
-            },
-          ),
-        ]));
-  }
-}
-
-// List for Tags
-List<DropdownMenuItem<String>> get droppedItems {
-  List<DropdownMenuItem<String>> eventType = [
-    const DropdownMenuItem(
-      value: "Arts",
-      child: Text("Arts"),
-    ),
-    const DropdownMenuItem(
-      value: "Business",
-      child: Text("Business"),
-    ),
-    const DropdownMenuItem(
-      value: "Comedy",
-      child: Text("Comedy"),
-    ),
-    const DropdownMenuItem(
-      value: "Food & Drink",
-      child: Text("Food & Drink"),
-    ),
-    const DropdownMenuItem(
-      value: "Fashion",
-      child: Text("Fashion"),
-    ),
-    const DropdownMenuItem(
-      value: "Music",
-      child: Text("Music"),
-    ),
-    const DropdownMenuItem(
-      value: "Sports",
-      child: Text("Sports"),
-    ),
-    const DropdownMenuItem(
-      value: "Science",
-      child: Text("Science"),
-    ),
-    const DropdownMenuItem(
-      value: "Other",
-      child: Text("Other"),
-    ),
-  ];
-  return eventType;
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+//         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+//           Text(
+//             fieldName,
+//             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+//           ),
+//           TextFormField(
+//             decoration: InputDecoration(
+//                 border: const OutlineInputBorder(
+//                     borderSide: BorderSide(
+//                   width: 5,
+//                 )),
+//                 hintText: hint),
+//             validator: (value) {
+//               if (value == null || value.isEmpty) {
+//                 return 'Please fill out the required field';
+//               }
+//               return null;
+//             },
+//           ),
+//         ]));
+//   }
+// }
 
 // Create event form
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
+
+  String title = '';
+  DateTime time = DateTime.now();
+  String venue = '';
+  String description = '';
+  // String ticketType = '';
+  // String ticketPrice = '';
+  bool allowRefunds = true;
+  bool privateEvent = true;
+  String tags = 'Other';
+
+  // Future<http.Response> createEvent() {
+  //   return http.post(
+  //     Uri.parse('https://jsonplaceholder.typicode.com/albums'),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //     },
+  //     body: jsonEncode(<String, String>{
+  //       // "uid": 0,
+  //       "title": "string",
+  //       "time": "2023-06-27T08:07:12.025Z",
+  //       "venue": "string",
+  //       "description": "string",
+  //       "allowRefunds": true,
+  //       "privateEvent": true,
+  //       "tags": "string"
+  //     }),
+  //   );
+  // }
+  List<bool> selectedEventTypes = <bool>[true, false];
+
+  void handleSelectionChanged(List<bool> newSelection) {
+    setState(() {
+      selectedEventTypes = newSelection;
+    });
+  }
+
+  Future<http.Response> createEvent() {
+    // final url =
+    //     'http://localhost:5154/EventCreation/CreateEvent'; // Replace with your API endpoint
+    print("Debugging Message: It reaches here");
+    print(title);
+    print(time);
+    print(venue);
+    print(description);
+    print(allowRefunds);
+    print(privateEvent);
+    print(tags);
+
+    final url =
+        //     Uri.http('http://localhost:5154/', '/EventCreation/CreateEvent');
+        Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      // "uid": 1,
+      // 'title': title,
+      // // yyyy-MM-dd HH:mm:ss
+      // 'time': "2023-06-27 14:56:45",
+      // 'venue': venue,
+      // 'description': description,
+      // 'allowRefunds': allowRefunds,
+      // 'privateEvent': privateEvent,
+      // 'tags': "Other",
+      // 'tags': tags.split(',').map((tag) => tag.trim()).toList(),
+      "uid": 1,
+      "title": "It works",
+      "time": "2023-06-27T10:15:33.226Z",
+      "venue": "string",
+      "description": "string",
+      "allowRefunds": true,
+      "privateEvent": true,
+      "tags": "string"
+    });
+
+    // return http.post(Uri.parse(url), headers: headers, body: body);
+    return http.post(url, headers: headers, body: body);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,16 +170,101 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
           ),
           // Title
-          const FormFields(
-              fieldName: "Event Title", hint: "Enter the name of the event"),
+          // const FormFields(
+          //     fieldName: "Event Title", hint: "Enter the name of the event"),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Event Title",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            width: 5,
+                          )),
+                          hintText: "Enter the name of the event"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please fill out the required field';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        title = value ?? '';
+                      },
+                    ),
+                  ])),
+
           // Location
-          const FormFields(
-              fieldName: "Event Location",
-              hint: "Enter the place where the event is held"),
+          // const FormFields(
+          //     fieldName: "Event Location",
+          //     hint: "Enter the place where the event is held"),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Event Location",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            width: 5,
+                          )),
+                          hintText: "Enter the place where the event is held"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please fill out the required field';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        venue = value ?? '';
+                      },
+                    ),
+                  ])),
           // Description
-          const FormFields(
-              fieldName: "Event Description",
-              hint: "Write a short summary of the event"),
+          // const FormFields(
+          //     fieldName: "Event Description",
+          //     hint: "Write a short summary of the event"),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Event Description",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            width: 5,
+                          )),
+                          hintText: "Write a short summary of the event"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please fill out the required field';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        description = value ?? '';
+                      },
+                    ),
+                  ])),
           // Date & Time
           // TODO: Change it up
           const Padding(
@@ -151,13 +274,22 @@ class MyCustomFormState extends State<MyCustomForm> {
           ),
           DateTimePicker(
             type: DateTimePickerType.dateTimeSeparate,
-            dateMask: 'd MMM, yyyy',
+            dateMask: 'dd MMM, yyyy',
+            // dateMask: 'yyyy MM, dd',
+            // yyyy-MM-dd HH:mm:ss
             initialValue: DateTime.now().toString(),
             firstDate: DateTime(2000),
             lastDate: DateTime(2100),
             icon: const Icon(Icons.event),
             dateLabelText: 'Date',
             timeLabelText: "Hour",
+            onSaved: (String? value) {
+              if (value != null) {
+                setState(() {
+                  time = DateTime.parse(value);
+                });
+              }
+            },
             // TODO: Check for valid date and time (Can't be before today)
             /* 
               selectableDayPredicate: (date) {
@@ -181,14 +313,17 @@ class MyCustomFormState extends State<MyCustomForm> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: ToggleButton(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: ToggleButton(
+              onSelectionChanged: handleSelectionChanged,
+            ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: SwitchButton(),
-          ),
+          // Old privacy button
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          //   child: SwitchButton(),
+          // ),
           // Ticket type
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -267,19 +402,35 @@ class MyCustomFormState extends State<MyCustomForm> {
             child: DropdownList(
               droppedItem: droppedItems,
               initial: "Other",
-              onValueChanged: (String value) {},
+              onValueChanged: (String value) {
+                tags = value;
+              },
             ),
           ),
           // Submit Button
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Processing Data')),
                   );
-                  Navigator.pop(context);
+
+                  _formKey.currentState!.save();
+
+                  createEvent().then((response) {
+                    if (response.statusCode == 200) {
+                      // Event created successfully
+                      // Handle success case
+                    } else {
+                      // Event creation failed
+                      // Handle error case
+                      throw Exception(
+                          'Failed to CREATE event: ${response.body}');
+                    }
+                    Navigator.pop(context);
+                  });
                 }
               },
               child: const Text('Submit'),
@@ -289,4 +440,47 @@ class MyCustomFormState extends State<MyCustomForm> {
       ),
     );
   }
+}
+
+// List for Tags
+List<DropdownMenuItem<String>> get droppedItems {
+  List<DropdownMenuItem<String>> eventType = [
+    const DropdownMenuItem(
+      value: "Arts",
+      child: Text("Arts"),
+    ),
+    const DropdownMenuItem(
+      value: "Business",
+      child: Text("Business"),
+    ),
+    const DropdownMenuItem(
+      value: "Comedy",
+      child: Text("Comedy"),
+    ),
+    const DropdownMenuItem(
+      value: "Food & Drink",
+      child: Text("Food & Drink"),
+    ),
+    const DropdownMenuItem(
+      value: "Fashion",
+      child: Text("Fashion"),
+    ),
+    const DropdownMenuItem(
+      value: "Music",
+      child: Text("Music"),
+    ),
+    const DropdownMenuItem(
+      value: "Sports",
+      child: Text("Sports"),
+    ),
+    const DropdownMenuItem(
+      value: "Science",
+      child: Text("Science"),
+    ),
+    const DropdownMenuItem(
+      value: "Other",
+      child: Text("Other"),
+    ),
+  ];
+  return eventType;
 }
