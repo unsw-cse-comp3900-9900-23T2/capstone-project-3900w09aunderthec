@@ -69,6 +69,7 @@ flutter:
   assets:
     - images/
     - images/events/
+    - images/users/
     # - images/new-event.jpg
     # - images/events/money-event.jpg
     # - images/a_dot_ham.jpeg

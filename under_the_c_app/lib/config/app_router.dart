@@ -7,16 +7,15 @@ import 'package:under_the_c_app/components/events/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
 import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
-import 'package:under_the_c_app/pages/pages/analytics.dart';
-import 'package:under_the_c_app/pages/pages/customer_event_page.dart';
-import 'package:under_the_c_app/pages/pages/event.dart';
-import 'package:under_the_c_app/pages/pages/home.dart';
-import 'package:under_the_c_app/pages/pages/host_event_page.dart';
-import 'package:under_the_c_app/pages/pages/profile.dart';
-import 'package:under_the_c_app/pages/pages/register.dart';
+import 'package:under_the_c_app/pages/main_pages/analytics.dart';
+import 'package:under_the_c_app/pages/main_pages/customer_event_page.dart';
+import 'package:under_the_c_app/pages/main_pages/home.dart';
+import 'package:under_the_c_app/pages/main_pages/host_event_page.dart';
+import 'package:under_the_c_app/pages/main_pages/profile.dart';
+import 'package:under_the_c_app/pages/main_pages/register.dart';
+import 'package:under_the_c_app/pages/reset.dart';
 
 import '../pages/login_page.dart';
-import '../pages/reset.dart';
 import 'auth_state_provider.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -111,6 +110,22 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) {
               final eventId = state.pathParameters['id'].toString();
               return MaterialPage(child: EventDetailsPage(eventId: eventId));
+            },
+          ),
+          GoRoute(
+            path: '/reset',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: ResetPasswordPage());
+            },
+          ),
+          GoRoute(
+            path: '/guest',
+            pageBuilder: (context, state) {
+              return MaterialPage(
+                  child: BaseLayout(
+                body: GuestPage(),
+                isHost: sessionIsHost,
+              ));
             },
           ),
           GoRoute(

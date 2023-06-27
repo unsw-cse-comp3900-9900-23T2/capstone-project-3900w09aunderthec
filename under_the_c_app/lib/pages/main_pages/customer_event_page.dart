@@ -79,7 +79,7 @@ class CustomerEventPage extends StatelessWidget {
                 // ),
               ],
             ),
-            const EventCreateButton()
+            
           ],
         ));
   }
