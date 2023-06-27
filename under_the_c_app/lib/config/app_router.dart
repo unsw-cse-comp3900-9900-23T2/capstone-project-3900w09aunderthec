@@ -76,10 +76,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           return '/home';
         }
 
-        // not working for some reason
-        if (state.location == '/home' && sessionIsHost!) {
-          return '/homeHost';
-        }
+        // TODO: [PLHV-156] app_router.dart: 'sessionIsHost' is null before returning to /homeHost
+        // if (state.location == '/home' && sessionIsHost!) {
+        //   return '/homeHost';
+        // }
         // do not redirect if the user is navigation to another page
         return null;
       }
