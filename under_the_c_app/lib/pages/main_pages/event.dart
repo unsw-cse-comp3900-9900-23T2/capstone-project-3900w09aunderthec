@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/io_client.dart';
+import 'package:under_the_c_app/components/events/book_ticket.dart';
 
 class EventPage extends StatelessWidget {
   const EventPage({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class EventPage extends StatelessWidget {
           'Accept': '*/*'
         },
         body: jsonEncode({
-          // TO-DO change UID to possibly the email
+          // TODO: [PLHV-157] event.dart:getEvents(): change UID to possibly the email
           "uid": "1"
         }),
       );
@@ -47,7 +48,7 @@ class EventPage extends StatelessWidget {
         alignment: Alignment.center,
         child: GestureDetector(
           onTap: getEvents,
-          child: const Text("Event Page"),
+          child: Text("Event Page"),
         ));
   }
 }

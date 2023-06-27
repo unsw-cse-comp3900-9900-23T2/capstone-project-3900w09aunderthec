@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:under_the_c_app/components/common/types/location/address.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 
 class EventImage extends StatelessWidget {
@@ -26,35 +28,36 @@ class EventDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // convert to string
-    MonthData monthData = timeStampToMonth(dateTime);
+    MonthData monthData = strToMonth(dateTime);
 
     return Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 216, 216, 234),
-            borderRadius: BorderRadius.circular(8)),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: Column(children: [
-              Text(
-                monthData.monthName,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 216, 216, 234),
+          borderRadius: BorderRadius.circular(8)),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Column(children: [
+            Text(
+              monthData.monthName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
               ),
-              Text(
-                monthData.date.toString(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              )
-            ]),
-          ),
-        ));
+            ),
+            Text(
+              monthData.date.toString(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            )
+          ]),
+        ),
+      ),
+    );
   }
 }
 
@@ -98,20 +101,14 @@ class EventDetails extends StatelessWidget {
   }
 }
 
-class SubtitleDetails {
-  final String weekday;
-  final String time;
-  final String suburb;
-  final String city;
-  SubtitleDetails(this.weekday, this.time, this.suburb, this.city);
-}
-
 class EventSubtitleProvider extends InheritedWidget {
-  final SubtitleDetails subtitleDetails;
+  final String time;
+  final Address address;
 
   const EventSubtitleProvider({
     Key? key,
-    required this.subtitleDetails,
+    required this.time,
+    required this.address,
     required Widget child,
   }) : super(key: key, child: child);
 
@@ -121,10 +118,7 @@ class EventSubtitleProvider extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant EventSubtitleProvider oldWidget) {
-    return subtitleDetails.weekday != oldWidget.subtitleDetails.weekday ||
-        subtitleDetails.time != oldWidget.subtitleDetails.time ||
-        subtitleDetails.suburb != oldWidget.subtitleDetails.suburb ||
-        subtitleDetails.city != oldWidget.subtitleDetails.city;
+    return time != oldWidget.time || address != oldWidget.address;
   }
 }
 
@@ -134,39 +128,52 @@ class EventSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EventSubtitleProvider? subtitleDetails = EventSubtitleProvider.of(context);
-    SubtitleDetails details = subtitleDetails!.subtitleDetails;
+    String time = subtitleDetails!.time;
+    Address address = subtitleDetails.address;
+
+    String weekday = getFirstThreeLettersWeekday(time);
+    // get time until mins
+    String formatedTime = getTime(time);
 
     return Padding(
-        padding: const EdgeInsets.only(top: 1, left: 12),
-        child: Column(children: [
+      padding: const EdgeInsets.only(top: 2, left: 12),
+      child: Column(
+        children: [
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  '${details.weekday} ${details.time} - ${details.suburb}, ${details.city}',
-                  style: const TextStyle(fontSize: 10, letterSpacing: 0.4),
-                ),
+                SizedBox(
+                  width: 200,
+                  child: Text(
+                    '$weekday $formatedTime - ${address.venue}, ${address.suburb}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 10, letterSpacing: 0.4),
+                  ),
+                )
               ],
             ),
           )
-        ]));
+        ],
+      ),
+    );
   }
 }
 
 class EventCard extends StatelessWidget {
   final String title;
   final String imageUrl;
-  final SubtitleDetails details;
+  final String time;
+  final Address address;
 
   const EventCard(
       {Key? key,
       required this.title,
       required this.imageUrl,
-      required this.details})
+      required this.time,
+      required this.address})
       : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -174,7 +181,7 @@ class EventCard extends StatelessWidget {
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          color: Color.fromARGB(255, 241, 241, 241),
+          color: const Color.fromARGB(255, 241, 241, 241),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Flexible(
@@ -185,10 +192,11 @@ class EventCard extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 13),
                     child: Row(
                       children: [
-                        const EventDate(dateTime: "2023-11-21 04:05:34"),
+                        EventDate(dateTime: time),
                         Flexible(
                           child: EventSubtitleProvider(
-                              subtitleDetails: details,
+                              address: address,
+                              time: time,
                               child: EventDetails(title: title)),
                         )
                       ],
