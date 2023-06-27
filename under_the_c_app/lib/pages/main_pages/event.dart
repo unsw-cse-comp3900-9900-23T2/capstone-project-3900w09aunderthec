@@ -47,7 +47,7 @@ class EventPage extends StatelessWidget {
         alignment: Alignment.center,
         child: GestureDetector(
           onTap: getEvents,
-          child: const EventPage(),
+          child: Text("Event Page"),
         ));
   }
 }

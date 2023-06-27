@@ -61,23 +61,23 @@ import 'package:go_router/go_router.dart';
 //         );
 //   }
 
-  // int _calculateSelectedIndex(BuildContext context) {
-  //   final GoRouter route = GoRouter.of(context);
-  //   final String location = route.location;
-  //   if (location.startsWith('/analytics')) {
-  //     return 0;
-  //   }
-  //   if (location.startsWith('/events')) {
-  //     return 1;
-  //   }
-  //   if (location.startsWith('/home')) {
-  //     return 2;
-  //   }
-  //   if (location.startsWith('/profile')) {
-  //     return 3;
-  //   }
-  //   return 0;
-  // }
+// int _calculateSelectedIndex(BuildContext context) {
+//   final GoRouter route = GoRouter.of(context);
+//   final String location = route.location;
+//   if (location.startsWith('/analytics')) {
+//     return 0;
+//   }
+//   if (location.startsWith('/events')) {
+//     return 1;
+//   }
+//   if (location.startsWith('/home')) {
+//     return 2;
+//   }
+//   if (location.startsWith('/profile')) {
+//     return 3;
+//   }
+//   return 0;
+// }
 
 //   void onTap(int value) {
 //     switch (value) {
@@ -114,17 +114,19 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
         });
         switch (index) {
           case 0:
-            context.go('/analytics');
+            context.go('/analytics', extra: 'Analytics');
             break;
           case 1:
-            print("Going to events");
-            context.go('/events');
+            print(
+              "Going to events",
+            );
+            context.go('/events', extra: 'Events');
             break;
           case 2:
-            context.go('/home');
+            context.go('/home', extra: 'My Home');
             break;
           case 3:
-            context.go('/profile');
+            context.go('/profile', extra: "Profile ");
             break;
           default:
             break;

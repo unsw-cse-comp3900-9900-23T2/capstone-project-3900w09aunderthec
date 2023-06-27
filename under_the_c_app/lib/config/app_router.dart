@@ -20,6 +20,15 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: "shellNavigator");
 
+final Map<String, String> pageTitleMap = {
+  '/home': 'Home',
+  '/analytics': 'Analytics',
+  '/events': 'Events',
+  '/profile': 'Profile',
+  '/event_details/:id': 'Event Details',
+  '/event_booking/:id': 'Event Booking',
+};
+
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
 
@@ -42,7 +51,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ShellRoute(
           navigatorKey: _shellNavigatorKey,
           builder: (context, state, child) {
-            return BaseLayout(body: child);
+            return BaseLayout(
+                body: child,
+                title: state.extra != null ? state.extra!.toString() : "");
           },
           routes: <RouteBase>[
             GoRoute(
