@@ -9,5 +9,7 @@ namespace EventManagementAPI.Repositories
         public Task CreateBookingTicket(Ticket t);
         public Task<List<Ticket>> ShowEventTickets(int eventId);
         public Task<Ticket> GetTicketById(int ticketId);
+        public Task ModifyTicket(Ticket t);
+        public Task DeleteTicket(Ticket t);
     }
 }

@@ -9,5 +9,7 @@ namespace EventManagementAPI.Repositories
     {
         public Task MakeBooking(Booking b);
         public Task<List<BookingResultDto>> GetBookings(int customerId);
+        public Task<Booking> GetBookingById(int bookingId);
+        public Task RemoveBooking(Booking booking);
     }
 }

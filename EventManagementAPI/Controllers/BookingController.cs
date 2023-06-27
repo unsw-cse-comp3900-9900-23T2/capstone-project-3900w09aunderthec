@@ -12,11 +12,21 @@ namespace EventManagementAPI.Controllers
         public int ticketId { get; set; }
         public int ticketNumber { get; set; }
         public DateTime TimeCreated { get; set; }
-    }
+    };
 
     public class GetBookingRequestBody
     {
         public int uid { get; set; }
+    };
+
+    public class ShowBookingDetailsRequestBody
+    {
+        public int bookingId { get; set; }
+    };
+
+    public class CancelBookingRequestBody
+    {
+        public int bookingId { get; set; }
     }
 
     [ApiController]
@@ -34,7 +44,7 @@ namespace EventManagementAPI.Controllers
             _customerRepository = customerRepository;
         }
 
-        [HttpPost("GetBooking")]
+        [HttpPost("GetBookings")]
         public async Task<IActionResult> GetCustomerBookings(GetBookingRequestBody requestBody)
         {
             var bookings = await _bookingRepository.GetBookings(requestBody.uid);
@@ -54,11 +64,46 @@ namespace EventManagementAPI.Controllers
                 toCustomer = customer,
                 TicketId = RequestBody.ticketId,
                 toTicket = t,
+                NumberOfTickets = RequestBody.ticketNumber,
                 TimeCreated = RequestBody.TimeCreated,
             };
 
             await _bookingRepository.MakeBooking(newBooking);
             return Ok(newBooking);
+        }
+
+        [HttpPost("ShowBookingDetails")]
+        public async Task<IActionResult> ShowBookingDetails([FromBody] ShowBookingDetailsRequestBody RequestBody)
+        {
+            var b = await _bookingRepository.GetBookingById(RequestBody.bookingId);
+
+            if (b == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(b);
+        }
+
+        [HttpDelete("CancelBooking")]
+        public async Task<IActionResult> CancelBooking([FromBody] CancelBookingRequestBody RequestBody)
+        {
+            var b = await _bookingRepository.GetBookingById(RequestBody.bookingId);
+
+            if (b == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _bookingRepository.RemoveBooking(b);
+
+                return Ok();
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
