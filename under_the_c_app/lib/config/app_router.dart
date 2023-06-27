@@ -98,14 +98,13 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // case for if the user is signed in
       if (authState.valueOrNull != null) {
-        // only redirect to '/home' fi the current location is the root ('/')
+        // only redirect to '/home' if the current location is the root ('/')
         if (state.location == '/' && sessionIsHost) {
           return '/home';
         } else if (state.location == '/' && !sessionIsHost) {
-          return '/profile';
+          return '/home';
         }
 
-        // TODO: [PLHV-156] app_router.dart: 'sessionIsHost' is null before returning to /homeHost
         // if (state.location == '/home' && sessionIsHost!) {
         //   return '/homeHost';
         // }
