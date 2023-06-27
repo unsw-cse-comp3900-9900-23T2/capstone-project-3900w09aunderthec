@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/api/event.dart';
+import 'package:under_the_c_app/components/events/event_button.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 
 class CustomerEventPage extends StatelessWidget {
@@ -53,7 +54,27 @@ class CustomerEventPage extends StatelessWidget {
                 ),
               );
             }, childCount: hostedEvents.length),
-          )
+          ),
+          // Align(
+          //   alignment: Alignment.bottomCenter,
+          //   child: Container(
+          //     padding: const EdgeInsets.all(20),
+          //     child: ElevatedButton(
+          //       onPressed: () {
+          //         print("Button clicked");
+          //         context.go('/event_booking/1');
+          //       },
+          //       style: TextButton.styleFrom(
+          //         minimumSize: const Size(150, 0),
+          //         padding: const EdgeInsets.all(20),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(18),
+          //         ),
+          //       ),
+          //       child: const Text("Buy Ticket"),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/common/base_layout.dart';
+import 'package:under_the_c_app/components/common/layout/base_layout.dart';
 import 'package:under_the_c_app/components/events/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
 import 'package:under_the_c_app/main.dart';
@@ -105,6 +105,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
+
+      print("app_route: sessionIsHost = ${sessionIsHost}");
 
       // case for if the user is signed in
       if (authState.valueOrNull != null) {

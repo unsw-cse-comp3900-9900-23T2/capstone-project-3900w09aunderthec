@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:under_the_c_app/components/common/navigation_bar.dart';
+import 'package:under_the_c_app/components/common/layout/navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:under_the_c_app/main.dart';
 

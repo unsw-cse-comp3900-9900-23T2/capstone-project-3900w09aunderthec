@@ -104,7 +104,7 @@ class NavigationBarCustom extends ConsumerStatefulWidget {
 }
 
 class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
-  late int homePageIndex ;
+  late int homePageIndex;
   late int currentPageIdx;
 
   @override
@@ -115,7 +115,6 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
     currentPageIdx = homePageIndex;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
@@ -123,10 +122,12 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
         setState(() {
           currentPageIdx = index;
         });
+        print("widget.isHost = ${widget.isHost}");
         switch (index) {
           case 0:
-            widget.isHost ? 
-            context.go('/host/events', extra: 'Events') : context.go('/customer/events', extra: 'Events');
+            widget.isHost
+                ? context.go('/host/events', extra: 'Events')
+                : context.go('/customer/events', extra: 'Events');
             break;
           case 1:
             context.go('/home', extra: 'Home');
