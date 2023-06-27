@@ -46,7 +46,8 @@ class HomePage extends ConsumerWidget {
                     width: 375,
                     child: GestureDetector(
                       onTap: () {
-                        context.go('/event_details/${event.eventId}');
+                        context.go('/event_details/${event.eventId}',
+                            extra: 'Details');
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8),
