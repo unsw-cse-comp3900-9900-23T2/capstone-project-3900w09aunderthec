@@ -3,8 +3,8 @@ import 'package:under_the_c_app/components/common/widgets/dropdown_list.dart';
 import 'package:under_the_c_app/components/common/widgets/switch_button.dart';
 import 'package:under_the_c_app/components/common/widgets/toggle_button.dart';
 
-class CreateEventRoute extends StatelessWidget {
-  const CreateEventRoute({super.key});
+class EventCreate extends StatelessWidget {
+  const EventCreate({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +157,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           //   dateLabelText: 'Date',
           //   timeLabelText: "Hour",
           //   // TODO: [PLHV-158] event_create.dart: MyCustomFormState: Check for valid date and time (Can't be before today)
-          //   /* 
+          //   /*
           //     selectableDayPredicate: (date) {
           //     // Disable weekend days to select from the calendar
           //     if (date.weekday == 6 || date.weekday == 7) return false;
