@@ -106,6 +106,7 @@ class EventDetailsPage extends ConsumerWidget {
                                     wordSpacing: 0.5,
                                     height: 1.2),
                               ),
+                              const SizedBox(height: 100)
                             ],
                           )),
                     ],
