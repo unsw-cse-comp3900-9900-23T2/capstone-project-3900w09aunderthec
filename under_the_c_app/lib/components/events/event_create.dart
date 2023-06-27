@@ -124,170 +124,171 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DefaultTextStyle(
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                child: Center(
-                  child: Text("Create Event Form"),
-                )),
-          ),
-          // Title
-          const FormFields(
-              fieldName: "Event Title", hint: "Enter the name of the event"),
-          // Location
-          const FormFields(
-              fieldName: "Event Location",
-              hint: "Enter the place where the event is held"),
-          // Description
-          const FormFields(
-              fieldName: "Event Description",
-              hint: "Write a short summary of the event"),
-          // Date & Time
-          // TODO: Change it up
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Date & Time"),
-            ),
-          ),
-          // DateTimePicker(
-          //   type: DateTimePickerType.dateTimeSeparate,
-          //   dateMask: 'd MMM, yyyy',
-          //   initialValue: DateTime.now().toString(),
-          //   firstDate: DateTime(2000),
-          //   lastDate: DateTime(2100),
-          //   icon: const Icon(Icons.event),
-          //   dateLabelText: 'Date',
-          //   timeLabelText: "Hour",
-          //   // TODO: [PLHV-158] event_create.dart: MyCustomFormState: Check for valid date and time (Can't be before today)
-          //   /*
-          //     selectableDayPredicate: (date) {
-          //     // Disable weekend days to select from the calendar
-          //     if (date.weekday == 6 || date.weekday == 7) return false;
-          //     return true;
-          //   },
-          //   onChanged: (val) => print(val),
-          //   validator: (val) {
-          //     print(val);
-          //     return null;
-          //   },
-          //   onSaved: (val) => print(val),
-          //   */
-          // ),
-          // Privacy Button
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Privacy"),
-            ),
-          ),
-          const ToggleButton(),
-          const SwitchButton(),
+    return Text("Event create");
+    // return Form(
+    //   key: _formKey,
+    //   child: Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       const Padding(
+    //         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+    //         child: DefaultTextStyle(
+    //             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    //             child: Center(
+    //               child: Text("Create Event Form"),
+    //             )),
+    //       ),
+    //       // Title
+    //       const FormFields(
+    //           fieldName: "Event Title", hint: "Enter the name of the event"),
+    //       // Location
+    //       const FormFields(
+    //           fieldName: "Event Location",
+    //           hint: "Enter the place where the event is held"),
+    //       // Description
+    //       const FormFields(
+    //           fieldName: "Event Description",
+    //           hint: "Write a short summary of the event"),
+    //       // Date & Time
+    //       // TODO: Change it up
+    //       const Padding(
+    //         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+    //         child: DefaultTextStyle(
+    //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    //           child: Text("Date & Time"),
+    //         ),
+    //       ),
+    //       // DateTimePicker(
+    //       //   type: DateTimePickerType.dateTimeSeparate,
+    //       //   dateMask: 'd MMM, yyyy',
+    //       //   initialValue: DateTime.now().toString(),
+    //       //   firstDate: DateTime(2000),
+    //       //   lastDate: DateTime(2100),
+    //       //   icon: const Icon(Icons.event),
+    //       //   dateLabelText: 'Date',
+    //       //   timeLabelText: "Hour",
+    //       //   // TODO: [PLHV-158] event_create.dart: MyCustomFormState: Check for valid date and time (Can't be before today)
+    //       //   /*
+    //       //     selectableDayPredicate: (date) {
+    //       //     // Disable weekend days to select from the calendar
+    //       //     if (date.weekday == 6 || date.weekday == 7) return false;
+    //       //     return true;
+    //       //   },
+    //       //   onChanged: (val) => print(val),
+    //       //   validator: (val) {
+    //       //     print(val);
+    //       //     return null;
+    //       //   },
+    //       //   onSaved: (val) => print(val),
+    //       //   */
+    //       // ),
+    //       // Privacy Button
+    //       const Padding(
+    //         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+    //         child: DefaultTextStyle(
+    //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    //           child: Text("Privacy"),
+    //         ),
+    //       ),
+    //       const ToggleButton(),
+    //       const SwitchButton(),
 
-          // Ticket type
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Tickets"),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Table(
-              border: TableBorder.all(color: Colors.black),
-              columnWidths: const <int, TableColumnWidth>{
-                0: FlexColumnWidth(),
-              },
-              children: [
-                const TableRow(
-                  children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Ticket Type'),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Price'),
-                    )
-                  ],
-                ),
-                TableRow(children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Type"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Amount"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                ]),
-              ],
-            ),
-          ),
-          // FormFields(
-          //     fieldName: "Refund Policy", hint: ""),
-          // FormFields(
-          //     fieldName: "Comments", hint: ""),
-          // Event Tags
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Event Tags"),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DropdownList(droppedItems: droppedItems),
-          ),
-          // Submit Button
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Submit'),
-            ),
-          ),
-        ],
-      ),
-    );
+    //       // Ticket type
+    //       const Padding(
+    //         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+    //         child: DefaultTextStyle(
+    //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    //           child: Text("Tickets"),
+    //         ),
+    //       ),
+    //       Container(
+    //         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+    //         child: Table(
+    //           border: TableBorder.all(color: Colors.black),
+    //           columnWidths: const <int, TableColumnWidth>{
+    //             0: FlexColumnWidth(),
+    //           },
+    //           children: [
+    //             const TableRow(
+    //               children: [
+    //                 Padding(
+    //                   padding:
+    //                       EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+    //                   child: Text('Ticket Type'),
+    //                 ),
+    //                 Padding(
+    //                   padding:
+    //                       EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+    //                   child: Text('Price'),
+    //                 )
+    //               ],
+    //             ),
+    //             TableRow(children: [
+    //               TextFormField(
+    //                 decoration: const InputDecoration(
+    //                     border: OutlineInputBorder(
+    //                         borderSide: BorderSide(
+    //                       width: 5,
+    //                     )),
+    //                     hintText: "Type"),
+    //                 validator: (value) {
+    //                   if (value == null || value.isEmpty) {
+    //                     return 'Please fill out the required field';
+    //                   }
+    //                   return null;
+    //                 },
+    //               ),
+    //               TextFormField(
+    //                 decoration: const InputDecoration(
+    //                     border: OutlineInputBorder(
+    //                         borderSide: BorderSide(
+    //                       width: 5,
+    //                     )),
+    //                     hintText: "Amount"),
+    //                 validator: (value) {
+    //                   if (value == null || value.isEmpty) {
+    //                     return 'Please fill out the required field';
+    //                   }
+    //                   return null;
+    //                 },
+    //               ),
+    //             ]),
+    //           ],
+    //         ),
+    //       ),
+    //       // FormFields(
+    //       //     fieldName: "Refund Policy", hint: ""),
+    //       // FormFields(
+    //       //     fieldName: "Comments", hint: ""),
+    //       // Event Tags
+    //       const Padding(
+    //         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+    //         child: DefaultTextStyle(
+    //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    //           child: Text("Event Tags"),
+    //         ),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+    //         child: DropdownList(droppedItems: droppedItems),
+    //       ),
+    //       // Submit Button
+    //       Padding(
+    //         padding: const EdgeInsets.symmetric(vertical: 16),
+    //         child: ElevatedButton(
+    //           onPressed: () {
+    //             if (_formKey.currentState!.validate()) {
+    //               ScaffoldMessenger.of(context).showSnackBar(
+    //                 const SnackBar(content: Text('Processing Data')),
+    //               );
+    //               Navigator.pop(context);
+    //             }
+    //           },
+    //           child: const Text('Submit'),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 }
