@@ -17,7 +17,7 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-bool sessionIsHost = false;
+bool sessionIsHost = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
