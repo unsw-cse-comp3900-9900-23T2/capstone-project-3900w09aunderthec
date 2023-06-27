@@ -13,6 +13,7 @@ final List<Event> incomingEvents = [
     eventId: "1",
     imageUrl: 'images/events/money-event.jpg',
     time: "2023-02-24 03:33:45",
+    isPrivate: true,
     address: Address(
         venue: "Elizebeth Hotel",
         suburb: "George Str",
@@ -53,6 +54,7 @@ final List<Event> incomingEvents = [
   Event(
     title: 'Event 2',
     eventId: "4",
+    isPrivate: true,
     imageUrl: 'images/events/money-event.jpg',
     time: "2023-02-24 03:33:45",
     price: 60,
@@ -81,6 +83,7 @@ final List<Event> hostedEvents = [
   Event(
     title: 'Hosted Event',
     eventId: "2",
+    isPrivate: true,
     imageUrl: 'images/events/money-event.jpg',
     time: "2023-01-24 03:33:45",
     address: Address(
@@ -109,6 +112,7 @@ final List<Event> hostedEvents = [
   Event(
     title: 'Event 2',
     eventId: "4",
+    isPrivate: true,
     imageUrl: 'images/events/money-event.jpg',
     time: "2023-02-24 03:33:45",
     price: 60,

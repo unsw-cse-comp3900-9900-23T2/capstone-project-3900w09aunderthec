@@ -41,7 +41,7 @@ class HomePage extends ConsumerWidget {
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final event = events[index];
-
+                  print("event is private = ${event.isPrivate}, event = ${event}");
                   return SizedBox(
                     width: 375,
                     child: GestureDetector(
@@ -52,11 +52,11 @@ class HomePage extends ConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: EventCard(
-                          title: event.title,
-                          imageUrl: event.imageUrl,
-                          time: event.time,
-                          address: event.address,
-                        ),
+                            title: event.title,
+                            imageUrl: event.imageUrl,
+                            time: event.time,
+                            address: event.address,
+                            isPrivate: event.isPrivate ?? false),
                       ),
                     ),
                   );

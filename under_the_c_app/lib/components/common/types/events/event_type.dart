@@ -13,12 +13,14 @@ class Event {
   final double? rating;
   final Address address;
   final String time;
+  final bool? isPrivate;
 
   Event(
       {required this.title,
       required this.eventId,
       this.host,
       String? imageUrl,
+      bool? isPrivate,
       String? description,
       bool? allowRefunds,
       bool? rating,
@@ -28,6 +30,7 @@ class Event {
       : imageUrl = imageUrl ?? "images/events/money-event.jpg", //default image
         description = description ?? "",
         allowRefunds = false,
+        isPrivate = false,
         rating = null;
 }
 

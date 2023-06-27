@@ -62,11 +62,14 @@ class EventDate extends StatelessWidget {
 
 class EventDetails extends StatelessWidget {
   final String title;
+  final bool isPrivate;
 
-  const EventDetails({Key? key, required this.title}) : super(key: key);
+  const EventDetails({Key? key, required this.title, required this.isPrivate})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print("isPrivate = ${isPrivate}");
     return Row(
       children: <Widget>[
         Expanded(
@@ -90,11 +93,12 @@ class EventDetails extends StatelessWidget {
             ],
           ),
         ),
-        const Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Row(
-              children: [Icon(Icons.people), Icon(Icons.people)],
-            ))
+        if (!isPrivate)
+          const Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: Row(
+                children: [Icon(Icons.people), Icon(Icons.people)],
+              ))
       ],
     );
   }
@@ -165,13 +169,15 @@ class EventCard extends StatelessWidget {
   final String imageUrl;
   final String time;
   final Address address;
+  final bool isPrivate;
 
   const EventCard(
       {Key? key,
       required this.title,
       required this.imageUrl,
       required this.time,
-      required this.address})
+      required this.address,
+      this.isPrivate = false})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -196,7 +202,8 @@ class EventCard extends StatelessWidget {
                           child: EventSubtitleProvider(
                               address: address,
                               time: time,
-                              child: EventDetails(title: title)),
+                              child: EventDetails(
+                                  title: title, isPrivate: isPrivate)),
                         )
                       ],
                     )))
