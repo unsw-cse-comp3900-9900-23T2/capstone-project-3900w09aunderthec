@@ -42,7 +42,6 @@ dependencies:
   lorem_ipsum: ^0.0.3
   shared_preferences: ^2.1.2
   intl: ^0.18.1
-  date_time_picker: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +69,7 @@ flutter:
   assets:
     - images/
     - images/events/
+    - images/users/
     # - images/new-event.jpg
     # - images/events/money-event.jpg
     # - images/a_dot_ham.jpeg
