@@ -11,6 +11,7 @@ namespace EventManagementAPI.Repositories
         Task<bool> checkDuplicateEmails(String email);
         Task createUser(String username, String email, Boolean isHost);
         Task<bool> getUserType(String email);
+        Task<int> getUid(String email);
     }
 }
 

@@ -6,8 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:under_the_c_app/components/common/layout/navigation_bar.dart';
 
-bool sessionIsHost = false;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

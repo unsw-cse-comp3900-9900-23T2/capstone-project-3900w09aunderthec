@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/io_client.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
 
 void setUserType(String email) async {
@@ -25,8 +26,8 @@ void setUserType(String email) async {
       throw Exception('API Error: ${response}');
     } else {
       // store the user type
-      sessionIsHost = jsonDecode(response.body);
-      print('User type set: ${response.body}');
+      sessionVariables.sessionIsHost = jsonDecode(response.body);
+      print('User type set: ${sessionVariables.sessionIsHost}');
     }
   } catch (e) {
     print('$e');
