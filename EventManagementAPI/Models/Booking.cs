@@ -14,6 +14,6 @@ namespace EventManagementAPI.Models
         public int TicketId { get; set; }
         public Ticket toTicket { get; set; }
         public int NumberOfTickets { get; set; }
-        public DateTime TimeCreated { get; set; }
+        public DateTime TimeCreated { get; set; } = DateTime.Now;
     }
 }

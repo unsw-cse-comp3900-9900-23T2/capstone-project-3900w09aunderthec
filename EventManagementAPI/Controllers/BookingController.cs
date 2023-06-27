@@ -14,7 +14,6 @@ namespace EventManagementAPI.Controllers
         public int uid { get; set; }
         public int ticketId { get; set; }
         public int ticketNumber { get; set; }
-        public DateTime TimeCreated { get; set; }
     };
 
     public class GetBookingRequestBody
@@ -70,7 +69,6 @@ namespace EventManagementAPI.Controllers
                 TicketId = RequestBody.ticketId,
                 toTicket = t,
                 NumberOfTickets = RequestBody.ticketNumber,
-                TimeCreated = RequestBody.TimeCreated,
             };
 
             await _bookingRepository.MakeBooking(newBooking);
