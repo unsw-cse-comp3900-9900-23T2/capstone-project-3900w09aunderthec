@@ -96,14 +96,25 @@ import 'package:go_router/go_router.dart';
 // }
 
 class NavigationBarCustom extends ConsumerStatefulWidget {
-  const NavigationBarCustom({super.key});
+  final bool isHost;
+  const NavigationBarCustom({super.key, required this.isHost});
 
   @override
   ConsumerState<NavigationBarCustom> createState() => _NavigationBarCustom();
 }
 
 class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
-  int currentPageIdx = 2;
+  late int homePageIndex ;
+  late int currentPageIdx;
+
+  @override
+  void initState() {
+    super.initState();
+    homePageIndex = 1;
+    // homePageIndex = widget.isHost ?  2 : 1;
+    currentPageIdx = homePageIndex;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,27 +125,25 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
         });
         switch (index) {
           case 0:
-            context.go('/analytics', extra: 'Analytics');
+            widget.isHost ? 
+            context.go('/host/events', extra: 'Events') : context.go('/customer/events', extra: 'Events');
             break;
           case 1:
-            print(
-              "Going to events",
-            );
-            context.go('/events', extra: 'Events');
+            context.go('/home', extra: 'Home');
             break;
           case 2:
-            context.go('/home', extra: 'My Home');
+            context.go('/profile', extra: 'Profile');
             break;
-          case 3:
-            context.go('/profile', extra: "Profile ");
-            break;
+          // case 3:
+          //   context.go('/profile', extra: "Profile ");
+          //   break;
           default:
             break;
         }
       },
       selectedIndex: currentPageIdx,
       destinations: const <Widget>[
-        NavigationDestination(icon: Icon(Icons.analytics), label: "Analytics"),
+        // NavigationDestination(icon: Icon(Icons.analytics), label: "Analytics"),
         NavigationDestination(icon: Icon(Icons.event), label: "Events"),
         NavigationDestination(icon: Icon(Icons.home), label: "My Home"),
         NavigationDestination(icon: Icon(Icons.person), label: "Profile"),

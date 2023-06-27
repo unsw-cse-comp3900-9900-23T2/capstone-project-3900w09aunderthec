@@ -1,47 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/io_client.dart';
 import 'package:under_the_c_app/components/api/event.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 
-class EventPage extends StatelessWidget {
-  const EventPage({Key? key}) : super(key: key);
-
-  // TO-DO based on the type of user fetch their events
-  void getEvents() async {
-    HttpClient client = HttpClient();
-    client.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => true);
-    var ioClient = IOClient(client);
-
-    final registerUrl = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
-
-    try {
-      final response = await ioClient.post(
-        registerUrl,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json',
-          'Accept': '*/*'
-        },
-        body: jsonEncode({
-          // TODO: [PLHV-157] event.dart:getEvents(): change UID to possibly the email
-          "uid": "1"
-        }),
-      );
-
-      // server currently returns a 500 as its not implemented
-      if (response.statusCode == 500) {
-        print(response.body);
-        throw Exception(response.body);
-      }
-    } catch (e) {
-      print('An error occured: $e');
-    }
-  }
+class CustomerEventPage extends StatelessWidget {
+  const CustomerEventPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +20,7 @@ class EventPage extends StatelessWidget {
               child: Title(
                 color: const Color.fromARGB(255, 255, 255, 255),
                 child: const Text(
-                  "Hosted Events",
+                  "My Booked Events",
                   style: TextStyle(
                     fontSize: 23,
                     fontWeight: FontWeight.bold,

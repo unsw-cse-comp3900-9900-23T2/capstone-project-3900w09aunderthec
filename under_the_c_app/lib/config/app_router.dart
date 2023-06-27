@@ -6,8 +6,10 @@ import 'package:under_the_c_app/components/events/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
 import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/main_pages/analytics.dart';
+import 'package:under_the_c_app/pages/main_pages/customer_event_page.dart';
 import 'package:under_the_c_app/pages/main_pages/event.dart';
 import 'package:under_the_c_app/pages/main_pages/home.dart';
+import 'package:under_the_c_app/pages/main_pages/host_event_page.dart';
 import 'package:under_the_c_app/pages/main_pages/profile.dart';
 import 'package:under_the_c_app/pages/main_pages/register.dart';
 
@@ -47,51 +49,59 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       ShellRoute(
-          navigatorKey: _shellNavigatorKey,
-          builder: (context, state, child) {
-            return BaseLayout(
-                body: child,
-                title: state.extra != null ? state.extra!.toString() : "");
-          },
-          routes: <RouteBase>[
-            GoRoute(
-              path: '/analytics',
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: AnalyticsPage());
-              },
-            ),
-            GoRoute(
-              path: '/events',
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: EventPage());
-              },
-            ),
-            GoRoute(
-              path: '/home',
-              pageBuilder: (context, state) {
-                return MaterialPage(child: HomePage());
-              },
-            ),
-            GoRoute(
-              path: '/profile',
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: ProfilePage());
-              },
-            ),
-            GoRoute(
-              path: '/event_details/:id',
+        navigatorKey: _shellNavigatorKey,
+        builder: (context, state, child) {
+          return BaseLayout(
+              body: child,
+              title: state.extra != null ? state.extra!.toString() : "",
+              isHost: sessionIsHost);
+        },
+        routes: <RouteBase>[
+          GoRoute(
+            path: '/analytics',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: AnalyticsPage());
+            },
+          ),
+          GoRoute(
+            path: '/host/events',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: HostEventPage());
+            },
+          ),
+          GoRoute(
+            path: '/customer/events',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: CustomerEventPage());
+            },
+          ),
+          GoRoute(
+            path: '/home',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: HomePage());
+            },
+          ),
+          GoRoute(
+            path: '/profile',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: ProfilePage());
+            },
+          ),
+          GoRoute(
+            path: '/event_details/:id',
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: EventDetailsPage(eventId: eventId));
+            },
+          ),
+          GoRoute(
+              path: '/event_booking/:id',
               pageBuilder: (context, state) {
                 final eventId = state.pathParameters['id'].toString();
-                return MaterialPage(child: EventDetailsPage(eventId: eventId));
-              },
-            ),
-            GoRoute(
-                path: '/event_booking/:id',
-                pageBuilder: (context, state) {
-                  final eventId = state.pathParameters['id'].toString();
-                  return MaterialPage(child: BookTicket(eventId: eventId));
-                }),
-          ]),
+                return MaterialPage(child: BookTicket(eventId: eventId));
+              }),
+        ],
+      ),
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
