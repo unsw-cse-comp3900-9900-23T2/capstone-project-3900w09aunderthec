@@ -19,7 +19,7 @@ class EventDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final event = ref.watch(eventProvider(eventId));
+    final event = ref.watch(IncomingEventsProviderById(eventId));
     return event.when(
         data: (event) {
           return Scaffold(

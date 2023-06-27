@@ -10,7 +10,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(eventsProvider);
+    final events = ref.watch(IncomingEventsProvider);
 
     return events.when(
       loading: () => const CircularProgressIndicator(),

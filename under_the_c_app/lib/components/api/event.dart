@@ -5,7 +5,7 @@ import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 import 'package:under_the_c_app/components/common/types/location/address.dart';
 import 'package:under_the_c_app/components/common/types/users/host_type.dart';
 
-final List<Event> events = [
+final List<Event> incomingEvents = [
   Event(
     title: 'S',
     eventId: "1",
@@ -64,13 +64,69 @@ final List<Event> events = [
   ),
 ];
 
-Future<List<Event>> fetchAllEvents() async {
-  return events;
+Future<List<Event>> fetchAllIncomingEvents() async {
+  return incomingEvents;
 }
 
 // TODO: event.dart: It's fetching fake data, need to replace with real data
-Future<Event> fetchEventById(String eventId) async {
-  final event = events.firstWhere((e) => e.eventId == eventId,
+Future<Event> fetchIncomingEventById(String eventId) async {
+  final event = incomingEvents.firstWhere((e) => e.eventId == eventId,
+      orElse: () => throw Exception('Event not found'));
+  return event;
+}
+
+final List<Event> hostedEvents = [
+  Event(
+    title: 'Hosted Event',
+    eventId: "2",
+    imageUrl: 'images/events/money-event.jpg',
+    time: "2023-01-24 03:33:45",
+    address: Address(
+        venue: "Seven Eleven",
+        suburb: "Maroubra",
+        city: "Sydney",
+        country: "Australia",
+        postalCode: "2025"),
+    price: 1.5,
+    description: loremIpsum(words: 15),
+  ),
+  Event(
+    title: 'This is a long long long long hosted event',
+    eventId: "3",
+    imageUrl: 'images/events/money-event.jpg',
+    time: "2023-02-24 03:33:45",
+    price: 4,
+    address: Address(
+        venue: "Seven Eleven",
+        suburb: "Maroubra",
+        city: "Sydney",
+        country: "Australia",
+        postalCode: "2025"),
+    description: loremIpsum(words: 500),
+  ),
+  Event(
+    title: 'Event 2',
+    eventId: "4",
+    imageUrl: 'images/events/money-event.jpg',
+    time: "2023-02-24 03:33:45",
+    price: 60,
+    address: Address(
+        venue: "Seven Eleven",
+        suburb: "Maroubra",
+        city: "Sydney",
+        country: "Australia",
+        postalCode: "2025"),
+    description: loremIpsum(words: 100),
+  ),
+];
+
+Future<List<Event>> fetchAllHostedEvents() async {
+  return hostedEvents;
+}
+
+// TODO: event.dart: It's fetching fake data, need to replace with real data
+Future<Event> fetchHostedEventById(String eventId) async {
+  final event = incomingEvents.firstWhere((e) => e.eventId == eventId,
       orElse: () => throw Exception('Event not found'));
   return event;
 }
