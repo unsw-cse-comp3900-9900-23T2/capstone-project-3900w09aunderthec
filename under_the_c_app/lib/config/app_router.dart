@@ -10,6 +10,7 @@ import 'package:under_the_c_app/pages/main_pages/event.dart';
 import 'package:under_the_c_app/pages/main_pages/home.dart';
 import 'package:under_the_c_app/pages/main_pages/profile.dart';
 import 'package:under_the_c_app/pages/main_pages/register.dart';
+import 'package:under_the_c_app/pages/reset.dart';
 
 import '../pages/login_page.dart';
 import 'auth_state_provider.dart';
@@ -44,6 +45,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         pageBuilder: (context, state) {
           return const MaterialPage(child: RegisterPage());
+        },
+      ),
+      GoRoute(
+        path: '/reset',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: ResetPasswordPage());
         },
       ),
       ShellRoute(
@@ -102,12 +109,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         if (state.location == '/' && sessionIsHost) {
           return '/home';
         } else if (state.location == '/' && !sessionIsHost) {
-          return '/home';
+          return '/profile';
         }
 
-        // if (state.location == '/home' && sessionIsHost!) {
-        //   return '/homeHost';
-        // }
         // do not redirect if the user is navigation to another page
         return null;
       }
