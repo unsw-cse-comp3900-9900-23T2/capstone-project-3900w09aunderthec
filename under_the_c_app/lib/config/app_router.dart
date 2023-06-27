@@ -10,6 +10,7 @@ import 'package:under_the_c_app/pages/main_pages/event.dart';
 import 'package:under_the_c_app/pages/main_pages/home.dart';
 import 'package:under_the_c_app/pages/main_pages/profile.dart';
 import 'package:under_the_c_app/pages/main_pages/register.dart';
+import 'package:under_the_c_app/pages/subpages/book_ticket.dart';
 import 'package:under_the_c_app/pages/subpages/event_details.dart';
 
 import '../login_page.dart';
@@ -41,7 +42,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ShellRoute(
           navigatorKey: _shellNavigatorKey,
           builder: (context, state, child) {
-            print("shellroute is being build");
             return BaseLayout(body: child);
           },
           routes: <RouteBase>[
@@ -73,10 +73,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               path: '/event_details/:id',
               pageBuilder: (context, state) {
                 final eventId = state.pathParameters['id'].toString();
-                print("eventid = ${eventId}");
                 return MaterialPage(child: EventDetailsPage(eventId: eventId));
               },
             ),
+            GoRoute(
+                path: '/event_booking/:id',
+                pageBuilder: (context, state) {
+                  final eventId = state.pathParameters['id'].toString();
+                  return MaterialPage(child: BookTicket(eventId: eventId));
+                }),
           ]),
     ],
     redirect: (context, state) {

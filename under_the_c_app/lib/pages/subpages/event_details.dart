@@ -118,6 +118,7 @@ class EventDetailsPage extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         print("Button clicked");
+                        context.go('/event_booking/${event.eventId}');
                       },
                       style: TextButton.styleFrom(
                         minimumSize: const Size(150, 0),

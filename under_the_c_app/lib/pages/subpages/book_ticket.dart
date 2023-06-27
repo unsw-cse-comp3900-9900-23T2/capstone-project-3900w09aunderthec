@@ -2,6 +2,7 @@
 // Pull up data for tickets
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/events/ticket_confirmation.dart';
 
 const priceTextStyle = TextStyle(
@@ -10,15 +11,24 @@ const priceTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-class BookTicketRoute extends StatelessWidget {
-  const BookTicketRoute({super.key});
+class BookTicket extends StatelessWidget {
+  final String eventId;
+  const BookTicket({super.key, required this.eventId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Book Tickets"),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 33, 8, 83),
+          ),
+          onPressed: () => context.go('/home'),
+        ),
       ),
-      extendBody: true,
+      // extendBody: true,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -183,7 +193,6 @@ class TicketTypes extends StatelessWidget {
             ],
           ),
         ),
-
         Flexible(
           flex: 1,
           child: Column(
@@ -231,7 +240,6 @@ class TicketTypes extends StatelessWidget {
             ],
           ),
         ),
-
       ],
     );
   }
