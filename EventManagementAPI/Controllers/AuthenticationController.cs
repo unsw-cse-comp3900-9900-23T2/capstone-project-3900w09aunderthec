@@ -41,6 +41,19 @@ namespace EventManagementAPI.Controllers
             return Ok();
         }
 
+        [HttpGet("GetUserType")]
+        public async Task<IActionResult> GetUserType([FromQuery] string email)
+        {
+            if (!_authenticationRepository.validateEmailRegex(email))
+            {
+                return BadRequest("That email is invalid.");
+            }
+
+            bool isHost = await _authenticationRepository.getUserType(email);
+
+            return Ok(isHost);
+        }
+
     }
 }
 

@@ -10,6 +10,7 @@ namespace EventManagementAPI.Repositories
         bool validateEmailRegex(String email);
         Task<bool> checkDuplicateEmails(String email);
         Task createUser(String username, String email, Boolean isHost);
+        Task<bool> getUserType(String email);
     }
 }
 

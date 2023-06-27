@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
+import 'package:under_the_c_app/main.dart';
 
-import 'components/login_fields.dart';
+import '../components/functions/time/set_user_type.dart';
+import '../components/login_fields.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -49,6 +51,8 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
+
+      setUserType(emailController.text);
     } on FirebaseAuthException catch (error) {
       incorrectLoginMessage(error);
     }
@@ -139,7 +143,19 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(
-                height: 200,
+                height: 10,
+              ),
+
+              // Sign In Button
+              LogInButton(
+                text: "Guests",
+                onTap: () {
+                  context.go('/guest');
+                },
+              ),
+
+              const SizedBox(
+                height: 100,
               ),
 
               Row(
