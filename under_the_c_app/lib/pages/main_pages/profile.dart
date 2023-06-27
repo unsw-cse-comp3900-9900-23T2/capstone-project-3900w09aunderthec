@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   final String imageUrl = ''; // replace with the actual URL
-  final int loyalPoints = 123;
+  final int loyalPoints = 0;
 
-  const ProfilePage({super.key}); // replace with the actual points
+  const ProfilePage({Key? key})
+      : super(key: key); // replace with the actual points
 
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,7 +26,7 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Loyal Points: $loyalPoints',
+            'Loyal Points: ${widget.loyalPoints}',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

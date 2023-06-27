@@ -64,7 +64,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       body: SafeArea(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(
                 height: 50,
@@ -111,27 +111,26 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 onTap: resetPassword,
               ),
 
-              const SizedBox(
-                height: 225,
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Remembered Your Password?'),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      context.go('/');
-                    },
-                    child: const Text(
-                      'Sign In',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // crossAxisAlignment: CrossAxisAlignment.,
+                  children: [
+                    const Text('Remembered Your Password?'),
+                    const SizedBox(
+                      width: 4,
                     ),
-                  )
-                ],
+                    GestureDetector(
+                      onTap: () {
+                        context.go('/');
+                      },
+                      child: const Text(
+                        'Sign In',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
               )
             ],
           ),
