@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'switch_button.dart';
+import 'dropdown_list.dart';
+import 'toggle_button.dart';
 import 'package:http/http.dart' as http;
-import '../dropdown_list.dart';
-import '../toggle_button.dart';
 import 'dart:convert';
-import '../date_picker.dart';
+import 'date_picker.dart';
 
-class EventCreate extends StatelessWidget {
-  const EventCreate({super.key});
+// TODO: Save all variables and submit to backend (make sure it matches database)
+
+class CreateEventRoute extends StatelessWidget {
+  // const CreateEventRoute({super.key});
+  const CreateEventRoute({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: null,
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        leading: IconButton(
-            onPressed: () => context.go('/host/events'),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            )),
+        title: const Text("Create Event"),
       ),
       body: const SingleChildScrollView(
         child: Column(
@@ -37,45 +32,12 @@ class EventCreate extends StatelessWidget {
 }
 
 class MyCustomForm extends StatefulWidget {
+  // const MyCustomForm({super.key});
   const MyCustomForm({Key? key}) : super(key: key);
 
   @override
   MyCustomFormState createState() {
     return MyCustomFormState();
-  }
-}
-
-// Create a question and input box
-class FormFields extends StatelessWidget {
-  const FormFields({Key? key, required this.fieldName, required this.hint})
-      : super(key: key);
-  final String fieldName;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          DefaultTextStyle(
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            child: Text(fieldName),
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                  width: 5,
-                )),
-                hintText: hint),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please fill out the required field';
-              }
-              return null;
-            },
-          ),
-        ]));
   }
 }
 
@@ -133,15 +95,11 @@ class MyCustomFormState extends State<MyCustomForm> {
         children: [
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DefaultTextStyle(
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                child: Center(
-                  child: Text("Create Event Form",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                )),
+            child: Center(
+              child: Text("Create Event Form",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ),
           ),
-          // Title
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               child: Column(
@@ -231,13 +189,17 @@ class MyCustomFormState extends State<MyCustomForm> {
           // TODO: Change it up
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Date & Time"),
-            ),
+            child: Text("Date & Time",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
-          // const DatePickerApp(),
-          // TODO: [PLHV-158] event_create.dart: MyCustomFormState: Check for valid date and time (Can't be before today)
+          // Center(
+          //     child: RaisedButton(
+          //         child: Text('click'),
+          //         onPressed: () {
+          //           selectDate(context);
+          //           DatePickerApp(key: ,),
+          //         })),
+          const DatePickerApp(),
           // Privacy Button
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -247,12 +209,19 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
           ),
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              child: ToggleButton(
-                onSelectionChanged: (handleSelectionChanged) {
-                  privateEvent = handleSelectionChanged[0];
-                },
-              )),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: ToggleButton(
+              // onSelectionChanged: handleSelectionChanged,
+              onSelectionChanged: (handleSelectionChanged) {
+                privateEvent = handleSelectionChanged[0];
+              },
+            ),
+          ),
+          // Old privacy button
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          //   child: SwitchButton(),
+          // ),
           // Ticket type
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -330,7 +299,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: DropdownList(
               droppedItem: droppedItems,
-              initial: 'Other',
+              initial: "Other",
               onValueChanged: (String value) {
                 tags = value;
               },
@@ -358,7 +327,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       throw Exception(
                           'Failed to CREATE event: ${response.body}');
                     }
-                    context.go('/host/events');
+                    Navigator.pop(context);
                   });
                 }
               },

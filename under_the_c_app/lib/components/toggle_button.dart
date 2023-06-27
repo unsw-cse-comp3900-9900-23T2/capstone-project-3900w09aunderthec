@@ -1,16 +1,27 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/components/common/types/events/event_type.dart';
+
+const List<Widget> eventTypes = <Widget>[
+  Text('Private'),
+  Text('Public'),
+];
 
 class ToggleButton extends StatefulWidget {
-  const ToggleButton({super.key});
+  // const ToggleButton({super.key});
+  // final bool privacy
+  final Function(List<bool>) onSelectionChanged;
+  const ToggleButton({Key? key, required this.onSelectionChanged})
+      : super(key: key);
 
   @override
   State<ToggleButton> createState() => _ToggleButtonState();
 }
 
 class _ToggleButtonState extends State<ToggleButton> {
+  /* 
+  if privacy
+    final List<bool> _selectedEventTypes = <bool>[true, false];
+  else
+  */
   final List<bool> _selectedEventTypes = <bool>[true, false];
 
   @override
@@ -30,6 +41,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                     _selectedEventTypes[i] = i == index;
                   }
                 });
+                widget.onSelectionChanged(_selectedEventTypes);
               },
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               selectedBorderColor: Colors.red[700],
