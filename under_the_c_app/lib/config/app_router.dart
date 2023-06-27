@@ -6,6 +6,7 @@ import 'package:under_the_c_app/components/events/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
 import 'package:under_the_c_app/main.dart';
+import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/pages/analytics.dart';
 import 'package:under_the_c_app/pages/pages/customer_event_page.dart';
 import 'package:under_the_c_app/pages/pages/event.dart';
@@ -54,6 +55,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/reset',
         pageBuilder: (context, state) {
           return const MaterialPage(child: ResetPasswordPage());
+        },
+      ),
+      GoRoute(
+        path: '/guest',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+              child: BaseLayout(
+            body: GuestPage(),
+            isHost: sessionIsHost,
+          ));
         },
       ),
       ShellRoute(
