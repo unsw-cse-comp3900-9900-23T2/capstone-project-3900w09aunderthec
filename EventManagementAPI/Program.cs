@@ -2,6 +2,8 @@
 using EventManagementAPI.Context;
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
+using System.Net.Mail.Abstractions;
+using EventManagementAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,12 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+builder.Services.AddScoped<EmailService>(_ =>
+{
+    var smtpClient = new SmtpClient();
+    return new EmailService(smtpClient, configuration);
+});
 
 var app = builder.Build();
 

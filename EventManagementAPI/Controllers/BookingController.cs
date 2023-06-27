@@ -3,6 +3,9 @@ using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using EventManagementAPI.DTOs;
 using System.Net;
+using EventManagementAPI.Services;
+using System.Text;
+using Org.BouncyCastle.Cms;
 
 namespace EventManagementAPI.Controllers
 {
@@ -36,12 +39,14 @@ namespace EventManagementAPI.Controllers
         private readonly IBookingRepository _bookingRepository;
         private readonly ITicketRepository _ticketRepository;
         private readonly ICustomerRepository _customerRepository;
+        private readonly EmailService _emailService;
 
-        public BookingController(IBookingRepository bookingRepository, ITicketRepository ticketRepository, ICustomerRepository customerRepository)
+        public BookingController(IBookingRepository bookingRepository, ITicketRepository ticketRepository, ICustomerRepository customerRepository, EmailService emailService)
         {
             _bookingRepository = bookingRepository;
             _ticketRepository = ticketRepository;
             _customerRepository = customerRepository;
+            _emailService = emailService;
         }
 
         [HttpPost("GetBookings")]
@@ -69,6 +74,22 @@ namespace EventManagementAPI.Controllers
             };
 
             await _bookingRepository.MakeBooking(newBooking);
+
+            var fromAddress = "young.jiapeng@outlook.com";
+            var toAddress = customer.email;
+            var subject = "Testing";
+
+            var body = new StringBuilder()
+                .AppendLine("Dear Customer,")
+                .AppendLine("")
+                .AppendLine("Your booking has been successful")
+                .AppendLine("")
+                .AppendLine("Kind Regards,")
+                .AppendLine("Under the C")
+            .ToString();
+
+            _emailService.SendEmail(fromAddress, toAddress, subject, body);
+
             return Ok(newBooking);
         }
 
