@@ -42,5 +42,14 @@ namespace EventManagementAPI.Repositories
             _dbContext.events.Update(e);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<Event>> GetAllHostEvents(int hostId)
+        {
+            var events = await _dbContext.events
+                .Where(e => e.hosterFK == hostId || e.privateEvent == false)
+                .ToListAsync();
+
+            return events;
+        }
     }
 }
