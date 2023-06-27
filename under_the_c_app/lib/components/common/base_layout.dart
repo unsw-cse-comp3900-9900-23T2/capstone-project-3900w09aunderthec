@@ -22,7 +22,7 @@ class BaseLayout extends ConsumerWidget {
         ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
       ]),
       body: body,
-      // bottomNavigationBar: const NavigationBarCustom(),
+      bottomNavigationBar: const NavigationBarCustom(),
     );
   }
 }

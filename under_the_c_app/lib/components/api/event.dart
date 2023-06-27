@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lorem_ipsum/lorem_ipsum.dart';
-import 'package:under_the_c_app/components/common/types/events/event.dart';
 import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 import 'package:under_the_c_app/components/common/types/location/address.dart';
 import 'package:under_the_c_app/components/common/types/users/host_type.dart';
@@ -64,6 +63,11 @@ final List<Event> events = [
     description: loremIpsum(words: 100),
   ),
 ];
+
+Future<List<Event>> fetchAllEvents() async {
+  return events;
+}
+
 // TODO: event.dart: It's fetching fake data, need to replace with real data
 Future<Event> fetchEventById(String eventId) async {
   final event = events.firstWhere((e) => e.eventId == eventId,
