@@ -115,9 +115,14 @@ class _LoginPageState extends State<LoginPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      'Reset Password',
-                      style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                    GestureDetector(
+                      onTap: () {
+                        context.go('/reset');
+                      },
+                      child: Text(
+                        'Reset Password',
+                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                      ),
                     ),
                   ],
                 ),
