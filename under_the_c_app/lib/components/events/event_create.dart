@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/common/widgets/dropdown_list.dart';
 import 'package:under_the_c_app/components/common/widgets/switch_button.dart';
 import 'package:under_the_c_app/components/common/widgets/toggle_button.dart';
@@ -9,8 +10,17 @@ class EventCreate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text("Create Event"),
+        title: null,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+            onPressed: () => context.go('/host/events'),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
       ),
       body: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
