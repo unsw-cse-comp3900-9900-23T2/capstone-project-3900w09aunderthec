@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:under_the_c_app/components/api/event.dart';
+import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/common/base_layout.dart';
-import 'package:under_the_c_app/components/common/navigation_bar.dart';
-import 'package:under_the_c_app/components/common/types/events/event_type.dart';
+import 'package:under_the_c_app/components/events/book_ticket.dart';
+import 'package:under_the_c_app/components/events/event_details.dart';
+import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/main_pages/analytics.dart';
 import 'package:under_the_c_app/pages/main_pages/event.dart';
 import 'package:under_the_c_app/pages/main_pages/home.dart';
 import 'package:under_the_c_app/pages/main_pages/profile.dart';
 import 'package:under_the_c_app/pages/main_pages/register.dart';
-import 'package:under_the_c_app/components/events/book_ticket.dart';
-import 'package:under_the_c_app/components/events/event_details.dart';
 
-import '../login_page.dart';
+import '../pages/login_page.dart';
 import 'auth_state_provider.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -101,16 +99,26 @@ final routerProvider = Provider<GoRouter>((ref) {
       // case for if the user is signed in
       if (authState.valueOrNull != null) {
         // only redirect to '/home' fi the current location is the root ('/')
-        if (state.location == '/') {
+        if (state.location == '/' && sessionIsHost) {
           return '/home';
+        } else if (state.location == '/' && !sessionIsHost) {
+          return '/profile';
         }
+
+        // TODO: [PLHV-156] app_router.dart: 'sessionIsHost' is null before returning to /homeHost
+        // if (state.location == '/home' && sessionIsHost!) {
+        //   return '/homeHost';
+        // }
         // do not redirect if the user is navigation to another page
         return null;
       }
       // case for when the user isn't signed in
       else {
         // redirect to the login page or register page if there's no authenticated user
-        if (state.location == '/' || state.location == '/register') {
+        if (state.location == '/' ||
+            state.location == '/register' ||
+            state.location == '/reset' ||
+            state.location.startsWith('/guest')) {
           return state.location;
         } else {
           return '/';

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:http/io_client.dart';
 import 'package:under_the_c_app/components/log_in_button.dart';
 import 'package:under_the_c_app/components/login_fields.dart';
+import 'package:under_the_c_app/main.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -27,15 +28,15 @@ class _RegisterPageState extends State<RegisterPage> {
       context: context,
       builder: (context) {
         switch (error.code) {
-          case 'auth/invalid-email':
+          case 'invalid-email':
             return const AlertDialog(
               title: Text('Invalid Email'),
             );
-          case 'auth/email-already-in-use':
+          case 'email-already-in-use':
             return const AlertDialog(
               title: Text('Email has already been registered'),
             );
-          case 'auth/weak-password':
+          case 'weak-password':
             return const AlertDialog(
               title: Text('Password too weak'),
             );
@@ -68,6 +69,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // if successfully registered then let backend know
       if (userCredentials != null) {
+        bool isHost = _userValue == 1 ? false : true;
+
+        // store the user type
+        sessionIsHost = isHost;
+
         final response = await ioClient.post(
           registerUrl,
           headers: {
@@ -76,9 +82,9 @@ class _RegisterPageState extends State<RegisterPage> {
             'Accept': '*/*'
           },
           body: jsonEncode({
-            'Username': usernameController.text,
-            'Email': emailController.text,
-            'UserType': _userValue.toString()
+            'username': usernameController.text,
+            'email': emailController.text,
+            'isHost': isHost
           }),
         );
 
@@ -87,8 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
           throw Exception(
               'User created, failed to notify db. ${response.statusCode}');
         } else {
-          // jsonDecode(response.body) for JSON payloads
-          print('RECEIVED MESSAGE: ${response.body}');
+          print('User Created in DB');
         }
       }
     } on FirebaseAuthException catch (error) {
@@ -110,12 +115,12 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               // logo
               const Icon(
-                Icons.lock,
-                size: 50,
+                Icons.emoji_people,
+                size: 80,
               ),
 
               const SizedBox(
-                height: 50,
+                height: 20,
               ),
 
               // welcome message
@@ -193,9 +198,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      'Reset Password',
-                      style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                    GestureDetector(
+                      onTap: () {
+                        context.go('/reset');
+                      },
+                      child: Text(
+                        'Reset Password',
+                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                      ),
                     ),
                   ],
                 ),

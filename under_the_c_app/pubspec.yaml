@@ -42,6 +42,7 @@ dependencies:
   flutter_riverpod: ^2.3.6
   http: ^1.0.0
   lorem_ipsum: ^0.0.3
+  shared_preferences: ^2.1.2
 
 dev_dependencies:
   flutter_test:

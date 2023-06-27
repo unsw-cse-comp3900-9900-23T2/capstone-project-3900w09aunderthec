@@ -4,9 +4,8 @@ using EventManagementAPI.Models;
 
 namespace EventManagementAPI.Repositories
 {
-    public interface ICustomerRepository
+    public interface IEventHostRepository
     {
-        public Task<List<Customer>> GetAllCustomers();
-        public Task<Customer> GetCustomerById(int customerId);
+        Task<List<Hoster>> GetAllEventHosts();
     }
 }

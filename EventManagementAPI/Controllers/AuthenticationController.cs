@@ -4,80 +4,54 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-// using EventManagementAPI.Repositories;
+using EventManagementAPI.Repositories;
 
 namespace EventManagementAPI.Controllers
 {
-
-    public class ResetPasswordRequestBody {
-        public string Email {get; set;}
-    };
-    public class LoginUserRequestBody {
-        public string Username {get; set;}
-        public string Password {get; set;}
-    };
     public class RegisterUserRequestBody {
-        public string Username {get; set;}
-        public string Password {get; set;}
-        public string Email {get; set;}
+        public string username {get; set;} = "no username";
+        public string email {get; set;}
+        public bool isHost {get; set;} = false;
     };
-
 
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        // private readonly IAuthenticationRepository _authenticationRepository;
+        private readonly IAuthenticationRepository _authenticationRepository;
 
-        // public AuthenticationController(IAuthenticationRepository authenticationRepository)
-        // {
-        //     _authenticationRepository = authenticationRepository;
-        // }
-
-        // [HttpPost]
-        // [Route("Authenticate")]
-        // public bool AuthenticateUser([FromBody] User user)
-        // {
-        //     return _authenticationRepository.validateUser(user);
-        // }
-
-        // [HttpPost]
-        // [Route("Register")]
-        // public bool RegisterUser()
-        // {
-        //     return true;
-        // }
-
-        [HttpPost("ResetPassword")]
-        public String ResetPassword([FromBody] ResetPasswordRequestBody RequestBody) {
-
-            // Send password reset email. How difficult is this?
-
-            return "Awaiting implementation";
-        }
-
-        [HttpPost("LoginUser")]
-        public String LoginUser([FromBody] LoginUserRequestBody RequestBody) {
-
-            // Check details
-            // Delete old session tokens
-            // Return session token
-
-            return "Awaiting implementation";
+        public AuthenticationController(IAuthenticationRepository authenticationRepository)
+        {
+            _authenticationRepository = authenticationRepository;
         }
 
         [HttpPost("RegisterUser")]
-        public String RegisterUser([FromBody] RegisterUserRequestBody RequestBody) {
-            Console.WriteLine(RequestBody.Password); // Deleteme
+        public IActionResult RegisterUser([FromBody] RegisterUserRequestBody RequestBody) {
 
-            // Check Email against Regex
-            // Check username uniqueness
-            // If either fail, return informative fail string?
-            // Hash password, generate UID, generate session token
-            // Save user and token to database
-            // Return session token
+            if (!_authenticationRepository.validateEmailRegex(RequestBody.email)) {
+                return BadRequest("That email is invalid.");
+            }
 
-            return "Awaiting implementation";
+            if (!_authenticationRepository.checkDuplicateEmails(RequestBody.email).Result) {
+                return BadRequest("That email is already in use.");
+            }
+
+            _authenticationRepository.createUser(RequestBody.username, RequestBody.email, RequestBody.isHost);
+
+            return Ok();
+        }
+
+        [HttpGet("GetUserType")]
+        public async Task<IActionResult> GetUserType([FromQuery] string email)
+        {
+            if (!_authenticationRepository.validateEmailRegex(email))
+            {
+                return BadRequest("That email is invalid.");
+            }
+
+            bool isHost = await _authenticationRepository.getUserType(email);
+
+            return Ok(isHost);
         }
 
     }

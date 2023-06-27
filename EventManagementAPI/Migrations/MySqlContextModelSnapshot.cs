@@ -19,161 +19,195 @@ namespace EventManagementAPI.Migrations
                 .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("EventManagementAPI.Models.Address", b =>
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("EventId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Postcode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Suburb")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("UserId")
+                    b.Property<int>("NumberOfTickets")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("TicketId")
                         .HasColumnType("int");
-
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique();
-
-                    b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("TimeCreated")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("CustomerId");
 
-                    b.ToTable("User");
+                    b.HasIndex("TicketId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("bookings");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Customer", b =>
                 {
-                    b.HasBaseType("EventManagementAPI.Models.User");
+                    b.Property<int>("uid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("Birthday")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("longtext");
-
-                    b.HasDiscriminator().HasValue("Customer");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.EventHost", b =>
-                {
-                    b.HasBaseType("EventManagementAPI.Models.User");
-
-                    b.Property<string>("OrganisationName")
+                    b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasDiscriminator().HasValue("EventHost");
+                    b.Property<int>("loyaltyPoints")
+                        .HasColumnType("int");
+
+                    b.Property<string>("username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("vipLevel")
+                        .HasColumnType("int");
+
+                    b.HasKey("uid");
+
+                    b.ToTable("customers");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
-                    b.HasOne("EventManagementAPI.Models.Address", "Address")
-                        .WithOne("Event")
-                        .HasForeignKey("EventManagementAPI.Models.Event", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.Property<int>("eventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Navigation("Address");
+                    b.Property<bool>("allowRefunds")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("hosterFK")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("privateEvent")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<double?>("rating")
+                        .HasColumnType("double");
+
+                    b.Property<string>("tags")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("time")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("venue")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("eventId");
+
+                    b.HasIndex("hosterFK");
+
+                    b.ToTable("events");
                 });
 
-            modelBuilder.Entity("EventManagementAPI.Models.User", b =>
+            modelBuilder.Entity("EventManagementAPI.Models.Hoster", b =>
                 {
-                    b.HasOne("EventManagementAPI.Models.Address", "Address")
-                        .WithOne("User")
-                        .HasForeignKey("EventManagementAPI.Models.User", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.Property<int>("uid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Navigation("Address");
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("organisationName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("uid");
+
+                    b.ToTable("hosts");
                 });
 
-            modelBuilder.Entity("EventManagementAPI.Models.Address", b =>
+            modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
                 {
-                    b.Navigation("Event")
+                    b.Property<int>("ticketId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("eventIdRef")
+                        .HasColumnType("int");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("price")
+                        .HasColumnType("double");
+
+                    b.Property<int>("toEventeventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ticketId");
+
+                    b.HasIndex("toEventeventId");
+
+                    b.ToTable("tickets");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Customer", "toCustomer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User")
+                    b.HasOne("EventManagementAPI.Models.Ticket", "toTicket")
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("toCustomer");
+
+                    b.Navigation("toTicket");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Hoster", "host")
+                        .WithMany("events")
+                        .HasForeignKey("hosterFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("host");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Event", "toEvent")
+                        .WithMany()
+                        .HasForeignKey("toEventeventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("toEvent");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Hoster", b =>
+                {
+                    b.Navigation("events");
                 });
 #pragma warning restore 612, 618
         }
