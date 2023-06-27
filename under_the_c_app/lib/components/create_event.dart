@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'switch_button.dart';
 import 'dropdown_list.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'toggle_button.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'date_picker.dart';
 
 // TODO: Save all variables and submit to backend (make sure it matches database)
 
@@ -192,39 +192,14 @@ class MyCustomFormState extends State<MyCustomForm> {
             child: Text("Date & Time",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
-          DateTimePicker(
-            type: DateTimePickerType.dateTimeSeparate,
-            dateMask: 'dd MMM, yyyy',
-            // dateMask: 'yyyy MM, dd',
-            // yyyy-MM-dd HH:mm:ss
-            initialValue: DateTime.now().toString(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-            icon: const Icon(Icons.event),
-            dateLabelText: 'Date',
-            timeLabelText: "Hour",
-            onSaved: (String? value) {
-              if (value != null) {
-                setState(() {
-                  time = DateTime.parse(value);
-                });
-              }
-            },
-            // TODO: Check for valid date and time (Can't be before today)
-            /* 
-              selectableDayPredicate: (date) {
-              // Disable weekend days to select from the calendar
-              if (date.weekday == 6 || date.weekday == 7) return false;
-              return true;
-            },
-            onChanged: (val) => print(val),
-            validator: (val) {
-              print(val);
-              return null;
-            },
-            onSaved: (val) => print(val),
-            */
-          ),
+          // Center(
+          //     child: RaisedButton(
+          //         child: Text('click'),
+          //         onPressed: () {
+          //           selectDate(context);
+          //           DatePickerApp(key: ,),
+          //         })),
+          const DatePickerApp(),
           // Privacy Button
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),

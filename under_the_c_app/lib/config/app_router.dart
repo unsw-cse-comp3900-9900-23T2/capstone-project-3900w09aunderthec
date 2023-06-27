@@ -111,13 +111,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
-<<<<<<< HEAD
-=======
 
       print("app_route: sessionIsHost = ${sessionIsHost}");
 
       // case for if the user is signed in
->>>>>>> c2caf17fe702e6f4bea62e682765c8849758d41a
       if (authState.valueOrNull != null) {
         // only redirect to '/home' if the current location is the root ('/')
         if (state.location == '/' && sessionIsHost) {

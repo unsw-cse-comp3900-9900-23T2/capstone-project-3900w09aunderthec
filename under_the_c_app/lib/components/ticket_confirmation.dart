@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class BoughtTicketRoute extends StatelessWidget {
   const BoughtTicketRoute({super.key});
@@ -115,8 +116,7 @@ class BoughtTicketRoute extends StatelessWidget {
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst);
+                        context.go('/home');
                       },
                       child: const Text("View Ticket"),
                     ),
