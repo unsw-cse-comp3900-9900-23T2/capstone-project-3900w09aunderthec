@@ -32,7 +32,7 @@ class GuestPage extends StatelessWidget {
           ),
           SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-            final event = events[index];
+            final event = incomingEvents[index];
             return SizedBox(
                 width: 375,
                 child: EventCard(
@@ -41,7 +41,7 @@ class GuestPage extends StatelessWidget {
                   time: event.time,
                   address: event.address,
                 ));
-          }, childCount: events.length))
+          }, childCount: incomingEvents.length))
         ],
       ),
     );
