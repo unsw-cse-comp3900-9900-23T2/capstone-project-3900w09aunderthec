@@ -1,8 +1,12 @@
 // Button in each individual event
 // Pull up data for tickets
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:under_the_c_app/components/common/types/event_types.dart';
 import '../components/ticket_confirmation.dart';
+import 'package:http/http.dart' as http;
 
 const priceTextStyle = TextStyle(
   color: Colors.black,
@@ -12,6 +16,28 @@ const priceTextStyle = TextStyle(
 
 class BookTicketRoute extends StatelessWidget {
   const BookTicketRoute({super.key});
+
+//   Future<http.Response> fetchEventDetails() {
+//     final url = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
+//     return http.get(url);
+//   }
+
+//   Future<Event> fetchEvent() async {
+//   final url = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
+//   final response = await http
+//       .get(url);
+
+//   if (response.statusCode == 200) {
+//     // If the server did return a 200 OK response,
+//     // then parse the JSON.
+//     return Event.fromJson(jsonDecode(response.body));
+//   } else {
+//     // If the server did not return a 200 OK response,
+//     // then throw an exception.
+//     throw Exception('Failed to load album');
+//   }
+// }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
