@@ -9,7 +9,6 @@ import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/main_pages/analytics.dart';
 import 'package:under_the_c_app/pages/main_pages/customer_event_page.dart';
-import 'package:under_the_c_app/pages/main_pages/event.dart';
 import 'package:under_the_c_app/pages/main_pages/home.dart';
 import 'package:under_the_c_app/pages/main_pages/host_event_page.dart';
 import 'package:under_the_c_app/pages/main_pages/profile.dart';
@@ -49,6 +48,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         pageBuilder: (context, state) {
           return const MaterialPage(child: RegisterPage());
+        },
+      ),
+      GoRoute(
+        path: '/reset',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: ResetPasswordPage());
+        },
+      ),
+      GoRoute(
+        path: '/guest',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+              child: BaseLayout(
+            body: GuestPage(),
+            isHost: sessionIsHost,
+          ));
         },
       ),
       ShellRoute(
@@ -135,15 +150,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       // case for if the user is signed in
       if (authState.valueOrNull != null) {
         // only redirect to '/home' if the current location is the root ('/')
-        if (state.location == '/' && sessionIsHost) {
-          return '/home';
-        } else if (state.location == '/' && !sessionIsHost) {
+        if (state.location == '/') {
           return '/home';
         }
 
-        // if (state.location == '/home' && sessionIsHost!) {
-        //   return '/homeHost';
-        // }
         // do not redirect if the user is navigation to another page
         return null;
       }

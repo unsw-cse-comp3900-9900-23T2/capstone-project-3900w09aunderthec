@@ -10,5 +10,6 @@ namespace EventManagementAPI.Repositories
         Task CreateAnEvent(Event e);
         Task<Event> GetEventById(int id);
         Task ModifyEvent(Event e);
+        public Task<List<Event>> GetAllHostEvents(int hostId);
     }
 }
