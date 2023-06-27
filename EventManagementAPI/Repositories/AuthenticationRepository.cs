@@ -64,13 +64,6 @@ namespace EventManagementAPI.Repositories
                 return false;
             }
         }
-
-        public async Task<int> getUid(String email)
-        {
-            var customer = _dbContext.customers.FirstOrDefaultAsync(c => c.email == email);
-
-            return customer.Id;
-        }
     }
 }
 

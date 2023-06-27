@@ -26,8 +26,12 @@ void setUserType(String email) async {
       throw Exception('API Error: ${response}');
     } else {
       // store the user type
-      sessionVariables.sessionIsHost = jsonDecode(response.body);
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+      sessionVariables.sessionIsHost = responseBody['isHost'];
+      sessionVariables.uid = responseBody['uid'];
+
       print('User type set: ${sessionVariables.sessionIsHost}');
+      print('Uid set: ${sessionVariables.uid}');
     }
   } catch (e) {
     print('$e');

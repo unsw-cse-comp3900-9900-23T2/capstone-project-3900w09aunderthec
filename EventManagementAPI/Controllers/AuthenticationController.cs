@@ -50,9 +50,8 @@ namespace EventManagementAPI.Controllers
             }
 
             bool isHost = await _authenticationRepository.getUserType(email);
-            int uid = await _authenticationRepository.getUid(email);
 
-            return Ok(new { isHost, uid });
+            return Ok(isHost);
         }
 
     }
