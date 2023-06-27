@@ -158,8 +158,6 @@ class TicketTypes extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Get rid of this
-        // Column, type, price, sale end
         Flexible(
           flex: 1,
           child: Column(
@@ -181,31 +179,17 @@ class TicketTypes extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              // Text("Sales end on Date - 1 day"),
               const Text("Sales end on July 17, 2023"),
             ],
           ),
         ),
-        // const SizedBox(
-        //   width: 20.0,
-        // ),
+
         Flexible(
           flex: 1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Text(
-              //   item.type,
-              //   style: const TextStyle(
-              //     color: Colors.black,
-              //     fontSize: 20.0,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 5.0,
-              // ),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -247,10 +231,7 @@ class TicketTypes extends StatelessWidget {
             ],
           ),
         ),
-        // const SizedBox(
-        //   width: 10.0,
-        // ),
-        Text("\$${item.price * item.qty}", style: priceTextStyle),
+
       ],
     );
   }
