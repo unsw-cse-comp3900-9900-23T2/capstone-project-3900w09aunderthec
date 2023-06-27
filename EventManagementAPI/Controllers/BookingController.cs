@@ -11,9 +11,7 @@ namespace EventManagementAPI.Controllers
 {
     public class MakeBookingRequestBody
     {
-        public int uid { get; set; }
-        public int ticketId { get; set; }
-        public int ticketNumber { get; set; }
+        public string email { get; set; }
     };
 
     public class GetBookingRequestBody
@@ -59,23 +57,10 @@ namespace EventManagementAPI.Controllers
         [HttpPost("MakeBooking")]
         public async Task<IActionResult> MakeBooking(MakeBookingRequestBody RequestBody)
         {
-            var customer = await _customerRepository.GetCustomerById(RequestBody.uid);
-            var t = await _ticketRepository.GetTicketById(RequestBody.ticketId);
-
-            var newBooking = new Booking
-            {
-                CustomerId = RequestBody.uid,
-                toCustomer = customer,
-                TicketId = RequestBody.ticketId,
-                toTicket = t,
-                NumberOfTickets = RequestBody.ticketNumber,
-            };
-
-            await _bookingRepository.MakeBooking(newBooking);
 
             var fromAddress = "young.jiapeng@outlook.com";
-            var toAddress = customer.email;
-            var subject = "Testing";
+            var toAddress = RequestBody.email;
+            var subject = "Booking Confirmed!";
 
             var body = new StringBuilder()
                 .AppendLine("Dear Customer,")
@@ -88,7 +73,7 @@ namespace EventManagementAPI.Controllers
 
             _emailService.SendEmail(fromAddress, toAddress, subject, body);
 
-            return Ok(newBooking);
+            return Ok();
         }
 
         [HttpPost("ShowBookingDetails")]
