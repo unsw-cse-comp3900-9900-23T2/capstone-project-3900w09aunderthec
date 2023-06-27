@@ -11,6 +11,10 @@ namespace EventManagementAPI.Controllers{
     public class ListEventsRequestBody {
         public string uid { get; set; }
     };
+    public class ListHostEventsRequestBody
+    {
+        public int hostId { get; set; }
+    };
     public class ShowEventDetailsRequestBody {
         public int eventId { get; set; }
     };
@@ -37,6 +41,14 @@ namespace EventManagementAPI.Controllers{
         public async Task<IActionResult> ListEvents([FromBody] ListEventsRequestBody RequestBody) {
 
             var events = await _eventDisplayRepository.GetAllEvents();
+            return Ok(events);
+        }
+
+        [HttpPost("ListHostEvents")]
+        public async Task<IActionResult> ListHostEvents([FromBody] ListHostEventsRequestBody RequestBody)
+        {
+
+            var events = await _eventDisplayRepository.GetAllHostEvents(RequestBody.hostId);
             return Ok(events);
         }
 
