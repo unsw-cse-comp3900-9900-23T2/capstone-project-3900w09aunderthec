@@ -70,7 +70,6 @@ class EventPage extends StatelessWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               final event = hostedEvents[index];
-
               return SizedBox(
                 width: 375,
                 child: GestureDetector(

@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 import 'package:under_the_c_app/components/providers/event_providers.dart';
+import 'package:under_the_c_app/components/common/types/events/event_type.dart';
+import '../../components/api/event.dart';
+import '../../components/common/types/location/address.dart';
 
 // @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
 class HomePage extends ConsumerWidget {
@@ -11,7 +17,6 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(IncomingEventsProvider);
-
     return events.when(
       loading: () => const CircularProgressIndicator(),
       error: (err, stack) => Text('Error: $err'),

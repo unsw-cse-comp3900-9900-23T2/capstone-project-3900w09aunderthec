@@ -41,6 +41,7 @@ class CustomerEventPage extends StatelessWidget {
                       width: 375,
                       child: GestureDetector(
                         onTap: () {
+                          // getEventListRequest();
                           context.go('/event_details/${event.eventId}',
                               extra: 'Details');
                         },

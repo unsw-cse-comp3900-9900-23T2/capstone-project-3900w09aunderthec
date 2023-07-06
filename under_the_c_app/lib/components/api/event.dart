@@ -7,6 +7,99 @@ import 'package:under_the_c_app/components/common/types/events/event_type.dart';
 import 'package:under_the_c_app/components/common/types/location/address.dart';
 import 'package:under_the_c_app/components/common/types/users/host_type.dart';
 
+Future<List<BackendEventData>> createAllEvents(String uid) async {
+  final url = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
+  final response = await http.post(
+    url,
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(<String, String>{
+      "uid": uid,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonList = jsonDecode(response.body);
+    final List<BackendEventData> allEvents =
+        jsonList.map((json) => BackendEventData.fromJson(json)).toList();
+    return allEvents;
+  } else {
+    throw Exception('Failed to create Allevents.');
+  }
+}
+
+class BackendEventData {
+  final int eventId;
+  final int hosterFK;
+  final String title;
+  final DateTime time;
+  final String venue;
+  final String description;
+  final bool allowRefunds;
+  final bool privateEvent;
+  final double? rating;
+  final String tags;
+
+  BackendEventData({
+    required this.eventId,
+    required this.hosterFK,
+    required this.title,
+    required this.time,
+    required this.venue,
+    required this.description,
+    required this.allowRefunds,
+    required this.privateEvent,
+    required this.rating,
+    required this.tags,
+  });
+
+  @override
+  String toString() {
+    return 'AllEvents(eventId: $eventId, hosterFK: $hosterFK, title: $title, time: $time, venue: $venue, description: $description, allowRefunds: $allowRefunds, privateEvent: $privateEvent, rating: $rating, tags: $tags)';
+  }
+
+  factory BackendEventData.fromJson(Map<String, dynamic> json) {
+    return BackendEventData(
+      eventId: json['eventId'],
+      hosterFK: json['hosterFK'],
+      title: json['title'],
+      time: DateTime.parse(json['time']),
+      // time: json['time'],
+      venue: json['venue'],
+      description: json['description'],
+      allowRefunds: json['allowRefunds'],
+      privateEvent: json['privateEvent'],
+      rating: json['rating'],
+      tags: json['tags'],
+    );
+  }
+}
+
+Future<List<Event>> fetchAllIncomingEvents() async {
+  List<Event> incomingEvents = [];
+
+  createAllEvents("string").then((allEvents) {
+    for (var singleEvent in allEvents) {
+      incomingEvents.add(Event(
+        title: singleEvent.title,
+        eventId: singleEvent.eventId.toString(),
+        imageUrl: 'images/events/money-event.jpg',
+        time: singleEvent.time.toString(),
+        address: Address(
+            venue: singleEvent.venue,
+            suburb: "George Str",
+            city: "Sydney",
+            country: "Australia",
+            postalCode: "2020"),
+        price: 0,
+        description: singleEvent.description,
+      ));
+    }
+  });
+  return incomingEvents;
+}
+
 final List<Event> incomingEvents = [
   Event(
     title: 'S',
@@ -66,9 +159,9 @@ final List<Event> incomingEvents = [
   ),
 ];
 
-Future<List<Event>> fetchAllIncomingEvents() async {
-  return incomingEvents;
-}
+// Future<List<Event>> fetchAllIncomingEvents() async {
+//   return incomingEvents;
+// }
 
 // TODO: event.dart: It's fetching fake data, need to replace with real data
 Future<Event> fetchIncomingEventById(String eventId) async {
