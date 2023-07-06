@@ -79,7 +79,9 @@ class BackendEventData {
 Future<List<Event>> fetchAllIncomingEvents() async {
   List<Event> incomingEvents = [];
 
-  createAllEvents("string").then((allEvents) {
+  try {
+    final allEvents = await createAllEvents("string");
+
     for (var singleEvent in allEvents) {
       incomingEvents.add(Event(
         title: singleEvent.title,
@@ -87,16 +89,21 @@ Future<List<Event>> fetchAllIncomingEvents() async {
         imageUrl: 'images/events/money-event.jpg',
         time: singleEvent.time.toString(),
         address: Address(
-            venue: singleEvent.venue,
-            suburb: "George Str",
-            city: "Sydney",
-            country: "Australia",
-            postalCode: "2020"),
+          venue: singleEvent.venue,
+          suburb: "George Str",
+          city: "Sydney",
+          country: "Australia",
+          postalCode: "2020",
+        ),
         price: 0,
         description: singleEvent.description,
       ));
     }
-  });
+  } catch (error) {
+    // Handle error
+    print('Error occurred: $error');
+  }
+
   return incomingEvents;
 }
 
@@ -165,8 +172,11 @@ final List<Event> incomingEvents = [
 
 // TODO: event.dart: It's fetching fake data, need to replace with real data
 Future<Event> fetchIncomingEventById(String eventId) async {
-  final event = incomingEvents.firstWhere((e) => e.eventId == eventId,
-      orElse: () => throw Exception('Event not found'));
+  final events = await fetchAllIncomingEvents();
+  final event = events.firstWhere(
+    (e) => e.eventId == eventId,
+    orElse: () => throw Exception('Event not found'),
+  );
   return event;
 }
 

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import '../dropdown_list.dart';
+import '../time_picker.dart';
 import '../toggle_button.dart';
 import 'dart:convert';
 import '../date_picker.dart';
+import 'tags.dart';
 
 class EventCreate extends StatelessWidget {
   const EventCreate({super.key});
@@ -133,13 +135,10 @@ class MyCustomFormState extends State<MyCustomForm> {
         children: [
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DefaultTextStyle(
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                child: Center(
-                  child: Text("Create Event Form",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                )),
+            child: Center(
+              child: Text("Create Event Form",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ),
           ),
           // Title
           Padding(
@@ -231,13 +230,30 @@ class MyCustomFormState extends State<MyCustomForm> {
           // TODO: Change it up
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
+            child: Text(
+              "Date",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Date & Time"),
             ),
           ),
-          // const DatePickerApp(),
-          // TODO: [PLHV-158] event_create.dart: MyCustomFormState: Check for valid date and time (Can't be before today)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: DatePicker(restorationId: 'main'),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: Text(
+              "Time",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: TimePicker(
+              themeMode: ThemeMode.dark,
+              useMaterial3: true,
+            ),
+          ),
+
           // Privacy Button
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -351,10 +367,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                   createEvent().then((response) {
                     if (response.statusCode == 200) {
                       // Event created successfully
-                      // Handle success case
                     } else {
                       // Event creation failed
-                      // Handle error case
                       throw Exception(
                           'Failed to CREATE event: ${response.body}');
                     }
@@ -369,47 +383,4 @@ class MyCustomFormState extends State<MyCustomForm> {
       ),
     );
   }
-}
-
-// List for Tags
-List<DropdownMenuItem<String>> get droppedItems {
-  List<DropdownMenuItem<String>> eventType = [
-    const DropdownMenuItem(
-      value: "Arts",
-      child: Text("Arts"),
-    ),
-    const DropdownMenuItem(
-      value: "Business",
-      child: Text("Business"),
-    ),
-    const DropdownMenuItem(
-      value: "Comedy",
-      child: Text("Comedy"),
-    ),
-    const DropdownMenuItem(
-      value: "Food & Drink",
-      child: Text("Food & Drink"),
-    ),
-    const DropdownMenuItem(
-      value: "Fashion",
-      child: Text("Fashion"),
-    ),
-    const DropdownMenuItem(
-      value: "Music",
-      child: Text("Music"),
-    ),
-    const DropdownMenuItem(
-      value: "Sports",
-      child: Text("Sports"),
-    ),
-    const DropdownMenuItem(
-      value: "Science",
-      child: Text("Science"),
-    ),
-    const DropdownMenuItem(
-      value: "Other",
-      child: Text("Other"),
-    ),
-  ];
-  return eventType;
 }

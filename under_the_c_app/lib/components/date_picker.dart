@@ -1,37 +1,19 @@
 import 'package:flutter/material.dart';
 
-class DatePickerApp extends StatelessWidget {
-  const DatePickerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      restorationScopeId: 'app',
-      home: const DatePickerExample(restorationId: 'main'),
-    );
-  }
-}
-
-class DatePickerExample extends StatefulWidget {
-  const DatePickerExample({super.key, this.restorationId});
+class DatePicker extends StatefulWidget {
+  const DatePicker({super.key, this.restorationId});
 
   final String? restorationId;
 
   @override
-  State<DatePickerExample> createState() => _DatePickerExampleState();
+  State<DatePicker> createState() => _DatePickerState();
 }
 
-/// RestorationProperty objects can be used because of RestorationMixin.
-class _DatePickerExampleState extends State<DatePickerExample>
-    with RestorationMixin {
-  // In this example, the restoration ID for the mixin is passed in through
-  // the [StatefulWidget]'s constructor.
+class _DatePickerState extends State<DatePicker> with RestorationMixin {
   @override
   String? get restorationId => widget.restorationId;
 
-  final RestorableDateTime _selectedDate =
-      RestorableDateTime(DateTime(2021, 7, 25));
+  final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
   late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
       RestorableRouteFuture<DateTime?>(
     onComplete: _selectDate,
@@ -55,8 +37,8 @@ class _DatePickerExampleState extends State<DatePickerExample>
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(2021),
-          lastDate: DateTime(2022),
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(const Duration(days: 365 * 20)),
         );
       },
     );
@@ -83,13 +65,16 @@ class _DatePickerExampleState extends State<DatePickerExample>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: OutlinedButton(
-          onPressed: () {
-            _restorableDatePickerRouteFuture.present();
-          },
-          child: const Text('Open Date Picker'),
+    return Container(
+      child: Center(
+        child: SizedBox(
+          width: 200,
+          child: OutlinedButton(
+            onPressed: () {
+              _restorableDatePickerRouteFuture.present();
+            },
+            child: const Text('Open Date Picker'),
+          ),
         ),
       ),
     );
