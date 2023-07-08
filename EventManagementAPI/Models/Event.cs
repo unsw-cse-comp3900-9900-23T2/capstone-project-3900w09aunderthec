@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EventManagementAPI.Models
 {
@@ -22,5 +23,7 @@ namespace EventManagementAPI.Models
         public Boolean privateEvent { get; set; }
         public Double? rating { get; set; }
         public String tags { get; set; }
+        [JsonIgnore]
+        public ICollection<Comment> comments { get; set; }
     }
 }

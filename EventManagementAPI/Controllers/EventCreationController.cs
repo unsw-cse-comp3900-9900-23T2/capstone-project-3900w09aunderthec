@@ -49,7 +49,7 @@ namespace EventManagementAPI.Controllers{
             _eventRepository = eventRepository;
         }
 
-        [HttpPost("GetTags")]
+        [HttpGet("GetTags")]
         public String GetTags([FromBody] GetTagsRequestBody RequestBody) {
 
             // Format string to make api call with
@@ -89,7 +89,7 @@ namespace EventManagementAPI.Controllers{
             return Ok();
         }
 
-        [HttpPost("ModifyEvent")]
+        [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
 
             Event newEvent = new Event

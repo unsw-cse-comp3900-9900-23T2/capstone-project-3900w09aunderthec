@@ -10,6 +10,7 @@ namespace EventManagementAPI.Context
         public DbSet<Hoster> hosts { get; set; }
         public DbSet<Ticket> tickets { get; set; }
         public DbSet<Booking> bookings { get; set; }
+        public DbSet<Comment> comments { get; set; }
 
         public MySqlContext(DbContextOptions<MySqlContext> options) : base(options) { }
     }
