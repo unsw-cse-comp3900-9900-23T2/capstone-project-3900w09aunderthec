@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:under_the_c_app/components/common/navigation_bar.dart';
+import 'package:under_the_c_app/components/common/layout/navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:under_the_c_app/config/app_router.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/main.dart';
 
 class BaseLayout extends ConsumerWidget {
   final Widget body;
   final String title;
+  final bool isHost;
 
-  const BaseLayout({Key? key, this.title = "Home", required this.body})
+  const BaseLayout(
+      {Key? key, this.title = "Home", required this.body, required this.isHost})
       : super(key: key);
 
   void signOut() async {
     FirebaseAuth.instance.signOut();
 
-    // clear shared preds on log out
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    //reset the session
+    sessionVariables.resetVariables();
   }
 
   @override
@@ -27,7 +28,7 @@ class BaseLayout extends ConsumerWidget {
         ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
       ]),
       body: body,
-      bottomNavigationBar: const NavigationBarCustom(),
+      bottomNavigationBar: NavigationBarCustom(isHost: isHost),
     );
   }
 }

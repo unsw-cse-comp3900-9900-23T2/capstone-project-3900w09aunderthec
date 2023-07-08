@@ -1,31 +1,61 @@
-DateTime convertStringToDateTime(String timestamp) {
-  // Assuming the timestamp format is in "yyyy-MM-dd HH:mm:ss"
+// High level APIs
+import 'package:intl/intl.dart';
 
-  // Split the timestamp into date and time parts
-  List<String> parts = timestamp.split(' ');
+String getFirstThreeLettersWeekday(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  String dayString = days[dateTime.weekday - 1];
+  String shortDayString = dayString.substring(0, 3);
+  String formattedDayString =
+      "${shortDayString[0].toUpperCase()}${shortDayString.substring(1).toLowerCase()}";
 
-  // Split the date part into year, month, and day
-  List<String> dateParts = parts[0].split('-');
-  int year = int.parse(dateParts[0]);
-  int month = int.parse(dateParts[1]);
-  int day = int.parse(dateParts[2]);
-
-  // Split the time part into hour, minute, and second
-  List<String> timeParts = parts[1].split(':');
-  int hour = int.parse(timeParts[0]);
-  int minute = int.parse(timeParts[1]);
-  int second = int.parse(timeParts[2]);
-
-  // Create a DateTime object using the parsed values
-  DateTime dateTime = DateTime(year, month, day, hour, minute, second);
-
-  return dateTime;
+  return formattedDayString;
 }
 
-MonthData timeStampToMonth(String timestampStr) {
-  DateTime dateTime = convertStringToDateTime(timestampStr);
+String getTime(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return DateFormat('jm').format(dateTime);
+}
+
+String getMonthName(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return getMonthData(dateTime).monthName;
+}
+
+String getYear(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return dateTime.year.toString();
+}
+
+String getDay(String time) {
+  DateTime dateTime = convertToDateTime(time);
+  return dateTime.day.toString();
+}
+
+// Lower level APIs
+DateTime convertToDateTime(String timestamp) {
+  try {
+    DateTime dateTime = DateTime.parse("2021-12-23 11:47:00");
+    return dateTime;
+  } catch (e) {
+    // Handle the exception or provide a default value
+    throw FormatException("Invalid timestamp format: $timestamp");
+  }
+}
+
+MonthData strToMonth(String timestampStr) {
+  DateTime dateTime = convertToDateTime(timestampStr);
   return getMonthData(dateTime);
 }
+
+List<String> days = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+];
 
 class MonthData {
   final int month;
@@ -43,40 +73,40 @@ MonthData getMonthData(DateTime dateTime) {
   String monthName = '';
   switch (month) {
     case 1:
-      monthName = 'JAN';
+      monthName = 'Jan';
       break;
     case 2:
-      monthName = 'FEB';
+      monthName = 'Feb';
       break;
     case 3:
-      monthName = 'MAR';
+      monthName = 'Mar';
       break;
     case 4:
-      monthName = 'APR';
+      monthName = 'Apr';
       break;
     case 5:
-      monthName = 'MAY';
+      monthName = 'May';
       break;
     case 6:
-      monthName = 'JUN';
+      monthName = 'Jun';
       break;
     case 7:
-      monthName = 'JUL';
+      monthName = 'Jul';
       break;
     case 8:
-      monthName = 'AUG';
+      monthName = 'Aug';
       break;
     case 9:
-      monthName = 'SEP';
+      monthName = 'Sep';
       break;
     case 10:
-      monthName = 'OCT';
+      monthName = 'Oct';
       break;
     case 11:
-      monthName = 'NOV';
+      monthName = 'Nov';
       break;
     case 12:
-      monthName = 'DEC';
+      monthName = 'Dec';
       break;
   }
 

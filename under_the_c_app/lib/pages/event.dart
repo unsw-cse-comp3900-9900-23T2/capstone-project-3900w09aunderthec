@@ -7,7 +7,6 @@ import 'package:http/io_client.dart';
 class EventPage extends StatelessWidget {
   const EventPage({Key? key}) : super(key: key);
 
-  // TO-DO based on the type of user fetch their events
   void getEvents() async {
     HttpClient client = HttpClient();
     client.badCertificateCallback =

@@ -3,15 +3,15 @@ using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using EventManagementAPI.DTOs;
 using System.Net;
+using EventManagementAPI.Services;
+using System.Text;
+using Org.BouncyCastle.Cms;
 
 namespace EventManagementAPI.Controllers
 {
     public class MakeBookingRequestBody
     {
-        public int uid { get; set; }
-        public int ticketId { get; set; }
-        public int ticketNumber { get; set; }
-        public DateTime TimeCreated { get; set; }
+        public string email { get; set; }
     };
 
     public class GetBookingRequestBody
@@ -36,12 +36,14 @@ namespace EventManagementAPI.Controllers
         private readonly IBookingRepository _bookingRepository;
         private readonly ITicketRepository _ticketRepository;
         private readonly ICustomerRepository _customerRepository;
+        private readonly EmailService _emailService;
 
-        public BookingController(IBookingRepository bookingRepository, ITicketRepository ticketRepository, ICustomerRepository customerRepository)
+        public BookingController(IBookingRepository bookingRepository, ITicketRepository ticketRepository, ICustomerRepository customerRepository, EmailService emailService)
         {
             _bookingRepository = bookingRepository;
             _ticketRepository = ticketRepository;
             _customerRepository = customerRepository;
+            _emailService = emailService;
         }
 
         [HttpPost("GetBookings")]
@@ -55,21 +57,23 @@ namespace EventManagementAPI.Controllers
         [HttpPost("MakeBooking")]
         public async Task<IActionResult> MakeBooking(MakeBookingRequestBody RequestBody)
         {
-            var customer = await _customerRepository.GetCustomerById(RequestBody.uid);
-            var t = await _ticketRepository.GetTicketById(RequestBody.ticketId);
 
-            var newBooking = new Booking
-            {
-                CustomerId = RequestBody.uid,
-                toCustomer = customer,
-                TicketId = RequestBody.ticketId,
-                toTicket = t,
-                NumberOfTickets = RequestBody.ticketNumber,
-                TimeCreated = RequestBody.TimeCreated,
-            };
+            var fromAddress = "young.jiapeng@outlook.com";
+            var toAddress = RequestBody.email;
+            var subject = "Booking Confirmed!";
 
-            await _bookingRepository.MakeBooking(newBooking);
-            return Ok(newBooking);
+            var body = new StringBuilder()
+                .AppendLine("Dear Customer,")
+                .AppendLine("")
+                .AppendLine("Your booking has been successful")
+                .AppendLine("")
+                .AppendLine("Kind Regards,")
+                .AppendLine("Under the C")
+            .ToString();
+
+            _emailService.SendEmail(fromAddress, toAddress, subject, body);
+
+            return Ok();
         }
 
         [HttpPost("ShowBookingDetails")]
