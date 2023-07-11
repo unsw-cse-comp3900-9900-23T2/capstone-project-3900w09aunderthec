@@ -65,7 +65,6 @@ class BackendEventData {
       hosterFK: json['hosterFK'],
       title: json['title'],
       time: DateTime.parse(json['time']),
-      // time: json['time'],
       venue: json['venue'],
       description: json['description'],
       allowRefunds: json['allowRefunds'],
@@ -179,6 +178,39 @@ Future<Event> fetchIncomingEventById(String eventId) async {
   );
   return event;
 }
+
+// Future<List<Event>> fetchAllHostedEvents() async {
+//   List<Event> hostedEvents = [];
+
+//   try {
+//     final allEvents = await createAllEvents("string");
+
+//     for (var singleEvent in allEvents) {
+//       if () {
+//         incomingEvents.add(Event(
+//           title: singleEvent.title,
+//           eventId: singleEvent.eventId.toString(),
+//           imageUrl: 'images/events/money-event.jpg',
+//           time: singleEvent.time.toString(),
+//           address: Address(
+//             venue: singleEvent.venue,
+//             suburb: "George Str",
+//             city: "Sydney",
+//             country: "Australia",
+//             postalCode: "2020",
+//           ),
+//           price: 0,
+//           description: singleEvent.description,
+//         ));
+//       }
+//     }
+//   } catch (error) {
+//     // Handle error
+//     print('Error occurred: $error');
+//   }
+
+//   return hostedEvents;
+// }
 
 final List<Event> hostedEvents = [
   Event(
