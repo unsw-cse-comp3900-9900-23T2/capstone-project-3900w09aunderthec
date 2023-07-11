@@ -11,5 +11,9 @@ namespace EventManagementAPI.Repositories
         public Task<Comment> GetCommentById(int id);
         public Task<Comment> CreateComment(int customerId, int eventId, string comment);
         public Task<Comment> DeleteComment(int id);
+        public Task<bool> LikeComment(int customerId, int commentId);
+        public Task<bool> UndoLikedComment(int commentLikeId);
+        public Task<bool> DislikeComment(int customerId, int commentId);
+        public Task<bool> UndoDislikeComment(int commentDislikeId);
     }
 }

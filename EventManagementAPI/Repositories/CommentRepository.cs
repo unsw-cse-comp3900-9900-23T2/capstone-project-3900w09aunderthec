@@ -73,5 +73,96 @@ namespace EventManagementAPI.Repositories
 
             return comment;
         }
+
+        public async Task<bool> LikeComment(int customerId, int commentId)
+        {
+            var customer = await _dbContext.customers.FindAsync(customerId);
+            var comment = await _dbContext.comments.FindAsync(commentId);
+
+            if (customer == null ||  comment == null)
+            {
+                return false;
+            }
+
+            var likeComment = new CommentLike();
+            likeComment.customerId = customerId;
+            likeComment.customer = customer;
+            likeComment.commentId = commentId;
+            likeComment.comment = comment;
+
+            _dbContext.commentLikes.Add(likeComment);
+            comment.likes++;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UndoLikedComment(int commentLikeId)
+        {
+            var commentLike = await _dbContext.commentLikes.FindAsync(commentLikeId);
+
+            if (commentLike == null)
+            {
+                return false;
+            }
+
+            var commentId = commentLike.commentId;
+            var comment = await _dbContext.comments.FindAsync(commentId);
+
+            if ( comment != null )
+            {
+                comment.likes--;
+            }
+            
+            _dbContext.commentLikes.Remove(commentLike);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DislikeComment(int customerId, int commentId)
+        {
+            var customer = await _dbContext.customers.FindAsync(customerId);
+            var comment = await _dbContext.comments.FindAsync(commentId);
+
+            if (customer == null || comment == null)
+            {
+                return false;
+            }
+
+            var likeComment = new CommentDislike();
+            likeComment.customerId = customerId;
+            likeComment.customer = customer;
+            likeComment.commentId = commentId;
+            likeComment.comment = comment;
+
+            _dbContext.commentDislikes.Add(likeComment);
+            comment.dislikes++;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UndoDislikeComment(int commentDislikeId)
+        {
+            var commentDislike = await _dbContext.commentDislikes.FindAsync(commentDislikeId);
+
+            if (commentDislike == null)
+            {
+                return false;
+            }
+
+            var commentId = commentDislike.commentId;
+            var comment = await _dbContext.comments.FindAsync(commentId);
+            if (comment != null)
+            {
+                comment.dislikes--;
+            }
+
+            _dbContext.commentDislikes.Remove(commentDislike);
+            await _dbContext.SaveChangesAsync();   
+
+            return true;
+        }
     }
 }

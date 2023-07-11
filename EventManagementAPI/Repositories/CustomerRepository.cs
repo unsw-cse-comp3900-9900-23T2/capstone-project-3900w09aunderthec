@@ -46,5 +46,78 @@ namespace EventManagementAPI.Repositories
 
             return customer;
         }
+
+        public async Task<bool> SubscribeHoster(int customerId, int hosterId)
+        {
+            var customer = await _dbContext.customers.FindAsync(customerId);
+            var hoster = await _dbContext.hosts.FindAsync(hosterId);
+
+            if (customer == null || hoster == null)
+            {
+                return false;
+            }
+
+            var subscription = new Subscription();
+            subscription.hoster = hoster;
+            subscription.hosterIdRef = hosterId;
+            subscription.customer = customer;
+            subscription.customerIdRef = customerId;
+
+            _dbContext.subscriptions.Add(subscription);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UndoSubscribeHoster(int subscriptionId)
+        {
+            var subscription = await _dbContext.subscriptions.FindAsync(subscriptionId);
+
+            if (subscription == null)
+            {
+                return false;
+            }
+
+            _dbContext.subscriptions.Remove(subscription);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> SaveEvent(int customerId, int eventId)
+        {
+            var customer = await _dbContext.customers.FindAsync(customerId);
+            var e = await _dbContext.events.FindAsync(eventId);
+
+            if (customer == null || e == null)
+            {
+                return false;
+            }
+
+            var saveEvent = new EventSaved();
+            saveEvent.customerId = customerId;
+            saveEvent.eventId = eventId;
+            saveEvent.customer = customer;
+            saveEvent.eventShow = e;
+
+            _dbContext.Add(saveEvent);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UndoSaveEvent(int saveEventId)
+        {
+            var saveEvent = await _dbContext.events.FindAsync(saveEventId);
+
+            if (saveEvent == null)
+            {
+                return false;
+            }
+
+            _dbContext.Remove(saveEvent);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

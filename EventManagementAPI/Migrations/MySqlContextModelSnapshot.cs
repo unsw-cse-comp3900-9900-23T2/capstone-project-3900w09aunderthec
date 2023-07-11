@@ -80,6 +80,48 @@ namespace EventManagementAPI.Migrations
                     b.ToTable("comments");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.CommentDislike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("commentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("commentId");
+
+                    b.HasIndex("customerId");
+
+                    b.ToTable("commentDislikes");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.CommentLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("commentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("commentId");
+
+                    b.HasIndex("customerId");
+
+                    b.ToTable("commentLikes");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.Property<int>("eventId")
@@ -124,6 +166,27 @@ namespace EventManagementAPI.Migrations
                     b.ToTable("events");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.EventSaved", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("eventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("customerId");
+
+                    b.HasIndex("eventId");
+
+                    b.ToTable("eventsSaved");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Reply", b =>
                 {
                     b.Property<int>("Id")
@@ -150,6 +213,33 @@ namespace EventManagementAPI.Migrations
                     b.HasIndex("replierId");
 
                     b.ToTable("Reply");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Subscription", b =>
+                {
+                    b.Property<int>("subscriptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerIdRef")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customeruid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("hosterIdRef")
+                        .HasColumnType("int");
+
+                    b.Property<int>("hosteruid")
+                        .HasColumnType("int");
+
+                    b.HasKey("subscriptionId");
+
+                    b.HasIndex("customeruid");
+
+                    b.HasIndex("hosteruid");
+
+                    b.ToTable("subscriptions");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
@@ -267,6 +357,44 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("eventShow");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.CommentDislike", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Comment", "comment")
+                        .WithMany()
+                        .HasForeignKey("commentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Customer", "customer")
+                        .WithMany()
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("comment");
+
+                    b.Navigation("customer");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.CommentLike", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Comment", "comment")
+                        .WithMany()
+                        .HasForeignKey("commentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Customer", "customer")
+                        .WithMany()
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("comment");
+
+                    b.Navigation("customer");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Hoster", "host")
@@ -276,6 +404,25 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("host");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.EventSaved", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Customer", "customer")
+                        .WithMany()
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Event", "eventShow")
+                        .WithMany()
+                        .HasForeignKey("eventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("customer");
+
+                    b.Navigation("eventShow");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Reply", b =>
@@ -295,6 +442,25 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("comment");
 
                     b.Navigation("replier");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Subscription", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Customer", "customer")
+                        .WithMany()
+                        .HasForeignKey("customeruid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Hoster", "hoster")
+                        .WithMany()
+                        .HasForeignKey("hosteruid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("customer");
+
+                    b.Navigation("hoster");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
