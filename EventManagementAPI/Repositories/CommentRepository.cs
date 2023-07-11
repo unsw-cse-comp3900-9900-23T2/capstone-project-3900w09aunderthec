@@ -1,6 +1,7 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,7 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Comment>> GetAllComments(string sortBy, int eventId)
+        public async Task<List<Comment?>> GetAllComments(string sortBy, int eventId)
         {
             IQueryable<Comment> query = _dbContext.comments.Where(c => c.eventId == eventId);
 
@@ -42,10 +43,15 @@ namespace EventManagementAPI.Repositories
         {
             var comment = await _dbContext.comments.FindAsync(id);
 
+            if (comment == null)
+            {
+                return null;
+            }
+
             return comment;
         }
 
-        public async Task<Comment> CreateComment(int customerId, int eventId, string comment)
+        public async Task<Comment?> CreateComment(int customerId, int eventId, string comment)
         {
             var newComment = new Comment();
             newComment.comment = comment;
@@ -58,14 +64,19 @@ namespace EventManagementAPI.Repositories
             newComment.customerId = customerId;
             newComment.commenter = customer;
 
-            _dbContext.comments.AddAsync(newComment);
+            _dbContext.comments.Add(newComment);
             await _dbContext.SaveChangesAsync();
             return newComment;
         }
 
-        public async Task<Comment> DeleteComment(int id)
+        public async Task<Comment?> DeleteComment(int id)
         {
             var comment = await GetCommentById(id);
+
+            if (comment == null)
+            {
+                return null;
+            }
 
             _dbContext.comments.Remove(comment);
 
@@ -163,6 +174,83 @@ namespace EventManagementAPI.Repositories
             await _dbContext.SaveChangesAsync();   
 
             return true;
+        }
+
+        public async Task<Comment?> RetrieveComment(int commentId)
+        {
+            var comment = await _dbContext.comments.FindAsync(commentId);
+
+            if (comment == null )
+            {
+                return null;
+            }
+
+            _dbContext.comments.Remove(comment);
+
+            await _dbContext.SaveChangesAsync();
+            return comment;
+        }
+
+        public async Task<User?> GetUser(int uid)
+        {
+
+            User? user = await _dbContext.customers.FindAsync(uid);
+            if (user == null)
+            {
+                user = await _dbContext.hosts.FindAsync(uid);
+            }
+            return user;
+        }
+
+        public async Task<Reply?> Reply(int commenterId, int replierId, int commentId, string reply)
+        {
+            User? commenter = await GetUser(commenterId); 
+            if (commenter == null) {
+                return null;
+            }
+
+            User? replier = await GetUser(replierId);
+            if (replier == null)
+            {
+                return null;
+            }
+
+            var comment = await _dbContext.comments.FindAsync(commentId);
+            if (comment == null)
+            {
+                return null;
+            }
+
+            var newReply = new Reply
+            {
+                replier = replier,
+                comment = comment,
+                commenter = commenter,
+                replierId = replierId,
+                commentId = commentId,
+                commenterId = commenterId,
+                reply = reply,
+            };
+
+            _dbContext.replies.Add(newReply);
+            await _dbContext.SaveChangesAsync();
+
+            return newReply;
+        }
+
+        public async Task<Reply?> RetrieveReply(int replyId)
+        {
+            var reply = await _dbContext.replies.FindAsync(replyId);
+
+            if (reply == null)
+            {
+                return null;
+            }
+
+            _dbContext.replies.Remove(reply);
+            await _dbContext.SaveChangesAsync();
+
+            return reply;
         }
     }
 }

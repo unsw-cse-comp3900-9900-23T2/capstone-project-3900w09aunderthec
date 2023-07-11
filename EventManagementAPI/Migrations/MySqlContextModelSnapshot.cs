@@ -196,7 +196,7 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("commentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("commmentId")
+                    b.Property<int>("commenterId")
                         .HasColumnType("int");
 
                     b.Property<int>("replierId")
@@ -210,9 +210,11 @@ namespace EventManagementAPI.Migrations
 
                     b.HasIndex("commentId");
 
+                    b.HasIndex("commenterId");
+
                     b.HasIndex("replierId");
 
-                    b.ToTable("Reply");
+                    b.ToTable("replies");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Subscription", b =>
@@ -433,6 +435,12 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EventManagementAPI.Models.User", "commenter")
+                        .WithMany()
+                        .HasForeignKey("commenterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EventManagementAPI.Models.User", "replier")
                         .WithMany()
                         .HasForeignKey("replierId")
@@ -440,6 +448,8 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("comment");
+
+                    b.Navigation("commenter");
 
                     b.Navigation("replier");
                 });

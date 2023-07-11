@@ -15,6 +15,7 @@ namespace EventManagementAPI.Context
         public DbSet<CommentDislike> commentDislikes { get; set; }
         public DbSet<Subscription> subscriptions { get; set; }
         public DbSet<EventSaved> eventsSaved { get; set; }
+        public DbSet<Reply> replies { get; set; }
 
         public MySqlContext(DbContextOptions<MySqlContext> options) : base(options) { }
     }
