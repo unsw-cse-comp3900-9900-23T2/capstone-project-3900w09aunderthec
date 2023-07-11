@@ -61,19 +61,19 @@ namespace EventManagementAPI.Controllers
     [Route("api/[controller]")]
     public class CommentController : ControllerBase
     {
-            private readonly ICommentRepository _commentRepository;
+        private readonly ICommentRepository _commentRepository;
 
-            public CommentController(ICommentRepository commentRepository)
-            {
-                _commentRepository = commentRepository;
-            }
+        public CommentController(ICommentRepository commentRepository)
+        {
+            _commentRepository = commentRepository;
+        }
 
-            [HttpGet]
-            public async Task<IActionResult> GetEventComments([FromQuery] int eventId, [FromQuery] string sortby)
-            {
-                var eventComments = await _commentRepository.GetAllComments(sortby, eventId);
-                return Ok(eventComments);
-            }
+        [HttpGet]
+        public async Task<IActionResult> GetEventComments([FromQuery] int eventId, [FromQuery] string sortby)
+        {
+            var eventComments = await _commentRepository.GetAllComments(sortby, eventId);
+            return Ok(eventComments);
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCommentDetails(int id)
