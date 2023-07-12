@@ -74,8 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
         bool isHost = _userValue == 1 ? false : true;
 
         // initialise session variables
-        setUserType(emailController.text);
-        sessionVariables.email = emailController.text;
+        initialiseSessionVariables(emailController.text);
 
         final response = await ioClient.post(
           registerUrl,
