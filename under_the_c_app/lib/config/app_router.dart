@@ -5,18 +5,19 @@ import 'package:under_the_c_app/components/common/layout/base_layout.dart';
 import 'package:under_the_c_app/components/events/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
+import 'package:under_the_c_app/components/ticket/book_tickets.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
-import 'package:under_the_c_app/pages/main_pages/analytics.dart';
-import 'package:under_the_c_app/pages/main_pages/customer_event_page.dart';
-import 'package:under_the_c_app/pages/main_pages/home.dart';
-import 'package:under_the_c_app/pages/main_pages/host_event_page.dart';
-import 'package:under_the_c_app/pages/main_pages/profile.dart';
-import 'package:under_the_c_app/pages/main_pages/register.dart';
-import 'package:under_the_c_app/pages/reset.dart';
+import 'package:under_the_c_app/pages/main/analytics.dart';
+import 'package:under_the_c_app/pages/main/customer/customer_event_page.dart';
+import 'package:under_the_c_app/pages/main/home.dart';
+import 'package:under_the_c_app/pages/main/host/host_event_page.dart';
+import 'package:under_the_c_app/pages/main/profile.dart';
+import 'package:under_the_c_app/pages/main/auth/register.dart';
+import 'package:under_the_c_app/pages/main/auth/reset.dart';
 
-import '../pages/login_page.dart';
+import '../pages/main/auth/login_page.dart';
 import 'auth_state_provider.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();

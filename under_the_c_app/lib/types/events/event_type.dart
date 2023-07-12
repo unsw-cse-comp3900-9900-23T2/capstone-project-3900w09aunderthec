@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/components/common/types/location/address.dart';
-import 'package:under_the_c_app/components/common/types/users/host_type.dart';
+import 'package:under_the_c_app/types/location/address.dart';
+import 'package:under_the_c_app/types/users/host_type.dart';
 
 class Event {
   final String eventId;

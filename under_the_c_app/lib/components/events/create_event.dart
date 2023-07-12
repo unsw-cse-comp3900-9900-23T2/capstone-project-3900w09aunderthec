@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'switch_button.dart';
-import 'dropdown_list.dart';
-import 'toggle_button.dart';
+import '../switch_button.dart';
+import 'widgets/dropdown_list.dart';
+import 'widgets/toggle_button.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'date_picker.dart';
+import 'date/date_picker.dart';
 
 // TODO: Save all variables and submit to backend (make sure it matches database)
 

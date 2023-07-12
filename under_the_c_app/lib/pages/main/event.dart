@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:http/io_client.dart';
-import 'package:under_the_c_app/components/book_tickets.dart';
-import 'package:under_the_c_app/components/create_event.dart';
-import '../../components/create_event.dart';
-import '../../components/book_tickets.dart';
+import 'package:under_the_c_app/components/ticket/book_tickets.dart';
+import 'package:under_the_c_app/components/events/create_event.dart';
+import '../../components/events/create_event.dart';
+import '../../components/ticket/book_tickets.dart';
 import 'package:http/io_client.dart';
 
 
