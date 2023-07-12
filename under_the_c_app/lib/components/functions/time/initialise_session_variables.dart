@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:http/io_client.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
-import 'package:under_the_c_app/main.dart';
 
 void initialiseSessionVariables(String email) async {
   HttpClient client = HttpClient();
@@ -12,7 +11,7 @@ void initialiseSessionVariables(String email) async {
   var ioClient = IOClient(client);
 
   final Url = Uri.https(
-      '10.0.2.2:7161', '/Authentication/GetUserType', {'email': email});
+      '10.0.2.2:7161', '/Authentication/GetInitialData', {'email': email});
   try {
     // if successfully registered then let backend know
     final response = await ioClient.get(Url, headers: {
@@ -23,11 +22,15 @@ void initialiseSessionVariables(String email) async {
 
     // handle http response
     if (response.statusCode != 200) {
-      throw Exception('API Error: ${response}');
+      throw Exception('GetInitialData API Error: ${response.statusCode}');
     } else {
       // store the user type
-      sessionVariables.sessionIsHost = jsonDecode(response.body);
-      print('User type set: ${sessionVariables.sessionIsHost}');
+      var responseObject = jsonDecode(response.body);
+      sessionVariables.sessionIsHost = responseObject['isHost'];
+      sessionVariables.email = responseObject['email'];
+      sessionVariables.uid = responseObject['uid'];
+      print(
+          'User type set: ${sessionVariables.sessionIsHost}, User uid: ${sessionVariables.uid}');
     }
   } catch (e) {
     print('$e');
