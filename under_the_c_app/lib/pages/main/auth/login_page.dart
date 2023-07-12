@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/log_in_button.dart';
+import 'package:under_the_c_app/pages/main/auth/widget/log_in_button.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 
-import '../components/functions/time/set_user_type.dart';
-import '../components/login_fields.dart';
+import '../../../components/functions/time/set_user_type.dart';
+import 'widget/login_fields.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

@@ -1,4 +1,4 @@
-import 'package:under_the_c_app/components/common/types/subscription_type.dart';
+import 'package:under_the_c_app/types/subscription_type.dart';
 
 class Customer {
   final int customerId;

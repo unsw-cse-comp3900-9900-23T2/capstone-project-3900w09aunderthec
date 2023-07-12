@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/io_client.dart';
 import 'package:under_the_c_app/components/functions/time/set_user_type.dart';
-import 'package:under_the_c_app/components/log_in_button.dart';
-import 'package:under_the_c_app/components/login_fields.dart';
+import 'package:under_the_c_app/pages/main/auth/widget/log_in_button.dart';
+import 'package:under_the_c_app/pages/main/auth/widget/login_fields.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
 
