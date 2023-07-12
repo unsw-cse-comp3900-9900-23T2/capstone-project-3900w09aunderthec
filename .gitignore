@@ -404,5 +404,7 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+.history
+
 # MySql related
 EventManagementAPI/Migrations
