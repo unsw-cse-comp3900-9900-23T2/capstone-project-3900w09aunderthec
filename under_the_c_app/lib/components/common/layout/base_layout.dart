@@ -24,9 +24,16 @@ class BaseLayout extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: Text(title), actions: [
-        ElevatedButton(onPressed: signOut, child: const Text('Log Out')),
-      ]),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          ElevatedButton(
+            onPressed: signOut,
+            child: const Text('Log Out'),
+            style: ElevatedButton.styleFrom(elevation: 0),
+          ),
+        ],
+      ),
       body: body,
       bottomNavigationBar: NavigationBarCustom(isHost: isHost),
     );
