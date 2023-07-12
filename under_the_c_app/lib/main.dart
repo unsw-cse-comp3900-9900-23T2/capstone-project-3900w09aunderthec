@@ -36,7 +36,7 @@ class MyApp extends ConsumerWidget {
       routerDelegate: router.routerDelegate,
       // non router related
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.indigo),
+      theme: ThemeData(primarySwatch: Colors.purple),
     );
   }
 }
