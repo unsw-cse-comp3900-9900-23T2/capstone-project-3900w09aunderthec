@@ -6,8 +6,10 @@ import 'package:under_the_c_app/components/events/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
 import 'package:under_the_c_app/components/ticket/book_tickets.dart';
+import 'package:under_the_c_app/config/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
+import 'package:under_the_c_app/pages/event.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/main/analytics.dart';
 import 'package:under_the_c_app/pages/main/customer/customer_event_page.dart';
@@ -47,19 +49,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/register',
+        path: AppRoutes.register,
         pageBuilder: (context, state) {
           return const MaterialPage(child: RegisterPage());
         },
       ),
       GoRoute(
-        path: '/reset',
+        path: AppRoutes.reset,
         pageBuilder: (context, state) {
           return const MaterialPage(child: ResetPasswordPage());
         },
       ),
       GoRoute(
-        path: '/guest',
+        path: AppRoutes.guest,
         pageBuilder: (context, state) {
           return MaterialPage(
               child: BaseLayout(
@@ -102,13 +104,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/host/events',
             pageBuilder: (context, state) {
-              return const MaterialPage(child: HostEventPage());
+              return const MaterialPage(child: EventPage());
             },
           ),
           GoRoute(
             path: '/customer/events',
             pageBuilder: (context, state) {
-              return const MaterialPage(child: CustomerEventPage());
+              return const MaterialPage(child: EventPage());
             },
           ),
           GoRoute(
