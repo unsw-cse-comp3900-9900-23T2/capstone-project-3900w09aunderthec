@@ -3,8 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
-import 'package:under_the_c_app/components/functions/send_email.dart';
+import 'package:under_the_c_app/api/email/send_email.dart';
 import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
 
 const priceTextStyle = TextStyle(

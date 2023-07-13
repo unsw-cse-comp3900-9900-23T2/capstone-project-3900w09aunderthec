@@ -32,6 +32,10 @@ void initialiseSessionVariables(String email) async {
       sessionVariables.vipLevel = responseObject['vipLevel'];
       sessionVariables.loyaltyPoints = responseObject['loyaltyPoints'];
 
+      print('isHost set: ${sessionVariables.sessionIsHost}');
+      print('uid set: ${sessionVariables.uid}');
+      print('vipLevel set: ${sessionVariables.vipLevel}');
+      print('loyaltyPoints set: ${sessionVariables.loyaltyPoints}');
     }
   } catch (e) {
     print('$e');

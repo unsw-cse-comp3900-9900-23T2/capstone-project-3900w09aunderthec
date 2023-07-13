@@ -8,24 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
 
-    public class ListEventsRequestBody {
-        public string uid { get; set; }
-    };
-    public class ListHostEventsRequestBody
-    {
-        public int hostId { get; set; }
-    };
-    public class ShowEventDetailsRequestBody {
-        public int eventId { get; set; }
-    };
-    public class ListSimilarEventsRequestBody {
-        public string uid { get; set; }
-        public string eventId { get; set; }
-    };
-    public class ListMyEventsRequestBody {
-        public string uid { get; set; }
-    };
-
     [ApiController]
     [Route("[controller]")]
     public class EventDisplayController : ControllerBase
@@ -37,39 +19,38 @@ namespace EventManagementAPI.Controllers{
             _eventDisplayRepository = eventDisplayRepository;
         }
 
-        [HttpPost("ListEvents")]
-        public async Task<IActionResult> ListEvents([FromBody] ListEventsRequestBody RequestBody) {
+        [HttpGet("ListEvents")]
+        public async Task<IActionResult> ListEvents() {
 
             var events = await _eventDisplayRepository.GetAllEvents();
             return Ok(events);
         }
 
-        [HttpPost("ListHostEvents")]
-        public async Task<IActionResult> ListHostEvents([FromBody] ListHostEventsRequestBody RequestBody)
+        [HttpGet("ListHostEvents")]
+        public async Task<IActionResult> ListHostEvents([FromQuery] int hostId)
         {
 
-            var events = await _eventDisplayRepository.GetAllHostEvents(RequestBody.hostId);
+            var events = await _eventDisplayRepository.GetAllHostEvents(hostId);
             return Ok(events);
         }
 
-        [HttpPost("ShowEventDetails")]
-        public async Task<IActionResult> ShowEventDetails([FromBody] ShowEventDetailsRequestBody RequestBody) {
+        [HttpGet("ShowEventDetails")]
+        public async Task<IActionResult> ShowEventDetails([FromQuery] int eventId) {
 
-            var eventId = RequestBody.eventId;
             var e = await _eventDisplayRepository.GetEventById(eventId);
             return Ok(e);
         }
 
-        [HttpPost("ListSimilarEvents")]
-        public String ListSimilarEvents([FromBody] ListSimilarEventsRequestBody RequestBody) {
+        [HttpGet("ListSimilarEvents")]
+        public String ListSimilarEvents([FromQuery] string uid, string eventId) {
 
             // Not being implemented in sprint 1
 
             throw new NotImplementedException();
         }
 
-        [HttpPost("ListMyEvents")]
-        public String ListMyEvents([FromBody] ListMyEventsRequestBody RequestBody) {
+        [HttpGet("ListMyEvents")]
+        public String ListMyEvents([FromQuery] string uid) {
 
             // As I write these descriptions, the more I realise that pretty much all this
             // funcitonality will be handled by database queries
