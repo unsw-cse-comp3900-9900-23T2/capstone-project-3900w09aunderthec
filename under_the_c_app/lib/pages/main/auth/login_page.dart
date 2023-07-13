@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/pages/main/auth/widget/log_in_button.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 
-import '../../../components/functions/time/initialise_session_variables.dart';
+import '../../../components/api/initialise_session_variables.dart';
 import 'widget/login_fields.dart';
 
 class LoginPage extends StatefulWidget {

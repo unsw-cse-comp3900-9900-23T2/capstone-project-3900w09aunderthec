@@ -1,20 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:http/io_client.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:http/http.dart' as http;
 
 void sendEmail() async {
-  HttpClient client = HttpClient();
-  client.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => true);
-  var ioClient = IOClient(client);
-
   final Url = Uri.https('10.0.2.2:7161', '/api/Booking/MakeBooking');
 
   try {
-    // if successfully registered then let backend know
-    final response = await ioClient.post(
+    final response = await http.post(
       Url,
       headers: {
         "Access-Control-Allow-Origin": "*",
