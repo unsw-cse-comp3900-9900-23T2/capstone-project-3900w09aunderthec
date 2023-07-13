@@ -14,16 +14,6 @@ namespace EventManagementAPI.Controllers
         public string email { get; set; }
     };
 
-    public class GetBookingRequestBody
-    {
-        public int uid { get; set; }
-    };
-
-    public class ShowBookingDetailsRequestBody
-    {
-        public int bookingId { get; set; }
-    };
-
     public class CancelBookingRequestBody
     {
         public int bookingId { get; set; }
@@ -46,16 +36,16 @@ namespace EventManagementAPI.Controllers
             _emailService = emailService;
         }
 
-        [HttpPost("GetBookings")]
-        public async Task<IActionResult> GetCustomerBookings(GetBookingRequestBody requestBody)
+        [HttpGet("GetBookings")]
+        public async Task<IActionResult> GetCustomerBookings([FromQuery] int uid)
         {
-            var bookings = await _bookingRepository.GetBookings(requestBody.uid);
+            var bookings = await _bookingRepository.GetBookings(uid);
 
             return Ok(bookings);
         }
 
         [HttpPost("MakeBooking")]
-        public async Task<IActionResult> MakeBooking(MakeBookingRequestBody RequestBody)
+        public async Task<IActionResult> MakeBooking([FromBody] MakeBookingRequestBody RequestBody)
         {
 
             var fromAddress = "young.jiapeng@outlook.com";
@@ -76,10 +66,10 @@ namespace EventManagementAPI.Controllers
             return Ok();
         }
 
-        [HttpPost("ShowBookingDetails")]
-        public async Task<IActionResult> ShowBookingDetails([FromBody] ShowBookingDetailsRequestBody RequestBody)
+        [HttpGet("ShowBookingDetails")]
+        public async Task<IActionResult> ShowBookingDetails([FromQuery] int bookingId)
         {
-            var b = await _bookingRepository.GetBookingById(RequestBody.bookingId);
+            var b = await _bookingRepository.GetBookingById(bookingId);
 
             if (b == null)
             {

@@ -8,12 +8,6 @@ using EventManagementAPI.Repositories;
 
 namespace EventManagementAPI.Controllers
 {
-    public class RegisterUserRequestBody {
-        public string username {get; set;} = "no username";
-        public string email {get; set;}
-        public bool isHost {get; set;} = false;
-    };
-
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
@@ -25,18 +19,18 @@ namespace EventManagementAPI.Controllers
             _authenticationRepository = authenticationRepository;
         }
 
-        [HttpPost("RegisterUser")]
-        public IActionResult RegisterUser([FromBody] RegisterUserRequestBody RequestBody) {
+        [HttpGet("RegisterUser")]
+        public IActionResult RegisterUser([FromQuery] string username, string email, bool isHost) {
 
-            if (!_authenticationRepository.validateEmailRegex(RequestBody.email)) {
+            if (!_authenticationRepository.validateEmailRegex(email)) {
                 return BadRequest("That email is invalid.");
             }
 
-            if (!_authenticationRepository.checkDuplicateEmails(RequestBody.email).Result) {
+            if (!_authenticationRepository.checkDuplicateEmails(email).Result) {
                 return BadRequest("That email is already in use.");
             }
 
-            _authenticationRepository.createUser(RequestBody.username, RequestBody.email, RequestBody.isHost);
+            _authenticationRepository.createUser(username, email, isHost);
 
             return Ok();
         }
