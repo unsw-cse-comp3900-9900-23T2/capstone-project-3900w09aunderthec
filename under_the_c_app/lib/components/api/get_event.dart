@@ -5,11 +5,16 @@ import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/components/api/api_routes.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-Future<http.Response> getEvents(String uid) async {
-  final registerUrl = Uri.https(APIRoutes.BASE_RUL, APIRoutes.getEvents);
+Future<http.Response> getEvents(String uid, bool isHost) async {
+  final registerUrl = isHost == false
+      ? Uri.https(APIRoutes.BASE_RUL, APIRoutes.getEvents)
+      : Uri.https(APIRoutes.BASE_RUL, APIRoutes.getHostEvents);
   try {
-    final response = await http.post(registerUrl,
-        headers: APIRoutes.headers, body: jsonEncode({"uid": uid}));
+    final response = await http.post(
+      registerUrl,
+      headers: APIRoutes.headers,
+      body: jsonEncode(isHost == false ? {"uid": uid} : {"hostId": uid}),
+    );
 
     if (response.statusCode == 200) {
       return response;

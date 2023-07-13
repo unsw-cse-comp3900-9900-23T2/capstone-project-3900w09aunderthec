@@ -9,10 +9,11 @@ import 'package:under_the_c_app/components/ticket/book_tickets.dart';
 import 'package:under_the_c_app/config/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
-import 'package:under_the_c_app/pages/event.dart';
+import 'package:under_the_c_app/pages/event_old.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/main/analytics.dart';
 import 'package:under_the_c_app/pages/main/customer/customer_event_page.dart';
+import 'package:under_the_c_app/pages/main/event.dart';
 import 'package:under_the_c_app/pages/main/home.dart';
 import 'package:under_the_c_app/pages/main/host/host_event_page.dart';
 import 'package:under_the_c_app/pages/main/profile.dart';
@@ -99,6 +100,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/analytics',
             pageBuilder: (context, state) {
               return const MaterialPage(child: AnalyticsPage());
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.events,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: EventPage());
             },
           ),
           GoRoute(

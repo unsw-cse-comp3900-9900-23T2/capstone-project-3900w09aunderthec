@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/config/routes.dart';
 
 // class AppScaffold extends StatefulWidget {
 //   const AppScaffold({Key? key, required this.child}) : super(key: key);
@@ -126,8 +127,8 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
         switch (index) {
           case 0:
             widget.isHost
-                ? context.go('/host/events', extra: 'Events')
-                : context.go('/customer/events', extra: 'Events');
+                ? context.go(AppRoutes.events, extra: 'Events')
+                : context.go(AppRoutes.events, extra: 'Events');
             break;
           case 1:
             context.go('/home', extra: 'Home');

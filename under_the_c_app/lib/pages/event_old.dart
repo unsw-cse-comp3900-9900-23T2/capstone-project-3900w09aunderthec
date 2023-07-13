@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/io_client.dart';
 
-class EventPage extends StatelessWidget {
-  const EventPage({Key? key}) : super(key: key);
+class EventPageOld extends StatelessWidget {
+  const EventPageOld({Key? key}) : super(key: key);
 
   void getEvents() async {
     HttpClient client = HttpClient();
