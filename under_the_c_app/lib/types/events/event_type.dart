@@ -11,8 +11,10 @@ class Event {
   final String description;
   final bool? allowRefunds;
   final double? rating;
+  final List<String>? tags;
   final Address address;
   final String time;
+  final bool? isPrivate;
 
   Event(
       {required this.title,
@@ -22,13 +24,17 @@ class Event {
       String? description,
       bool? allowRefunds,
       bool? rating,
+      bool? isPrivate,
+      List<String>? tags,
       required this.price,
       required this.address,
       required this.time})
       : imageUrl = imageUrl ?? "images/events/money-event.jpg", //default image
         description = description ?? "",
         allowRefunds = false,
-        rating = null;
+        isPrivate = false,
+        rating = null,
+        tags = [];
 }
 
 const List<Widget> eventTypes = <Widget>[
