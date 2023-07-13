@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/io_client.dart';
 import 'package:under_the_c_app/components/ticket/book_tickets.dart';
 import 'package:under_the_c_app/components/events/create_event.dart';
+import 'package:under_the_c_app/pages/event_old.dart';
 import '../../components/events/create_event.dart';
 import '../../components/ticket/book_tickets.dart';
 import 'package:http/io_client.dart';
@@ -65,7 +66,7 @@ class EventPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const CreateEventRoute()),
+                                      const EventPageOld()),
                             ),
                           },
                       child: const Text("Create Event"))),

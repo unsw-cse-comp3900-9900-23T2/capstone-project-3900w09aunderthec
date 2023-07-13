@@ -5,7 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 // import 'package:under_the_c_app/components/common/types/event_types.dart';
-import '../ticket_confirmation.dart';
+import 'ticket_confirmation.dart';
 import 'package:http/http.dart' as http;
 
 const priceTextStyle = TextStyle(
