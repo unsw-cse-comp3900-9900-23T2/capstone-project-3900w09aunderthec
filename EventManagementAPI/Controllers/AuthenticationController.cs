@@ -41,17 +41,17 @@ namespace EventManagementAPI.Controllers
             return Ok();
         }
 
-        [HttpGet("GetUserType")]
-        public async Task<IActionResult> GetUserType([FromQuery] string email)
+        [HttpGet("GetInitialData")]
+        public async Task<IActionResult> GetInitialData([FromQuery] string email)
         {
             if (!_authenticationRepository.validateEmailRegex(email))
             {
                 return BadRequest("That email is invalid.");
             }
 
-            bool isHost = await _authenticationRepository.getUserType(email);
+            InitialData userData = await _authenticationRepository.getInitialData(email);
 
-            return Ok(isHost);
+            return Ok(userData);
         }
 
     }
