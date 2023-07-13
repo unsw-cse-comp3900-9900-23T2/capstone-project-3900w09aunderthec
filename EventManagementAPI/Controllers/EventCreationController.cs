@@ -50,12 +50,23 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPost("GetTags")]
-        public String GetTags([FromBody] GetTagsRequestBody RequestBody) {
+        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody) {
 
             // Format string to make api call with
             // make api call
             // parse recommended tags from api response string
             // return recommended tags
+
+            string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
+                                      RequestBody.description + "\nVenue: ";
+
+            try {
+                await _eventRepository.GetTags(descriptorString);
+            } catch (BadHttpRequestException e) {
+                return BadRequest(e.Message);
+            }
+
+            return Ok();
 
             throw new NotImplementedException();
         }
