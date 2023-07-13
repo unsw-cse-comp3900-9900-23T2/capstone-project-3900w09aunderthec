@@ -162,7 +162,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 return MaterialPage(child: BookTicket(eventId: eventId));
               }),
           GoRoute(
-              path: '/event_add',
+              path: AppRoutes.eventAdd,
               pageBuilder: (context, state) {
                 return MaterialPage(child: EventCreate());
               }),
