@@ -41,3 +41,48 @@ const List<Widget> eventTypes = <Widget>[
   Text('Private'),
   Text('Public'),
 ];
+
+class BackendEventData {
+  final int eventId;
+  final int hosterFK;
+  final String title;
+  final DateTime time;
+  final String venue;
+  final String description;
+  final bool allowRefunds;
+  final bool privateEvent;
+  final double? rating;
+  final String tags;
+
+  BackendEventData({
+    required this.eventId,
+    required this.hosterFK,
+    required this.title,
+    required this.time,
+    required this.venue,
+    required this.description,
+    required this.allowRefunds,
+    required this.privateEvent,
+    required this.rating,
+    required this.tags,
+  });
+  @override
+  String toString() {
+    return 'AllEvents(eventId: $eventId, hosterFK: $hosterFK, title: $title, time: $time, venue: $venue, description: $description, allowRefunds: $allowRefunds, privateEvent: $privateEvent, rating: $rating, tags: $tags)';
+  }
+
+  factory BackendEventData.fromJson(Map<String, dynamic> json) {
+    return BackendEventData(
+      eventId: json['eventId'],
+      hosterFK: json['hosterFK'],
+      title: json['title'],
+      time: DateTime.parse(json['time']),
+      venue: json['venue'],
+      description: json['description'],
+      allowRefunds: json['allowRefunds'],
+      privateEvent: json['privateEvent'],
+      rating: json['rating'],
+      tags: json['tags'],
+    );
+  }
+}

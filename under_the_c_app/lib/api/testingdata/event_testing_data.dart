@@ -70,7 +70,6 @@ Future<List<Event>> fetchAllIncomingEvents() async {
   return incomingEvents;
 }
 
-// TODO: event.dart: It's fetching fake data, need to replace with real data
 Future<Event> fetchIncomingEventById(String eventId) async {
   final event = incomingEvents.firstWhere((e) => e.eventId == eventId,
       orElse: () => throw Exception('Event not found'));
@@ -133,34 +132,34 @@ Future<Event> fetchHostedEventById(String eventId) async {
   return event;
 }
 
-void getEvents() async {
-  HttpClient client = HttpClient();
-  client.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => true);
-  var ioClient = IOClient(client);
+// void getEvents() async {
+//   HttpClient client = HttpClient();
+//   client.badCertificateCallback =
+//       ((X509Certificate cert, String host, int port) => true);
+//   var ioClient = IOClient(client);
 
-  final registerUrl = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
+//   final registerUrl = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
 
-  try {
-    final response = await ioClient.post(
-      registerUrl,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        'Content-Type': 'application/json',
-        'Accept': '*/*'
-      },
-      body: jsonEncode({
-        // TODO: [PLHV-157] event.dart:getEvents(): change UID to possibly the email
-        "uid": "1"
-      }),
-    );
+//   try {
+//     final response = await ioClient.post(
+//       registerUrl,
+//       headers: {
+//         "Access-Control-Allow-Origin": "*",
+//         'Content-Type': 'application/json',
+//         'Accept': '*/*'
+//       },
+//       body: jsonEncode({
+//         // TODO: [PLHV-157] event.dart:getEvents(): change UID to possibly the email
+//         "uid": "1"
+//       }),
+//     );
 
-    // server currently returns a 500 as its not implemented
-    if (response.statusCode == 500) {
-      print(response.body);
-      throw Exception(response.body);
-    }
-  } catch (e) {
-    print('An error occured: $e');
-  }
-}
+//     // server currently returns a 500 as its not implemented
+//     if (response.statusCode == 500) {
+//       print(response.body);
+//       throw Exception(response.body);
+//     }
+//   } catch (e) {
+//     print('An error occured: $e');
+//   }
+// }

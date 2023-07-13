@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/components/api/get_event.dart';
+import 'package:under_the_c_app/api/events/get_event.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key}) : super(key: key);

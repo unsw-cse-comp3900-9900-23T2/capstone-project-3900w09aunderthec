@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:under_the_c_app/components/api/api_routes.dart';
+import 'package:under_the_c_app/api/api_routes.dart';
+import 'package:under_the_c_app/api/converters/event_converter.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-Future<http.Response> getEvents(String uid, bool isHost) async {
+Future<List<Event>> getEvents(String uid, bool isHost) async {
   final registerUrl = isHost == false
       ? Uri.https(APIRoutes.BASE_RUL, APIRoutes.getEvents)
       : Uri.https(APIRoutes.BASE_RUL, APIRoutes.getHostEvents);
@@ -17,7 +18,10 @@ Future<http.Response> getEvents(String uid, bool isHost) async {
     );
 
     if (response.statusCode == 200) {
-      return response;
+      final List<dynamic> jsonList = jsonDecode(response.body);
+      final List<BackendEventData> events =
+          jsonList.map((json) => BackendEventData.fromJson(json)).toList();
+      return BackendDataToEvent(events);
     } else {
       throw Exception(
           'event.dart.getEvents: Server returned status code ${response.statusCode}');

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
-import 'package:under_the_c_app/components/providers/event_providers.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 
 // @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
 class HomePage extends ConsumerWidget {
