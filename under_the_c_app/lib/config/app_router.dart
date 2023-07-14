@@ -83,26 +83,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               return const MaterialPage(child: ResetPasswordPage());
             },
           ),
-          // GoRoute(
-          //   path: AppRoutes.guest,
-          //   pageBuilder: (context, state) {
-          //     return MaterialPage(
-          //         child: BaseLayout(
-          //       body: GuestPage(),
-          //       isHost: sessionVariables.sessionIsHost,
-          //     ));
-          //   },
-          // ),
           GoRoute(
             path: AppRoutes.analytics,
             pageBuilder: (context, state) {
               return const MaterialPage(child: AnalyticsPage());
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.events,
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: HostEventPage());
             },
           ),
           GoRoute(
@@ -118,22 +102,24 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
+            path: AppRoutes.guest,
+            pageBuilder: (context, state) {
+              return MaterialPage(child: GuestPage());
+            },
+          ),
+          
+          // events routes
+          GoRoute(
+            path: AppRoutes.events,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: HostEventPage());
+            },
+          ),
+          GoRoute(
             path: AppRoutes.eventDetails(':id'),
             pageBuilder: (context, state) {
               final eventId = state.pathParameters['id'].toString();
               return MaterialPage(child: EventDetailsPage(eventId: eventId));
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.reset,
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: ResetPasswordPage());
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.guest,
-            pageBuilder: (context, state) {
-              return MaterialPage(child: GuestPage());
             },
           ),
           GoRoute(
@@ -144,16 +130,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
+              path: AppRoutes.eventAdd,
+              pageBuilder: (context, state) {
+                return const MaterialPage(child: EventCreate());
+              }),
+          GoRoute(
             path: AppRoutes.ticketConfirmation,
             pageBuilder: (context, state) {
               return const MaterialPage(child: TicketConfirmation());
             },
           ),
-          GoRoute(
-              path: AppRoutes.eventAdd,
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: EventCreate());
-              }),
         ],
       ),
     ],
