@@ -8,8 +8,8 @@ import 'package:under_the_c_app/types/events/event_type.dart';
 
 Future<List<Event>> getEvents(bool isHost) async {
   final registerUrl = isHost == false
-      ? Uri.https(APIRoutes.BASE_RUL, APIRoutes.getEvents)
-      : Uri.https(APIRoutes.BASE_RUL, APIRoutes.getHostEvents);
+      ? Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents)
+      : Uri.https(APIRoutes.BASE_URL, APIRoutes.getHostEvents);
   try {
     final response = await http.get(
       registerUrl,
@@ -20,7 +20,7 @@ Future<List<Event>> getEvents(bool isHost) async {
       final List<dynamic> jsonList = jsonDecode(response.body);
       final List<BackendEventData> events =
           jsonList.map((json) => BackendEventData.fromJson(json)).toList();
-      return BackendDataToEvent(events);
+      return BackendDataEventListToEvent(events);
     } else {
       throw Exception(
           'event.dart.getEvents: Server returned status code ${response.statusCode}');
@@ -34,8 +34,29 @@ Future<List<Event>> getEvents(bool isHost) async {
   }
 }
 
+Future<Event> getEvent(String id) async {
+  final url =
+      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEventDetails, {"eventId": id});
+
+  try {
+    final response = await http.get(url, headers: APIRoutes.headers);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic>  data = jsonDecode(response.body);
+      return BackendDataSingleEventToEvent(data);
+    } else {
+      throw HttpException('HTTP error: ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.getEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.getEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.getEvent: Unknown error $e');
+  }
+}
+
 Future<void> createEvent(Event eventInfo, String uid) async {
-  final url = Uri.https(APIRoutes.BASE_RUL, APIRoutes.createEvent);
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.createEvent);
   try {
     final response = await http.post(url,
         headers: APIRoutes.headers,

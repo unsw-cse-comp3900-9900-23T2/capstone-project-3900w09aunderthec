@@ -12,11 +12,9 @@ class EventDetailsPage extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  // fetch
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final event = ref.watch(IncomingEventsProviderById(eventId));
+    final event = ref.watch(eventProvider(eventId));
     return event.when(
         data: (event) {
           return Scaffold(

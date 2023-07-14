@@ -16,12 +16,19 @@ class EventsProvider extends StateNotifier<List<Event>> {
   Future<void> fetchEvents() async {
     state = await getEvents(true);
   }
+
+  Future<void> fetchEventsById(id) async {
+    state = [await getEvent(id)];
+  }
 }
 
 final eventsProvider =
-    StateNotifierProvider<EventsProvider, List<Event>>(
-        (ref) {
+    StateNotifierProvider<EventsProvider, List<Event>>((ref) {
   return EventsProvider();
+});
+
+final eventProvider = FutureProvider.family<Event, String>((ref, id) async {
+  return await getEvent(id);
 });
 
 // Example of having arguments
@@ -30,7 +37,6 @@ final eventsProvider =
 //         (ref, uid) {
 //   return EventsProvider(uid);
 // });
-
 
 final IncomingEventsProviderById = FutureProvider.family<Event, String>(
   (ref, id) async {

@@ -1,7 +1,7 @@
 class APIRoutes {
   APIRoutes._(); //Prevent this class to be instantalized
 
-  static const String BASE_RUL = '10.0.2.2:7161';
+  static const String BASE_URL = '10.0.2.2:7161';
   static const headers = {
     "Access-Control-Allow-Origin": "*",
     'Content-Type': 'application/json',
