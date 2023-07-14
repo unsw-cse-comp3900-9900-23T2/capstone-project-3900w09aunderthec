@@ -56,16 +56,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const MaterialPage(child: ResetPasswordPage());
         },
       ),
-      GoRoute(
-        path: AppRoutes.guest,
-        pageBuilder: (context, state) {
-          return MaterialPage(
-              child: BaseLayout(
-            body: GuestPage(),
-            isHost: sessionVariables.sessionIsHost,
-          ));
-        },
-      ),
+      // GoRoute(
+      //   path: AppRoutes.guest,
+      //   pageBuilder: (context, state) {
+      //     return MaterialPage(
+      //         child: BaseLayout(
+      //       body: GuestPage(),
+      //       isHost: sessionVariables.sessionIsHost,
+      //     ));
+      //   },
+      // ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
@@ -74,6 +74,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               title: state.extra != null ? state.extra!.toString() : "",
               isHost: sessionVariables.sessionIsHost);
         },
+
+        // TODO: [PLHV-201] Reset page needs to be different, we need to provide going back button and potential nav bar
         routes: <RouteBase>[
           GoRoute(
             path: AppRoutes.reset,
@@ -81,16 +83,16 @@ final routerProvider = Provider<GoRouter>((ref) {
               return const MaterialPage(child: ResetPasswordPage());
             },
           ),
-          GoRoute(
-            path: AppRoutes.guest,
-            pageBuilder: (context, state) {
-              return MaterialPage(
-                  child: BaseLayout(
-                body: GuestPage(),
-                isHost: sessionVariables.sessionIsHost,
-              ));
-            },
-          ),
+          // GoRoute(
+          //   path: AppRoutes.guest,
+          //   pageBuilder: (context, state) {
+          //     return MaterialPage(
+          //         child: BaseLayout(
+          //       body: GuestPage(),
+          //       isHost: sessionVariables.sessionIsHost,
+          //     ));
+          //   },
+          // ),
           GoRoute(
             path: AppRoutes.analytics,
             pageBuilder: (context, state) {
@@ -103,18 +105,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               return const MaterialPage(child: HostEventPage());
             },
           ),
-          // GoRoute(
-          //   path: '/host/events',
-          //   pageBuilder: (context, state) {
-          //     return const MaterialPage(child: EventPage());
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/customer/events',
-          //   pageBuilder: (context, state) {
-          //     return const MaterialPage(child: EventPage());
-          //   },
-          // ),
           GoRoute(
             path: AppRoutes.home,
             pageBuilder: (context, state) {
@@ -143,11 +133,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.guest,
             pageBuilder: (context, state) {
-              return MaterialPage(
-                  child: BaseLayout(
-                body: GuestPage(),
-                isHost: sessionVariables.sessionIsHost,
-              ));
+              return MaterialPage(child: GuestPage());
             },
           ),
           GoRoute(
@@ -166,7 +152,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
               path: AppRoutes.eventAdd,
               pageBuilder: (context, state) {
-                return MaterialPage(child: EventCreate());
+                return const MaterialPage(child: EventCreate());
               }),
         ],
       ),
@@ -174,15 +160,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
 
-      // print("app_route: sessionIsHost = ${sessionVariables.sessionIsHost}");
-
       // case for if the user is signed in
       if (authState.valueOrNull != null) {
         // only redirect to '/home' if the current location is the root ('/')
         if (state.location == '/') {
           return '/home';
         }
-
         // do not redirect if the user is navigation to another page
         return null;
       }
