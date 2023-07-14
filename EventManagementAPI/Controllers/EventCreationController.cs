@@ -58,17 +58,17 @@ namespace EventManagementAPI.Controllers{
             // return recommended tags
 
             string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
-                                      RequestBody.description + "\nVenue: ";
+                                      RequestBody.description + "\nVenue: " + RequestBody.venue;
+
+            List<string> tagList = new List<string>();
 
             try {
-                await _eventRepository.GetTags(descriptorString);
+                tagList = await _eventRepository.GetTags(descriptorString);
             } catch (BadHttpRequestException e) {
                 return BadRequest(e.Message);
             }
 
-            return Ok();
-
-            throw new NotImplementedException();
+            return Ok(tagList);
         }
 
         [HttpPost("CreateEvent")]
