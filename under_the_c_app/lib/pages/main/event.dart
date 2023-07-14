@@ -4,8 +4,8 @@ import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
 import 'package:under_the_c_app/components/events/event_create/event_create.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 
-class HostEventPage extends StatelessWidget {
-  const HostEventPage({Key? key}) : super(key: key);
+class EventPage extends StatelessWidget {
+  const EventPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class HostEventPage extends StatelessWidget {
         //     ),
         //   ),
         // ),
-        const EventCreate()
+        // const EventCreate()
       ],
     );
   }

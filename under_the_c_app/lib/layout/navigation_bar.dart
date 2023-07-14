@@ -36,10 +36,10 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
                 : context.go(AppRoutes.events, extra: 'Events');
             break;
           case 1:
-            context.go('/home', extra: 'Home');
+            context.go(AppRoutes.home, extra: 'Home');
             break;
           case 2:
-            context.go('/profile', extra: 'Profile');
+            context.go(AppRoutes.profile, extra: 'Profile');
             break;
           default:
             break;
