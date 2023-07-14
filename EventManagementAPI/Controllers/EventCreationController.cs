@@ -100,7 +100,7 @@ namespace EventManagementAPI.Controllers{
             return Ok();
         }
 
-        [HttpPost("ModifyEvent")]
+        [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
 
             Event newEvent = new Event

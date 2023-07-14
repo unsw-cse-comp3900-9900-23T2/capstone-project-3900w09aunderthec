@@ -158,5 +158,16 @@ namespace EventManagementAPI.Repositories
 
             return events;
         }
+
+        public async Task CancelEvent(int eventId)
+        {
+            var e = await _dbContext.events.FindAsync(eventId);
+
+            if (e != null)
+            {
+                _dbContext.Remove(e);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }
