@@ -26,6 +26,13 @@ namespace EventManagementAPI.Controllers{
             return Ok(events);
         }
 
+        [HttpGet("ListFilteredEvents")]
+        public async Task<IActionResult> ListFilteredEvents([FromQuery] string tags) {
+
+            var events = await _eventDisplayRepository.GetFilteredEvents(tags);
+            return Ok(events);
+        }
+
         [HttpGet("ListHostEvents")]
         public async Task<IActionResult> ListHostEvents([FromQuery] int hostId)
         {

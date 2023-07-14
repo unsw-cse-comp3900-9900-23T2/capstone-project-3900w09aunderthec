@@ -8,6 +8,7 @@ namespace EventManagementAPI.Repositories
     {
         Task<List<string>> GetTags(string descriptorString);
         Task<List<Event>> GetAllEvents();
+        Task<List<Event>> GetFilteredEvents(string tags);
         Task CreateAnEvent(Event e);
         Task<Event> GetEventById(int id);
         Task ModifyEvent(Event e);

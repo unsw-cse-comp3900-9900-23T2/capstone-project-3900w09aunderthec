@@ -189,7 +189,7 @@ namespace EventManagementAPI.Migrations
 
             modelBuilder.Entity("EventManagementAPI.Models.Reply", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -206,7 +206,7 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("commentId");
 
