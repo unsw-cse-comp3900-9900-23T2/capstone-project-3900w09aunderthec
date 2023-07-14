@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
-import 'package:under_the_c_app/components/events/widgets/event_button.dart';
+import 'package:under_the_c_app/components/events/event_create/event_create.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 
 class HostEventPage extends StatelessWidget {
@@ -80,7 +80,7 @@ class HostEventPage extends StatelessWidget {
         //     ),
         //   ),
         // ),
-        const EventCreateButton()
+        const EventCreate()
       ],
     );
   }

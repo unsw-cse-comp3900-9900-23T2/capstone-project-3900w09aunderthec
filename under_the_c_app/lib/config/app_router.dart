@@ -3,24 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/common/layout/base_layout.dart';
 import 'package:under_the_c_app/components/ticket/book_ticket.dart';
-import 'package:under_the_c_app/components/events/event_create.dart';
+import 'package:under_the_c_app/components/events/event_create/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
-import 'package:under_the_c_app/components/ticket/book_tickets_old.dart';
 import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
 import 'package:under_the_c_app/config/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
-import 'package:under_the_c_app/main.dart';
-import 'package:under_the_c_app/pages/event_old.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/main/analytics.dart';
-import 'package:under_the_c_app/pages/main/customer/customer_event_page.dart';
 import 'package:under_the_c_app/pages/main/event.dart';
 import 'package:under_the_c_app/pages/main/home.dart';
-import 'package:under_the_c_app/pages/main/event.dart';
 import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
-
 import '../pages/main/auth/login/login_page.dart';
 import 'auth_state_provider.dart';
 
