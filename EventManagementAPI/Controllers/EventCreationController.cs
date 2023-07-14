@@ -16,7 +16,6 @@ namespace EventManagementAPI.Controllers{
     public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
-        public DateTime time { get; set; }
         public string venue { get; set; }
         public string description { get; set; }
         public bool allowRefunds { get; set; }
@@ -36,6 +35,11 @@ namespace EventManagementAPI.Controllers{
         // public List<String> tags;
         // public List<Ticket> tickets { get; set; }
     };
+
+    public class CancelEventRequestBody
+    {
+        public int eventId { get; set; }
+    }
 
     [ApiController]
     [Route("[controller]")]
@@ -82,7 +86,6 @@ namespace EventManagementAPI.Controllers{
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
-                time = RequestBody.time,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,
@@ -107,7 +110,7 @@ namespace EventManagementAPI.Controllers{
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
-                time = RequestBody.time,
+                createdTime = RequestBody.time,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,
@@ -127,6 +130,18 @@ namespace EventManagementAPI.Controllers{
             return Ok();
         }
 
+        [HttpDelete("CancelEvent")]
+        public async Task<IActionResult> CancelEvent([FromBody] CancelEventRequestBody requestBody)
+        {
+            var e = await _eventRepository.CancelEvent(requestBody.eventId);
+
+            if (e != null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
     }
 }
 

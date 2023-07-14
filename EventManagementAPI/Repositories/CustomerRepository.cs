@@ -93,11 +93,15 @@ namespace EventManagementAPI.Repositories
                 return false;
             }
 
-            var saveEvent = new EventSaved();
-            saveEvent.customerId = customerId;
-            saveEvent.eventId = eventId;
-            saveEvent.customer = customer;
-            saveEvent.eventShow = e;
+            e.numberSaved++;
+
+            var saveEvent = new EventSaved()
+            {
+                customerId = customerId,
+                eventId = eventId,
+                customer = customer,
+                eventShow = e,
+            };
 
             _dbContext.Add(saveEvent);
             await _dbContext.SaveChangesAsync();
@@ -112,6 +116,14 @@ namespace EventManagementAPI.Repositories
             if (saveEvent == null)
             {
                 return false;
+            }
+
+            var eventId = saveEvent.eventId;
+            var e = await _dbContext.events.FindAsync(eventId);
+
+            if (e != null)
+            {
+                e.numberSaved--;
             }
 
             _dbContext.Remove(saveEvent);
