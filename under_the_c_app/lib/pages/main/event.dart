@@ -61,25 +61,27 @@ class EventPage extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.purple,
-                  borderRadius: BorderRadius.circular(20)),
-              child: IconButton(
-                  onPressed: () {
-                    context.go(AppRoutes.eventAdd);
-                  },
-                  icon: const Icon(Icons.add),
-                  iconSize: 50,
-                  color: Color.fromARGB(255, 255, 225, 253)),
-            ),
-          ),
-        ),
+        isHost
+            ? Positioned(
+                right: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.purple,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: IconButton(
+                        onPressed: () {
+                          context.go(AppRoutes.eventAdd);
+                        },
+                        icon: const Icon(Icons.add),
+                        iconSize: 50,
+                        color: const Color.fromARGB(255, 255, 225, 253)),
+                  ),
+                ),
+              )
+            : Container(),
         // const EventCreate()
       ],
     );
