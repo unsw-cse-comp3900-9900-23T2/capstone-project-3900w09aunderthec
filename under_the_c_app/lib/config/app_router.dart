@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/common/layout/base_layout.dart';
+import 'package:under_the_c_app/layout/base_layout.dart';
 import 'package:under_the_c_app/components/ticket/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_create/event_create.dart';
-import 'package:under_the_c_app/components/events/event_details.dart';
+import 'package:under_the_c_app/components/events/event_details/event_details.dart';
 import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
 import 'package:under_the_c_app/config/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';

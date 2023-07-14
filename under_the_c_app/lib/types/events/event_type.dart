@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/types/location/address.dart';
+import 'package:under_the_c_app/types/address.dart';
 import 'package:under_the_c_app/types/users/host_type.dart';
 
 class Event {

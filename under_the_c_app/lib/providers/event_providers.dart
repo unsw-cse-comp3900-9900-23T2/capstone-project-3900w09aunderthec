@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:under_the_c_app/api/events/http_event_requests.dart';
+import 'package:under_the_c_app/api/event_requests.dart';
 import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
