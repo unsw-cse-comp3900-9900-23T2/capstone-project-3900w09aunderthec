@@ -6,15 +6,14 @@ import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/api/converters/event_converter.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-Future<List<Event>> getEvents(String uid, bool isHost) async {
+Future<List<Event>> getEvents(bool isHost) async {
   final registerUrl = isHost == false
       ? Uri.https(APIRoutes.BASE_RUL, APIRoutes.getEvents)
       : Uri.https(APIRoutes.BASE_RUL, APIRoutes.getHostEvents);
   try {
-    final response = await http.post(
+    final response = await http.get(
       registerUrl,
       headers: APIRoutes.headers,
-      body: jsonEncode(isHost == false ? {"uid": uid} : {"hostId": uid}),
     );
 
     if (response.statusCode == 200) {
@@ -50,7 +49,7 @@ Future<void> createEvent(Event eventInfo, String uid) async {
             "allowRefunds": eventInfo.allowRefunds,
             "privateEvent": eventInfo.isPrivate,
             // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
-            "tags": "tags" 
+            "tags": "tags"
           },
         ));
     if (response.statusCode < 200 || response.statusCode >= 300) {

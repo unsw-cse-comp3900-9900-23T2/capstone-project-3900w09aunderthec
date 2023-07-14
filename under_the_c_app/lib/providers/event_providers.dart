@@ -4,34 +4,32 @@ import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
 class EventsProvider extends StateNotifier<List<Event>> {
-  final String uid;
   // final bool isHost;
-  EventsProvider(this.uid) : super([]) {
+  EventsProvider() : super([]) {
     fetchEvents();
   }
-  void addEvent(Event event, String uid) {
+  void addEvent(Event event, uid) {
     createEvent(event, uid);
     state = [...state, event];
-    print("------->addEvent: printing state");
-    for (var person in state) {
-      print(person.toString());
-    }
   }
 
   Future<void> fetchEvents() async {
-    state = await getEvents(uid, true);
-    print("------->fetchEvents: printing state");
-    for (var person in state) {
-      print(person.toString());
-    }
+    state = await getEvents(true);
   }
 }
 
 final eventsProvider =
-    StateNotifierProvider.family<EventsProvider, List<Event>, String>(
-        (ref, uid) {
-  return EventsProvider(uid);
+    StateNotifierProvider<EventsProvider, List<Event>>(
+        (ref) {
+  return EventsProvider();
 });
+// Example of having arguments
+// final eventsProvider =
+//     StateNotifierProvider.family<EventsProvider, List<Event>, String>(
+//         (ref, uid) {
+//   return EventsProvider(uid);
+// });
+
 
 // Old code
 // final IncomingEventsProvider = FutureProvider<List<Event>>((ref) async {

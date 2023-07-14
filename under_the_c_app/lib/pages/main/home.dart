@@ -9,7 +9,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(eventsProvider('3'));
+    final events = ref.watch(eventsProvider);
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
       alignment: Alignment.center,

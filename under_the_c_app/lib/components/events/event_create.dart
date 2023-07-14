@@ -331,7 +331,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                   _formKey.currentState!.save();
 
-                  ref.read(eventsProvider('2').notifier).addEvent(
+                  ref.read(eventsProvider.notifier).addEvent(
                       // TODO: [PLHV-199] event_creation.dart: Need to pass the variables below(except suburb, city, country, postcode maybe)
                       Event(
                           title: title,

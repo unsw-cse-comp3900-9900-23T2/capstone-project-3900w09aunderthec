@@ -19,7 +19,7 @@ class _EventPageState extends State<EventPage> {
   @override
   void initState() {
     super.initState();
-    events = getEvents("3", true);
+    events = getEvents(true);
     print("----->events = $events");
   }
 
