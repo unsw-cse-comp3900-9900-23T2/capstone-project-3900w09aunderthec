@@ -1,63 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/api/api_routes.dart';
-import 'package:under_the_c_app/api/events/http_event_requests.dart';
-import 'package:under_the_c_app/components/events/create_event.dart';
-import 'package:under_the_c_app/components/ticket/book_tickets.dart';
-import 'package:under_the_c_app/config/routes.dart';
-import 'package:under_the_c_app/pages/event_old.dart';
+import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
+import 'package:under_the_c_app/components/events/widgets/event_button.dart';
+import 'package:under_the_c_app/components/events/event_card.dart';
 
-class EventPage extends StatefulWidget {
-  const EventPage({Key? key}) : super(key: key);
-
-  @override
-  _EventPageState createState() => _EventPageState();
-}
-
-class _EventPageState extends State<EventPage> {
-  late Future events;
-  @override
-  void initState() {
-    super.initState();
-    events = getEvents(true);
-    print("----->events = $events");
-  }
+class HostEventPage extends StatelessWidget {
+  const HostEventPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.lightBlue,
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () => {const EventCreate()},
-          // child: const Text("Event Page"),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: ElevatedButton(
-                      onPressed: () => {
-                            context.push(AppRoutes.eventAdd),
-                          },
-                      child: const Text("Create Event"))),
-              const Align(
-                alignment: Alignment.center,
-                child: Text("Event Page"),
+    return Stack(
+      children: [
+        Container(
+          color: const Color.fromARGB(255, 255, 255, 255),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(15),
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12, left: 4),
+                  child: Title(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    child: const Text(
+                      "My Hosted Events",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 42, 23, 120),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              Align(
-                  alignment: Alignment.topRight,
-                  child: ElevatedButton(
-                      onPressed: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BookTicketRoute()),
-                            ),
-                          },
-                      child: const Text("Book Tickets"))),
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final event = hostedEvents[index];
+
+                  return SizedBox(
+                    width: 375,
+                    child: GestureDetector(
+                      onTap: () {
+                        context.go('/event_details/${event.eventId}',
+                            extra: 'Details');
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: EventCard(
+                          title: event.title,
+                          imageUrl: event.imageUrl,
+                          time: event.time,
+                          address: event.address,
+                        ),
+                      ),
+                    ),
+                  );
+                }, childCount: hostedEvents.length),
+              )
             ],
           ),
-        ));
+        ),
+        // Align(
+        //   alignment: Alignment.bottomCenter,
+        //   child: Container(
+        //     padding: const EdgeInsets.all(20),
+        //     child: ElevatedButton(
+        //       onPressed: () {
+        //         print("Button clicked");
+        //         context.go('/event_booking/1');
+        //       },
+        //       style: TextButton.styleFrom(
+        //         minimumSize: const Size(150, 0),
+        //         padding: const EdgeInsets.all(20),
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(18),
+        //         ),
+        //       ),
+        //       child: const Text("Buy Ticket"),
+        //     ),
+        //   ),
+        // ),
+        const EventCreateButton()
+      ],
+    );
   }
 }

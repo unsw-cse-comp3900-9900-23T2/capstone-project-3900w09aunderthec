@@ -30,4 +30,7 @@ class AppRoutes {
 
   // analytics
   static const String analytics = '/analytics';
+
+  // tickets
+  static const String ticketConfirmation = '/ticket/confirmation';
 }

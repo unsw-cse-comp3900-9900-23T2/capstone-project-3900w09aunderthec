@@ -20,4 +20,7 @@ class APIRoutes {
 
   // events creation
   static const String createEvent = '/EventCreation/CreateEvent';
+
+  // ticket
+  static const String getTicket = '/Ticket/ShowTicketDetails';
 }

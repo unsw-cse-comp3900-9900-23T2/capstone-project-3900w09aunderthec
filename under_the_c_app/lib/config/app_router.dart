@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/common/layout/base_layout.dart';
-import 'package:under_the_c_app/components/events/book_ticket.dart';
+import 'package:under_the_c_app/components/ticket/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details.dart';
-import 'package:under_the_c_app/components/ticket/book_tickets.dart';
+import 'package:under_the_c_app/components/ticket/book_tickets_old.dart';
+import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
 import 'package:under_the_c_app/config/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/main.dart';
@@ -15,12 +16,12 @@ import 'package:under_the_c_app/pages/main/analytics.dart';
 import 'package:under_the_c_app/pages/main/customer/customer_event_page.dart';
 import 'package:under_the_c_app/pages/main/event.dart';
 import 'package:under_the_c_app/pages/main/home.dart';
-import 'package:under_the_c_app/pages/main/host/host_event_page.dart';
+import 'package:under_the_c_app/pages/main/event.dart';
 import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
 
-import '../pages/main/auth/login_page.dart';
+import '../pages/main/auth/login/login_page.dart';
 import 'auth_state_provider.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -105,21 +106,21 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.events,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: EventPage());
+              return const MaterialPage(child: HostEventPage());
             },
           ),
-          GoRoute(
-            path: '/host/events',
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: EventPage());
-            },
-          ),
-          GoRoute(
-            path: '/customer/events',
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: EventPage());
-            },
-          ),
+          // GoRoute(
+          //   path: '/host/events',
+          //   pageBuilder: (context, state) {
+          //     return const MaterialPage(child: EventPage());
+          //   },
+          // ),
+          // GoRoute(
+          //   path: '/customer/events',
+          //   pageBuilder: (context, state) {
+          //     return const MaterialPage(child: EventPage());
+          //   },
+          // ),
           GoRoute(
             path: AppRoutes.home,
             pageBuilder: (context, state) {
@@ -156,11 +157,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-              path: AppRoutes.eventBook(':id'),
-              pageBuilder: (context, state) {
-                final eventId = state.pathParameters['id'].toString();
-                return MaterialPage(child: BookTicket(eventId: eventId));
-              }),
+            path: AppRoutes.eventBook(':id'),
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: BookTicket(eventId: eventId));
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.ticketConfirmation,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: TicketConfirmation());
+            },
+          ),
           GoRoute(
               path: AppRoutes.eventAdd,
               pageBuilder: (context, state) {
