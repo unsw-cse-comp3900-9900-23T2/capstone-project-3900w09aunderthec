@@ -2,6 +2,8 @@
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace EventManagementAPI.Repositories
 {
@@ -14,9 +16,32 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Event>> GetAllEvents()
+        public async Task<List<Event>> GetAllEvents(int? hostId, string sortby)
         {
-            return await _dbContext.events.ToListAsync();
+            IQueryable<Event> query;
+            if (hostId != -1)
+            {
+                query = _dbContext.events.Where(e => e.hosterFK == hostId);
+            } else
+            {
+                query = _dbContext.events;
+            }
+
+            switch (sortby)
+            {
+                case "most_recent":
+                    query = query.OrderByDescending(e => e.createdTime);
+                    break;
+                case "most_saved":
+                    query = query.OrderByDescending(e => e.numberSaved);
+                    break;
+                default:
+                    break;
+            }
+
+            var events = await query.ToListAsync();
+
+            return events;
         }
 
         public async Task CreateAnEvent(Event e)
@@ -43,16 +68,7 @@ namespace EventManagementAPI.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Event>> GetAllHostEvents(int hostId)
-        {
-            var events = await _dbContext.events
-                .Where(e => e.hosterFK == hostId || e.privateEvent == false)
-                .ToListAsync();
-
-            return events;
-        }
-
-        public async Task CancelEvent(int eventId)
+        public async Task<Event?> CancelEvent(int eventId)
         {
             var e = await _dbContext.events.FindAsync(eventId);
 
@@ -61,6 +77,8 @@ namespace EventManagementAPI.Repositories
                 _dbContext.Remove(e);
                 await _dbContext.SaveChangesAsync();
             }
+
+            return e;
         }
     }
 }

@@ -11,7 +11,10 @@ namespace EventManagementAPI.Controllers
 {
     public class MakeBookingRequestBody
     {
-        public string email { get; set; }
+        // public string email { get; set; }
+        public int customerId { get; set; }
+        public int ticketId { get; set; }
+        public int numberOfTickets { get; set; }
     };
 
     public class GetBookingRequestBody
@@ -34,22 +37,18 @@ namespace EventManagementAPI.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingRepository _bookingRepository;
-        private readonly ITicketRepository _ticketRepository;
-        private readonly ICustomerRepository _customerRepository;
         private readonly EmailService _emailService;
 
-        public BookingController(IBookingRepository bookingRepository, ITicketRepository ticketRepository, ICustomerRepository customerRepository, EmailService emailService)
+        public BookingController(IBookingRepository bookingRepository, EmailService emailService)
         {
             _bookingRepository = bookingRepository;
-            _ticketRepository = ticketRepository;
-            _customerRepository = customerRepository;
             _emailService = emailService;
         }
 
-        [HttpPost("GetBookings")]
-        public async Task<IActionResult> GetCustomerBookings(GetBookingRequestBody requestBody)
+        [HttpGet("GetBookings/{uid}")]
+        public async Task<IActionResult> GetCustomerBookings(int uid)
         {
-            var bookings = await _bookingRepository.GetBookings(requestBody.uid);
+            var bookings = await _bookingRepository.GetBookings(uid);
 
             return Ok(bookings);
         }
@@ -58,28 +57,41 @@ namespace EventManagementAPI.Controllers
         public async Task<IActionResult> MakeBooking(MakeBookingRequestBody RequestBody)
         {
 
-            var fromAddress = "young.jiapeng@outlook.com";
-            var toAddress = RequestBody.email;
-            var subject = "Booking Confirmed!";
+            var customerId = RequestBody.customerId;
+            var ticketId = RequestBody.ticketId;
+            var numberOfTickets = RequestBody.numberOfTickets;
 
-            var body = new StringBuilder()
-                .AppendLine("Dear Customer,")
-                .AppendLine("")
-                .AppendLine("Your booking has been successful")
-                .AppendLine("")
-                .AppendLine("Kind Regards,")
-                .AppendLine("Under the C")
-            .ToString();
+            var booking = await _bookingRepository.MakeBooking(customerId, ticketId, numberOfTickets);
 
-            _emailService.SendEmail(fromAddress, toAddress, subject, body);
+            if (booking == null)
+            {
+                return NotFound();
+            }
 
-            return Ok();
+            return Ok(booking);
+
+            // var fromAddress = "young.jiapeng@outlook.com";
+            // var toAddress = RequestBody.email;
+            // var subject = "Booking Confirmed!";
+
+            // var body = new StringBuilder()
+            //    .AppendLine("Dear Customer,")
+            //    .AppendLine("")
+            //    .AppendLine("Your booking has been successful")
+            //    .AppendLine("")
+            //    .AppendLine("Kind Regards,")
+            //     .AppendLine("Under the C")
+            // .ToString();
+
+            // _emailService.SendEmail(fromAddress, toAddress, subject, body);
+
+            // return Ok();
         }
 
-        [HttpPost("ShowBookingDetails")]
-        public async Task<IActionResult> ShowBookingDetails([FromBody] ShowBookingDetailsRequestBody RequestBody)
+        [HttpGet("GetBookingDetails/{bookingId}")]
+        public async Task<IActionResult> ShowBookingDetails(int bookingId)
         {
-            var b = await _bookingRepository.GetBookingById(RequestBody.bookingId);
+            var b = await _bookingRepository.GetBookingById(bookingId);
 
             if (b == null)
             {
@@ -92,22 +104,14 @@ namespace EventManagementAPI.Controllers
         [HttpDelete("CancelBooking")]
         public async Task<IActionResult> CancelBooking([FromBody] CancelBookingRequestBody RequestBody)
         {
-            var b = await _bookingRepository.GetBookingById(RequestBody.bookingId);
+            var booking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
 
-            if (b == null)
+            if (booking == null)
             {
                 return NotFound();
             }
 
-            try
-            {
-                await _bookingRepository.RemoveBooking(b);
-
-                return Ok();
-            } catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(booking);
         }
     }
 }

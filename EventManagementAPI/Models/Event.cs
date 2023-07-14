@@ -16,13 +16,14 @@ namespace EventManagementAPI.Models
         [Required]
         public int hosterFK { get; set; }
         public String title { get; set; }
-        public DateTime time { get; set; }
+        public DateTime createdTime { get; set; }
         public String venue { get; set; }
         public String description { get; set; }
         public Boolean allowRefunds { get; set; }
         public Boolean privateEvent { get; set; }
         public Double? rating { get; set; }
         public String tags { get; set; }
+        public int numberSaved { get; set; } = 0;
         [JsonIgnore]
         public ICollection<Comment> comments { get; set; }
     }

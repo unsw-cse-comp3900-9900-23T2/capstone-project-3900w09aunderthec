@@ -25,23 +25,23 @@ namespace EventManagementAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int>("customerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumberOfTickets")
+                    b.Property<int>("numberOfTickets")
                         .HasColumnType("int");
 
-                    b.Property<int>("TicketId")
+                    b.Property<int>("ticketId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("TimeCreated")
+                    b.Property<DateTime>("timeCreated")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("customerId");
 
-                    b.HasIndex("TicketId");
+                    b.HasIndex("ticketId");
 
                     b.ToTable("bookings");
                 });
@@ -131,11 +131,17 @@ namespace EventManagementAPI.Migrations
                     b.Property<bool>("allowRefunds")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("hosterFK")
+                        .HasColumnType("int");
+
+                    b.Property<int>("numberSaved")
                         .HasColumnType("int");
 
                     b.Property<bool>("privateEvent")
@@ -147,9 +153,6 @@ namespace EventManagementAPI.Migrations
                     b.Property<string>("tags")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("time")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("title")
                         .IsRequired()
@@ -189,7 +192,7 @@ namespace EventManagementAPI.Migrations
 
             modelBuilder.Entity("EventManagementAPI.Models.Reply", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -206,7 +209,7 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("commentId");
 
@@ -325,13 +328,13 @@ namespace EventManagementAPI.Migrations
                 {
                     b.HasOne("EventManagementAPI.Models.Customer", "toCustomer")
                         .WithMany()
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("customerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EventManagementAPI.Models.Ticket", "toTicket")
                         .WithMany()
-                        .HasForeignKey("TicketId")
+                        .HasForeignKey("ticketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

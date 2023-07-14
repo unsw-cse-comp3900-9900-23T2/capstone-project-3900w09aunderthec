@@ -7,14 +7,6 @@ using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
-
-    public class ListEventsRequestBody {
-        public string uid { get; set; }
-    };
-    public class ListHostEventsRequestBody
-    {
-        public int hostId { get; set; }
-    };
     public class ShowEventDetailsRequestBody {
         public int eventId { get; set; }
     };
@@ -37,18 +29,11 @@ namespace EventManagementAPI.Controllers{
             _eventDisplayRepository = eventDisplayRepository;
         }
 
-        [HttpPost("ListEvents")]
-        public async Task<IActionResult> ListEvents([FromBody] ListEventsRequestBody RequestBody) {
-
-            var events = await _eventDisplayRepository.GetAllEvents();
-            return Ok(events);
-        }
-
-        [HttpPost("ListHostEvents")]
-        public async Task<IActionResult> ListHostEvents([FromBody] ListHostEventsRequestBody RequestBody)
+        [HttpGet("ListEvents")]
+        public async Task<IActionResult> ListEvents([FromQuery] int? hostId, [FromQuery] string sortby)
         {
+            var events = await _eventDisplayRepository.GetAllEvents(hostId, sortby);
 
-            var events = await _eventDisplayRepository.GetAllHostEvents(RequestBody.hostId);
             return Ok(events);
         }
 
