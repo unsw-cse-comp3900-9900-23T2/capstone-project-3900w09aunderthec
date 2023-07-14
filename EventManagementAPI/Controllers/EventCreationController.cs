@@ -81,11 +81,11 @@ namespace EventManagementAPI.Controllers{
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
 
-
             Event newEvent = new Event
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
+                createdTime = DateTime.Now,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,

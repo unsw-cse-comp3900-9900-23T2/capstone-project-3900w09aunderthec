@@ -30,16 +30,9 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListEvents")]
-        public async Task<IActionResult> ListEvents([FromQuery] int? hostId, [FromQuery] string sortby)
+        public async Task<IActionResult> ListEvents([FromQuery] int? hostId, string? sortby, string? tags)
         {
-            var events = await _eventDisplayRepository.GetAllEvents(hostId, sortby);
-            return Ok(events);
-        }
-
-        [HttpGet("ListFilteredEvents")]
-        public async Task<IActionResult> ListFilteredEvents([FromQuery] string tags) {
-
-            var events = await _eventDisplayRepository.GetFilteredEvents(tags);
+            var events = await _eventDisplayRepository.GetAllEvents(hostId, sortby, tags);
             return Ok(events);
         }
 

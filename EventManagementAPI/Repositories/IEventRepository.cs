@@ -7,8 +7,7 @@ namespace EventManagementAPI.Repositories
     public interface IEventRepository
     {
         Task<List<string>> GetTags(string descriptorString);
-        Task<List<Event>> GetAllEvents(int? hostId, string sortby);
-        Task<List<Event>> GetFilteredEvents(string tags);
+        Task<List<Event>> GetAllEvents(int? hostId, string? sortby, string? tags);
         Task CreateAnEvent(Event e);
         Task<Event> GetEventById(int id);
         Task ModifyEvent(Event e);

@@ -115,7 +115,7 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<Event>> GetAllEvents(int? hostId, string sortby)
+        public async Task<List<Event>> GetAllEvents(int? hostId, string? sortby, string? tags)
         {
             IQueryable<Event> query;
             if (hostId != -1)
@@ -140,14 +140,12 @@ namespace EventManagementAPI.Repositories
 
             var events = await query.ToListAsync();
 
-            return events;
-        }
+            if(tags is not null)
+            {
+            events.RemoveAll(e => !(Enumerable.Intersect(e.tags.Split(","),tags.Split(",")).Count() == tags.Split(",").Count()));
+            }
 
-        public async Task<List<Event>> GetFilteredEvents(string tags)
-        {
-            var eventList = await _dbContext.events.ToListAsync();
-            eventList.RemoveAll(e => !(Enumerable.Intersect(e.tags.Split(","),tags.Split(",")).Count() == tags.Split(",").Count()));
-            return eventList;
+            return events;
         }
 
         public async Task CreateAnEvent(Event e)
