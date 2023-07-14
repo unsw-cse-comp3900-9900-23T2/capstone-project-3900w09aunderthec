@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/api/api_routes.dart';
-import 'package:under_the_c_app/api/events/get_event.dart';
+import 'package:under_the_c_app/api/events/http_event_requests.dart';
 import 'package:under_the_c_app/components/events/create_event.dart';
 import 'package:under_the_c_app/components/ticket/book_tickets.dart';
 import 'package:under_the_c_app/config/routes.dart';

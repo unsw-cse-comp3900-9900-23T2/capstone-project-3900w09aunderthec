@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:under_the_c_app/api/events/get_event.dart';
+import 'package:under_the_c_app/api/events/http_event_requests.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 import 'package:under_the_c_app/types/location/address.dart';
 import 'widgets/dropdown_list.dart';
@@ -39,15 +41,6 @@ class EventCreate extends StatelessWidget {
   }
 }
 
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({Key? key}) : super(key: key);
-
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
 // Create a question and input box
 class FormFields extends StatelessWidget {
   const FormFields({Key? key, required this.fieldName, required this.hint})
@@ -82,8 +75,19 @@ class FormFields extends StatelessWidget {
   }
 }
 
+class MyCustomForm extends ConsumerStatefulWidget {
+  const MyCustomForm({Key? key}) : super(key: key);
+
+  // @override
+  // MyCustomFormState createState() {
+  //   return MyCustomFormState();
+  // }
+  @override
+  MyCustomFormState createState() => MyCustomFormState();
+}
+
 // Create event form
-class MyCustomFormState extends State<MyCustomForm> {
+class MyCustomFormState extends ConsumerState<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
 
   String title = '';
@@ -103,28 +107,6 @@ class MyCustomFormState extends State<MyCustomForm> {
       selectedEventTypes = newSelection;
     });
   }
-
-  // Future<http.Response> createEvent() {
-  //   // TODO: Fix datetime
-  //   // print(time);
-  //   // String formattedDate = DateFormat.yMMMEd().format(time);
-  //   // print(formattedDate);
-  //   final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
-  //   final headers = {'Content-Type': 'application/json'};
-  //   final body = jsonEncode({
-  //     "uid": 1,
-  //     'title': title,
-  //     // yyyy-MM-dd HH:mm:ss
-  //     // 'time': "2023-06-27 14:56:45",
-  //     "time": "2023-06-27T10:15:33.226Z",
-  //     'venue': venue,
-  //     'description': description,
-  //     'allowRefunds': allowRefunds,
-  //     'privateEvent': privateEvent,
-  //     'tags': tags,
-  //   });
-  //   return http.post(url, headers: headers, body: body);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +212,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                   ])),
           // Date & Time
-          // TODO: Change it up
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             child: DefaultTextStyle(
@@ -350,7 +331,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
                   _formKey.currentState!.save();
 
-                  createEvent(
+                  ref.read(eventsProvider('2').notifier).addEvent(
                       // TODO: [PLHV-199] event_creation.dart: Need to pass the variables below(except suburb, city, country, postcode maybe)
                       Event(
                           title: title,
