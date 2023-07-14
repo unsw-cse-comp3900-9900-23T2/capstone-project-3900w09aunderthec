@@ -40,16 +40,29 @@ Future<void> createEvent(Event eventInfo, String uid) async {
   try {
     final response = await http.post(url,
         headers: APIRoutes.headers,
-        body: jsonEncode({
-          "uid": uid,
-          "title": eventInfo.title,
-          "time": eventInfo.time,
-          "venue": eventInfo.address,
-          "description": eventInfo.description,
-          "allowRefunds": eventInfo.allowRefunds,
-          "privateEvent": eventInfo.isPrivate,
-          "tags": eventInfo.tags
-        }));
+        body: jsonEncode(
+          {
+            "uid": 1,
+            "title": eventInfo.title,
+            "time": "2023-07-14T00:26:39.068Z",
+            "venue": eventInfo.address.venue,
+            "description": eventInfo.description,
+            "allowRefunds": eventInfo.allowRefunds,
+            "privateEvent": eventInfo.isPrivate,
+            // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
+            "tags": "tags" 
+          },
+          // {
+          //   "uid": 1,
+          //   "title": "string",
+          //   "time": "2023-07-14T00:26:39.068Z",
+          //   "venue": "string",
+          //   "description": "string",
+          //   "allowRefunds": true,
+          //   "privateEvent": true,
+          //   "tags": "string"
+          // },
+        ));
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw Exception(response.body);
     }
@@ -61,3 +74,25 @@ Future<void> createEvent(Event eventInfo, String uid) async {
     throw Exception('event.dart.createEvent: Unknown error $e');
   }
 }
+
+  // Future<http.Response> createEvent() {
+  //   // TODO: Fix datetime
+  //   // print(time);
+  //   // String formattedDate = DateFormat.yMMMEd().format(time);
+  //   // print(formattedDate);
+  //   final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
+  //   final headers = {'Content-Type': 'application/json'};
+  //   final body = jsonEncode({
+  //     "uid": 1,
+  //     'title': title,
+  //     // yyyy-MM-dd HH:mm:ss
+  //     // 'time': "2023-06-27 14:56:45",
+  //     "time": "2023-06-27T10:15:33.226Z",
+  //     'venue': venue,
+  //     'description': description,
+  //     'allowRefunds': allowRefunds,
+  //     'privateEvent': privateEvent,
+  //     'tags': tags,
+  //   });
+  //   return http.post(url, headers: headers, body: body);
+  // }

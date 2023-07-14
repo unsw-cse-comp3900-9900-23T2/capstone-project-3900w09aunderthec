@@ -3,7 +3,7 @@ import 'package:under_the_c_app/types/location/address.dart';
 import 'package:under_the_c_app/types/users/host_type.dart';
 
 class Event {
-  final String eventId;
+  final String? eventId;
   final String title;
   final Host? host;
   final double price;
@@ -18,9 +18,9 @@ class Event {
 
   Event(
       {required this.title,
-      required this.eventId,
       this.host,
       String? imageUrl,
+      String? eventId,
       String? description,
       bool? allowRefunds,
       bool? rating,
@@ -31,6 +31,7 @@ class Event {
       required this.time})
       : imageUrl = imageUrl ?? "images/events/money-event.jpg", //default image
         description = description ?? "",
+        eventId = '',
         allowRefunds = false,
         isPrivate = false,
         rating = null,

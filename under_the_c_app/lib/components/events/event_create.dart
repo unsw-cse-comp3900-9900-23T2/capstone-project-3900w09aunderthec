@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:under_the_c_app/api/events/get_event.dart';
+import 'package:under_the_c_app/types/events/event_type.dart';
+import 'package:under_the_c_app/types/location/address.dart';
 import 'widgets/dropdown_list.dart';
 import 'widgets/toggle_button.dart';
 import 'dart:convert';
@@ -101,28 +104,27 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
-  Future<http.Response> createEvent() {
-    // TODO: Fix datetime
-    // print(time);
-    // String formattedDate = DateFormat.yMMMEd().format(time);
-    // print(formattedDate);
-
-    final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode({
-      "uid": 1,
-      'title': title,
-      // yyyy-MM-dd HH:mm:ss
-      // 'time': "2023-06-27 14:56:45",
-      "time": "2023-06-27T10:15:33.226Z",
-      'venue': venue,
-      'description': description,
-      'allowRefunds': allowRefunds,
-      'privateEvent': privateEvent,
-      'tags': tags,
-    });
-    return http.post(url, headers: headers, body: body);
-  }
+  // Future<http.Response> createEvent() {
+  //   // TODO: Fix datetime
+  //   // print(time);
+  //   // String formattedDate = DateFormat.yMMMEd().format(time);
+  //   // print(formattedDate);
+  //   final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
+  //   final headers = {'Content-Type': 'application/json'};
+  //   final body = jsonEncode({
+  //     "uid": 1,
+  //     'title': title,
+  //     // yyyy-MM-dd HH:mm:ss
+  //     // 'time': "2023-06-27 14:56:45",
+  //     "time": "2023-06-27T10:15:33.226Z",
+  //     'venue': venue,
+  //     'description': description,
+  //     'allowRefunds': allowRefunds,
+  //     'privateEvent': privateEvent,
+  //     'tags': tags,
+  //   });
+  //   return http.post(url, headers: headers, body: body);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -348,18 +350,20 @@ class MyCustomFormState extends State<MyCustomForm> {
 
                   _formKey.currentState!.save();
 
-                  createEvent().then((response) {
-                    if (response.statusCode == 200) {
-                      // Event created successfully
-                      // Handle success case
-                    } else {
-                      // Event creation failed
-                      // Handle error case
-                      throw Exception(
-                          'Failed to CREATE event: ${response.body}');
-                    }
-                    context.go('/host/events');
-                  });
+                  createEvent(
+                      // TODO: [PLHV-199] event_creation.dart: Need to pass the variables below(except suburb, city, country, postcode maybe)
+                      Event(
+                          title: title,
+                          price: 0,
+                          address: Address(
+                              venue: venue,
+                              suburb: "",
+                              city: "",
+                              country: "",
+                              postalCode: ""),
+                          time: "2023-06-27T10:15:33.226Z"),
+                      "1");
+                  context.go('/host/events');
                 }
               },
               child: const Text('Submit'),
