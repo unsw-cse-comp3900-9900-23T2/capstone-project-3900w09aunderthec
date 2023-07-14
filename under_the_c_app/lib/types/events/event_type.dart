@@ -23,7 +23,7 @@ class Event {
       String? eventId,
       String? description,
       bool? allowRefunds,
-      bool? rating,
+      this.rating,
       bool? isPrivate,
       List<String>? tags,
       required this.price,
@@ -31,10 +31,9 @@ class Event {
       required this.time})
       : imageUrl = imageUrl ?? "images/events/money-event.jpg", //default image
         description = description ?? "",
-        eventId = '',
-        allowRefunds = false,
-        isPrivate = false,
-        rating = null,
+        eventId = eventId ?? "",
+        allowRefunds = allowRefunds ?? false,
+        isPrivate = isPrivate ?? false,
         tags = [];
 }
 
