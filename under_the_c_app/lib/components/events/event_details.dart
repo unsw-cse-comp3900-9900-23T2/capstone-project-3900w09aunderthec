@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/common/widgets/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
+import 'package:under_the_c_app/config/routes.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 
 class EventDetailsPage extends ConsumerWidget {
@@ -25,7 +26,7 @@ class EventDetailsPage extends ConsumerWidget {
               elevation: 0.0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => context.go('/home'),
+                onPressed: () => context.go(AppRoutes.home),
               ),
             ),
             body: Stack(
@@ -112,8 +113,7 @@ class EventDetailsPage extends ConsumerWidget {
                     padding: const EdgeInsets.all(20),
                     child: ElevatedButton(
                       onPressed: () {
-                        print("Button clicked");
-                        context.go('/event_booking/${event.eventId}');
+                        context.go(AppRoutes.eventBook(event.eventId!));
                       },
                       style: TextButton.styleFrom(
                         minimumSize: const Size(150, 0),
