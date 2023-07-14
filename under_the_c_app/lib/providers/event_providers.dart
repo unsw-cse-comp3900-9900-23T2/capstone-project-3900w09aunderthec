@@ -23,6 +23,7 @@ final eventsProvider =
         (ref) {
   return EventsProvider();
 });
+
 // Example of having arguments
 // final eventsProvider =
 //     StateNotifierProvider.family<EventsProvider, List<Event>, String>(
@@ -30,11 +31,6 @@ final eventsProvider =
 //   return EventsProvider(uid);
 // });
 
-
-// Old code
-// final IncomingEventsProvider = FutureProvider<List<Event>>((ref) async {
-//   return getEvents("3", false);
-// });
 
 final IncomingEventsProviderById = FutureProvider.family<Event, String>(
   (ref, id) async {

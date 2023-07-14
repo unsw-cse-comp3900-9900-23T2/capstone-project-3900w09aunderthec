@@ -8,6 +8,8 @@ class AppRoutes {
   /* for shared */
   // events
   static const String events = '/event';
+  static const String home = '/home';
+  static const String profile = '/profile';
   static String eventDetails(String id) => '/event/event_detail/$id';
   static String eventBook(String id) => '/event/book/$id';
   static const String eventAdd = '/event/add';
@@ -25,4 +27,7 @@ class AppRoutes {
   // for guest
   static const String guest = '/guest';
   static const String guestProfile = '/guest/profile';
+
+  // analytics
+  static const String analytics = '/analytics';
 }

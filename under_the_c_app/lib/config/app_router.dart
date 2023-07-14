@@ -81,13 +81,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
         routes: <RouteBase>[
           GoRoute(
-            path: '/reset',
+            path: AppRoutes.reset,
             pageBuilder: (context, state) {
               return const MaterialPage(child: ResetPasswordPage());
             },
           ),
           GoRoute(
-            path: '/guest',
+            path: AppRoutes.guest,
             pageBuilder: (context, state) {
               return MaterialPage(
                   child: BaseLayout(
@@ -97,7 +97,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-            path: '/analytics',
+            path: AppRoutes.analytics,
             pageBuilder: (context, state) {
               return const MaterialPage(child: AnalyticsPage());
             },
@@ -121,32 +121,32 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-            path: '/home',
+            path: AppRoutes.home,
             pageBuilder: (context, state) {
               return const MaterialPage(child: HomePage());
             },
           ),
           GoRoute(
-            path: '/profile',
+            path: AppRoutes.profile,
             pageBuilder: (context, state) {
               return const MaterialPage(child: ProfilePage());
             },
           ),
           GoRoute(
-            path: '/event_details/:id',
+            path: AppRoutes.eventDetails(':id'),
             pageBuilder: (context, state) {
               final eventId = state.pathParameters['id'].toString();
               return MaterialPage(child: EventDetailsPage(eventId: eventId));
             },
           ),
           GoRoute(
-            path: '/reset',
+            path: AppRoutes.reset,
             pageBuilder: (context, state) {
               return const MaterialPage(child: ResetPasswordPage());
             },
           ),
           GoRoute(
-            path: '/guest',
+            path: AppRoutes.guest,
             pageBuilder: (context, state) {
               return MaterialPage(
                   child: BaseLayout(
@@ -156,7 +156,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-              path: '/event_booking/:id',
+              path: AppRoutes.eventBook(':id'),
               pageBuilder: (context, state) {
                 final eventId = state.pathParameters['id'].toString();
                 return MaterialPage(child: BookTicket(eventId: eventId));
@@ -172,7 +172,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
 
-      print("app_route: sessionIsHost = ${sessionVariables.sessionIsHost}");
+      // print("app_route: sessionIsHost = ${sessionVariables.sessionIsHost}");
 
       // case for if the user is signed in
       if (authState.valueOrNull != null) {

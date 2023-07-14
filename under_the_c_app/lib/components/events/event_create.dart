@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:under_the_c_app/api/events/http_event_requests.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 import 'package:under_the_c_app/types/location/address.dart';
 import 'widgets/dropdown_list.dart';
 import 'widgets/toggle_button.dart';
-import 'dart:convert';
-import 'date/date_picker.dart';
 
 class EventCreate extends StatelessWidget {
   const EventCreate({super.key});
