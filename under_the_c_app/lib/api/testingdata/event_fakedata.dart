@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
-import 'package:under_the_c_app/types/location/address.dart';
+import 'package:under_the_c_app/types/address.dart';
 import 'package:under_the_c_app/types/users/host_type.dart';
 
 final List<Event> incomingEvents = [

@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/common/layout/base_layout.dart';
-import 'package:under_the_c_app/components/events/book_ticket.dart';
-import 'package:under_the_c_app/components/events/event_create.dart';
-import 'package:under_the_c_app/components/events/event_details.dart';
-import 'package:under_the_c_app/components/ticket/book_tickets.dart';
+import 'package:under_the_c_app/layout/base_layout.dart';
+import 'package:under_the_c_app/components/ticket/book_ticket.dart';
+import 'package:under_the_c_app/components/events/event_create/event_create.dart';
+import 'package:under_the_c_app/components/events/event_details/event_details.dart';
+import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
+import 'package:under_the_c_app/config/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
-import 'package:under_the_c_app/main.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/main/analytics.dart';
-import 'package:under_the_c_app/pages/main/customer/customer_event_page.dart';
+import 'package:under_the_c_app/pages/main/event.dart';
 import 'package:under_the_c_app/pages/main/home.dart';
-import 'package:under_the_c_app/pages/main/host/host_event_page.dart';
 import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
-
-import '../pages/main/auth/login_page.dart';
+import '../pages/main/auth/login/login_page.dart';
 import 'auth_state_provider.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -47,25 +45,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/register',
+        path: AppRoutes.register,
         pageBuilder: (context, state) {
           return const MaterialPage(child: RegisterPage());
         },
       ),
       GoRoute(
-        path: '/reset',
+        path: AppRoutes.reset,
         pageBuilder: (context, state) {
           return const MaterialPage(child: ResetPasswordPage());
-        },
-      ),
-      GoRoute(
-        path: '/guest',
-        pageBuilder: (context, state) {
-          return MaterialPage(
-              child: BaseLayout(
-            body: GuestPage(),
-            isHost: sessionVariables.sessionIsHost,
-          ));
         },
       ),
       ShellRoute(
@@ -76,94 +64,77 @@ final routerProvider = Provider<GoRouter>((ref) {
               title: state.extra != null ? state.extra!.toString() : "",
               isHost: sessionVariables.sessionIsHost);
         },
+
+        // TODO: [PLHV-201] Reset page needs to be different, we need to provide going back button and potential nav bar
         routes: <RouteBase>[
           GoRoute(
-            path: '/reset',
+            path: AppRoutes.reset,
             pageBuilder: (context, state) {
               return const MaterialPage(child: ResetPasswordPage());
             },
           ),
           GoRoute(
-            path: '/guest',
-            pageBuilder: (context, state) {
-              return MaterialPage(
-                  child: BaseLayout(
-                body: GuestPage(),
-                isHost: sessionVariables.sessionIsHost,
-              ));
-            },
-          ),
-          GoRoute(
-            path: '/analytics',
+            path: AppRoutes.analytics,
             pageBuilder: (context, state) {
               return const MaterialPage(child: AnalyticsPage());
             },
           ),
           GoRoute(
-            path: '/host/events',
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: HostEventPage());
-            },
-          ),
-          GoRoute(
-            path: '/customer/events',
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: CustomerEventPage());
-            },
-          ),
-          GoRoute(
-            path: '/home',
+            path: AppRoutes.home,
             pageBuilder: (context, state) {
               return const MaterialPage(child: HomePage());
             },
           ),
           GoRoute(
-            path: '/profile',
+            path: AppRoutes.profile,
             pageBuilder: (context, state) {
               return const MaterialPage(child: ProfilePage());
             },
           ),
           GoRoute(
-            path: '/event_details/:id',
+            path: AppRoutes.guest,
+            pageBuilder: (context, state) {
+              return MaterialPage(child: GuestPage());
+            },
+          ),
+
+          // events routes
+          GoRoute(
+            path: AppRoutes.events,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: EventPage());
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.eventDetails(':id'),
             pageBuilder: (context, state) {
               final eventId = state.pathParameters['id'].toString();
               return MaterialPage(child: EventDetailsPage(eventId: eventId));
             },
           ),
           GoRoute(
-            path: '/reset',
+            path: AppRoutes.eventBook(':id'),
             pageBuilder: (context, state) {
-              return const MaterialPage(child: ResetPasswordPage());
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: BookTicket(eventId: eventId));
             },
           ),
           GoRoute(
-            path: '/guest',
+              path: AppRoutes.eventAdd,
+              pageBuilder: (context, state) {
+                return const MaterialPage(child: EventCreate());
+              }),
+          GoRoute(
+            path: AppRoutes.ticketConfirmation,
             pageBuilder: (context, state) {
-              return MaterialPage(
-                  child: BaseLayout(
-                body: GuestPage(),
-                isHost: sessionVariables.sessionIsHost,
-              ));
+              return const MaterialPage(child: TicketConfirmation());
             },
           ),
-          GoRoute(
-              path: '/event_booking/:id',
-              pageBuilder: (context, state) {
-                final eventId = state.pathParameters['id'].toString();
-                return MaterialPage(child: BookTicket(eventId: eventId));
-              }),
-          GoRoute(
-              path: '/event_add',
-              pageBuilder: (context, state) {
-                return MaterialPage(child: EventCreate());
-              }),
         ],
       ),
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
-
-      print("app_route: sessionIsHost = ${sessionVariables.sessionIsHost}");
 
       // case for if the user is signed in
       if (authState.valueOrNull != null) {
@@ -171,7 +142,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         if (state.location == '/') {
           return '/home';
         }
-
         // do not redirect if the user is navigation to another page
         return null;
       }

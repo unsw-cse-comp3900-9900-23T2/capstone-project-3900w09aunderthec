@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/components/api/event.dart';
+import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 
