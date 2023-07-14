@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import '../dropdown_list.dart';
-import '../toggle_button.dart';
+import 'widgets/dropdown_list.dart';
+import 'widgets/toggle_button.dart';
 import 'dart:convert';
-import '../date_picker.dart';
+import 'date/date_picker.dart';
 
 class EventCreate extends StatelessWidget {
   const EventCreate({super.key});

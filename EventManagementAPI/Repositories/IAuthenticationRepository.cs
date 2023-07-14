@@ -5,12 +5,12 @@ using EventManagementAPI.Models;
 
 namespace EventManagementAPI.Repositories
 {
-	public interface IAuthenticationRepository
+    public interface IAuthenticationRepository
 	{
         bool validateEmailRegex(String email);
         Task<bool> checkDuplicateEmails(String email);
         Task createUser(String username, String email, Boolean isHost);
-        Task<bool> getUserType(String email);
+        Task<InitialData> getInitialData(String email);
     }
 }
 

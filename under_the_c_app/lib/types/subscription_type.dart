@@ -1,5 +1,5 @@
-import 'package:under_the_c_app/components/common/types/events/event_type.dart';
-import 'package:under_the_c_app/components/common/types/users/customer_type.dart';
+import 'package:under_the_c_app/types/events/event_type.dart';
+import 'package:under_the_c_app/types/users/customer_type.dart';
 
 class Subscription {
   final int eventIdRef;
