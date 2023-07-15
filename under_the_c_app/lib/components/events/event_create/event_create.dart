@@ -397,6 +397,12 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             price: 0,
                           ),
                         );
+                    if (sessionVariables.sessionIsHost) {
+                      final uid = sessionVariables.uid.toString();
+                      ref
+                          .read(hostEventProvider(uid).notifier)
+                          .fetchHostEvents(uid);
+                    }
                   }
                 },
                 child: const Text('Submit'),
