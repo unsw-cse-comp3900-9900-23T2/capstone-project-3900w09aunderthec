@@ -7,16 +7,6 @@ using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
-    public class ShowEventDetailsRequestBody {
-        public int eventId { get; set; }
-    };
-    public class ListSimilarEventsRequestBody {
-        public string uid { get; set; }
-        public string eventId { get; set; }
-    };
-    public class ListMyEventsRequestBody {
-        public string uid { get; set; }
-    };
 
     [ApiController]
     [Route("[controller]")]
@@ -44,7 +34,7 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListSimilarEvents")]
-        public String ListSimilarEvents([FromQuery] string uid, string eventId) {
+        public async Task<IActionResult> ListSimilarEvents([FromQuery] int uid, int eventId) {
 
             // Not being implemented in sprint 1
 
@@ -52,13 +42,10 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListMyEvents")]
-        public String ListMyEvents([FromQuery] string uid) {
+        public async Task<IActionResult> ListMyEvents([FromQuery] int uid) {
 
-            // As I write these descriptions, the more I realise that pretty much all this
-            // funcitonality will be handled by database queries
-            // Query the database for the given host's events and return them.
-
-            throw new NotImplementedException();
+            var e = await _eventDisplayRepository.ListMyEvents(uid);
+            return Ok(e);
         }
 
     }
