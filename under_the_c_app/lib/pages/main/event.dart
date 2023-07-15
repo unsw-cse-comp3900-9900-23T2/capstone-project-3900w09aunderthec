@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 import 'package:under_the_c_app/config/routes.dart';
@@ -23,9 +24,9 @@ class EventPage extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 12, left: 4),
                   child: Title(
                     color: const Color.fromARGB(255, 255, 255, 255),
-                    child: const Text(
-                      "My Hosted Events",
-                      style: TextStyle(
+                    child: Text(
+                      isHost ? "My Hosted Events" : "My Incoming Events",
+                      style: const TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
                         color: Color.fromARGB(255, 42, 23, 120),
@@ -42,8 +43,7 @@ class EventPage extends StatelessWidget {
                     width: 375,
                     child: GestureDetector(
                       onTap: () {
-                        context.go('/event_details/${event.eventId}',
-                            extra: 'Details');
+                        context.go(AppRoutes.eventDetails(event.eventId!));
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8),
@@ -76,7 +76,7 @@ class EventPage extends StatelessWidget {
                           context.go(AppRoutes.eventAdd);
                         },
                         icon: const Icon(Icons.add),
-                        iconSize: 50,
+                        iconSize: 45,
                         color: const Color.fromARGB(255, 255, 225, 253)),
                   ),
                 ),

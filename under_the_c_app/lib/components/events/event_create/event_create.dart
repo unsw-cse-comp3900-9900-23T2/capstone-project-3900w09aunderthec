@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:under_the_c_app/components/events/event_create/dropdown_list.dart';
 import 'package:under_the_c_app/components/events/event_create/tags.dart';
+import 'package:under_the_c_app/config/routes.dart';
 
 class EventCreate extends StatelessWidget {
   const EventCreate({super.key});
@@ -18,7 +19,7 @@ class EventCreate extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: IconButton(
-            onPressed: () => context.go('/host/events'),
+            onPressed: () => context.go(AppRoutes.events),
             icon: const Icon(
               Icons.arrow_back,
               color: Colors.black,
@@ -379,16 +380,18 @@ class MyCustomFormState extends State<MyCustomForm> {
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
 
-                    createEvent().then((response) {
-                      if (response.statusCode == 200) {
-                        // Event created successfully
-                      } else {
-                        // Event creation failed
-                        throw Exception(
-                            'Failed to CREATE event: ${response.body}');
-                      }
-                      context.go('/host/events');
-                    });
+                    createEvent().then(
+                      (response) {
+                        if (response.statusCode == 200) {
+                          // Event created successfully
+                        } else {
+                          // Event creation failed
+                          throw Exception(
+                              'Failed to CREATE event: ${response.body}');
+                        }
+                        context.go(AppRoutes.events);
+                      },
+                    );
                   }
                 },
                 child: const Text('Submit'),
