@@ -13,7 +13,10 @@ class EventsProvider extends StateNotifier<List<Event>> {
   }
 
   void addEvent(Event event) {
+    // do http calls to create events
     createEvent(event);
+
+    // update the state for the EventsProvider
     state = [...state, event];
   }
 

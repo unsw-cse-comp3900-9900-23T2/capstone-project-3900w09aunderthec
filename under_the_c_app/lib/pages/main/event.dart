@@ -17,9 +17,9 @@ class EventPage extends ConsumerWidget {
     final events = ref.watch(hostEventProvider(uid));
 
     // make sure the event is displayed in the event page after just created an event
-    if (isHost) {
-      ref.watch(hostEventProvider(uid).notifier).fetchHostEvents(uid);
-    }
+    // if (isHost) {
+    //   ref.watch(hostEventProvider(uid).notifier).fetchHostEvents(uid);
+    // }
 
     // if(!isHost) {
     //   ref.watch(eventsProvider.notifier).fetchCustomerEvents(uid);
