@@ -102,7 +102,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.events,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: EventPage());
+              return MaterialPage(
+                child: EventPage(isHost: sessionVariables.sessionIsHost),
+              );
             },
           ),
           GoRoute(
