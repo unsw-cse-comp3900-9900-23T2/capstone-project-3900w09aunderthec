@@ -11,6 +11,9 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(eventsProvider);
+    
+    // initialize events
+    // ref.read(eventsProvider.notifier).setEvents(events);
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
       alignment: Alignment.center,
@@ -32,6 +35,9 @@ class HomePage extends ConsumerWidget {
                   ),
                 )
               ],
+              onChanged: (value) {
+                ref.read(eventsProvider.notifier).search(value);
+              },
             ),
           ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 30)),
