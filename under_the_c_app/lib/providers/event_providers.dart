@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/event_requests.dart';
-import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
-
+// fetch all events
 class EventsProvider extends StateNotifier<List<Event>> {
   List<Event> _allEvents;
 
@@ -13,23 +12,23 @@ class EventsProvider extends StateNotifier<List<Event>> {
     fetchEvents();
   }
 
+  void addEvent(Event event) {
+    createEvent(event);
+    state = [...state, event];
+  }
+
+  Future<void> fetchEvents() async {
+    state = await getAllEvents();
+    setEvents(state);
+  }
+
   void setEvents(List<Event> events) {
     _allEvents = events;
     state = events;
   }
 
-  void addEvent(Event event, uid) {
-    createEvent(event, uid);
-    state = [...state, event];
-  }
-
-  Future<void> fetchEvents() async {
-    state = await getEvents(true);
-    setEvents(state);
-  }
-
   Future<void> fetchEventsById(id) async {
-    state = [await getEvent(id)];
+    state = [await getEventDetails(id)];
   }
 
   void search(String query) {
@@ -37,30 +36,41 @@ class EventsProvider extends StateNotifier<List<Event>> {
       state = _allEvents;
     }
     state = _allEvents
-        .where(
-            (event) => event.title.toLowerCase().startsWith(query.toLowerCase()))
+        .where((event) =>
+            event.title.toLowerCase().startsWith(query.toLowerCase()))
         .toList();
   }
 }
 
-final eventsProvider =
-    StateNotifierProvider<EventsProvider, List<Event>>((ref) {
-  return EventsProvider();
-});
-
-final eventProvider = FutureProvider.family<Event, String>((ref, id) async {
-  return await getEvent(id);
-});
-
-// Example of having arguments
-// final eventsProvider =
-//     StateNotifierProvider.family<EventsProvider, List<Event>, String>(
-//         (ref, uid) {
-//   return EventsProvider(uid);
-// });
-
-final IncomingEventsProviderById = FutureProvider.family<Event, String>(
-  (ref, id) async {
-    return fetchIncomingEventById(id);
+final eventsProvider = StateNotifierProvider<EventsProvider, List<Event>>(
+  (ref) {
+    return EventsProvider();
   },
 );
+
+
+final eventProvider = FutureProvider.family<Event, String>(
+  (ref, id) async {
+    return await getEventDetails(id);
+  },
+);
+
+// for host
+class HostEventProvider extends StateNotifier<List<Event>> {
+  HostEventProvider(uid) : super([]) {
+    fetchHostEvents(uid);
+  }
+  Future<void> fetchHostEvents(uid) async {
+    state = await getHostEvents(uid);
+  }
+
+  Future<void> fetchCustomerEvents(uid) async {
+    state = await getCustomerEvents(uid);
+  }
+}
+
+final hostEventProvider =
+    StateNotifierProvider.family<HostEventProvider, List<Event>, String>(
+        (ref, uid) {
+  return HostEventProvider(uid);
+});

@@ -102,12 +102,12 @@ class EventDetails extends StatelessWidget {
 
 class EventSubtitleProvider extends InheritedWidget {
   final String time;
-  final Address address;
+  final String venue;
 
   const EventSubtitleProvider({
     Key? key,
     required this.time,
-    required this.address,
+    required this.venue,
     required Widget child,
   }) : super(key: key, child: child);
 
@@ -117,7 +117,7 @@ class EventSubtitleProvider extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant EventSubtitleProvider oldWidget) {
-    return time != oldWidget.time || address != oldWidget.address;
+    return time != oldWidget.time || venue != oldWidget.venue;
   }
 }
 
@@ -128,7 +128,7 @@ class EventSubtitle extends StatelessWidget {
   Widget build(BuildContext context) {
     EventSubtitleProvider? subtitleDetails = EventSubtitleProvider.of(context);
     String time = subtitleDetails!.time;
-    Address address = subtitleDetails.address;
+    String venue = subtitleDetails.venue;
 
     String weekday = getFirstThreeLettersWeekday(time);
     // get time until mins
@@ -146,7 +146,7 @@ class EventSubtitle extends StatelessWidget {
                 SizedBox(
                   width: 200,
                   child: Text(
-                    '$weekday $formatedTime - ${address.venue}, ${address.suburb}',
+                    '$weekday $formatedTime - $venue',
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 10, letterSpacing: 0.4),
                   ),
@@ -164,14 +164,14 @@ class EventCard extends StatelessWidget {
   final String title;
   final String imageUrl;
   final String time;
-  final Address address;
+  final String venue;
 
   const EventCard(
       {Key? key,
       required this.title,
       required this.imageUrl,
       required this.time,
-      required this.address})
+      required this.venue})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -194,7 +194,7 @@ class EventCard extends StatelessWidget {
                         EventDate(dateTime: time),
                         Flexible(
                           child: EventSubtitleProvider(
-                              address: address,
+                              venue: venue,
                               time: time,
                               child: EventDetails(title: title)),
                         )

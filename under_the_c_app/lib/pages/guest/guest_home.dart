@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 
-// @TODO: [PLHV-151] Connect with the HTTP request, details should get dynamic contents from a router
-class GuestPage extends StatelessWidget {
-  GuestPage({Key? key}) : super(key: key);
+class GuestPage extends ConsumerWidget {
+  const GuestPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final events = ref.watch(eventsProvider);
+
     // making a custom scrolling view
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -32,16 +35,16 @@ class GuestPage extends StatelessWidget {
           ),
           SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-            final event = incomingEvents[index];
+            final event = events[index];
             return SizedBox(
                 width: 375,
                 child: EventCard(
                   title: event.title,
                   imageUrl: event.imageUrl,
                   time: event.time,
-                  address: event.address,
+                  venue: event.venue,
                 ));
-          }, childCount: incomingEvents.length))
+          }, childCount: events.length))
         ],
       ),
     );
