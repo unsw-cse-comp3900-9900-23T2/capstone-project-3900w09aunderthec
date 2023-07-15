@@ -26,11 +26,11 @@ Future<List<Event>> getAllEvents() async {
           'event.dart.getEvents: Server returned status code ${response.statusCode}');
     }
   } on SocketException catch (e) {
-    throw Exception('event.dart.getEvents: Network error $e');
+    throw Exception('event.dart.getAllEvents: Network error $e');
   } on HttpException catch (e) {
-    throw Exception('event.dart.getEvents: Http Exception error $e');
+    throw Exception('event.dart.getAllEvents: Http Exception error $e');
   } catch (e) {
-    throw Exception('event.dart.getEvents: Unknown error $e');
+    throw Exception('event.dart.getAllEvents: Unknown error $e');
   }
 }
 
@@ -53,11 +53,11 @@ Future<List<Event>> getCustomerEvents(String uid) async {
           'event.dart.getEvents: Server returned status code ${response.statusCode}');
     }
   } on SocketException catch (e) {
-    throw Exception('event.dart.getEvents: Network error $e');
+    throw Exception('event.dart.getCustomerEvents: Network error $e');
   } on HttpException catch (e) {
-    throw Exception('event.dart.getEvents: Http Exception error $e');
+    throw Exception('event.dart.getCustomerEvents: Http Exception error $e');
   } catch (e) {
-    throw Exception('event.dart.getEvents: Unknown error $e');
+    throw Exception('event.dart.getCustomerEvents: Unknown error $e');
   }
 }
 

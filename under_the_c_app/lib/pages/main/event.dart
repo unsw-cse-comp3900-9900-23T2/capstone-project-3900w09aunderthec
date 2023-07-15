@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/api/api_routes.dart';
-import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 
 class EventPage extends ConsumerWidget {
@@ -13,7 +12,16 @@ class EventPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bool isHost = sessionVariables.sessionIsHost;
+    final String uid = sessionVariables.uid.toString();
     final events = ref.watch(eventsProvider);
+    if (isHost) {
+      ref.watch(eventsProvider.notifier).fetchHostEvents(uid);
+    } 
+    // else {
+    //   ref.watch(eventsProvider.notifier).fetchCustomerEvents(uid);
+    // }
+
     return Stack(
       children: [
         Container(
