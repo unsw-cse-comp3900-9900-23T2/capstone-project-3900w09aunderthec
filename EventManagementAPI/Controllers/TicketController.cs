@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
 
-    public class ShowTicketsRequestBody {
-        public int eventId { get; set; }
-    };
     public class BookTicketsRequestBody {
         public double price { get; set; }
         public string name { get; set; }
@@ -22,11 +19,6 @@ namespace EventManagementAPI.Controllers{
         public double price { get; set; }
         public string name { get; set; }
         public int eventId { get; set; }
-    };
-
-    public class ShowTicketDetailsRequestBody
-    {
-        public int ticketId { get; set; }
     };
 
     public class UpdateTicketsRequestBody
@@ -54,10 +46,10 @@ namespace EventManagementAPI.Controllers{
             _eventRepository = eventRepository;
         }
 
-        [HttpPost("ShowTickets")]
-        public async Task<IActionResult> ShowTickets([FromBody] ShowTicketsRequestBody RequestBody) {
+        [HttpGet("ShowTickets")]
+        public async Task<IActionResult> ShowTickets([FromQuery] int eventId) {
 
-            var tickets = await _ticketRepository.ShowEventTickets(RequestBody.eventId);
+            var tickets = await _ticketRepository.ShowEventTickets(eventId);
 
             return Ok(tickets);
         }
@@ -90,10 +82,10 @@ namespace EventManagementAPI.Controllers{
             return Ok();
         }
 
-        [HttpPost("ShowTicketDetails")]
-        public async Task<IActionResult> ShowTicketDetails([FromBody] ShowTicketDetailsRequestBody requestBody)
+        [HttpGet("ShowTicketDetails")]
+        public async Task<IActionResult> ShowTicketDetails([FromQuery] int ticketId)
         {
-            var t = await _ticketRepository.GetTicketById(requestBody.ticketId);
+            var t = await _ticketRepository.GetTicketById(ticketId);
 
             if (t == null)
             {

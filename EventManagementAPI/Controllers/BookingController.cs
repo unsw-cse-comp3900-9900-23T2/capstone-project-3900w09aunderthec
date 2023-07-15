@@ -17,16 +17,6 @@ namespace EventManagementAPI.Controllers
         public int numberOfTickets { get; set; }
     };
 
-    public class GetBookingRequestBody
-    {
-        public int uid { get; set; }
-    };
-
-    public class ShowBookingDetailsRequestBody
-    {
-        public int bookingId { get; set; }
-    };
-
     public class CancelBookingRequestBody
     {
         public int bookingId { get; set; }
@@ -54,7 +44,7 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpPost("MakeBooking")]
-        public async Task<IActionResult> MakeBooking(MakeBookingRequestBody RequestBody)
+        public async Task<IActionResult> MakeBooking([FromBody] MakeBookingRequestBody RequestBody)
         {
 
             var customerId = RequestBody.customerId;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/config/app_router.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'config/firebase_options.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -36,7 +36,7 @@ class MyApp extends ConsumerWidget {
       routerDelegate: router.routerDelegate,
       // non router related
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.indigo),
+      theme: ThemeData(primarySwatch: Colors.purple),
     );
   }
 }

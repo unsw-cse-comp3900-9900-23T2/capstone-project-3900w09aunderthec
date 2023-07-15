@@ -53,15 +53,26 @@ namespace EventManagementAPI.Controllers{
             _eventRepository = eventRepository;
         }
 
-        [HttpGet("GetTags")]
-        public String GetTags([FromBody] GetTagsRequestBody RequestBody) {
+        [HttpPost("GetTags")]
+        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody) {
 
             // Format string to make api call with
             // make api call
             // parse recommended tags from api response string
             // return recommended tags
 
-            throw new NotImplementedException();
+            string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
+                                      RequestBody.description + "\nVenue: " + RequestBody.venue;
+
+            List<string> tagList = new List<string>();
+
+            try {
+                tagList = await _eventRepository.GetTags(descriptorString);
+            } catch (BadHttpRequestException e) {
+                return BadRequest(e.Message);
+            }
+
+            return Ok(tagList);
         }
 
         [HttpPost("CreateEvent")]
@@ -70,11 +81,11 @@ namespace EventManagementAPI.Controllers{
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
 
-
             Event newEvent = new Event
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
+                createdTime = DateTime.Now,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,

@@ -19,6 +19,8 @@ builder.Services.AddDbContext<MySqlContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();

@@ -30,31 +30,29 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListEvents")]
-        public async Task<IActionResult> ListEvents([FromQuery] int? hostId, [FromQuery] string sortby)
+        public async Task<IActionResult> ListEvents([FromQuery] int? hostId, string? sortby, string? tags)
         {
-            var events = await _eventDisplayRepository.GetAllEvents(hostId, sortby);
-
+            var events = await _eventDisplayRepository.GetAllEvents(hostId, sortby, tags);
             return Ok(events);
         }
 
-        [HttpPost("ShowEventDetails")]
-        public async Task<IActionResult> ShowEventDetails([FromBody] ShowEventDetailsRequestBody RequestBody) {
+        [HttpGet("ShowEventDetails")]
+        public async Task<IActionResult> ShowEventDetails([FromQuery] int eventId) {
 
-            var eventId = RequestBody.eventId;
             var e = await _eventDisplayRepository.GetEventById(eventId);
             return Ok(e);
         }
 
-        [HttpPost("ListSimilarEvents")]
-        public String ListSimilarEvents([FromBody] ListSimilarEventsRequestBody RequestBody) {
+        [HttpGet("ListSimilarEvents")]
+        public String ListSimilarEvents([FromQuery] string uid, string eventId) {
 
             // Not being implemented in sprint 1
 
             throw new NotImplementedException();
         }
 
-        [HttpPost("ListMyEvents")]
-        public String ListMyEvents([FromBody] ListMyEventsRequestBody RequestBody) {
+        [HttpGet("ListMyEvents")]
+        public String ListMyEvents([FromQuery] string uid) {
 
             // As I write these descriptions, the more I realise that pretty much all this
             // funcitonality will be handled by database queries
