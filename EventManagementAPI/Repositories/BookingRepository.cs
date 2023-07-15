@@ -16,16 +16,30 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task MakeBooking(Booking b)
+        public async Task<Booking?> MakeBooking(int customerId, int ticketId, int numberOfTickets)
         {
-            _dbContext.bookings.Add(b);
+            var customer = await _dbContext.customers.FindAsync(customerId);
+            var ticket = await _dbContext.tickets.FindAsync(ticketId);
+
+            var booking = new Booking
+            {
+                customerId = customerId,
+                toCustomer = customer,
+                ticketId = ticketId,
+                toTicket = ticket,
+                numberOfTickets = numberOfTickets,
+            };
+
+            _dbContext.bookings.Add(booking);
              await _dbContext.SaveChangesAsync();
+
+            return booking;
         }
 
         public async Task<List<BookingResultDto>> GetBookings(int customerId)
         {
             var bookings = await _dbContext.bookings
-                .Where(b => b.CustomerId == customerId)
+                .Where(b => b.customerId == customerId)
                 .Select(b => new BookingResultDto
                 {
                     booking = b,
@@ -36,17 +50,29 @@ namespace EventManagementAPI.Repositories
             return bookings;
         }
 
-        public async Task<Booking> GetBookingById(int bookingId)
+        public async Task<Booking?> GetBookingById(int bookingId)
         {
-            var b = await _dbContext.bookings.FindAsync(bookingId);
+            var b = await _dbContext.bookings
+                .Include(b => b.toTicket)
+                    .ThenInclude(t => t.toEvent)
+                .Include(b => b.toCustomer)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             return b;
         }
 
-        public async Task RemoveBooking(Booking booking)
+        public async Task<Booking?> RemoveBooking(int bookingId)
         {
+            var booking = await _dbContext.bookings.FindAsync(bookingId);
+
+            if (booking == null)
+            {
+                return null;
+            }
+
             _dbContext.bookings.Remove(booking);
             await _dbContext.SaveChangesAsync();
+            return booking;
         }
     }
 }
