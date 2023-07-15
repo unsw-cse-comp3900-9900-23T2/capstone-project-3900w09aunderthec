@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
-import 'package:under_the_c_app/config/routes.dart';
+import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 
 class EventDetailsPage extends ConsumerWidget {

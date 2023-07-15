@@ -6,7 +6,7 @@ import 'package:under_the_c_app/components/ticket/book_ticket.dart';
 import 'package:under_the_c_app/components/events/event_create/event_create.dart';
 import 'package:under_the_c_app/components/events/event_details/event_details.dart';
 import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
-import 'package:under_the_c_app/config/routes.dart';
+import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/pages/guest/guest_home.dart';
 import 'package:under_the_c_app/pages/main/analytics.dart';
@@ -15,8 +15,8 @@ import 'package:under_the_c_app/pages/main/home.dart';
 import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
-import '../pages/main/auth/login/login_page.dart';
-import 'auth_state_provider.dart';
+import '../../pages/main/auth/login/login_page.dart';
+import '../auth_state_provider.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey =
@@ -41,6 +41,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/',
         pageBuilder: (context, state) {
+          // TODO: [PLHV-204] App_router.dart: When the user login, it doesn't get stored to the db
           return const MaterialPage(child: LoginPage());
         },
       ),
@@ -122,10 +123,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-              path: AppRoutes.eventAdd,
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: EventCreate());
-              }),
+            path: AppRoutes.eventAdd,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: EventCreate());
+            },
+          ),
           GoRoute(
             path: AppRoutes.ticketConfirmation,
             pageBuilder: (context, state) {

@@ -5,29 +5,31 @@ import 'package:under_the_c_app/types/users/host_type.dart';
 class Event {
   final String? eventId;
   final String title;
-  final Host? host;
+  final String hostuid;
   final double price;
   final String imageUrl;
   final String description;
   final bool? allowRefunds;
   final double? rating;
   final List<String>? tags;
-  final Address address;
+  // final Address address;
+  final String venue;
   final String time;
   final bool? isPrivate;
 
   Event(
       {required this.title,
-      this.host,
+      required this.hostuid,
       String? imageUrl,
       String? eventId,
+      required this.venue,
       String? description,
       bool? allowRefunds,
       this.rating,
       bool? isPrivate,
       List<String>? tags,
       required this.price,
-      required this.address,
+      // required this.address,
       required this.time})
       : imageUrl = imageUrl ?? "images/events/money-event.jpg", //default image
         description = description ?? "",

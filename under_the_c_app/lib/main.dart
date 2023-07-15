@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:under_the_c_app/config/app_router.dart';
+import 'package:under_the_c_app/config/routes/app_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'config/firebase_options.dart';
 
