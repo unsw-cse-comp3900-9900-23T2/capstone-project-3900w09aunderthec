@@ -5,7 +5,7 @@ List<Event> BackendDataEventListToEvent(data) {
   List<Event> events = [];
   for (var event in data) {
     events.add(Event(
-      hostuid: event.host,
+      hostuid: event.hosterFK.toString(),
       title: event.title,
       eventId: event.eventId.toString(),
       imageUrl: 'images/events/money-event.jpg',
@@ -22,7 +22,7 @@ List<Event> BackendDataEventListToEvent(data) {
 Event BackendDataSingleEventToEvent(data) {
   return Event(
     title: data['title'],
-    hostuid: data['host'],
+    hostuid: data['hosterFK'].toString(),
     eventId: data['eventId'].toString(),
     imageUrl: 'images/events/money-event.jpg',
     time: data['time'].toString(),
