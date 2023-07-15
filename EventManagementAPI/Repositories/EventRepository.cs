@@ -21,10 +21,10 @@ namespace EventManagementAPI.Repositories
             IQueryable<Event> query;
             if (hostId != -1)
             {
-                query = _dbContext.events.Where(e => e.hosterFK == hostId);
+                query = _dbContext.events.Where(e => e.hosterFK == hostId && e.privateEvent == false);
             } else
             {
-                query = _dbContext.events;
+                query = _dbContext.events.Where(e => e.privateEvent == false);
             }
 
             switch (sortby)
