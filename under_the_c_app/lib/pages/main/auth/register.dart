@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/io_client.dart';
 import 'package:under_the_c_app/api/testingdata/initialise_session_variables.dart';
 import 'package:under_the_c_app/pages/main/auth/login/login_button.dart';
 import 'package:under_the_c_app/pages/main/auth/login/login_fields.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -51,14 +49,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void registerTheUser() async {
-    HttpClient client = HttpClient();
-    client.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => true);
-    var ioClient = IOClient(client);
-
-    final registerUrl =
-        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser');
-
     try {
       // register the user to firebase
       final userCredentials =
@@ -71,31 +61,36 @@ class _RegisterPageState extends State<RegisterPage> {
       if (userCredentials != null) {
         bool isHost = _userValue == 1 ? false : true;
 
-        // initialise session variables
-        initialiseSessionVariables(emailController.text);
+        final registerUrl =
+        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser', {
+            'username': usernameController.text,
+            'email': emailController.text,
+            'isHost': isHost.toString()
+          });
 
-        final response = await ioClient.post(
+        final response = await http.get(
           registerUrl,
           headers: {
             "Access-Control-Allow-Origin": "*",
             'Content-Type': 'application/json',
             'Accept': '*/*'
-          },
-          body: jsonEncode({
-            'username': usernameController.text,
-            'email': emailController.text,
-            'isHost': isHost
-          }),
+          }
         );
 
         // handle http response
         if (response.statusCode != 200) {
           throw Exception(
-              'User created, failed to notify db. ${response.statusCode}');
+              'User created, failed to notify db. ${response.body}');
         } else {
           print('User Created in DB');
         }
+        
+        // initialise session variables
+        initialiseSessionVariables(emailController.text);
       }
+
+      // initialise session variables
+      initialiseSessionVariables(emailController.text);
     } on FirebaseAuthException catch (error) {
       incorrectRegisterMessage(error);
     } catch (e) {

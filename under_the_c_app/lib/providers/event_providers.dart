@@ -3,9 +3,18 @@ import 'package:under_the_c_app/api/event_requests.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
 class EventsProvider extends StateNotifier<List<Event>> {
+  List<Event> _allEvents;
+
   // final bool isHost;
-  EventsProvider() : super([]) {
+  EventsProvider()
+      : _allEvents = [],
+        super([]) {
     fetchEvents();
+  }
+
+  void setEvents(List<Event> events) {
+    _allEvents = events;
+    state = events;
   }
 
   void addEvent(Event event) {
@@ -15,10 +24,21 @@ class EventsProvider extends StateNotifier<List<Event>> {
 
   Future<void> fetchEvents() async {
     state = await getAllEvents();
+    setEvents(state);
   }
 
   Future<void> fetchEventsById(id) async {
     state = [await getEventDetails(id)];
+  }
+
+  void search(String query) {
+    if (query.isEmpty) {
+      state = _allEvents;
+    }
+    state = _allEvents
+        .where((event) =>
+            event.title.toLowerCase().startsWith(query.toLowerCase()))
+        .toList();
   }
 }
 
@@ -53,10 +73,3 @@ final hostEventProvider =
         (ref, uid) {
   return HostEventProvider(uid);
 });
-
-
-// final IncomingEventsProviderById = FutureProvider.family<Event, String>(
-//   (ref, id) async {
-//     return fetchIncomingEventById(id);
-//   },
-// );

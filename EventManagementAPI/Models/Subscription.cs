@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+
 namespace EventManagementAPI.Models
 {
 	public class Subscription
@@ -9,9 +10,9 @@ namespace EventManagementAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int subscriptionId { get; set; }
 
-        [ForeignKey("Event")]
-        public int eventIdRef { get; set; }
-        public Event toEvent { get; set; }
+        [ForeignKey("Hoster")]
+        public int hosterIdRef { get; set; }
+        public Hoster hoster { get; set; }
 
         [ForeignKey("Customer")]
         public int customerIdRef { get; set; }

@@ -18,7 +18,6 @@ class APIRoutes {
   static const String getEventDetails = '/EventDisplay/showEventDetails';
   static const String getCustomerEvents = '/EventDisplay/ListMyEvents';
 
-
   // events creation
   static const String createEvent = '/EventCreation/CreateEvent';
 
