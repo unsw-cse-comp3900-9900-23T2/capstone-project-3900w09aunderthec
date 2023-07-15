@@ -4,12 +4,13 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/api/converters/event_converter.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
 Future<List<Event>> getEvents(bool isHost) async {
   final registerUrl = isHost == false
       ? Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents)
-      : Uri.https(APIRoutes.BASE_URL, APIRoutes.getHostEvents);
+      : Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'hostId': sessionVariables.uid});
   try {
     final response = await http.get(
       registerUrl,

@@ -118,7 +118,7 @@ namespace EventManagementAPI.Repositories
         public async Task<List<Event>> GetAllEvents(int? hostId, string? sortby, string? tags)
         {
             IQueryable<Event> query;
-            if (hostId != -1)
+            if (hostId is not null)
             {
                 query = _dbContext.events.Where(e => e.hosterFK == hostId);
             } else

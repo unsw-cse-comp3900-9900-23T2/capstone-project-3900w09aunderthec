@@ -56,9 +56,6 @@ class _RegisterPageState extends State<RegisterPage> {
         ((X509Certificate cert, String host, int port) => true);
     var ioClient = IOClient(client);
 
-    final registerUrl =
-        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser');
-
     try {
       // register the user to firebase
       final userCredentials =
@@ -71,21 +68,20 @@ class _RegisterPageState extends State<RegisterPage> {
       if (userCredentials != null) {
         bool isHost = _userValue == 1 ? false : true;
 
-        // initialise session variables
-        initialiseSessionVariables(emailController.text);
+        final registerUrl =
+        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser', {
+            'username': usernameController.text,
+            'email': emailController.text,
+            'isHost': isHost.toString()
+          });
 
-        final response = await ioClient.post(
+        final response = await ioClient.get(
           registerUrl,
           headers: {
             "Access-Control-Allow-Origin": "*",
             'Content-Type': 'application/json',
             'Accept': '*/*'
-          },
-          body: jsonEncode({
-            'username': usernameController.text,
-            'email': emailController.text,
-            'isHost': isHost
-          }),
+          }
         );
 
         // handle http response
@@ -95,6 +91,9 @@ class _RegisterPageState extends State<RegisterPage> {
         } else {
           print('User Created in DB');
         }
+        
+        // initialise session variables
+        initialiseSessionVariables(emailController.text);
       }
     } on FirebaseAuthException catch (error) {
       incorrectRegisterMessage(error);
