@@ -15,9 +15,11 @@ class EventPage extends ConsumerWidget {
     final bool isHost = sessionVariables.sessionIsHost;
     final String uid = sessionVariables.uid.toString();
     final events = ref.watch(hostEventProvider(uid));
-    // if (isHost) {
-    //   ref.watch(eventsProvider.notifier).fetchHostEvents(uid);
-    // }
+
+    // make sure the event is displayed in the event page after just created an event
+    if (isHost) {
+      ref.watch(hostEventProvider(uid).notifier).fetchHostEvents(uid);
+    }
 
     // if(!isHost) {
     //   ref.watch(eventsProvider.notifier).fetchCustomerEvents(uid);
