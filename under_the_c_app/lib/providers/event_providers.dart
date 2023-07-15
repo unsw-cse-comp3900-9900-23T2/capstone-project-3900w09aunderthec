@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/event_requests.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
-
+// fetch all events
 class EventsProvider extends StateNotifier<List<Event>> {
   List<Event> _allEvents;
 
@@ -47,6 +47,7 @@ final eventsProvider = StateNotifierProvider<EventsProvider, List<Event>>(
     return EventsProvider();
   },
 );
+
 
 final eventProvider = FutureProvider.family<Event, String>(
   (ref, id) async {

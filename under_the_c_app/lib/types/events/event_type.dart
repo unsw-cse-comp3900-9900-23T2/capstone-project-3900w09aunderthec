@@ -78,7 +78,7 @@ class BackendEventData {
       eventId: json['eventId'],
       hosterFK: json['hosterFK'],
       title: json['title'],
-      time: DateTime.parse(json['time']),
+      time: DateTime.parse(json['createdTime']),
       venue: json['venue'],
       description: json['description'],
       allowRefunds: json['allowRefunds'],
