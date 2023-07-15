@@ -12,11 +12,6 @@ class EventsProvider extends StateNotifier<List<Event>> {
     fetchEvents();
   }
 
-  void setEvents(List<Event> events) {
-    _allEvents = events;
-    state = events;
-  }
-
   void addEvent(Event event) {
     createEvent(event);
     state = [...state, event];
@@ -25,6 +20,11 @@ class EventsProvider extends StateNotifier<List<Event>> {
   Future<void> fetchEvents() async {
     state = await getAllEvents();
     setEvents(state);
+  }
+
+  void setEvents(List<Event> events) {
+    _allEvents = events;
+    state = events;
   }
 
   Future<void> fetchEventsById(id) async {

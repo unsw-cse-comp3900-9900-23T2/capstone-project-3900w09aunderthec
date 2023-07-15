@@ -12,8 +12,6 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(eventsProvider);
     
-    // initialize events
-    // ref.read(eventsProvider.notifier).setEvents(events);
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
       alignment: Alignment.center,
