@@ -1,92 +1,89 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
-import 'package:http/io_client.dart';
-import 'package:under_the_c_app/components/ticket/book_tickets.dart';
-import 'package:under_the_c_app/components/events/create_event.dart';
-import '../../components/events/create_event.dart';
-import '../../components/ticket/book_tickets.dart';
-import 'package:http/io_client.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/api/api_routes.dart';
+import 'package:under_the_c_app/api/testingdata/event_testing_data.dart';
+import 'package:under_the_c_app/components/events/event_card.dart';
+import 'package:under_the_c_app/config/routes.dart';
 
 class EventPage extends StatelessWidget {
-  const EventPage({Key? key}) : super(key: key);
-
-  // TO-DO based on the type of user fetch their events
-  void getEvents() async {
-    HttpClient client = HttpClient();
-    client.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => true);
-    var ioClient = IOClient(client);
-
-    final registerUrl = Uri.https('10.0.2.2:7161', '/EventDisplay/ListEvents');
-
-    try {
-      final response = await ioClient.post(
-        registerUrl,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json',
-          'Accept': '*/*'
-        },
-        body: jsonEncode({
-          // TODO: [PLHV-157] event.dart:getEvents(): change UID to possibly the email
-          "uid": "1"
-        }),
-      );
-
-      // server currently returns a 500 as its not implemented
-      if (response.statusCode == 500) {
-        print(response.body);
-        throw Exception(response.body);
-      }
-    } catch (e) {
-      print('An error occured: $e');
-    }
-  }
+  final bool isHost;
+  const EventPage({Key? key, required this.isHost}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.lightBlue,
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: getEvents,
-          // child: const Text("Event Page"),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: ElevatedButton(
-                      onPressed: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CreateEventRoute()),
-                            ),
-                          },
-                      child: const Text("Create Event"))),
-              const Align(
-                alignment: Alignment.center,
-                child: Text("Event Page"),
+    return Stack(
+      children: [
+        Container(
+          color: const Color.fromARGB(255, 255, 255, 255),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(15),
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12, left: 4),
+                  child: Title(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    child: Text(
+                      isHost ? "My Hosted Events" : "My Incoming Events",
+                      style: const TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 42, 23, 120),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              Align(
-                  alignment: Alignment.topRight,
-                  child: ElevatedButton(
-                      onPressed: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BookTicketRoute()),
-                            ),
-                          },
-                      child: const Text("Book Tickets"))),
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final event = hostedEvents[index];
+
+                  return SizedBox(
+                    width: 375,
+                    child: GestureDetector(
+                      onTap: () {
+                        context.go(AppRoutes.eventDetails(event.eventId!));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: EventCard(
+                          title: event.title,
+                          imageUrl: event.imageUrl,
+                          time: event.time,
+                          address: event.address,
+                        ),
+                      ),
+                    ),
+                  );
+                }, childCount: hostedEvents.length),
+              )
             ],
           ),
-        ));
+        ),
+        isHost
+            ? Positioned(
+                right: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.purple,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: IconButton(
+                        onPressed: () {
+                          context.go(AppRoutes.eventAdd);
+                        },
+                        icon: const Icon(Icons.add),
+                        iconSize: 45,
+                        color: const Color.fromARGB(255, 255, 225, 253)),
+                  ),
+                ),
+              )
+            : Container(),
+        // const EventCreate()
+      ],
+    );
   }
 }

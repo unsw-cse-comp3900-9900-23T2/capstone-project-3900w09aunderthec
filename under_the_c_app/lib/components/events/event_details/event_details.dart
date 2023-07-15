@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/common/widgets/price.dart';
+import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
-import 'package:under_the_c_app/components/providers/event_providers.dart';
+import 'package:under_the_c_app/config/routes.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 
 class EventDetailsPage extends ConsumerWidget {
   final String eventId;
@@ -12,11 +13,9 @@ class EventDetailsPage extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  // fetch
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final event = ref.watch(IncomingEventsProviderById(eventId));
+    final event = ref.watch(eventProvider(eventId));
     return event.when(
         data: (event) {
           return Scaffold(
@@ -27,7 +26,7 @@ class EventDetailsPage extends ConsumerWidget {
               elevation: 0.0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => context.go('/home'),
+                onPressed: () => context.go(AppRoutes.home),
               ),
             ),
             body: Stack(
@@ -114,8 +113,7 @@ class EventDetailsPage extends ConsumerWidget {
                     padding: const EdgeInsets.all(20),
                     child: ElevatedButton(
                       onPressed: () {
-                        print("Button clicked");
-                        context.go('/event_booking/${event.eventId}');
+                        context.go(AppRoutes.eventBook(event.eventId!));
                       },
                       style: TextButton.styleFrom(
                         minimumSize: const Size(150, 0),

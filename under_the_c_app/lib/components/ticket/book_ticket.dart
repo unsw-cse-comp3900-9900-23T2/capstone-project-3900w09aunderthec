@@ -3,9 +3,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/api/api_routes.dart';
+import 'package:under_the_c_app/api/send_email.dart';
 import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
-import 'package:under_the_c_app/components/api/send_email.dart';
-import 'package:under_the_c_app/components/ticket_confirmation.dart';
+import 'package:under_the_c_app/config/routes.dart';
 
 const priceTextStyle = TextStyle(
   color: Colors.black,
@@ -28,7 +29,7 @@ class BookTicket extends StatelessWidget {
             color: Color.fromARGB(255, 33, 8, 83),
           ),
           onPressed: () =>
-              context.go('/event_details/$eventId', extra: "Details"),
+              context.go(AppRoutes.eventDetails(eventId), extra: "Details"),
         ),
       ),
       // extendBody: true,
@@ -129,11 +130,7 @@ class BookTicket extends StatelessWidget {
                   //         borderRadius: BorderRadius.circular(20.0))),
                   onPressed: () {
                     sendEmail();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BoughtTicketRoute()),
-                    );
+                    context.go(AppRoutes.ticketConfirmation);
                   },
                   child: const Text("Purchase"),
                 ),
