@@ -84,9 +84,6 @@ class _RegisterPageState extends State<RegisterPage> {
         } else {
           print('User Created in DB');
         }
-        
-        // initialise session variables
-        initialiseSessionVariables(emailController.text);
       }
 
       // initialise session variables
