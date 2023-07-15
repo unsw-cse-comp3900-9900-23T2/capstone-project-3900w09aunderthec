@@ -62,8 +62,8 @@ Future<List<Event>> getCustomerEvents(String uid) async {
 }
 
 Future<List<Event>> getHostEvents(String hostId) async {
-  final registerUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getCustomerEvents, {'hostId': hostId});
+  final registerUrl = Uri.https(
+      APIRoutes.BASE_URL, APIRoutes.getHostEvents, {'hostId': hostId});
   try {
     final response = await http.get(
       registerUrl,

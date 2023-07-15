@@ -20,14 +20,6 @@ class EventsProvider extends StateNotifier<List<Event>> {
   Future<void> fetchEventsById(id) async {
     state = [await getEventDetails(id)];
   }
-
-  Future<void> fetchCustomerEvents(uid) async {
-    state = await getCustomerEvents(uid);
-  }
-
-  Future<void> fetchHostEvents(uid) async {
-    state = await getHostEvents(uid);
-  }
 }
 
 final eventsProvider = StateNotifierProvider<EventsProvider, List<Event>>(
@@ -41,6 +33,26 @@ final eventProvider = FutureProvider.family<Event, String>(
     return await getEventDetails(id);
   },
 );
+
+// for host
+class HostEventProvider extends StateNotifier<List<Event>> {
+  HostEventProvider(uid) : super([]) {
+    fetchHostEvents(uid);
+  }
+  Future<void> fetchHostEvents(uid) async {
+    state = await getHostEvents(uid);
+  }
+
+  Future<void> fetchCustomerEvents(uid) async {
+    state = await getCustomerEvents(uid);
+  }
+}
+
+final hostEventProvider =
+    StateNotifierProvider.family<HostEventProvider, List<Event>, String>(
+        (ref, uid) {
+  return HostEventProvider(uid);
+});
 
 
 // final IncomingEventsProviderById = FutureProvider.family<Event, String>(

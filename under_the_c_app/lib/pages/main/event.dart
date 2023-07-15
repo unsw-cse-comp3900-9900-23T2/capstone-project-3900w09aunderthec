@@ -14,14 +14,14 @@ class EventPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isHost = sessionVariables.sessionIsHost;
     final String uid = sessionVariables.uid.toString();
-    final events = ref.watch(eventsProvider);
-    if (isHost) {
-      ref.watch(eventsProvider.notifier).fetchHostEvents(uid);
-    } 
-    // else {
-    //   ref.watch(eventsProvider.notifier).fetchCustomerEvents(uid);
+    final events = ref.watch(hostEventProvider(uid));
+    // if (isHost) {
+    //   ref.watch(eventsProvider.notifier).fetchHostEvents(uid);
     // }
 
+    // if(!isHost) {
+    //   ref.watch(eventsProvider.notifier).fetchCustomerEvents(uid);
+    // }
     return Stack(
       children: [
         Container(
