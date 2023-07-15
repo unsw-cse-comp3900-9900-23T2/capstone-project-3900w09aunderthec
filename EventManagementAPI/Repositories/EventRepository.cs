@@ -166,6 +166,25 @@ namespace EventManagementAPI.Repositories
             return e;
         }
 
+        public async Task<List<Event>> ListMyEvents(int userId)
+        {
+
+            var e = await _dbContext.bookings
+                .Join(_dbContext.tickets,
+                    b => b.ticketId,
+                    t => t.ticketId,
+                    (b,t) => new
+                    {
+                        b.customerId,
+                        t.toEvent
+                    })
+                .Where(c => c.customerId == userId)
+                .Select(c => c.toEvent)
+                .ToListAsync();
+
+            return e;
+        }
+
         public async Task ModifyEvent(Event e)
         {
             _dbContext.events.Update(e);
