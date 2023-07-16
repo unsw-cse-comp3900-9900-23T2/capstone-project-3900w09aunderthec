@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:under_the_c_app/components/events/event_details/comment/comment_cart.dart';
 
 class Comment extends StatelessWidget {
   const Comment({Key? key}) : super(key: key);
@@ -58,6 +59,7 @@ class Comment extends StatelessWidget {
                 ),
               ],
             ),
+            // my comment section
             const TextField(
               decoration: InputDecoration(
                 hintText: 'What do you want to talk about?',
@@ -65,9 +67,10 @@ class Comment extends StatelessWidget {
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 15, horizontal: 3),
               ),
-            )
+            ),
           ],
-        )
+        ),
+        CommentCart()
       ],
     );
   }
