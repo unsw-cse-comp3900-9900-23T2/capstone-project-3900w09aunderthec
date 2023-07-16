@@ -7,7 +7,7 @@ class CommentCart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,19 +46,21 @@ class CommentCart extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.favorite_border,
+                    IconButton(
+                      onPressed: () => {},
+                      icon: Icon(Icons.favorite_border),
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 4),
                     Text("12", style: TextStyle(color: Colors.grey))
                   ],
                 ),
                 SizedBox(width: 14),
                 Row(
                   children: [
-                    Icon(Icons.comment_outlined, color: Colors.grey),
-                    SizedBox(width: 6),
+                    IconButton(
+                        onPressed: () => {},
+                        icon: Icon(Icons.comment_outlined),
+                        color: Colors.grey),
                     Text("5", style: TextStyle(color: Colors.grey))
                   ],
                 )
