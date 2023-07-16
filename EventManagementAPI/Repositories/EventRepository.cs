@@ -115,15 +115,36 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<Event>> GetAllEvents(int? hostId, string? sortby, string? tags)
+        public async Task<List<Event>> GetAllEvents(int? uid, string? sortby, string? tags)
         {
             IQueryable<Event> query;
-            if (hostId is not null)
+
+            query = _dbContext.events;
+            if (uid is not null)
             {
-                query = _dbContext.events.Where(e => e.hosterFK == hostId);
-            } else
-            {
-                query = _dbContext.events;
+                if (await _dbContext.hosts.AnyAsync(h => h.uid == uid))
+                {
+                    query = _dbContext.events.Where(e => e.hosterFK == uid);
+                } else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
+                {
+                    if (sortby == "recommended") {
+                        // Sprint 3 - Change this to sort query by most recommended events
+                        query = _dbContext.events;
+                    } else {
+                        query = _dbContext.bookings
+                            .Join(_dbContext.tickets,
+                                b => b.ticketId,
+                                t => t.ticketId,
+                                (b,t) => new
+                                {
+                                    b.customerId,
+                                    t.toEvent
+                                })
+                            .Where(c => c.customerId == uid)
+                            .Select(c => c.toEvent);
+                    }
+                } else
+                {throw new BadHttpRequestException("That user does not exist");}
             }
 
             switch (sortby)
@@ -163,25 +184,6 @@ namespace EventManagementAPI.Repositories
         {
             var e = await _dbContext.events
                 .FirstOrDefaultAsync(e => e.eventId == id);
-            return e;
-        }
-
-        public async Task<List<Event>> ListMyEvents(int userId)
-        {
-
-            var e = await _dbContext.bookings
-                .Join(_dbContext.tickets,
-                    b => b.ticketId,
-                    t => t.ticketId,
-                    (b,t) => new
-                    {
-                        b.customerId,
-                        t.toEvent
-                    })
-                .Where(c => c.customerId == userId)
-                .Select(c => c.toEvent)
-                .ToListAsync();
-
             return e;
         }
 
