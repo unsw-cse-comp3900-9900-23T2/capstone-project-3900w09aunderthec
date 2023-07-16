@@ -158,6 +158,7 @@ class Tickets {
   int qty;
 
   Tickets({required this.type, required this.price, required this.qty});
+
 }
 
 class TicketTypes extends StatelessWidget {
