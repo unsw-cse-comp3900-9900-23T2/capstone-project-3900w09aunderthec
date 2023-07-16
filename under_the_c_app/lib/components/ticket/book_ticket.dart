@@ -47,49 +47,56 @@ class BookTicket extends ConsumerWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          ListView(
-            padding: const EdgeInsets.fromLTRB(
-                16.0, kToolbarHeight + 40.0, 16.0, 16.0),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(
-                child: Text(
-                  // "Event Title",
-                  eventTitle,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                    16.0, kToolbarHeight + 20.0, 16.0, 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      child: Text(
+                        eventTitle,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      child: Text(eventVenue),
+                    ),
+                    const SizedBox(height: 20.0),
+                    const Text(
+                      "Choose your tickets",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                  ],
                 ),
               ),
-              Align(
-                child: Text(eventVenue),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              const Text(
-                "Choose your tickets",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: ListView.builder(
+                  itemCount: tickets.length,
+                  itemBuilder: (context, index) {
+                    final ticket = tickets[index];
+                    return TicketTypes(item: ticket);
+                  },
                 ),
               ),
-              const SizedBox(
-                height: 40.0,
-              ),
-              const SizedBox(
-                height: 40.0,
-              ),
+              const SizedBox(height: 40.0),
               _buildDivider(),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Row(
                 children: [
-                  const SizedBox(
-                    height: 20.0,
-                  ),
+                  const SizedBox(height: 20.0),
                   Text(
                     "Total Price",
                     style: priceTextStyle.copyWith(color: Colors.black),
@@ -97,26 +104,16 @@ class BookTicket extends ConsumerWidget {
                   const Spacer(),
                   Text("\$65",
                       style: priceTextStyle.copyWith(color: Colors.black)),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
+                  const SizedBox(height: 20.0),
                 ],
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               _buildDivider(),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: ElevatedButton(
-                  // style: ButtonStyle(
-                  //     padding: EdgeInsets.all(16.0),
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(20.0))),
                   onPressed: () {
                     sendEmail();
                     context.go(AppRoutes.ticketConfirmation);
@@ -126,10 +123,6 @@ class BookTicket extends ConsumerWidget {
               ),
             ],
           ),
-          ListView.builder(itemBuilder: (context, index) {
-            final ticket = tickets[index];
-            return TicketTypes(item: ticket);
-          }),
         ],
       ),
     );
@@ -152,82 +145,85 @@ class TicketTypes extends StatelessWidget {
   TicketTypes({Key? key, required this.item}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.name,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Text(
-                "\$ ${(item.price).toString()}",
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  "\$ ${(item.price).toString()}",
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const Text("Sales end on July 17, 2023"),
-            ],
+                const Text("Sales end on July 17, 2023"),
+              ],
+            ),
           ),
-        ),
-        Flexible(
-          flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                height: 40.0,
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  IconButton(
-                    iconSize: 14.0,
-                    padding: const EdgeInsets.all(2.0),
-                    icon: const Icon(Icons.remove),
-                    onPressed: () {
-                      if (qty > 0) {
-                        qty--;
-                      }
-                    },
-                  ),
-                  Text(
-                    "${qty}",
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+          Flexible(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1.0,
                     ),
+                    borderRadius: BorderRadius.circular(5.0),
                   ),
-                  IconButton(
-                    iconSize: 14.0,
-                    padding: const EdgeInsets.all(2.0),
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      qty++;
-                    },
-                  ),
-                ]),
-              )
-            ],
+                  height: 40.0,
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    IconButton(
+                      iconSize: 14.0,
+                      padding: const EdgeInsets.all(2.0),
+                      icon: const Icon(Icons.remove),
+                      onPressed: () {
+                        if (qty > 0) {
+                          qty--;
+                        }
+                      },
+                    ),
+                    Text(
+                      "${qty}",
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      iconSize: 14.0,
+                      padding: const EdgeInsets.all(2.0),
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        qty++;
+                      },
+                    ),
+                  ]),
+                )
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

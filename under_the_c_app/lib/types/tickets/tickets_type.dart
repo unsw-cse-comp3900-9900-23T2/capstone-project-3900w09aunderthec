@@ -1,8 +1,10 @@
+import 'dart:ffi';
+
 class Tickets {
   final int ticketId;
   final int eventIdRef;
   final String name;
-  final int price;
+  final double price;
 
   Tickets({
     required this.ticketId,
