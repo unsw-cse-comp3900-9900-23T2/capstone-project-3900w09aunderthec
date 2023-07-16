@@ -109,13 +109,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-            path: AppRoutes.eventDetails(':id'),
-            pageBuilder: (context, state) {
-              final eventId = state.pathParameters['id'].toString();
-              return MaterialPage(child: EventDetailsPage(eventId: eventId));
-            },
-          ),
-          GoRoute(
             path: AppRoutes.eventBook(':id'),
             pageBuilder: (context, state) {
               final eventId = state.pathParameters['id'].toString();
@@ -136,6 +129,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
+      GoRoute(
+            path: AppRoutes.eventDetails(':id'),
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: EventDetailsPage(eventId: eventId));
+            },
+          ),
     ],
     redirect: (context, state) {
       if (authState.isLoading || authState.hasError) return null;
