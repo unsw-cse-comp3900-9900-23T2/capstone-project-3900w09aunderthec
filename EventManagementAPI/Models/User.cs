@@ -14,6 +14,7 @@ namespace EventManagementAPI.Models
         public string email { get; set; }
         [Required]
         public string username { get; set; }
+        public DateTime createdTime { get; set; } = DateTime.Now;
     }
 }
 

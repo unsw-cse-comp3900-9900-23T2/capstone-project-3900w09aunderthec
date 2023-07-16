@@ -11,5 +11,6 @@ namespace EventManagementAPI.Repositories
         public Task<List<BookingResultDto>> GetBookings(int customerId);
         public Task<Booking?> GetBookingById(int bookingId);
         public Task<Booking?> RemoveBooking(int bookingId);
+        public Task<TimeSpan?> GetTimeDifference(Booking booking);
     }
 }
