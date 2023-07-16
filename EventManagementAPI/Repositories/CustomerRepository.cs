@@ -111,7 +111,7 @@ namespace EventManagementAPI.Repositories
 
         public async Task<bool> UndoSaveEvent(int saveEventId)
         {
-            var saveEvent = await _dbContext.events.FindAsync(saveEventId);
+            var saveEvent = await _dbContext.eventsSaved.FindAsync(saveEventId);
 
             if (saveEvent == null)
             {

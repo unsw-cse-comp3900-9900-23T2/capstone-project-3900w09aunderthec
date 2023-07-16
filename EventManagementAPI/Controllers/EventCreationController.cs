@@ -107,6 +107,12 @@ namespace EventManagementAPI.Controllers{
         [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
 
+            var e = await _eventRepository.GetEventById(RequestBody.eventId);
+            if (e == null)
+            {
+                return NotFound("EventId does not refer to a valid event");
+            }
+
             Event newEvent = new Event
             {
                 eventId = RequestBody.eventId,
@@ -118,8 +124,8 @@ namespace EventManagementAPI.Controllers{
                 isDirectRefunds = RequestBody.isDirectRefunds,
                 isPrivateEvent = RequestBody.privateEvent,
                 rating = null,
-                // comments = new List<Comment>(),
-                // tags = RequestBody.tags
+                tags = RequestBody.tags,
+                comments = e.comments,
             };
 
             // get event with eventId from DB

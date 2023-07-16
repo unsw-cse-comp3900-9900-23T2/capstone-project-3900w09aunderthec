@@ -120,16 +120,16 @@ namespace EventManagementAPI.Repositories
             IQueryable<Event> query;
             if (hostId != -1)
             {
-                query = _dbContext.events.Where(e => e.hosterFK == hostId && e.privateEvent == false);
+                query = _dbContext.events.Where(e => e.eventTime > DateTime.Now && e.hosterFK == hostId && e.isPrivateEvent == false);
             } else
             {
-                query = _dbContext.events.Where(e => e.privateEvent == false);
+                query = _dbContext.events.Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
             }
 
             switch (sortby)
             {
                 case "most_recent":
-                    query = query.OrderByDescending(e => e.eventTime);
+                    query = query.OrderBy(e => e.eventTime);
                     break;
                 case "most_saved":
                     query = query.OrderByDescending(e => e.numberSaved);

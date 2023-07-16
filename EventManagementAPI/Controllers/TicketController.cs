@@ -86,7 +86,7 @@ namespace EventManagementAPI.Controllers{
             return Ok(t);
         }
 
-        [HttpPost("ModifyTickets")]
+        [HttpPut("ModifyTickets")]
         public async Task<IActionResult> ModifyTickets([FromBody] UpdateTicketsRequestBody requestBody)
         {
             var t = await _ticketRepository.GetTicketById(requestBody.ticketId);

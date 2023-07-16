@@ -61,7 +61,7 @@ namespace EventManagementAPI.Repositories
                 toTicket = ticket,
                 numberOfTickets = numberOfTickets,
                 paymentMethod = paymentMethod,
-                gainedCredits = Convert.ToInt32(ticket.price * numberOfTickets),
+                gainedCredits = Convert.ToInt32(ticket.price * numberOfTickets) * 10,
             };
 
             // customer gains loyalty points

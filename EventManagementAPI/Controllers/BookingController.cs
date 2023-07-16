@@ -113,14 +113,14 @@ namespace EventManagementAPI.Controllers
 
             if (booking == null)
             {
-                return NotFound();
+                return NotFound("BookingId does not refer to a valid booking");
             }
 
             var timeDifference = await _bookingRepository.GetTimeDifference(booking);
 
             if (timeDifference == null)
             {
-                return NotFound();
+                return NotFound("Bookings do not refer to a valid time difference");
             }
 
             TimeSpan timeDiff = timeDifference.GetValueOrDefault();
@@ -132,9 +132,9 @@ namespace EventManagementAPI.Controllers
 
             var isDirectRefund = await _bookingRepository.IsDirectRefunds(RequestBody.bookingId);
 
-            if (isDirectRefund.HasValue)
+            if (!isDirectRefund.HasValue)
             {
-                return NotFound();
+                return NotFound("There is no refund policy of the event");
             }
 
             if (isDirectRefund == false)
@@ -153,7 +153,7 @@ namespace EventManagementAPI.Controllers
 
             if (canceledBooking == null)
             {
-                return NotFound();
+                return NotFound("Booking to be cancelled not found");
             }
 
             return Ok(canceledBooking);

@@ -28,7 +28,13 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("customerId")
                         .HasColumnType("int");
 
+                    b.Property<int>("gainedCredits")
+                        .HasColumnType("int");
+
                     b.Property<int>("numberOfTickets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("paymentMethod")
                         .HasColumnType("int");
 
                     b.Property<int>("ticketId")
@@ -122,14 +128,35 @@ namespace EventManagementAPI.Migrations
                     b.ToTable("commentLikes");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.CreditMoney", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double>("creditAmount")
+                        .HasColumnType("double");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("hosterId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("customerId");
+
+                    b.HasIndex("hosterId");
+
+                    b.ToTable("creditMoney");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.Property<int>("eventId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<bool>("allowRefunds")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("createdTime")
                         .HasColumnType("datetime(6)");
@@ -144,11 +171,14 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("hosterFK")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isDirectRefunds")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("isPrivateEvent")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("numberSaved")
                         .HasColumnType("int");
-
-                    b.Property<bool>("privateEvent")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<double?>("rating")
                         .HasColumnType("double");
@@ -271,6 +301,9 @@ namespace EventManagementAPI.Migrations
 
                     b.Property<double>("price")
                         .HasColumnType("double");
+
+                    b.Property<int>("stock")
+                        .HasColumnType("int");
 
                     b.Property<int>("toEventeventId")
                         .HasColumnType("int");
@@ -410,6 +443,25 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("comment");
 
                     b.Navigation("customer");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.CreditMoney", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Customer", "toCustomer")
+                        .WithMany()
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Hoster", "toHoster")
+                        .WithMany()
+                        .HasForeignKey("hosterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("toCustomer");
+
+                    b.Navigation("toHoster");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
