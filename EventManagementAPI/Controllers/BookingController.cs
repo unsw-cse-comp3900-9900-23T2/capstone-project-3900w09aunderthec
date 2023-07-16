@@ -16,6 +16,7 @@ namespace EventManagementAPI.Controllers
         public int customerId { get; set; }
         public int ticketId { get; set; }
         public int numberOfTickets { get; set; }
+        public int paymentMethod { get; set; }
     };
 
     public class CancelBookingRequestBody
@@ -44,6 +45,18 @@ namespace EventManagementAPI.Controllers
             return Ok(bookings);
         }
 
+        [HttpPost("GetCreditMoney")]
+        public async Task<IActionResult> GetCreditMoney([FromQuery] int customerId, [FromQuery] int hosterId)
+        {
+            var creditAmount = await _bookingRepository.GetCreditMoney(customerId, hosterId);
+            if (creditAmount == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(creditAmount);
+        }
+
         [HttpPost("MakeBooking")]
         public async Task<IActionResult> MakeBooking([FromBody] MakeBookingRequestBody RequestBody)
         {
@@ -51,32 +64,33 @@ namespace EventManagementAPI.Controllers
             var customerId = RequestBody.customerId;
             var ticketId = RequestBody.ticketId;
             var numberOfTickets = RequestBody.numberOfTickets;
+            var paymentMethod = RequestBody.paymentMethod;
 
-            var booking = await _bookingRepository.MakeBooking(customerId, ticketId, numberOfTickets);
+            var booking = await _bookingRepository.MakeBooking(customerId, ticketId, numberOfTickets, paymentMethod);
 
             if (booking == null)
             {
                 return NotFound();
             }
 
+            var totalPriceInt = Convert.ToInt32(booking.toTicket.price * numberOfTickets);
+            booking.toCustomer.loyaltyPoints += totalPriceInt * 10;
+
+            var fromAddress = "underthecsharp@outlook.com";
+            var toAddress = booking.toCustomer.email;
+            var subject = "Booking Confirmed!";
+            var body = new StringBuilder()
+                .AppendLine("Dear Customer, ")
+                .AppendLine("")
+                .AppendLine("Your booking has been successful")
+                .AppendLine("")
+                .AppendLine("Kind Regards,")
+                .AppendLine("Under the C")
+                .ToString();
+
+            _emailService.SendEmail(fromAddress, toAddress, subject, body);
+
             return Ok(booking);
-
-            // var fromAddress = "young.jiapeng@outlook.com";
-            // var toAddress = RequestBody.email;
-            // var subject = "Booking Confirmed!";
-
-            // var body = new StringBuilder()
-            //    .AppendLine("Dear Customer,")
-            //    .AppendLine("")
-            //    .AppendLine("Your booking has been successful")
-            //    .AppendLine("")
-            //    .AppendLine("Kind Regards,")
-            //     .AppendLine("Under the C")
-            // .ToString();
-
-            // _emailService.SendEmail(fromAddress, toAddress, subject, body);
-
-            // return Ok();
         }
 
         [HttpGet("GetBookingDetails/{bookingId}")]
@@ -114,6 +128,25 @@ namespace EventManagementAPI.Controllers
             if (timeDiff.TotalDays < 7)
             {
                 return BadRequest("Cancellation requests must be made at least 7 days prior to the event.");
+            }
+
+            var isDirectRefund = await _bookingRepository.IsDirectRefunds(RequestBody.bookingId);
+
+            if (isDirectRefund.HasValue)
+            {
+                return NotFound();
+            }
+
+            if (isDirectRefund == false)
+            {
+                var noDirectCancelBooking = await _bookingRepository.NoDirectCancelBooking(RequestBody.bookingId);
+
+                if (noDirectCancelBooking == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(noDirectCancelBooking);
             }
 
             var canceledBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);

@@ -13,9 +13,9 @@ namespace EventManagementAPI.Models
         [ForeignKey("Event")]
         public int eventIdRef { get; set; }
         public Event toEvent { get; set; }
-
         public String name { get; set; }
         public Double price { get; set; }
+        public int stock { get; set; }
         public DateTime createdTime { get; set; } = DateTime.Now;
     }
 }

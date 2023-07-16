@@ -19,7 +19,7 @@ namespace EventManagementAPI.Controllers{
         public string venue { get; set; }
         public DateTime eventTime { get; set; }
         public string description { get; set; }
-        public bool allowRefunds { get; set; }
+        public bool isDirectRefunds { get; set; }
         public bool privateEvent { get; set; }
         public String tags { get; set; }
         // public List<Ticket> tickets;
@@ -31,7 +31,7 @@ namespace EventManagementAPI.Controllers{
         public DateTime time { get; set; }
         public String venue { get; set; }
         public String description { get; set; }
-        public Boolean allowRefunds { get; set; }
+        public Boolean isDirectRefunds { get; set; }
         public Boolean privateEvent { get; set; }
         public string tags { get; set; }
         // public List<Ticket> tickets { get; set; }
@@ -89,8 +89,8 @@ namespace EventManagementAPI.Controllers{
                 eventTime = RequestBody.eventTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
-                allowRefunds = RequestBody.allowRefunds,
-                privateEvent = RequestBody.privateEvent,
+                isDirectRefunds = RequestBody.isDirectRefunds,
+                isPrivateEvent = RequestBody.privateEvent,
                 rating = null,
                 tags = RequestBody.tags
             };
@@ -101,7 +101,7 @@ namespace EventManagementAPI.Controllers{
                 return BadRequest(e.Message);
             }
 
-            return Ok();
+            return Ok(newEvent);
         }
 
         [HttpPut("ModifyEvent")]
@@ -115,8 +115,8 @@ namespace EventManagementAPI.Controllers{
                 createdTime = RequestBody.time,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
-                allowRefunds = RequestBody.allowRefunds,
-                privateEvent = RequestBody.privateEvent,
+                isDirectRefunds = RequestBody.isDirectRefunds,
+                isPrivateEvent = RequestBody.privateEvent,
                 rating = null,
                 // comments = new List<Comment>(),
                 // tags = RequestBody.tags
@@ -129,7 +129,7 @@ namespace EventManagementAPI.Controllers{
             // replace old event with newEvent
 
             await _eventRepository.ModifyEvent(newEvent);
-            return Ok();
+            return Ok(newEvent);
         }
 
         [HttpDelete("CancelEvent")]
@@ -142,7 +142,7 @@ namespace EventManagementAPI.Controllers{
                 return NotFound();
             }
 
-            return Ok();
+            return Ok(e);
         }
     }
 }

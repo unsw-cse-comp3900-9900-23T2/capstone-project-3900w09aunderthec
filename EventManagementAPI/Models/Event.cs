@@ -19,8 +19,8 @@ namespace EventManagementAPI.Models
         public String venue { get; set; }
         public DateTime eventTime { get; set; }
         public String description { get; set; }
-        public Boolean allowRefunds { get; set; }
-        public Boolean privateEvent { get; set; }
+        public Boolean isDirectRefunds { get; set; }
+        public Boolean isPrivateEvent { get; set; }
         public Double? rating { get; set; }
         public String tags { get; set; }
         public int numberSaved { get; set; } = 0;

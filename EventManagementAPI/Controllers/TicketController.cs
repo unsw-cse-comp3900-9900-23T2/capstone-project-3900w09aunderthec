@@ -8,17 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
 
-    public class BookTicketsRequestBody {
-        public double price { get; set; }
-        public string name { get; set; }
-        public int eventId { get; set; }
-    };
-
     public class CreateTicketsRequestBody
     {
         public double price { get; set; }
         public string name { get; set; }
         public int eventId { get; set; }
+        public int stock { get; set; }
     };
 
     public class UpdateTicketsRequestBody
@@ -26,6 +21,7 @@ namespace EventManagementAPI.Controllers{
         public int ticketId { get; set; }
         public double price { get; set; }
         public string name { get; set; }
+        public int stock { get; set; }
     };
 
     public class DeleteTicketsRequestBody
@@ -69,6 +65,7 @@ namespace EventManagementAPI.Controllers{
                 price = RequestBody.price,
                 eventIdRef = RequestBody.eventId,
                 toEvent = existingEvent,
+                stock = RequestBody.stock,
             };
 
             await _ticketRepository.CreateBookingTicket(newTicket);
@@ -100,6 +97,7 @@ namespace EventManagementAPI.Controllers{
 
             t.price = requestBody.price;
             t.name = requestBody.name;
+            t.stock = requestBody.stock;
 
             await _ticketRepository.ModifyTicket(t);
 
@@ -116,7 +114,7 @@ namespace EventManagementAPI.Controllers{
             }
 
             await _ticketRepository.DeleteTicket(t);
-            return Ok();
+            return Ok(t);
         }
     }
 }
