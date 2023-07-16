@@ -34,9 +34,9 @@ Future<List<Event>> getAllEvents() async {
   }
 }
 
-Future<List<Event>> getCustomerEvents(String uid) async {
+Future<List<Event>> getUserEvents(String uid) async {
   final registerUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getCustomerEvents, {'uid': uid});
+      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'hostId': uid});
   try {
     final response = await http.get(
       registerUrl,
@@ -53,40 +53,14 @@ Future<List<Event>> getCustomerEvents(String uid) async {
           'event.dart.getEvents: Server returned status code ${response.statusCode}');
     }
   } on SocketException catch (e) {
-    throw Exception('event.dart.getCustomerEvents: Network error $e');
+    throw Exception('event.dart.getUserEvents: Network error $e');
   } on HttpException catch (e) {
-    throw Exception('event.dart.getCustomerEvents: Http Exception error $e');
+    throw Exception('event.dart.getUserEvents: Http Exception error $e');
   } catch (e) {
-    throw Exception('event.dart.getCustomerEvents: Unknown error $e');
+    throw Exception('event.dart.getUserEvents: Unknown error $e');
   }
 }
 
-Future<List<Event>> getHostEvents(String hostId) async {
-  final registerUrl = Uri.https(
-      APIRoutes.BASE_URL, APIRoutes.getEvents, {'hostId': hostId});
-  try {
-    final response = await http.get(
-      registerUrl,
-      headers: APIRoutes.headers,
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(response.body);
-      final List<BackendEventData> events =
-          jsonList.map((json) => BackendEventData.fromJson(json)).toList();
-      return BackendDataEventListToEvent(events);
-    } else {
-      throw Exception(
-          'event.dart.getEvents: Server returned status code ${response.statusCode}');
-    }
-  } on SocketException catch (e) {
-    throw Exception('event.dart.getEvents: Network error $e');
-  } on HttpException catch (e) {
-    throw Exception('event.dart.getEvents: Http Exception error $e');
-  } catch (e) {
-    throw Exception('event.dart.getEvents: Unknown error $e');
-  }
-}
 
 Future<Event> getEventDetails(String id) async {
   final url =

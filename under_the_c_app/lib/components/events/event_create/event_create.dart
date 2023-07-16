@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:under_the_c_app/components/events/event_create/dropdown_list.dart';
 import 'package:under_the_c_app/components/events/event_create/tags.dart';
@@ -397,12 +395,11 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             price: 0,
                           ),
                         );
-                    if (sessionVariables.sessionIsHost) {
-                      final uid = sessionVariables.uid.toString();
-                      ref
-                          .read(hostEventProvider(uid).notifier)
-                          .fetchHostEvents(uid);
-                    }
+                    final uid = sessionVariables.uid.toString();
+                    ref.read(eventsProvider.notifier).fetchEvents;
+                    ref
+                        .read(eventsByUserProvider(uid).notifier)
+                        .fetchEvents(uid);
                   }
                 },
                 child: const Text('Submit'),

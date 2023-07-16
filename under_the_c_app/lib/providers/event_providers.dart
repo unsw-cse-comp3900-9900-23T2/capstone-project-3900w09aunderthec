@@ -1,6 +1,8 @@
+import 'dart:core';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/event_requests.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
+
 // fetch all events
 class EventsProvider extends StateNotifier<List<Event>> {
   List<Event> _allEvents;
@@ -51,29 +53,26 @@ final eventsProvider = StateNotifierProvider<EventsProvider, List<Event>>(
   },
 );
 
-
 final eventProvider = FutureProvider.family<Event, String>(
   (ref, id) async {
     return await getEventDetails(id);
   },
 );
 
-// for host
-class HostEventProvider extends StateNotifier<List<Event>> {
-  HostEventProvider(uid) : super([]) {
-    fetchHostEvents(uid);
-  }
-  Future<void> fetchHostEvents(uid) async {
-    state = await getHostEvents(uid);
+class EventsByUserProvider extends StateNotifier<List<Event>> {
+  final String uid;
+  EventsByUserProvider(this.uid) : super([]) {
+    fetchEvents(uid);
   }
 
-  Future<void> fetchCustomerEvents(uid) async {
-    state = await getCustomerEvents(uid);
+  Future<void> fetchEvents(String uid) async {
+    state = await getUserEvents(uid);
   }
 }
 
-final hostEventProvider =
-    StateNotifierProvider.family<HostEventProvider, List<Event>, String>(
-        (ref, uid) {
-  return HostEventProvider(uid);
-});
+final eventsByUserProvider = StateNotifierProvider.family<EventsByUserProvider, List<Event>, String>(
+  (ref, uid) {
+    return EventsByUserProvider(uid);
+  },
+);
+
