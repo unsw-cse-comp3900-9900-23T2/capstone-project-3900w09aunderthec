@@ -543,7 +543,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Event", "toEvent")
-                        .WithMany()
+                        .WithMany("tickets")
                         .HasForeignKey("toEventeventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -559,6 +559,8 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.Navigation("comments");
+
+                    b.Navigation("tickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Hoster", b =>

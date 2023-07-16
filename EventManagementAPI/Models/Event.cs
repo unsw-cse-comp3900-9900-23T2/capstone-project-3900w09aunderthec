@@ -12,6 +12,7 @@ namespace EventManagementAPI.Models
         public int eventId { get; set; }
         [ForeignKey("hosterFK")]
         [Required]
+        [JsonIgnore]
         public Hoster host { get; set; }
         [Required]
         public int hosterFK { get; set; }
@@ -26,6 +27,8 @@ namespace EventManagementAPI.Models
         public int numberSaved { get; set; } = 0;
         public DateTime createdTime { get; set; } = DateTime.Now;
         [JsonIgnore]
-        public ICollection<Comment> comments { get; set; }
+        public ICollection<Ticket> tickets { get; set; } = new List<Ticket>();
+        [JsonIgnore]
+        public ICollection<Comment> comments { get; set; } = new List<Comment>();
     }
 }

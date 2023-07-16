@@ -70,7 +70,7 @@ namespace EventManagementAPI.Controllers{
 
             await _ticketRepository.CreateBookingTicket(newTicket);
 
-            return Ok(newTicket);
+            return Ok(newTicket.ticketId);
         }
 
         [HttpGet("ShowTicketDetails")]

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
+using EventManagementAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{

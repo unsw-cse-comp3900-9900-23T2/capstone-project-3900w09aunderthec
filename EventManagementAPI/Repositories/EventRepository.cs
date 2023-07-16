@@ -1,5 +1,6 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -115,15 +116,19 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<Event>> GetAllEvents(int? hostId, string? sortby, string? tags)
+        public async Task<List<EventListingDTO>> GetAllEvents(int? hostId, string? sortby, string? tags)
         {
             IQueryable<Event> query;
             if (hostId != -1)
             {
-                query = _dbContext.events.Where(e => e.eventTime > DateTime.Now && e.hosterFK == hostId && e.isPrivateEvent == false);
+                query = _dbContext.events
+                    .Include(e => e.tickets)
+                    .Where(e => e.eventTime > DateTime.Now && e.hosterFK == hostId);
             } else
             {
-                query = _dbContext.events.Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
+                query = _dbContext.events
+                    .Include(e => e.tickets)
+                    .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
             }
 
             switch (sortby)
@@ -133,6 +138,12 @@ namespace EventManagementAPI.Repositories
                     break;
                 case "most_saved":
                     query = query.OrderByDescending(e => e.numberSaved);
+                    break;
+                case "price_high_to_low":
+                    query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                    break;
+                case "price_low_to_high":
+                    query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
                     break;
                 default:
                     break;
@@ -145,7 +156,34 @@ namespace EventManagementAPI.Repositories
                 events.RemoveAll(e => !(Enumerable.Intersect(e.tags.Split(","),tags.Split(",")).Count() == tags.Split(",").Count()));
             }
 
-            return events;
+            var eventList = new List<EventListingDTO>();
+
+            foreach (var e in events)
+            {
+                double cheapestPrice = 0.0;
+                if (e.tickets.Count != 0) {
+                    cheapestPrice = e.tickets.Min(t => t.price);
+                }
+
+                var eventDto = new EventListingDTO
+                {
+                    eventId = e.eventId,
+                    hosterId = e.hosterFK,
+                    title = e.title,
+                    description = e.description,
+                    venue = e.venue,
+                    eventTime = e.eventTime,
+                    isDirectRefunds = e.isDirectRefunds,
+                    isPrivateEvent = e.isPrivateEvent,
+                    tags = e.tags,
+                    numberSaved = e.numberSaved,
+                    cheapestPrice = cheapestPrice,
+                };
+
+                eventList.Add(eventDto);
+            }
+
+            return eventList;
         }
 
         public async Task CreateAnEvent(Event e)
