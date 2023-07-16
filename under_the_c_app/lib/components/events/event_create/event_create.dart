@@ -397,7 +397,10 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                         );
 
                     final uid = sessionVariables.uid.toString();
-                    ref.read(eventsProvider.notifier).fetchEventsById(uid);
+                    ref.read(eventsProvider.notifier).fetchEvents;
+                    ref
+                        .read(eventsByUserProvider(uid).notifier)
+                        .fetchEvents(uid);
                   }
                 },
                 child: const Text('Submit'),
