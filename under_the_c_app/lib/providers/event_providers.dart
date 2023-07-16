@@ -58,22 +58,4 @@ final eventProvider = FutureProvider.family<Event, String>(
   },
 );
 
-// for host
-class HostEventProvider extends StateNotifier<List<Event>> {
-  HostEventProvider(uid) : super([]) {
-    fetchHostEvents(uid);
-  }
-  Future<void> fetchHostEvents(uid) async {
-    state = await getHostEvents(uid);
-  }
 
-  Future<void> fetchCustomerEvents(uid) async {
-    state = await getCustomerEvents(uid);
-  }
-}
-
-final hostEventProvider =
-    StateNotifierProvider.family<HostEventProvider, List<Event>, String>(
-        (ref, uid) {
-  return HostEventProvider(uid);
-});

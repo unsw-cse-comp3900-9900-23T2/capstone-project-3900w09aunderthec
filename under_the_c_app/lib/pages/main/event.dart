@@ -15,16 +15,7 @@ class EventPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isHost = sessionVariables.sessionIsHost;
     final String uid = sessionVariables.uid.toString();
-    final events = ref.watch(hostEventProvider(uid));
-
-    // make sure the event is displayed in the event page after just created an event
-    // if (isHost) {
-    //   ref.watch(hostEventProvider(uid).notifier).fetchHostEvents(uid);
-    // }
-
-    // if(!isHost) {
-    //   ref.watch(eventsProvider.notifier).fetchCustomerEvents(uid);
-    // }
+    final events = ref.watch(isHost ? hostEventProvider(uid) : eventsProvider);
     return Stack(
       children: [
         Container(
@@ -51,7 +42,6 @@ class EventPage extends ConsumerWidget {
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  // TODO: Need to change hostedEvents to events
                   final event = events[index];
 
                   return SizedBox(
@@ -97,7 +87,6 @@ class EventPage extends ConsumerWidget {
                 ),
               )
             : Container(),
-        // const EventCreate()
       ],
     );
   }
