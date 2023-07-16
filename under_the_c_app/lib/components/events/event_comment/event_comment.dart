@@ -5,69 +5,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../../config/routes/routes.dart';
 
-// class CommentSection extends ConsumerWidget {
-//   const CommentSection({Key? key, required String eventId}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final events = ref.watch(eventsProvider);
-
-//     return Container(
-//       color: const Color.fromARGB(255, 255, 255, 255),
-//       alignment: Alignment.center,
-//       padding: const EdgeInsets.all(15),
-//       child: CustomScrollView(
-//         slivers: <Widget>[
-//           const SliverPadding(padding: EdgeInsets.only(bottom: 30)),
-//           SliverToBoxAdapter(
-//             child: Padding(
-//               padding: const EdgeInsets.only(bottom: 12, left: 4),
-//               child: Title(
-//                 color: const Color.fromARGB(255, 255, 255, 255),
-//                 child: const Text(
-//                   "Upcoming Events",
-//                   style: TextStyle(
-//                     fontSize: 23,
-//                     fontWeight: FontWeight.bold,
-//                     color: Color.fromARGB(255, 42, 23, 120),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-
-//           const SliverToBoxAdapter(
-//             child: SizedBox(
-//               height: 13, // Modify this to adjust the size of the space
-//             ),
-//           ),
-//           // for list of event cards
-//           SliverList(
-//             delegate: SliverChildBuilderDelegate((context, index) {
-//               final event = events[index];
-//               return SizedBox(
-//                 width: 375,
-//                 child: GestureDetector(
-//                   onTap: () {
-//                     context.go(AppRoutes.eventDetails(event.eventId!),
-//                         extra: 'Details');
-//                   },
-//                   child: Padding(
-//                       padding: const EdgeInsets.only(bottom: 8),
-//                       child: SizedBox(
-//                         height: 100,
-//                         child: Text("Placeholder"),
-//                       )),
-//                 ),
-//               );
-//             }, childCount: events.length),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class CommentSection extends StatefulWidget {
   final String eventId;
   const CommentSection({
@@ -82,18 +19,23 @@ class CommentSection extends StatefulWidget {
 }
 
 class CommentSectionState extends State<CommentSection> {
-  double starRating = 0;
+  double starRating = 3;
   List<String> comments = [];
   final commentController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  DateTime createdTime = DateTime.now();
 
   void addComment(String comment) {
     setState(() {
       comments.add(comment);
-      // comments.insert(0, comment);
     });
-    // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     _scrollController.jumpTo(_scrollController.position.minScrollExtent);
+  }
+
+  void resetStarRating() {
+    setState(() {
+      starRating = 3;
+    });
   }
 
   @override
@@ -111,12 +53,6 @@ class CommentSectionState extends State<CommentSection> {
                   .go(AppRoutes.eventDetails(widget.eventId), extra: "Details"),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              addComment("comment");
-            },
-            child: const Text("Add"),
-          ),
           Container(
             alignment: Alignment.bottomCenter,
             // color: Colors.grey,
@@ -126,21 +62,7 @@ class CommentSectionState extends State<CommentSection> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  RatingBar.builder(
-                    initialRating: 3,
-                    minRating: 0,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    onRatingUpdate: (rating) {
-                      starRating = rating;
-                    },
-                  ),
+                  ReviewStar(starRating: starRating, key: UniqueKey()),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.75,
                     child: TextField(
@@ -148,7 +70,9 @@ class CommentSectionState extends State<CommentSection> {
                         suffixIcon: IconButton(
                           onPressed: () {
                             addComment(commentController.text);
+                            resetStarRating();
                             commentController.clear();
+                            createdTime = DateTime.now();
                           },
                           icon: Icon(Icons.send),
                         ),
@@ -159,7 +83,7 @@ class CommentSectionState extends State<CommentSection> {
                       maxLines: 3,
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                 ],
               ),
             ),
@@ -167,140 +91,116 @@ class CommentSectionState extends State<CommentSection> {
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              // reverse: true,
               itemCount: comments.length,
               itemBuilder: (context, index) {
                 final reversedIndex =
                     comments.length - 1 - index; // Reverse the index
-                return Container(
-                  alignment: Alignment.center,
-                  color: Colors.blue,
-                  height: 50,
-                  child: Text(
-                      'Comment: ${comments[reversedIndex]} $reversedIndex'),
+                // return Container(
+                //   alignment: Alignment.center,
+                //   color: Colors.blue,
+                //   height: 50,
+                //   child: Text(
+                //       'Comment: ${comments[reversedIndex]} $reversedIndex'),
+                // );
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('images/users/guy.jpg'),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Name",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text("Date"),
+                        IgnorePointer(
+                          child: RatingBar.builder(
+                            initialRating: 3,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemSize: MediaQuery.of(context).size.width * 0.05,
+                            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (double value) => {},
+                          ),
+                        ),
+                        Text(
+                            'Comment: ${comments[reversedIndex]} $reversedIndex'),
+                        IconButton(
+                            onPressed: () {}, icon: Icon(Icons.thumb_up_sharp)),
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.thumb_down_sharp)),
+                      ],
+                    )
+                  ],
                 );
+
+                // return Container(
+                //   height: 50.0,
+                //   width: 50.0,
+                //   decoration: BoxDecoration(
+                //       color: Colors.blue,
+                //       borderRadius: BorderRadius.all(Radius.circular(50))),
+                //   child: CircleAvatar(
+                //     radius: 50,
+                //     backgroundImage: AssetImage('images/users/guy.jpg'),
+                //   ),
+                // );
               },
             ),
           ),
-          // Container(
-          //   alignment: Alignment.bottomCenter,
-          //   // color: Colors.grey,
-          //   child: SingleChildScrollView(
-          //     padding: EdgeInsets.only(
-          //         bottom: MediaQuery.of(context).viewInsets.bottom),
-          //     child: Column(
-          //       mainAxisSize: MainAxisSize.min,
-          //       children: [
-          //         Divider(),
-          //         RatingBar.builder(
-          //           initialRating: 3,
-          //           minRating: 0,
-          //           direction: Axis.horizontal,
-          //           allowHalfRating: true,
-          //           itemCount: 5,
-          //           itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-          //           itemBuilder: (context, _) => Icon(
-          //             Icons.star,
-          //             color: Colors.amber,
-          //           ),
-          //           onRatingUpdate: (rating) {
-          //             starRating = rating;
-          //           },
-          //         ),
-          //         SizedBox(
-          //           width: MediaQuery.of(context).size.width * 0.75,
-          //           child: TextField(
-          //             decoration: InputDecoration(
-          //               suffixIcon: IconButton(
-          //                 onPressed: () {
-          //                   addComment(commentController.text);
-          //                   commentController.clear();
-          //                 },
-          //                 icon: Icon(Icons.send),
-          //               ),
-          //               border: OutlineInputBorder(),
-          //               hintText: 'Comment',
-          //             ),
-          //             controller: commentController,
-          //             maxLines: 3,
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     extendBodyBehindAppBar: true,
-  //     body: Stack(children: [
-  //       SingleChildScrollView(
-  //           child: Column(children: [
-  //         AppBar(
-  //           title: null,
-  //           backgroundColor: Colors.transparent,
-  //           elevation: 0.0,
-  //           leading: IconButton(
-  //             icon: const Icon(Icons.arrow_back, color: Colors.black),
-  //             onPressed: () => context
-  //                 .go(AppRoutes.eventDetails(widget.eventId), extra: "Details"),
-  //           ),
-  //         ),
-  //       ])),
-  //       Container(
-  //         alignment: Alignment.bottomCenter,
-  //         // color: Colors.grey,
-  //         child: SingleChildScrollView(
-  //           padding: EdgeInsets.only(
-  //               bottom: MediaQuery.of(context).viewInsets.bottom),
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               Divider(),
-  //               RatingBar.builder(
-  //                 initialRating: 3,
-  //                 minRating: 0,
-  //                 direction: Axis.horizontal,
-  //                 allowHalfRating: true,
-  //                 itemCount: 5,
-  //                 itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-  //                 itemBuilder: (context, _) => Icon(
-  //                   Icons.star,
-  //                   color: Colors.amber,
-  //                 ),
-  //                 onRatingUpdate: (rating) {
-  //                   starRating = rating;
-  //                 },
-  //               ),
-  //               SizedBox(
-  //                 width: MediaQuery.of(context).size.width * 0.75,
-  //                 child: TextField(
-  //                   decoration: InputDecoration(
-  //                     suffixIcon: IconButton(
-  //                       onPressed: () {
-  //                         addComment(commentController.text);
-  //                         commentController.clear();
-  //                       },
-  //                       icon: Icon(Icons.send),
-  //                     ),
-  //                     border: OutlineInputBorder(),
-  //                     hintText: 'Comment',
-  //                   ),
-  //                   controller: commentController,
-  //                   maxLines: 3,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ]),
-  //   );
-  // }
+}
+
+class ReviewStar extends StatefulWidget {
+  ReviewStar({Key? key, required this.starRating}) : super(key: key);
+  final double starRating;
+
+  @override
+  _ReviewStarState createState() => _ReviewStarState();
+}
+
+class _ReviewStarState extends State<ReviewStar> {
+  late double _starRating;
+
+  @override
+  void initState() {
+    super.initState();
+    _starRating = widget.starRating;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RatingBar.builder(
+      initialRating: _starRating,
+      minRating: 0,
+      direction: Axis.horizontal,
+      allowHalfRating: true,
+      itemCount: 5,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => Icon(
+        Icons.star,
+        color: Colors.amber,
+      ),
+      onRatingUpdate: (rating) {
+        setState(() {
+          _starRating = rating;
+        });
+      },
+    );
+  }
 }
 
 class Comment {
