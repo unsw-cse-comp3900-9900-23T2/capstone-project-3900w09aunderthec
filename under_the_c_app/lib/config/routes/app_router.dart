@@ -116,10 +116,17 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-            path: AppRoutes.eventBook(':id'),
+            path: AppRoutes.eventBook(':id', ':title', ':venue'),
             pageBuilder: (context, state) {
               final eventId = state.pathParameters['id'].toString();
-              return MaterialPage(child: BookTicket(eventId: eventId));
+              final eventTitle = state.pathParameters['title'].toString();
+              final eventVenue = state.pathParameters['venue'].toString();
+              return MaterialPage(
+                  child: BookTicket(
+                eventId: eventId,
+                eventTitle: eventTitle,
+                eventVenue: eventVenue,
+              ));
             },
           ),
           GoRoute(

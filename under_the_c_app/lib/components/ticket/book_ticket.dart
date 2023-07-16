@@ -2,11 +2,13 @@
 // Pull up data for tickets
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/api/send_email.dart';
-import 'package:under_the_c_app/components/ticket/ticket_confirmation.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
+import 'package:under_the_c_app/providers/ticket_providers.dart';
+
+import '../../types/tickets/tickets_type.dart';
 
 const priceTextStyle = TextStyle(
   color: Colors.black,
@@ -14,11 +16,20 @@ const priceTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-class BookTicket extends StatelessWidget {
+class BookTicket extends ConsumerWidget {
   final String eventId;
-  const BookTicket({super.key, required this.eventId});
+  final String eventTitle;
+  final String eventVenue;
+  const BookTicket(
+      {super.key,
+      required this.eventId,
+      required this.eventTitle,
+      required this.eventVenue});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tickets = ref.watch(ticketsProvider(eventId));
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -40,23 +51,18 @@ class BookTicket extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(
                 16.0, kToolbarHeight + 40.0, 16.0, 16.0),
             children: [
-              const Align(
+              Align(
                 child: Text(
                   // "Event Title",
-                  "Night Market",
-                  style: TextStyle(
+                  eventTitle,
+                  style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              const Align(
-                // child: Text("Date"),
-                child: Text("Mon, July 18 9:00am"),
-              ),
-              const Align(
-                // child: Text("Location"),
-                child: Text("Kensington, New South Wales"),
+              Align(
+                child: Text(eventVenue),
               ),
               const SizedBox(
                 height: 20.0,
@@ -71,23 +77,6 @@ class BookTicket extends StatelessWidget {
               ),
               const SizedBox(
                 height: 40.0,
-              ),
-              TicketTypes(
-                item: Tickets(
-                  type: "General Admission",
-                  price: 145,
-                  qty: 1,
-                ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              TicketTypes(
-                item: Tickets(
-                  type: "VIP",
-                  price: 20,
-                  qty: 1,
-                ),
               ),
               const SizedBox(
                 height: 40.0,
@@ -137,6 +126,10 @@ class BookTicket extends StatelessWidget {
               ),
             ],
           ),
+          ListView.builder(itemBuilder: (context, index) {
+            final ticket = tickets[index];
+            return TicketTypes(item: ticket);
+          }),
         ],
       ),
     );
@@ -152,18 +145,11 @@ Container _buildDivider() {
   );
 }
 
-class Tickets {
-  final String type;
-  int price;
-  int qty;
-
-  Tickets({required this.type, required this.price, required this.qty});
-}
-
 class TicketTypes extends StatelessWidget {
   final Tickets item;
+  int qty = 0;
 
-  const TicketTypes({Key? key, required this.item}) : super(key: key);
+  TicketTypes({Key? key, required this.item}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -175,7 +161,7 @@ class TicketTypes extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.type,
+                item.name,
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 20.0,
@@ -215,13 +201,13 @@ class TicketTypes extends StatelessWidget {
                     padding: const EdgeInsets.all(2.0),
                     icon: const Icon(Icons.remove),
                     onPressed: () {
-                      if (item.qty > 0) {
-                        item.qty--;
+                      if (qty > 0) {
+                        qty--;
                       }
                     },
                   ),
                   Text(
-                    "${item.qty}",
+                    "${qty}",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
@@ -233,7 +219,7 @@ class TicketTypes extends StatelessWidget {
                     padding: const EdgeInsets.all(2.0),
                     icon: const Icon(Icons.add),
                     onPressed: () {
-                      item.qty++;
+                      qty++;
                     },
                   ),
                 ]),

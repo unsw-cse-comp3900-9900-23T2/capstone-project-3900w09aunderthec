@@ -1,21 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-/*
-class TicketProvider extends StateNotifier<List<Tickets>> {
-  List<Tickets> _allTickets;
+import '../api/ticket_requests.dart';
+import '../types/tickets/tickets_type.dart';
 
-  TicketProvider(eventId)
-      : _allTickets = [],
-        super([]) {
+class TicketProvider extends StateNotifier<List<Tickets>> {
+  TicketProvider(eventId) : super([]) {
     fetchTickets(eventId);
   }
 
   Future<void> fetchTickets(eventId) async {
-    state = [await getTickets(eventId)];
+    state = await getTickets(eventId);
   }
 }
 
 final ticketsProvider =
-    StateNotifierProvider<TicketProvider, List<Tickets>>((ref, eventId) {
+    StateNotifierProvider.family<TicketProvider, List<Tickets>, String>(
+        (ref, eventId) {
   return TicketProvider(eventId);
 });
-*/
