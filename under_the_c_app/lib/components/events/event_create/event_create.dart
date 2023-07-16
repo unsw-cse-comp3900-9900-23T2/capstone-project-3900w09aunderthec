@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:under_the_c_app/components/events/event_create/dropdown_list.dart';
 import 'package:under_the_c_app/components/events/event_create/tags.dart';
-import 'package:under_the_c_app/config/routes.dart';
+import 'package:under_the_c_app/config/routes/routes.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
+import 'package:under_the_c_app/types/address.dart';
+import 'package:under_the_c_app/types/events/event_type.dart';
 
 class EventCreate extends StatelessWidget {
   const EventCreate({super.key});
@@ -34,15 +39,6 @@ class EventCreate extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({Key? key}) : super(key: key);
-
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
   }
 }
 
@@ -80,8 +76,17 @@ class FormFields extends StatelessWidget {
   }
 }
 
+class MyCustomForm extends ConsumerStatefulWidget {
+  const MyCustomForm({Key? key}) : super(key: key);
+
+  @override
+  MyCustomFormState createState() {
+    return MyCustomFormState();
+  }
+}
+
 // Create event form
-class MyCustomFormState extends State<MyCustomForm> {
+class MyCustomFormState extends ConsumerState<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
 
   String title = '';
@@ -120,21 +125,21 @@ class MyCustomFormState extends State<MyCustomForm> {
     return time.toString().padLeft(2, '0');
   }
 
-  Future<http.Response> createEvent() {
-    final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode({
-      "uid": 1,
-      'title': title,
-      "time": time,
-      'venue': venue,
-      'description': description,
-      'allowRefunds': allowRefunds,
-      'privateEvent': privateEvent,
-      'tags': tags,
-    });
-    return http.post(url, headers: headers, body: body);
-  }
+  // Future<http.Response> createEvent() {
+  //   final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
+  //   final headers = {'Content-Type': 'application/json'};
+  // final body = jsonEncode({
+  //   "uid": 1,
+  //   'title': title,
+  //   "time": time,
+  //   'venue': venue,
+  //   'description': description,
+  //   'allowRefunds': allowRefunds,
+  //   'privateEvent': privateEvent,
+  //   'tags': tags,
+  // });
+  //   return http.post(url, headers: headers, body: body);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -379,19 +384,25 @@ class MyCustomFormState extends State<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
-
-                    createEvent().then(
-                      (response) {
-                        if (response.statusCode == 200) {
-                          // Event created successfully
-                        } else {
-                          // Event creation failed
-                          throw Exception(
-                              'Failed to CREATE event: ${response.body}');
-                        }
-                        context.go(AppRoutes.events);
-                      },
-                    );
+                    ref.read(eventsProvider.notifier).addEvent(
+                          Event(
+                            hostuid: sessionVariables.uid.toString(),
+                            title: title,
+                            time: time,
+                            venue: venue,
+                            description: description,
+                            allowRefunds: allowRefunds,
+                            isPrivate: privateEvent,
+                            tags: [tags],
+                            price: 0,
+                          ),
+                        );
+                    if (sessionVariables.sessionIsHost) {
+                      final uid = sessionVariables.uid.toString();
+                      ref
+                          .read(hostEventProvider(uid).notifier)
+                          .fetchHostEvents(uid);
+                    }
                   }
                 },
                 child: const Text('Submit'),

@@ -20,17 +20,9 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListEvents")]
-        public async Task<IActionResult> ListEvents() {
-
-            var events = await _eventDisplayRepository.GetAllEvents();
-            return Ok(events);
-        }
-
-        [HttpGet("ListHostEvents")]
-        public async Task<IActionResult> ListHostEvents([FromQuery] int hostId)
+        public async Task<IActionResult> ListEvents([FromQuery] int? hostId, string? sortby, string? tags)
         {
-
-            var events = await _eventDisplayRepository.GetAllHostEvents(hostId);
+            var events = await _eventDisplayRepository.GetAllEvents(hostId, sortby, tags);
             return Ok(events);
         }
 
@@ -42,7 +34,7 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListSimilarEvents")]
-        public String ListSimilarEvents([FromQuery] string uid, string eventId) {
+        public async Task<IActionResult> ListSimilarEvents([FromQuery] int uid, int eventId) {
 
             // Not being implemented in sprint 1
 
@@ -50,13 +42,10 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListMyEvents")]
-        public String ListMyEvents([FromQuery] string uid) {
+        public async Task<IActionResult> ListMyEvents([FromQuery] int uid) {
 
-            // As I write these descriptions, the more I realise that pretty much all this
-            // funcitonality will be handled by database queries
-            // Query the database for the given host's events and return them.
-
-            throw new NotImplementedException();
+            var e = await _eventDisplayRepository.ListMyEvents(uid);
+            return Ok(e);
         }
 
     }

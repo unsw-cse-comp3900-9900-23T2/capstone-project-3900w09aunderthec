@@ -16,7 +16,6 @@ namespace EventManagementAPI.Controllers{
     public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
-        public DateTime time { get; set; }
         public string venue { get; set; }
         public string description { get; set; }
         public bool allowRefunds { get; set; }
@@ -37,6 +36,11 @@ namespace EventManagementAPI.Controllers{
         // public List<Ticket> tickets { get; set; }
     };
 
+    public class CancelEventRequestBody
+    {
+        public int eventId { get; set; }
+    }
+
     [ApiController]
     [Route("[controller]")]
     public class EventCreationController : ControllerBase
@@ -50,14 +54,25 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPost("GetTags")]
-        public String GetTags([FromBody] GetTagsRequestBody RequestBody) {
+        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody) {
 
             // Format string to make api call with
             // make api call
             // parse recommended tags from api response string
             // return recommended tags
 
-            throw new NotImplementedException();
+            string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
+                                      RequestBody.description + "\nVenue: " + RequestBody.venue;
+
+            List<string> tagList = new List<string>();
+
+            try {
+                tagList = await _eventRepository.GetTags(descriptorString);
+            } catch (BadHttpRequestException e) {
+                return BadRequest(e.Message);
+            }
+
+            return Ok(tagList);
         }
 
         [HttpPost("CreateEvent")]
@@ -66,12 +81,11 @@ namespace EventManagementAPI.Controllers{
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
 
-
             Event newEvent = new Event
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
-                time = RequestBody.time,
+                createdTime = DateTime.Now,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,
@@ -89,14 +103,14 @@ namespace EventManagementAPI.Controllers{
             return Ok();
         }
 
-        [HttpPost("ModifyEvent")]
+        [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
 
             Event newEvent = new Event
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
-                time = RequestBody.time,
+                createdTime = RequestBody.time,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,
@@ -116,6 +130,18 @@ namespace EventManagementAPI.Controllers{
             return Ok();
         }
 
+        [HttpDelete("CancelEvent")]
+        public async Task<IActionResult> CancelEvent([FromBody] CancelEventRequestBody requestBody)
+        {
+            var e = await _eventRepository.CancelEvent(requestBody.eventId);
+
+            if (e != null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
     }
 }
 

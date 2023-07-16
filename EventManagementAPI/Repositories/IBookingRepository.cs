@@ -7,9 +7,9 @@ namespace EventManagementAPI.Repositories
 {
     public interface IBookingRepository
     {
-        public Task MakeBooking(Booking b);
+        public Task<Booking?> MakeBooking(int customerId, int ticketId, int numberOfTickets);
         public Task<List<BookingResultDto>> GetBookings(int customerId);
-        public Task<Booking> GetBookingById(int bookingId);
-        public Task RemoveBooking(Booking booking);
+        public Task<Booking?> GetBookingById(int bookingId);
+        public Task<Booking?> RemoveBooking(int bookingId);
     }
 }

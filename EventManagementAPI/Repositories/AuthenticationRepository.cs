@@ -34,6 +34,10 @@ namespace EventManagementAPI.Repositories
 
         public async Task createUser(String username, String email, Boolean isHost)
         {
+            // Console.WriteLine("createUser called");
+            // Console.WriteLine(username);
+            // Console.WriteLine(email);
+            // Console.WriteLine(isHost);
             if (isHost) {
                 _dbContext.hosts.Add(
                 new Hoster{
@@ -53,6 +57,8 @@ namespace EventManagementAPI.Repositories
 
         public async Task<InitialData> getInitialData(String email)
         {
+            // Console.WriteLine("getInitialData called");
+            // Console.WriteLine(email);
             bool emailExistsInHosts = await _dbContext.hosts.AnyAsync(h => h.email == email);
 
             if (emailExistsInHosts)

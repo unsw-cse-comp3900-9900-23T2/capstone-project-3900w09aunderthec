@@ -49,9 +49,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void registerTheUser() async {
-    final registerUrl =
-        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser');
-
     try {
       // register the user to firebase
       final userCredentials =
@@ -63,18 +60,21 @@ class _RegisterPageState extends State<RegisterPage> {
       // if successfully registered then let backend know
       if (userCredentials != null) {
         bool isHost = _userValue == 1 ? false : true;
-        final response = await http.post(
+
+        final registerUrl =
+        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser', {
+            'username': usernameController.text,
+            'email': emailController.text,
+            'isHost': isHost.toString()
+          });
+
+        final response = await http.get(
           registerUrl,
           headers: {
             "Access-Control-Allow-Origin": "*",
             'Content-Type': 'application/json',
             'Accept': '*/*'
-          },
-          body: jsonEncode({
-            'username': usernameController.text,
-            'email': emailController.text,
-            'isHost': isHost
-          }),
+          }
         );
 
         // handle http response
