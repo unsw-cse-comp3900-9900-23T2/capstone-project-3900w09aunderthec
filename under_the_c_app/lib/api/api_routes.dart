@@ -23,4 +23,5 @@ class APIRoutes {
 
   // ticket
   static const String getTicket = '/Ticket/ShowTicketDetails';
+  static const String getTickets = '/Ticket/ShowTickets';
 }
