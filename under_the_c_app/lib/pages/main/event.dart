@@ -15,7 +15,7 @@ class EventPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isHost = sessionVariables.sessionIsHost;
     final String uid = sessionVariables.uid.toString();
-    final events = ref.watch(isHost ? hostEventProvider(uid) : eventsProvider);
+    final events = ref.watch(eventsProvider);
     return Stack(
       children: [
         Container(

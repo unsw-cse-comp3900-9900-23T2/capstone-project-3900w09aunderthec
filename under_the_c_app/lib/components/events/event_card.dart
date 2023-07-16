@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/types/address.dart';
+import 'package:under_the_c_app/types/address_type.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 
 class EventImage extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:under_the_c_app/types/events/event_type.dart';
-import 'package:under_the_c_app/types/address.dart';
+import 'package:under_the_c_app/types/address_type.dart';
 
 List<Event> BackendDataEventListToEvent(data) {
   List<Event> events = [];
