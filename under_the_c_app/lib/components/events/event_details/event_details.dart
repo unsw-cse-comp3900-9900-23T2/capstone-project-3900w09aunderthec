@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/events/event_details/comment.dart';
+import 'package:under_the_c_app/components/events/event_details/comment/comment.dart';
 import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
@@ -125,6 +125,10 @@ class EventDetailsPage extends ConsumerWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
+                    // viewInsets.bottom gives that height of the area of the screen not covered by the system UI, here it's
+                    // due to the keyboard being visible
+                    height:
+                        MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 120,
                     padding: const EdgeInsets.all(30),
                     child: ElevatedButton(
                       onPressed: () {
