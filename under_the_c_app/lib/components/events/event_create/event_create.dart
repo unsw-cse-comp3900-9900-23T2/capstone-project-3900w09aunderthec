@@ -395,7 +395,6 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             price: 0,
                           ),
                         );
-
                     final uid = sessionVariables.uid.toString();
                     ref.read(eventsProvider.notifier).fetchEvents;
                     ref

@@ -110,13 +110,13 @@ class EventDetailsPage extends ConsumerWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(30),
                     child: ElevatedButton(
                       onPressed: () {
                         context.go(AppRoutes.eventBook(event.eventId!));
                       },
                       style: TextButton.styleFrom(
-                        minimumSize: const Size(150, 0),
+                        minimumSize: const Size(200, 0),
                         padding: const EdgeInsets.all(20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
