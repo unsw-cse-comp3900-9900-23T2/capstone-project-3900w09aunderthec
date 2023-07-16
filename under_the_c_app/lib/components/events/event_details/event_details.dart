@@ -37,7 +37,7 @@ class EventDetailsPage extends ConsumerWidget {
                       Image.asset(
                         event.imageUrl,
                         fit: BoxFit.cover,
-                        height: 250,
+                        height: 400,
                         width: MediaQuery.of(context).size.width,
                       ),
                       Padding(
@@ -76,7 +76,7 @@ class EventDetailsPage extends ConsumerWidget {
                       ),
                       Padding(
                           padding: const EdgeInsets.only(
-                              top: 4, left: 30, bottom: 4, right: 30),
+                              top: 4, left: 25, bottom: 4, right: 30),
                           child: Column(
                             children: [
                               const Align(
@@ -84,7 +84,7 @@ class EventDetailsPage extends ConsumerWidget {
                                 child: Padding(
                                   padding: EdgeInsets.only(bottom: 14),
                                   child: Text(
-                                    "EVENT DETAILS",
+                                    "About event",
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontSize: 20,
