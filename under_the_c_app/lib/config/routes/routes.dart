@@ -11,6 +11,7 @@ class AppRoutes {
   static const String home = '/home';
   static const String profile = '/profile';
   static String eventDetails(String id) => '/event/event_detail/$id';
+  static String eventComment(String id) => '/event/event_comment/$id';
   static String eventBook(String id) => '/event/book/$id';
   static const String eventAdd = '/event/add';
 

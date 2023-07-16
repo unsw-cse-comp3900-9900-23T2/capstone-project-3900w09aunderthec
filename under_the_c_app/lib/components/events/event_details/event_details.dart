@@ -104,6 +104,19 @@ class EventDetailsPage extends ConsumerWidget {
                               const SizedBox(height: 100)
                             ],
                           )),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.go(AppRoutes.eventComment(event.eventId!));
+                        },
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(150, 0),
+                          padding: const EdgeInsets.all(20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: const Text("Comment"),
+                      ),
                     ],
                   ),
                 ),
