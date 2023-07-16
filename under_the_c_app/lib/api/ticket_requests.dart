@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/api/api_routes.dart';
 
+import '../types/tickets/tickets_type.dart';
+
 Future<List<Tickets>> getTickets(String eventId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTickets);
 
@@ -20,6 +22,6 @@ Future<List<Tickets>> getTickets(String eventId) async {
       throw Exception('GetTickets API ERROR: ${response.statusCode}');
     }
   } catch (e) {
-    print(e);
+    throw Exception(e);
   }
 }
