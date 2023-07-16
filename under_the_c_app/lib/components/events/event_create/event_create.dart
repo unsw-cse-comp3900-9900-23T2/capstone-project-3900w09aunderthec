@@ -9,7 +9,7 @@ import 'package:under_the_c_app/components/events/event_create/tags.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
-import 'package:under_the_c_app/types/address.dart';
+import 'package:under_the_c_app/types/address_type.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
 class EventCreate extends StatelessWidget {
