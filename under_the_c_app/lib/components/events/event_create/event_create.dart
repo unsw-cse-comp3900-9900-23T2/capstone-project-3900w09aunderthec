@@ -497,41 +497,38 @@ class _TimePickerState extends State<TimePicker> {
               children: <Widget>[
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: ElevatedButton(
-                      child: Text(selectedTime != null
-                          ? (selectedTime?.format(context) ?? "")
-                          : "Time Picker"),
-                      onPressed: () async {
-                        final TimeOfDay? time = await showTimePicker(
-                          context: context,
-                          initialTime: selectedTime ?? TimeOfDay.now(),
-                          initialEntryMode: entryMode,
-                          orientation: orientation,
-                          builder: (BuildContext context, Widget? child) {
-                            return Theme(
-                              data: Theme.of(context).copyWith(
-                                materialTapTargetSize: tapTargetSize,
-                              ),
-                              child: Directionality(
-                                textDirection: textDirection,
-                                child: MediaQuery(
-                                  data: MediaQuery.of(context).copyWith(
-                                    alwaysUse24HourFormat: use24HourTime,
-                                  ),
-                                  child: child!,
+                  child: ElevatedButton(
+                    child: Text(selectedTime != null
+                        ? (selectedTime?.format(context) ?? "")
+                        : "Time Picker"),
+                    onPressed: () async {
+                      final TimeOfDay? time = await showTimePicker(
+                        context: context,
+                        initialTime: selectedTime ?? TimeOfDay.now(),
+                        initialEntryMode: entryMode,
+                        orientation: orientation,
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              materialTapTargetSize: tapTargetSize,
+                            ),
+                            child: Directionality(
+                              textDirection: textDirection,
+                              child: MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                  alwaysUse24HourFormat: use24HourTime,
                                 ),
+                                child: child!,
                               ),
-                            );
-                          },
-                        );
-                        setState(() {
-                          selectedTime = time;
-                          widget.getTime(time);
-                        });
-                      },
-                    ),
+                            ),
+                          );
+                        },
+                      );
+                      setState(() {
+                        selectedTime = time;
+                        widget.getTime(time);
+                      });
+                    },
                   ),
                 ),
               ],
