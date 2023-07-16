@@ -125,6 +125,10 @@ class EventDetailsPage extends ConsumerWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
+                    // viewInsets.bottom gives that height of the area of the screen not covered by the system UI, here it's 
+                    // due to the keyboard being visible
+                    height:
+                        MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 120,
                     padding: const EdgeInsets.all(30),
                     child: ElevatedButton(
                       onPressed: () {
