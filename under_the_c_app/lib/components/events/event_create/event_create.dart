@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:under_the_c_app/components/events/event_create/dropdown_list.dart';
 import 'package:under_the_c_app/components/events/event_create/tags.dart';
@@ -125,22 +123,6 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
     return time.toString().padLeft(2, '0');
   }
 
-  // Future<http.Response> createEvent() {
-  //   final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
-  //   final headers = {'Content-Type': 'application/json'};
-  // final body = jsonEncode({
-  //   "uid": 1,
-  //   'title': title,
-  //   "time": time,
-  //   'venue': venue,
-  //   'description': description,
-  //   'allowRefunds': allowRefunds,
-  //   'privateEvent': privateEvent,
-  //   'tags': tags,
-  // });
-  //   return http.post(url, headers: headers, body: body);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -230,6 +212,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             width: 5,
                           )),
                           hintText: "Write a short summary of the event"),
+                      maxLines: 4,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please fill out the required field';
@@ -512,38 +495,43 @@ class _TimePickerState extends State<TimePicker> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: ElevatedButton(
-                    child: const Text('Time picker'),
-                    onPressed: () async {
-                      final TimeOfDay? time = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime ?? TimeOfDay.now(),
-                        initialEntryMode: entryMode,
-                        orientation: orientation,
-                        builder: (BuildContext context, Widget? child) {
-                          return Theme(
-                            data: Theme.of(context).copyWith(
-                              materialTapTargetSize: tapTargetSize,
-                            ),
-                            child: Directionality(
-                              textDirection: textDirection,
-                              child: MediaQuery(
-                                data: MediaQuery.of(context).copyWith(
-                                  alwaysUse24HourFormat: use24HourTime,
-                                ),
-                                child: child!,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: ElevatedButton(
+                      child: Text(selectedTime != null
+                          ? (selectedTime?.format(context) ?? "")
+                          : "Time Picker"),
+                      onPressed: () async {
+                        final TimeOfDay? time = await showTimePicker(
+                          context: context,
+                          initialTime: selectedTime ?? TimeOfDay.now(),
+                          initialEntryMode: entryMode,
+                          orientation: orientation,
+                          builder: (BuildContext context, Widget? child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                materialTapTargetSize: tapTargetSize,
                               ),
-                            ),
-                          );
-                        },
-                      );
-                      setState(() {
-                        selectedTime = time;
-                        widget.getTime(time);
-                      });
-                    },
+                              child: Directionality(
+                                textDirection: textDirection,
+                                child: MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    alwaysUse24HourFormat: use24HourTime,
+                                  ),
+                                  child: child!,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                        setState(() {
+                          selectedTime = time;
+                          widget.getTime(time);
+                        });
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -567,6 +555,9 @@ class DatePicker extends StatefulWidget {
 }
 
 class _DatePickerState extends State<DatePicker> with RestorationMixin {
+  DateTime nullDate = DateTime(
+      DateTime.now().year - 1, DateTime.now().month, DateTime.now().day);
+
   @override
   String? get restorationId => widget.restorationId;
 
@@ -611,6 +602,7 @@ class _DatePickerState extends State<DatePicker> with RestorationMixin {
   void _selectDate(DateTime? newSelectedDate) {
     if (newSelectedDate != null) {
       setState(() {
+        nullDate = newSelectedDate;
         _selectedDate.value = newSelectedDate;
       });
       widget.saveDate(newSelectedDate);
@@ -621,12 +613,16 @@ class _DatePickerState extends State<DatePicker> with RestorationMixin {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: 200,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: OutlinedButton(
           onPressed: () {
             _restorableDatePickerRouteFuture.present();
           },
-          child: const Text('Date Picker'),
+          child: Text(nullDate !=
+                  DateTime(DateTime.now().year - 1, DateTime.now().month,
+                      DateTime.now().day)
+              ? '${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'
+              : "Date Picker"),
         ),
       ),
     );
