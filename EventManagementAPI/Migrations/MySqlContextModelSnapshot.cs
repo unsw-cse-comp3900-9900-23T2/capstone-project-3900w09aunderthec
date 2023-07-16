@@ -138,6 +138,9 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("eventTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("hosterFK")
                         .HasColumnType("int");
 
@@ -202,6 +205,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("commenterId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("replierId")
                         .HasColumnType("int");
 
@@ -253,6 +259,9 @@ namespace EventManagementAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("eventIdRef")
                         .HasColumnType("int");
 
@@ -282,6 +291,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("email")
                         .IsRequired()

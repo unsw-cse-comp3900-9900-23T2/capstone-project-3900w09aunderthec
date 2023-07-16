@@ -118,18 +118,18 @@ namespace EventManagementAPI.Repositories
         public async Task<List<Event>> GetAllEvents(int? hostId, string? sortby, string? tags)
         {
             IQueryable<Event> query;
-            if (hostId is not null)
+            if (hostId != -1)
             {
-                query = _dbContext.events.Where(e => e.hosterFK == hostId);
+                query = _dbContext.events.Where(e => e.hosterFK == hostId && e.privateEvent == false);
             } else
             {
-                query = _dbContext.events;
+                query = _dbContext.events.Where(e => e.privateEvent == false);
             }
 
             switch (sortby)
             {
                 case "most_recent":
-                    query = query.OrderByDescending(e => e.createdTime);
+                    query = query.OrderByDescending(e => e.eventTime);
                     break;
                 case "most_saved":
                     query = query.OrderByDescending(e => e.numberSaved);
@@ -140,9 +140,9 @@ namespace EventManagementAPI.Repositories
 
             var events = await query.ToListAsync();
 
-            if(tags is not null)
+            if (tags is not null)
             {
-            events.RemoveAll(e => !(Enumerable.Intersect(e.tags.Split(","),tags.Split(",")).Count() == tags.Split(",").Count()));
+                events.RemoveAll(e => !(Enumerable.Intersect(e.tags.Split(","),tags.Split(",")).Count() == tags.Split(",").Count()));
             }
 
             return events;

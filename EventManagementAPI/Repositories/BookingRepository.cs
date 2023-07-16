@@ -74,5 +74,24 @@ namespace EventManagementAPI.Repositories
             await _dbContext.SaveChangesAsync();
             return booking;
         }
+
+        public async Task<TimeSpan?> GetTimeDifference(Booking booking)
+        {
+            var ticket = await _dbContext.tickets.FindAsync(booking.ticketId);
+            if (ticket == null)
+            {
+                return null;
+            }
+
+            var e = await _dbContext.events.FindAsync(ticket.eventIdRef);
+            if (e == null)
+            {
+                return null;
+            }
+
+            var timeDifference = e.eventTime - DateTime.Now;
+
+            return timeDifference;
+        }
     }
 }

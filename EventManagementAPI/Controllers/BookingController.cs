@@ -6,6 +6,7 @@ using System.Net;
 using EventManagementAPI.Services;
 using System.Text;
 using Org.BouncyCastle.Cms;
+using System;
 
 namespace EventManagementAPI.Controllers
 {
@@ -94,14 +95,35 @@ namespace EventManagementAPI.Controllers
         [HttpDelete("CancelBooking")]
         public async Task<IActionResult> CancelBooking([FromBody] CancelBookingRequestBody RequestBody)
         {
-            var booking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
+            var booking = await _bookingRepository.GetBookingById(RequestBody.bookingId);
 
             if (booking == null)
             {
                 return NotFound();
             }
 
-            return Ok(booking);
+            var timeDifference = await _bookingRepository.GetTimeDifference(booking);
+
+            if (timeDifference == null)
+            {
+                return NotFound();
+            }
+
+            TimeSpan timeDiff = timeDifference.GetValueOrDefault();
+
+            if (timeDiff.TotalDays < 7)
+            {
+                return BadRequest("Cancellation requests must be made at least 7 days prior to the event.");
+            }
+
+            var canceledBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
+
+            if (canceledBooking == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(canceledBooking);
         }
     }
 }

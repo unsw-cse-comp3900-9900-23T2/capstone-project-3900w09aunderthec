@@ -54,12 +54,6 @@ namespace EventManagementAPI.Controllers{
             return Ok(tickets);
         }
 
-        [HttpPost("BookTickets")]
-        public async Task<IActionResult> BookTickets([FromBody] BookTicketsRequestBody RequestBody)
-        {
-            throw new NotImplementedException();
-        }
-
         [HttpPost("CreateTickets")]
         public async Task<IActionResult> CreateTickets([FromBody] CreateTicketsRequestBody RequestBody) {
 
@@ -79,7 +73,7 @@ namespace EventManagementAPI.Controllers{
 
             await _ticketRepository.CreateBookingTicket(newTicket);
 
-            return Ok();
+            return Ok(newTicket);
         }
 
         [HttpGet("ShowTicketDetails")]

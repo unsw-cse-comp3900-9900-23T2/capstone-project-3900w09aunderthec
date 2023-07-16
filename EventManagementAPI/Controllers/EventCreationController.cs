@@ -17,6 +17,7 @@ namespace EventManagementAPI.Controllers{
         public int uid { get; set; }
         public string title { get; set; }
         public string venue { get; set; }
+        public DateTime eventTime { get; set; }
         public string description { get; set; }
         public bool allowRefunds { get; set; }
         public bool privateEvent { get; set; }
@@ -32,7 +33,7 @@ namespace EventManagementAPI.Controllers{
         public String description { get; set; }
         public Boolean allowRefunds { get; set; }
         public Boolean privateEvent { get; set; }
-        // public List<String> tags;
+        public string tags { get; set; }
         // public List<Ticket> tickets { get; set; }
     };
 
@@ -85,7 +86,7 @@ namespace EventManagementAPI.Controllers{
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
-                createdTime = DateTime.Now,
+                eventTime = RequestBody.eventTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,
@@ -110,6 +111,7 @@ namespace EventManagementAPI.Controllers{
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
+                eventTime = RequestBody.time,
                 createdTime = RequestBody.time,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
