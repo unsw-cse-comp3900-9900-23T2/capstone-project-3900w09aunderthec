@@ -21,9 +21,9 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListEvents")]
-        public async Task<IActionResult> ListEvents([FromQuery] int? hostId, string? sortby, string? tags)
+        public async Task<IActionResult> ListEvents([FromQuery] int? uid, string? sortby, string? tags)
         {
-            var events = await _eventDisplayRepository.GetAllEvents(hostId, sortby, tags);
+            var events = await _eventDisplayRepository.GetAllEvents(uid, sortby, tags);
             return Ok(events);
         }
 
@@ -40,13 +40,6 @@ namespace EventManagementAPI.Controllers{
             // Not being implemented in sprint 1
 
             throw new NotImplementedException();
-        }
-
-        [HttpGet("ListMyEvents")]
-        public async Task<IActionResult> ListMyEvents([FromQuery] int uid) {
-
-            var e = await _eventDisplayRepository.ListMyEvents(uid);
-            return Ok(e);
         }
 
     }

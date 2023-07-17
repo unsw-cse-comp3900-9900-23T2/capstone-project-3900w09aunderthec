@@ -2,6 +2,7 @@
 using EventManagementAPI.Models;
 using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
+using EventManagementAPI.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.Json;
@@ -116,19 +117,40 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<EventListingDTO>> GetAllEvents(int? hostId, string? sortby, string? tags)
+        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags)
         {
             IQueryable<Event> query;
-            if (hostId != -1)
+
+            query = _dbContext.events.Include(e => e.tickets)
+                .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
+            if (uid is not null)
             {
-                query = _dbContext.events
-                    .Include(e => e.tickets)
-                    .Where(e => e.eventTime > DateTime.Now && e.hosterFK == hostId);
-            } else
-            {
-                query = _dbContext.events
-                    .Include(e => e.tickets)
-                    .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
+                if (await _dbContext.hosts.AnyAsync(h => h.uid == uid))
+                {
+                    query = _dbContext.events.Include(e => e.tickets)
+                        .Where(e => e.eventTime > DateTime.Now && e.hosterFK == uid);
+                } else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
+                {
+                    if (sortby == "recommended") {
+                        // Sprint 3 - Change this to sort query by most recommended events
+                        query = _dbContext.events.Include(e => e.tickets)
+                            .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
+                    } else {
+                        // Yes, this means customers seeing booked events will also see past events. Too bad!
+                        query = _dbContext.bookings
+                            .Join(_dbContext.tickets,
+                                b => b.ticketId,
+                                t => t.ticketId,
+                                (b,t) => new
+                                {
+                                    b.customerId,
+                                    t.toEvent
+                                })
+                            .Where(c => c.customerId == uid)
+                            .Select(c => c.toEvent);
+                    }
+                } else
+                {throw new BadHttpRequestException("That user does not exist");}
             }
 
             switch (sortby)
@@ -204,27 +226,23 @@ namespace EventManagementAPI.Repositories
             return e;
         }
 
-        public async Task<List<Event>> ListMyEvents(int userId)
+        public async Task ModifyEvent(EventModificationDto mod)
         {
 
-            var e = await _dbContext.bookings
-                .Join(_dbContext.tickets,
-                    b => b.ticketId,
-                    t => t.ticketId,
-                    (b,t) => new
-                    {
-                        b.customerId,
-                        t.toEvent
-                    })
-                .Where(c => c.customerId == userId)
-                .Select(c => c.toEvent)
-                .ToListAsync();
+            if(!_dbContext.events.Any(e => e.eventId == mod.eventId))
+            {
+                throw new BadHttpRequestException("That event does not exist");
+            }
 
-            return e;
-        }
+            Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
 
-        public async Task ModifyEvent(Event e)
-        {
+            if(mod.title is not null){e.title = mod.title;}
+            if(mod.venue is not null){e.venue = mod.venue;}
+            if(mod.description is not null){e.description = mod.description;}
+            if(mod.isDirectRefunds is not null){e.isDirectRefunds = mod.isDirectRefunds ?? default(bool);}
+            if(mod.isPrivateEvent is not null){e.isPrivateEvent = mod.isPrivateEvent ?? default(bool);}
+            if(mod.tags is not null){e.tags = mod.tags;}
+
             _dbContext.events.Update(e);
             await _dbContext.SaveChangesAsync();
         }
