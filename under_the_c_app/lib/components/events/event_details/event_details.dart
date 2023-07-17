@@ -34,7 +34,7 @@ class EventDetailsPage extends ConsumerWidget {
             body: Stack(
               children: [
                 ListView(
-                  padding: EdgeInsets.only(top: 0),
+                  padding: const EdgeInsets.only(top: 0),
                   children: [
                     Column(
                       children: [
@@ -53,12 +53,58 @@ class EventDetailsPage extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  event.title,
-                                  style: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.6),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      event.title,
+                                      style: const TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6),
+                                    ),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {
+                                              context.go(AppRoutes.eventModify(
+                                                  event.eventId!));
+                                            },
+                                            icon: const Icon(Icons.edit)),
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog<String>(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                title:
+                                                    const Text('Delete Event'),
+                                                content:
+                                                    const Text('Are you sure?'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'Cancel'),
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      context
+                                                          .go(AppRoutes.home);
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.delete),
+                                        ),
+                                      ],
+                                    )
+                                  ],
                                 ),
                                 const SizedBox(height: 8),
                                 PriceTag(
@@ -112,13 +158,6 @@ class EventDetailsPage extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        IconButton(
-                            onPressed: () {
-                              context.go(AppRoutes.eventModify(event.eventId!));
-                            },
-                            icon: Icon(Icons.edit)),
-                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-
                         // comment section
                         const Padding(
                           padding: EdgeInsets.only(left: 25, right: 25),

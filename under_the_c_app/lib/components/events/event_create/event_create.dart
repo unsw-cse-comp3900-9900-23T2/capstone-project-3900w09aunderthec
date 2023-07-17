@@ -337,7 +337,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               },
             ),
