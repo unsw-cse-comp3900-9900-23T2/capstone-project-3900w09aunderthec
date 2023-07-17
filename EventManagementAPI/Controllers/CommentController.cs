@@ -99,8 +99,8 @@ namespace EventManagementAPI.Controllers
             return Ok(eventComment.eventId);
         }
 
-        [HttpPost("likeComment")]
-        public async Task<IActionResult> LikeComment([FromBody] LikeCommentRequestBody requestBody)
+        [HttpPost("IncrementLikeComment")]
+        public async Task<IActionResult> IncrementLikeComment([FromBody] LikeCommentRequestBody requestBody)
         {
             var commentId = requestBody.commentId;
             var customerId = requestBody.customerId;
@@ -109,8 +109,8 @@ namespace EventManagementAPI.Controllers
             return Ok(likeComment);
         }
 
-        [HttpDelete("UndoLikeComment")]
-        public async Task<IActionResult> UndoLikeComment([FromBody] UndoLikeCommentRequestBody requestBody)
+        [HttpDelete("DecrementLikeComment")]
+        public async Task<IActionResult> DecrementLikeComment([FromBody] UndoLikeCommentRequestBody requestBody)
         {
             var commentLikeId = requestBody.commentLikeId;
 
@@ -118,8 +118,8 @@ namespace EventManagementAPI.Controllers
             return Ok(undoLikeComment);
        }
 
-       [HttpPost("DislikeComment")]
-       public async Task<IActionResult> DislikeComment([FromBody] LikeCommentRequestBody requestBody)
+       [HttpPost("IncrementDislikeComment")]
+       public async Task<IActionResult> IncrementDislikeComment([FromBody] LikeCommentRequestBody requestBody)
        {
             var commentId = requestBody.commentId;
             var customerId = requestBody.customerId;
@@ -128,8 +128,8 @@ namespace EventManagementAPI.Controllers
             return Ok(dislikeComment);
         }
 
-        [HttpDelete("UndoDislikeComment")]
-        public async Task<IActionResult> UndoDislikeComment([FromBody] UndoDislikedCommentRequestBody requestBody)
+        [HttpDelete("DecrementDislikeComment")]
+        public async Task<IActionResult> DecrementDislikeComment([FromBody] UndoDislikedCommentRequestBody requestBody)
         {
             var commentDislikeId = requestBody.commentDislikeId;
 
