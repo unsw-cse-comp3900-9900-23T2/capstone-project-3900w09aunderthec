@@ -131,10 +131,10 @@ Future<void> cancelEvent(int eventId) async {
       throw Exception(response.body);
     }
   } on SocketException catch (e) {
-    throw Exception('event.dart.createEvent: Network error $e');
+    throw Exception('event.dart.cancelEvent: Network error $e');
   } on HttpException catch (e) {
-    throw Exception('event.dart.createEvent: Http Exception error $e');
+    throw Exception('event.dart.cancelEvent: Http Exception error $e');
   } catch (e) {
-    throw Exception('event.dart.createEvent: Unknown error $e');
+    throw Exception('event.dart.cancelEvent: Unknown error $e');
   }
 }
