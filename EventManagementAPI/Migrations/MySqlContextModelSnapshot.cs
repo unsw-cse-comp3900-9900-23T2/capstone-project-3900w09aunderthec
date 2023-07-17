@@ -52,6 +52,30 @@ namespace EventManagementAPI.Migrations
                     b.ToTable("bookings");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("bookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("numberOfTickets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ticketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("bookingId");
+
+                    b.HasIndex("ticketId");
+
+                    b.ToTable("bookingTickets");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -386,6 +410,25 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("toCustomer");
 
                     b.Navigation("toTicket");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Booking", "booking")
+                        .WithMany()
+                        .HasForeignKey("bookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Ticket", "ticket")
+                        .WithMany()
+                        .HasForeignKey("ticketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("booking");
+
+                    b.Navigation("ticket");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
