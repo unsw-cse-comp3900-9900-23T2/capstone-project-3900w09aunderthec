@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,16 +26,13 @@ namespace EventManagementAPI.Controllers{
         // public List<Ticket> tickets;
     };
     public class ModifyEventRequestBody {
-        public int eventId { get; set; } // Id of event being modified
-        // public int hostUid { get; set; } // Uid of host to whom the event belongs. Cannot be modified.
-        public String title { get; set; }
-        public DateTime time { get; set; }
-        public String venue { get; set; }
-        public String description { get; set; }
-        public Boolean isDirectRefunds { get; set; }
-        public Boolean privateEvent { get; set; }
-        public string tags { get; set; }
-        // public List<Ticket> tickets { get; set; }
+        public int eventId { get; set; }
+        public string? title { get; set; }
+        public string? venue { get; set; }
+        public string? description { get; set; }
+        public bool? allowRefunds { get; set; }
+        public bool? privateEvent { get; set; }
+        public String? tags { get; set; }
     };
 
     public class CancelEventRequestBody
@@ -54,22 +52,25 @@ namespace EventManagementAPI.Controllers{
             _eventRepository = eventRepository;
         }
 
-        [HttpPost("GetTags")]
-        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody) {
+        [HttpGet("GetTags")]
+        public async Task<IActionResult> GetTags([FromQuery] string title, string description, string venue) {
 
             // Format string to make api call with
             // make api call
             // parse recommended tags from api response string
             // return recommended tags
 
-            string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
-                                      RequestBody.description + "\nVenue: " + RequestBody.venue;
+            string descriptorString = "Title: " + title + "\nDescription: " +
+                                      description + "\nVenue: " + venue;
 
             List<string> tagList = new List<string>();
 
-            try {
+            try
+            {
                 tagList = await _eventRepository.GetTags(descriptorString);
-            } catch (BadHttpRequestException e) {
+            }
+            catch (BadHttpRequestException e)
+            {
                 return BadRequest(e.Message);
             }
 
@@ -77,7 +78,8 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPost("CreateEvent")]
-        public async Task<IActionResult> CreateEventDetails([FromBody] CreateEventRequestBody RequestBody) {
+        public async Task<IActionResult> CreateEventDetails([FromBody] CreateEventRequestBody RequestBody)
+        {
 
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
@@ -95,9 +97,12 @@ namespace EventManagementAPI.Controllers{
                 tags = RequestBody.tags
             };
 
-            try {
+            try
+            {
                 await _eventRepository.CreateAnEvent(newEvent);
-            } catch (BadHttpRequestException e) {
+            }
+            catch (BadHttpRequestException e)
+            {
                 return BadRequest(e.Message);
             }
 
@@ -105,28 +110,20 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPut("ModifyEvent")]
-        public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
+        public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody)
+        {
 
-            var e = await _eventRepository.GetEventById(RequestBody.eventId);
-            if (e == null)
-            {
-                return NotFound("EventId does not refer to a valid event");
-            }
-
-            Event newEvent = new Event
+            EventModificationDto mod = new EventModificationDto
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
-                eventTime = RequestBody.time,
-                createdTime = RequestBody.time,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
-                isDirectRefunds = RequestBody.isDirectRefunds,
-                isPrivateEvent = RequestBody.privateEvent,
-                rating = null,
-                tags = RequestBody.tags,
-                comments = e.comments,
+                allowRefunds = RequestBody.allowRefunds,
+                privateEvent = RequestBody.privateEvent,
+                tags = RequestBody.tags
             };
+
 
             // get event with eventId from DB
             // compare differences and message ticket holders if necessary
@@ -134,8 +131,8 @@ namespace EventManagementAPI.Controllers{
             // get host with hostUid
             // replace old event with newEvent
 
-            await _eventRepository.ModifyEvent(newEvent);
-            return Ok(newEvent);
+            await _eventRepository.ModifyEvent(mod);
+            return Ok();
         }
 
         [HttpDelete("CancelEvent")]

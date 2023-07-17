@@ -27,7 +27,7 @@ Event BackendDataSingleEventToEvent(data) {
     hostuid: data['hosterFK'].toString(),
     eventId: data['eventId'].toString(),
     imageUrl: 'images/events/money-event.jpg',
-    time: data['time'].toString(),
+    time: data['createdTime'].toString(),
     venue: data['venue'],
     // TODO: [PLHV-198] EventCreate: We need set up price in the backend, can't always have price = 0.
     price: 0,
