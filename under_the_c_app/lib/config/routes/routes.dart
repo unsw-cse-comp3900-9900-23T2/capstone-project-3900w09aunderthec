@@ -13,6 +13,7 @@ class AppRoutes {
   static String eventDetails(String id) => '/event/event_detail/$id';
   static String eventBook(String id) => '/event/book/$id';
   static const String eventAdd = '/event/add';
+  static String eventModify(String id) => '/event/modify/$id';
 
   /* for non shared*/
   // for host

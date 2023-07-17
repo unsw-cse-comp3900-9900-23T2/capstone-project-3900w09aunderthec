@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/events/event_create/tags.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment.dart';
 import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
@@ -111,6 +112,13 @@ class EventDetailsPage extends ConsumerWidget {
                             ],
                           ),
                         ),
+                        IconButton(
+                            onPressed: () {
+                              context.go(AppRoutes.eventModify(event.eventId!));
+                            },
+                            icon: Icon(Icons.edit)),
+                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+
                         // comment section
                         const Padding(
                           padding: EdgeInsets.only(left: 25, right: 25),

@@ -40,40 +40,6 @@ class EventCreate extends StatelessWidget {
   }
 }
 
-// Create a question and input box
-class FormFields extends StatelessWidget {
-  const FormFields({Key? key, required this.fieldName, required this.hint})
-      : super(key: key);
-  final String fieldName;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          DefaultTextStyle(
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            child: Text(fieldName),
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                  width: 5,
-                )),
-                hintText: hint),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please fill out the required field';
-              }
-              return null;
-            },
-          ),
-        ]));
-  }
-}
-
 class MyCustomForm extends ConsumerStatefulWidget {
   const MyCustomForm({Key? key}) : super(key: key);
 
@@ -97,7 +63,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
   // String ticketPrice = '';
   bool allowRefunds = true;
   bool privateEvent = true;
-  String tags = 'Other';
+  String tags = '';
 
   List<bool> selectedEventTypes = <bool>[true, false];
 
@@ -117,6 +83,19 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
     setState(() {
       chosenDate = date;
     });
+  }
+
+  Future<List<String>> _fetchDroppedItems() async {
+    // Check for duplicaate
+    // List<String> unique = [];
+    // List<String> droppedItems = await getTags();
+    // Set<String> uniqueTags = droppedItems.toSet();
+    // for (String tag in uniqueTags) {
+    //   unique.add(tag);
+    // }
+    // return unique;
+    List<String> droppedItems = await getTags();
+    return droppedItems;
   }
 
   String formatTime(int time) {
@@ -344,11 +323,21 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DropdownList(
-              droppedItem: droppedItems,
-              initial: 'Other',
-              onValueChanged: (String value) {
-                tags = value;
+            child: FutureBuilder<List<String>>(
+              future: _fetchDroppedItems(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return DropdownList(
+                    droppedItem: snapshot.data!,
+                    onValueChanged: (String value) {
+                      tags = value;
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return CircularProgressIndicator();
+                }
               },
             ),
           ),
@@ -358,7 +347,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
+                  if (_formKey.currentState!.validate() && tags != '') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );
@@ -416,11 +405,6 @@ class ToggleButton extends StatefulWidget {
 }
 
 class _ToggleButtonState extends State<ToggleButton> {
-  /* 
-  if privacy
-    final List<bool> _selectedEventTypes = <bool>[true, false];
-  else
-  */
   final List<bool> _selectedEventTypes = <bool>[true, false];
 
   @override

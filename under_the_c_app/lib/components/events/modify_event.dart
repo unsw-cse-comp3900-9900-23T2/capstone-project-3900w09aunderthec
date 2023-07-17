@@ -5,300 +5,527 @@
 
 // Another idea is to merge this with create_event
 
-/*
 import 'package:flutter/material.dart';
-import 'switch_button.dart';
-import 'dropdown_list.dart';
-import 'package:date_time_picker/date_time_picker.dart';
-import 'toggle_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/functions/time/time_converter.dart';
+import '../../config/routes/routes.dart';
+import '../../providers/event_providers.dart';
+import 'event_create/dropdown_list.dart';
+import 'event_create/tags.dart';
+// import 'switch_button.dart';
+// import 'dropdown_list.dart';
+// import 'package:date_time_picker/date_time_picker.dart';
+// import 'toggle_button.dart';
 
-// TODO: 
+// TODO:
 // First, pull all previous variables
 // Resave all variables and submit to backend (make sure it matches database)
 
-class ModifyEventRoute extends StatelessWidget {
-  const ModifyEventRoute({super.key});
+class EventModify extends StatelessWidget {
+  const EventModify({super.key, required this.eventId});
+  final String eventId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text("Modify Event"),
+        title: null,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+            onPressed: () =>
+                context.go(AppRoutes.eventDetails(eventId), extra: 'Details'),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
       ),
-      body: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MyCustomForm(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MyCustomForm(
+              eventId: eventId,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({super.key});
+class MyCustomForm extends ConsumerWidget {
+  MyCustomForm({
+    required this.eventId,
+    Key? key,
+  }) : super(key: key);
 
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
-// Create a question and input box
-class FormFields extends StatelessWidget {
-  const FormFields({Key? key, required this.fieldName, required this.hint, required this.initial})
-      : super(key: key);
-  final String fieldName;
-  final String hint;
-  final String initial;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          DefaultTextStyle(
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            child: Text(fieldName),
-          ),
-          TextFormField(
-            initialValue: initial,
-            decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                  width: 5,
-                )),
-                hintText: hint),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please fill out the required field';
-              }
-              return null;
-            },
-          ),
-        ]));
-  }
-}
-
-// List for Tags
-List<DropdownMenuItem<String>> get droppedItems {
-  List<DropdownMenuItem<String>> eventType = [
-    const DropdownMenuItem(
-      value: "Arts",
-      child: Text("Arts"),
-    ),
-    const DropdownMenuItem(
-      value: "Business",
-      child: Text("Business"),
-    ),
-    const DropdownMenuItem(
-      value: "Comedy",
-      child: Text("Comedy"),
-    ),
-    const DropdownMenuItem(
-      value: "Food & Drink",
-      child: Text("Food & Drink"),
-    ),
-    const DropdownMenuItem(
-      value: "Fashion",
-      child: Text("Fashion"),
-    ),
-    const DropdownMenuItem(
-      value: "Music",
-      child: Text("Music"),
-    ),
-    const DropdownMenuItem(
-      value: "Sports",
-      child: Text("Sports"),
-    ),
-    const DropdownMenuItem(
-      value: "Science",
-      child: Text("Science"),
-    ),
-    const DropdownMenuItem(
-      value: "Other",
-      child: Text("Other"),
-    ),
-  ];
-  return eventType;
-}
-
-// Create event form
-class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
+  final String eventId;
+  String title = '';
+  String time = '';
+  DateTime? chosenDate = DateTime.now();
+  TimeOfDay? dayTime = TimeOfDay.now();
+  String venue = '';
+  String description = '';
+  bool allowRefunds = true;
+  bool privateEvent = true;
+  String tags = 'Other';
+  List<bool> selectedEventTypes = <bool>[true, false];
+
+  String formatTime(int time) {
+    return time.toString().padLeft(2, '0');
+  }
+
+  void handleSelectionChanged(List<bool> newSelection) {
+    selectedEventTypes = newSelection;
+  }
+
+  void saveSelectedTime(TimeOfDay? time) {
+    dayTime = time;
+  }
+
+  void saveSelectedDate(DateTime? date) {
+    chosenDate = date;
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final event = ref.watch(eventProvider(eventId));
+
+    return event.when(
+        data: (event) {
+          String previousTitle = event.title;
+          String previousTime = event.time;
+          DateTime previousChosenDate = DateTime.parse(event.time);
+          TimeOfDay previousDayTime =
+              TimeOfDay.fromDateTime(DateTime.parse(event.time));
+          String previousVenue = event.venue;
+          String previousDescription = event.description;
+          bool? previousAllowRefunds = event.allowRefunds;
+          bool? previousPrivateEvent = event.isPrivate;
+          List<bool> previousSelectedEventTypes = [
+            previousPrivateEvent ?? true,
+            !(previousPrivateEvent ?? false),
+          ];
+          List<String>? tags = event.tags;
+
+          return Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Center(
+                    child: Text("Modify Event Form",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Event Title",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                  width: 5,
+                                )),
+                                hintText: "Enter the name of the event"),
+                            initialValue: event.tags.toString(),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill out the required field';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              title = value ?? '';
+                            },
+                          ),
+                        ])),
+                Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Event Location",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                  width: 5,
+                                )),
+                                hintText:
+                                    "Enter the place where the event is held"),
+                            initialValue: previousVenue,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill out the required field';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              venue = value ?? '';
+                            },
+                          ),
+                        ])),
+                Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Event Description",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                  width: 5,
+                                )),
+                                hintText: "Write a short summary of the event"),
+                            maxLines: 4,
+                            initialValue: previousDescription,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill out the required field';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              description = value ?? '';
+                            },
+                          ),
+                        ])),
+                // Date & Time
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Text(
+                    "Date",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: DatePicker(
+                    restorationId: 'main',
+                    saveDate: saveSelectedDate,
+                    initialDate: previousChosenDate,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Text(
+                    "Time",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: TimePicker(
+                    themeMode: ThemeMode.dark,
+                    useMaterial3: true,
+                    getTime: saveSelectedTime,
+                    initialTime: previousDayTime,
+                  ),
+                ),
+                // Privacy Button
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Text(
+                    "Privacy",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: ToggleButton(
+                      onSelectionChanged: (handleSelectionChanged) {
+                        privateEvent = handleSelectionChanged[0];
+                      },
+                      selectedEventTypes: previousSelectedEventTypes,
+                    )),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Text(
+                    "Event Tags",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                // Padding(
+                //   padding:
+                //       const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                //   child: DropdownList(
+                //     droppedItem: droppedItems,
+                //     // initial: tags![0],
+                //     initial: 'Other',
+                //     onValueChanged: (String value) {
+                //       tags = [value];
+                //     },
+                //   ),
+                // ),
+              ],
+            ),
+          );
+        },
+        error: (err, stack) => Text("Error: $err"),
+        loading: () => const CircularProgressIndicator());
+  }
+}
+
+// ===============Components===============
+// Privacy toggle button
+const List<Widget> eventTypes = <Widget>[
+  Text('Private'),
+  Text('Public'),
+];
+
+class ToggleButton extends StatefulWidget {
+  final Function(List<bool>) onSelectionChanged;
+  ToggleButton(
+      {Key? key,
+      required this.onSelectionChanged,
+      required this.selectedEventTypes})
+      : super(key: key);
+
+  List<bool> selectedEventTypes;
+
+  @override
+  State<ToggleButton> createState() => _ToggleButtonState();
+}
+
+class _ToggleButtonState extends State<ToggleButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 5),
+            ToggleButtons(
+              onPressed: (int index) {
+                setState(() {
+                  for (int i = 0; i < widget.selectedEventTypes.length; i++) {
+                    widget.selectedEventTypes[i] = i == index;
+                  }
+                });
+                widget.onSelectionChanged(widget.selectedEventTypes);
+              },
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              selectedBorderColor: Colors.red[700],
+              selectedColor: Colors.white,
+              fillColor: Colors.red[200],
+              color: Colors.red[400],
+              constraints: const BoxConstraints(
+                minHeight: 40.0,
+                minWidth: 80.0,
+              ),
+              isSelected: widget.selectedEventTypes,
+              children: eventTypes,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Pick time in 12hr format
+class TimePicker extends StatefulWidget {
+  const TimePicker(
+      {super.key,
+      required this.themeMode,
+      required this.useMaterial3,
+      required this.getTime,
+      required this.initialTime});
+
+  final ThemeMode themeMode;
+  final bool useMaterial3;
+  final ValueChanged<TimeOfDay?> getTime;
+  final TimeOfDay initialTime;
+
+  @override
+  State<TimePicker> createState() => _TimePickerState();
+}
+
+class _TimePickerState extends State<TimePicker> {
+  TimeOfDay? selectedTime;
+  TimePickerEntryMode entryMode = TimePickerEntryMode.dial;
+  Orientation? orientation;
+  TextDirection textDirection = TextDirection.ltr;
+  MaterialTapTargetSize tapTargetSize = MaterialTapTargetSize.padded;
+  bool use24HourTime = false;
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
+    return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DefaultTextStyle(
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                child: Center(
-                  child: Text("Create Event Form"),
-                )),
-          ),
-          // Title
-          const FormFields(
-              fieldName: "Event Title", 
-              hint: "Enter the name of the event",
-              initial: {backend data}
-          ),
-          // Location
-          const FormFields(
-              fieldName: "Event Location",
-              hint: "Enter the place where the event is held"),
-          // Description
-          const FormFields(
-              fieldName: "Event Description",
-              hint: "Write a short summary of the event"),
-          // Date & Time
-          // TODO: Change it up
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Date & Time"),
-            ),
-          ),
-          DateTimePicker(
-            type: DateTimePickerType.dateTimeSeparate,
-            dateMask: 'd MMM, yyyy',
-            initialValue: DateTime.now().toString(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-            icon: const Icon(Icons.event),
-            dateLabelText: 'Date',
-            timeLabelText: "Hour",
-            // TODO: Check for valid date and time (Can't be before today)
-            /* 
-              selectableDayPredicate: (date) {
-              // Disable weekend days to select from the calendar
-              if (date.weekday == 6 || date.weekday == 7) return false;
-              return true;
-            },
-            onChanged: (val) => print(val),
-            validator: (val) {
-              print(val);
-              return null;
-            },
-            onSaved: (val) => print(val),
-            */
-          ),
-          // Privacy Button
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Privacy"),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: ToggleButton(),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: SwitchButton(),
-          ),
-          // Ticket type
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Tickets"),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Table(
-              border: TableBorder.all(color: Colors.black),
-              columnWidths: const <int, TableColumnWidth>{
-                0: FlexColumnWidth(),
-              },
-              children: [
-                const TableRow(
-                  children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Ticket Type'),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Price'),
-                    )
-                  ],
+        children: <Widget>[
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: ElevatedButton(
+                    child: Text(selectedTime != null
+                        ? (selectedTime?.format(context) ?? "")
+                        : widget.initialTime.format(context)),
+                    onPressed: () async {
+                      final TimeOfDay? time = await showTimePicker(
+                        context: context,
+                        initialTime: selectedTime ?? TimeOfDay.now(),
+                        initialEntryMode: entryMode,
+                        orientation: orientation,
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              materialTapTargetSize: tapTargetSize,
+                            ),
+                            child: Directionality(
+                              textDirection: textDirection,
+                              child: MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                  alwaysUse24HourFormat: use24HourTime,
+                                ),
+                                child: child!,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                      setState(() {
+                        selectedTime = time;
+                        widget.getTime(time);
+                      });
+                    },
+                  ),
                 ),
-                TableRow(children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Type"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Amount"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                ]),
               ],
             ),
           ),
-          // Event Tags
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              child: Text("Event Tags"),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DropdownList(droppedItems: droppedItems),
-          ),
-          // Submit Button
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Submit'),
-            ),
-          ),
         ],
       ),
     );
   }
 }
 
-*/
+// Pick date
+class DatePicker extends StatefulWidget {
+  const DatePicker(
+      {super.key,
+      this.restorationId,
+      required this.saveDate,
+      required this.initialDate});
+
+  final String? restorationId;
+  final Function(DateTime?) saveDate;
+  final DateTime initialDate;
+
+  @override
+  State<DatePicker> createState() => _DatePickerState();
+}
+
+class _DatePickerState extends State<DatePicker> with RestorationMixin {
+  DateTime nullDate = DateTime(
+      DateTime.now().year - 1, DateTime.now().month, DateTime.now().day);
+
+  @override
+  String? get restorationId => widget.restorationId;
+
+  final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
+  late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
+      RestorableRouteFuture<DateTime?>(
+    onComplete: _selectDate,
+    onPresent: (NavigatorState navigator, Object? arguments) {
+      return navigator.restorablePush(
+        _datePickerRoute,
+        arguments: _selectedDate.value.millisecondsSinceEpoch,
+      );
+    },
+  );
+
+  @pragma('vm:entry-point')
+  static Route<DateTime> _datePickerRoute(
+    BuildContext context,
+    Object? arguments,
+  ) {
+    return DialogRoute<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return DatePickerDialog(
+          restorationId: 'date_picker_dialog',
+          initialEntryMode: DatePickerEntryMode.calendarOnly,
+          initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(const Duration(days: 365 * 20)),
+        );
+      },
+    );
+  }
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_selectedDate, 'selected_date');
+    registerForRestoration(
+        _restorableDatePickerRouteFuture, 'date_picker_route_future');
+  }
+
+  void _selectDate(DateTime? newSelectedDate) {
+    if (newSelectedDate != null) {
+      setState(() {
+        nullDate = newSelectedDate;
+        _selectedDate.value = newSelectedDate;
+      });
+      widget.saveDate(newSelectedDate);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.5,
+        child: OutlinedButton(
+          onPressed: () {
+            _restorableDatePickerRouteFuture.present();
+          },
+          child: Text(
+            nullDate !=
+                    DateTime(DateTime.now().year - 1, DateTime.now().month,
+                        DateTime.now().day)
+                ? '${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'
+                : '${widget.initialDate.day}/${widget.initialDate.month}/${widget.initialDate.year}',
+          ),
+        ),
+      ),
+    );
+  }
+}
