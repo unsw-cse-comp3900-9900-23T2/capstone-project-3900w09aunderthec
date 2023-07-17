@@ -16,6 +16,8 @@ namespace EventManagementAPI.Context
         public DbSet<Subscription> subscriptions { get; set; }
         public DbSet<EventSaved> eventsSaved { get; set; }
         public DbSet<Reply> replies { get; set; }
+        public DbSet<CreditMoney> creditMoney { get; set; }
+        public DbSet<BookingTicket> bookingTickets { get; set; }
 
         public MySqlContext(DbContextOptions<MySqlContext> options) : base(options) { }
     }

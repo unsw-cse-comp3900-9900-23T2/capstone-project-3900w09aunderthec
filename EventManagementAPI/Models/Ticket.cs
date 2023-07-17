@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EventManagementAPI.Models
 {
@@ -12,9 +13,11 @@ namespace EventManagementAPI.Models
 
         [ForeignKey("Event")]
         public int eventIdRef { get; set; }
+        [JsonIgnore]
         public Event toEvent { get; set; }
-
         public String name { get; set; }
         public Double price { get; set; }
+        public int stock { get; set; }
+        public DateTime createdTime { get; set; } = DateTime.Now;
     }
 }
