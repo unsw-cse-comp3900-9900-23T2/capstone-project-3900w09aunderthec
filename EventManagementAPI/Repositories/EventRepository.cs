@@ -237,6 +237,8 @@ namespace EventManagementAPI.Repositories
             Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
 
             if(mod.title is not null){e.title = mod.title;}
+            if(mod.eventTime is not null){e.eventTime = mod.eventTime ?? default(DateTime);}
+            if(mod.createdTime is not null){e.createdTime = mod.createdTime ?? default(DateTime);}
             if(mod.venue is not null){e.venue = mod.venue;}
             if(mod.description is not null){e.description = mod.description;}
             if(mod.isDirectRefunds is not null){e.isDirectRefunds = mod.isDirectRefunds ?? default(bool);}
