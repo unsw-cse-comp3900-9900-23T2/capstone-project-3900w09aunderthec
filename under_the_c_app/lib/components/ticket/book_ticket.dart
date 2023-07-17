@@ -87,7 +87,7 @@ class BookTicket extends ConsumerWidget {
                   itemCount: tickets.length,
                   itemBuilder: (context, index) {
                     final ticket = tickets[index];
-                    return TicketTypes(item: ticket);
+                    return DisplayedTicket(item: ticket);
                   },
                 ),
               ),
@@ -138,11 +138,11 @@ Container _buildDivider() {
   );
 }
 
-class TicketTypes extends StatelessWidget {
+class DisplayedTicket extends StatelessWidget {
   final Tickets item;
   int qty = 0;
 
-  TicketTypes({Key? key, required this.item}) : super(key: key);
+  DisplayedTicket({Key? key, required this.item}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
