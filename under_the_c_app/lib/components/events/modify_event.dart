@@ -286,29 +286,29 @@ class MyCustomForm extends ConsumerWidget {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                //   child: FutureBuilder<List<String>>(
-                //     future: _fetchDroppedItems(),
-                //     builder: (context, snapshot) {
-                //       if (snapshot.hasData) {
-                //         return DropdownList(
-                //           droppedItem: snapshot.data!,
-                //           onValueChanged: (String value) {
-                //             tags = value;
-                //             // tags = [value];
-                //           },
-                //           initial: tags,
-                //         );
-                //       } else if (snapshot.hasError) {
-                //         return Text('Error: ${snapshot.error}');
-                //       } else {
-                //         return const CircularProgressIndicator();
-                //       }
-                //     },
-                //   ),
-                // ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: FutureBuilder<List<String>>(
+                    future: _fetchDroppedItems(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return DropdownList(
+                          droppedItem: snapshot.data!,
+                          onValueChanged: (String value) {
+                            tags = value;
+                            // tags = [value];
+                          },
+                          initial: tags,
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
                 // Submit Button
                 Center(
                   child: Padding(

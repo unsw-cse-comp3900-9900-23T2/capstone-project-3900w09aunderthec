@@ -5,14 +5,15 @@ import '../../../api/api_routes.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<String>> getTags() async {
-  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTags);
+  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTags,
+      {"title": "string", "description": "string", "venue": "string"});
   try {
-    final response = await http.post(
+    final response = await http.get(
       registerUrl,
       headers: APIRoutes.headers,
-      body: jsonEncode(
-        {"title": "string", "description": "string", "venue": "string"},
-      ),
+      // body: jsonEncode(
+      //   {"title": "string", "description": "string", "venue": "string"},
+      // ),
     );
 
     if (response.statusCode == 200) {
