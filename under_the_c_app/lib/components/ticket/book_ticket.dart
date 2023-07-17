@@ -17,6 +17,9 @@ const priceTextStyle = TextStyle(
 );
 
 final selectedTicketsProvider = StateProvider<Map<int, int>>((ref) => {});
+final totalPriceProvider = StateProvider<int>((ref) {
+  return 0;
+});
 
 class BookTicket extends ConsumerWidget {
   final String eventId;
@@ -32,6 +35,7 @@ class BookTicket extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tickets = ref.watch(ticketsProvider(eventId));
+    var totalPrice = ref.watch(totalPriceProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -105,7 +109,7 @@ class BookTicket extends ConsumerWidget {
                     style: priceTextStyle.copyWith(color: Colors.black),
                   ),
                   const Spacer(),
-                  Text("\$65",
+                  Text("\$$totalPrice",
                       style: priceTextStyle.copyWith(color: Colors.black)),
                   const SizedBox(height: 20.0),
                 ],

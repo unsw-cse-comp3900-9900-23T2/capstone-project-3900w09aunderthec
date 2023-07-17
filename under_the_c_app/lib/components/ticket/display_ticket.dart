@@ -13,15 +13,17 @@ class DisplayedTicket extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedTickets = ref.watch(selectedTicketsProvider);
-    final quantity = selectedTickets[item.ticketId] ?? 0;
-    print(selectedTickets);
-
+    final quantity = ref.watch(selectedTicketsProvider)[item.ticketId] ?? 0;
+    print(ref.watch(selectedTicketsProvider));
     void updateQuantity(int value) {
       ref.read(selectedTicketsProvider.notifier).state = {
         ...ref.read(selectedTicketsProvider.notifier).state,
         item.ticketId: value,
       };
+    }
+
+    void updateTotal(int value) {
+      ref.read(totalPriceProvider.notifier).state += value;
     }
 
     return Padding(
@@ -76,6 +78,7 @@ class DisplayedTicket extends ConsumerWidget {
                       onPressed: () {
                         if (quantity > 0) {
                           updateQuantity(quantity - 1);
+                          updateTotal(0 - item.price.toInt());
                         }
                       },
                     ),
@@ -93,6 +96,7 @@ class DisplayedTicket extends ConsumerWidget {
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         updateQuantity(quantity + 1);
+                        updateTotal(item.price.toInt());
                       },
                     ),
                   ]),
