@@ -155,7 +155,7 @@ namespace EventManagementAPI.Repositories
 
             switch (sortby)
             {
-                case "most_recent":
+                case "soonest":
                     query = query.OrderBy(e => e.eventTime);
                     break;
                 case "most_saved":
