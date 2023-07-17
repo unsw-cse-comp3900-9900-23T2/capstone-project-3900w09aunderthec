@@ -3,7 +3,52 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/event_requests.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-// fetch all events
+/* Sorting or filtering events */
+enum EventSortType { none, recency, popularity, price }
+
+enum EventFilterType {
+  none,
+  arts,
+  business,
+  comedy,
+  foodDrink,
+  fashion,
+  music,
+  sport,
+  science,
+  others
+}
+
+final eventFilterTypeProvider = StateProvider((ref) => EventFilterType.none);
+final eventSortTypeProvider =
+    StateProvider((ref) => EventSortType.none /*Here it set to default*/);
+
+final sortedEventsProvider = Provider<List<Event>>((ref) {
+  final List<Event> events = ref.watch(eventsProvider);
+  final sortType = ref.watch(eventSortTypeProvider);
+  switch (sortType) {
+    case EventSortType.recency:
+      return events
+        ..sort(
+          (a, b) {
+            DateTime dateTime1 = DateTime.parse(a.time);
+            DateTime dateTime2 = DateTime.parse(b.time);
+            // sort in descending order (from most recent to the leaste recent)
+            return dateTime2.compareTo(dateTime1);
+          },
+        );
+    case EventSortType.popularity:
+      return events;
+
+    case EventSortType.price:
+      return events;
+
+    case EventSortType.none:
+      return events;
+  }
+});
+
+/* Fetching all events */
 class EventsProvider extends StateNotifier<List<Event>> {
   List<Event> _allEvents;
 
@@ -32,10 +77,6 @@ class EventsProvider extends StateNotifier<List<Event>> {
     state = events;
   }
 
-  Future<void> fetchEventsById(id) async {
-    state = [await getEventDetails(id)];
-  }
-
   void search(String query) {
     if (query.isEmpty) {
       state = _allEvents;
@@ -59,6 +100,7 @@ final eventProvider = FutureProvider.family<Event, String>(
   },
 );
 
+/* Fetch events by userid */
 class EventsByUserProvider extends StateNotifier<List<Event>> {
   final String uid;
   EventsByUserProvider(this.uid) : super([]) {
@@ -70,9 +112,9 @@ class EventsByUserProvider extends StateNotifier<List<Event>> {
   }
 }
 
-final eventsByUserProvider = StateNotifierProvider.family<EventsByUserProvider, List<Event>, String>(
+final eventsByUserProvider =
+    StateNotifierProvider.family<EventsByUserProvider, List<Event>, String>(
   (ref, uid) {
     return EventsByUserProvider(uid);
   },
 );
-
