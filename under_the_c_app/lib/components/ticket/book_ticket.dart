@@ -8,6 +8,7 @@ import 'package:under_the_c_app/api/send_email.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/ticket_providers.dart';
 
+import '../../api/book_ticket_request.dart';
 import 'display_ticket.dart';
 
 const priceTextStyle = TextStyle(
@@ -36,6 +37,12 @@ class BookTicket extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tickets = ref.watch(ticketsProvider(eventId));
     var totalPrice = ref.watch(totalPriceProvider);
+    final selectedTickets = ref.watch(selectedTicketsProvider);
+
+    void cleanMap() {
+      var selectedTickets = ref.watch(selectedTicketsProvider);
+      selectedTickets.removeWhere((key, value) => value == 0);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -122,8 +129,13 @@ class BookTicket extends ConsumerWidget {
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    sendEmail();
-                    context.go(AppRoutes.ticketConfirmation);
+                    cleanMap();
+                    if (selectedTickets.isNotEmpty) {
+                      // sendEmail();
+                      print("TICKET PURCHASED!!!!");
+                      context.go(AppRoutes.ticketConfirmation);
+                      purchaseTickets();
+                    }
                   },
                   child: const Text("Purchase"),
                 ),

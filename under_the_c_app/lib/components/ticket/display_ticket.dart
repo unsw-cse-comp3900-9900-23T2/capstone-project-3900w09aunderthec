@@ -14,7 +14,7 @@ class DisplayedTicket extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quantity = ref.watch(selectedTicketsProvider)[item.ticketId] ?? 0;
-    print(ref.watch(selectedTicketsProvider));
+
     void updateQuantity(int value) {
       ref.read(selectedTicketsProvider.notifier).state = {
         ...ref.read(selectedTicketsProvider.notifier).state,
