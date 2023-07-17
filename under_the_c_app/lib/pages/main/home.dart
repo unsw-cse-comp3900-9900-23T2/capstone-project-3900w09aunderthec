@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/events/event_card.dart';
-import 'package:under_the_c_app/config/routes.dart';
+import 'package:under_the_c_app/components/search/events_filter.dart';
+import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 
 class HomePage extends ConsumerWidget {
@@ -11,9 +12,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(eventsProvider);
-    
-    // initialize events
-    // ref.read(eventsProvider.notifier).setEvents(events);
+
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
       alignment: Alignment.center,
@@ -57,6 +56,23 @@ class HomePage extends ConsumerWidget {
               ),
             ),
           ),
+          // for event filters
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 35,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: EventsFilter(),
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 13, // Modify this to adjust the size of the space
+            ),
+          ),
+          // for list of event cards
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               final event = events[index];
@@ -73,7 +89,7 @@ class HomePage extends ConsumerWidget {
                       title: event.title,
                       imageUrl: event.imageUrl,
                       time: event.time,
-                      address: event.address,
+                      venue: event.venue,
                     ),
                   ),
                 ),

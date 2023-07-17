@@ -14,12 +14,14 @@ class APIRoutes {
 
   // events get
   static const String getEvents = '/EventDisplay/ListEvents';
-  static const String getEventDetails = '/EventDisplay/ShowEventDetails';
-  static const String getMyEvents = '/EventDisplay/ListMyEvents';
+  // static const String getHostEvents = '/EventDisplay/ListHostEvents';
+  static const String getEventDetails = '/EventDisplay/showEventDetails';
+  static const String getCustomerEvents = '/EventDisplay/ListMyEvents';
 
   // events creation
   static const String createEvent = '/EventCreation/CreateEvent';
 
   // ticket
   static const String getTicket = '/Ticket/ShowTicketDetails';
+  static const String getTickets = '/Ticket/ShowTickets';
 }

@@ -7,10 +7,9 @@ import 'package:under_the_c_app/api/converters/event_converter.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-Future<List<Event>> getEvents(bool isHost) async {
-  final registerUrl = isHost == false
-      ? Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents)
-      : Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'hostId': sessionVariables.uid});
+Future<List<Event>> getAllEvents() async {
+  // TODO: [PLHV-203] Event_request.dart: Need to pass variables to getHostEvent, getEvents.
+  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents);
   try {
     final response = await http.get(
       registerUrl,
@@ -27,22 +26,50 @@ Future<List<Event>> getEvents(bool isHost) async {
           'event.dart.getEvents: Server returned status code ${response.statusCode}');
     }
   } on SocketException catch (e) {
-    throw Exception('event.dart.getEvents: Network error $e');
+    throw Exception('event.dart.getAllEvents: Network error $e');
   } on HttpException catch (e) {
-    throw Exception('event.dart.getEvents: Http Exception error $e');
+    throw Exception('event.dart.getAllEvents: Http Exception error $e');
   } catch (e) {
-    throw Exception('event.dart.getEvents: Unknown error $e');
+    throw Exception('event.dart.getAllEvents: Unknown error $e');
   }
 }
 
-Future<Event> getEvent(String id) async {
+Future<List<Event>> getUserEvents(String uid) async {
+  final registerUrl =
+      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'hostId': uid});
+  try {
+    final response = await http.get(
+      registerUrl,
+      headers: APIRoutes.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = jsonDecode(response.body);
+      final List<BackendEventData> events =
+          jsonList.map((json) => BackendEventData.fromJson(json)).toList();
+      return BackendDataEventListToEvent(events);
+    } else {
+      throw Exception(
+          'event.dart.getEvents: Server returned status code ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.getUserEvents: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.getUserEvents: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.getUserEvents: Unknown error $e');
+  }
+}
+
+
+Future<Event> getEventDetails(String id) async {
   final url =
       Uri.https(APIRoutes.BASE_URL, APIRoutes.getEventDetails, {"eventId": id});
 
   try {
     final response = await http.get(url, headers: APIRoutes.headers);
     if (response.statusCode == 200) {
-      final Map<String, dynamic>  data = jsonDecode(response.body);
+      final Map<String, dynamic> data = jsonDecode(response.body);
       return BackendDataSingleEventToEvent(data);
     } else {
       throw HttpException('HTTP error: ${response.statusCode}');
@@ -56,24 +83,27 @@ Future<Event> getEvent(String id) async {
   }
 }
 
-Future<void> createEvent(Event eventInfo, String uid) async {
+Future<void> createEvent(Event eventInfo) async {
+  final uid = sessionVariables.uid;
   final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.createEvent);
   try {
-    final response = await http.post(url,
-        headers: APIRoutes.headers,
-        body: jsonEncode(
-          {
-            "uid": 1,
-            "title": eventInfo.title,
-            "time": "2023-07-14T00:26:39.068Z",
-            "venue": eventInfo.address.venue,
-            "description": eventInfo.description,
-            "allowRefunds": eventInfo.allowRefunds,
-            "privateEvent": eventInfo.isPrivate,
-            // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
-            "tags": "tags"
-          },
-        ));
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "uid": uid,
+          "title": eventInfo.title,
+          "time": "2023-07-14T00:26:39.068Z",
+          "venue": eventInfo.venue,
+          "description": eventInfo.description,
+          "allowRefunds": eventInfo.allowRefunds,
+          "privateEvent": eventInfo.isPrivate,
+          // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
+          "tags": "tags"
+        },
+      ),
+    );
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw Exception(response.body);
     }

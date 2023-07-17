@@ -13,24 +13,33 @@ namespace EventManagementAPI.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationRepository _authenticationRepository;
+        public class RegisterUserRequestBody
+        {
+            public string username { get; set; } = "no username";
+            public string email { get; set; }
+            public bool isHost { get; set; } = false;
+        };
 
         public AuthenticationController(IAuthenticationRepository authenticationRepository)
         {
             _authenticationRepository = authenticationRepository;
         }
 
-        [HttpGet("RegisterUser")]
-        public IActionResult RegisterUser([FromQuery] string username, string email, bool isHost) {
+        [HttpPost("RegisterUser")]
+        public IActionResult RegisterUser([FromBody] RegisterUserRequestBody RequestBody)
+        {
 
-            if (!_authenticationRepository.validateEmailRegex(email)) {
+            if (!_authenticationRepository.validateEmailRegex(RequestBody.email))
+            {
                 return BadRequest("That email is invalid.");
             }
 
-            if (!_authenticationRepository.checkDuplicateEmails(email).Result) {
+            if (!_authenticationRepository.checkDuplicateEmails(RequestBody.email).Result)
+            {
                 return BadRequest("That email is already in use.");
             }
 
-            _authenticationRepository.createUser(username, email, isHost);
+            _authenticationRepository.createUser(RequestBody.username, RequestBody.email, RequestBody.isHost);
 
             return Ok();
         }
