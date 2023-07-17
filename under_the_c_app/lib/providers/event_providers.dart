@@ -28,15 +28,18 @@ final sortedEventsProvider = Provider<List<Event>>((ref) {
   final sortType = ref.watch(eventSortTypeProvider);
   switch (sortType) {
     case EventSortType.recency:
-      return events
+      // Can't change the current "events", because it will not trigger re-render of the sortedEventsProvider,
+      // in order to make it re-render successfully, we need to return a new instance (in this case a new array)
+      final List<Event> sortedEvents = List.from(events)
         ..sort(
           (a, b) {
             DateTime dateTime1 = DateTime.parse(a.time);
             DateTime dateTime2 = DateTime.parse(b.time);
-            // sort in descending order (from most recent to the leaste recent)
-            return dateTime2.compareTo(dateTime1);
+            // sort in descending order (from most recent to the least recent)
+            return dateTime1.compareTo(dateTime2);
           },
         );
+      return sortedEvents;
     case EventSortType.popularity:
       return events;
 
