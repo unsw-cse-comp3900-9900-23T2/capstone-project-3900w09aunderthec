@@ -6,14 +6,17 @@ using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventManagementAPI.Controllers{
+namespace EventManagementAPI.Controllers
+{
 
-    public class GetTagsRequestBody {
+    public class GetTagsRequestBody
+    {
         public String title { get; set; }
         public String description { get; set; }
         public String venue { get; set; }
     };
-    public class CreateEventRequestBody {
+    public class CreateEventRequestBody
+    {
         public int uid { get; set; }
         public string title { get; set; }
         public string venue { get; set; }
@@ -21,9 +24,12 @@ namespace EventManagementAPI.Controllers{
         public bool allowRefunds { get; set; }
         public bool privateEvent { get; set; }
         public String tags { get; set; }
+
+        public DateTime createdTime { get; set; }
         // public List<Ticket> tickets;
     };
-    public class ModifyEventRequestBody {
+    public class ModifyEventRequestBody
+    {
         public int eventId { get; set; } // Id of event being modified
         // public int hostUid { get; set; } // Uid of host to whom the event belongs. Cannot be modified.
         public String title { get; set; }
@@ -54,7 +60,8 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPost("GetTags")]
-        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody) {
+        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody)
+        {
 
             // Format string to make api call with
             // make api call
@@ -66,9 +73,12 @@ namespace EventManagementAPI.Controllers{
 
             List<string> tagList = new List<string>();
 
-            try {
+            try
+            {
                 tagList = await _eventRepository.GetTags(descriptorString);
-            } catch (BadHttpRequestException e) {
+            }
+            catch (BadHttpRequestException e)
+            {
                 return BadRequest(e.Message);
             }
 
@@ -76,7 +86,8 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPost("CreateEvent")]
-        public async Task<IActionResult> CreateEventDetails([FromBody] CreateEventRequestBody RequestBody) {
+        public async Task<IActionResult> CreateEventDetails([FromBody] CreateEventRequestBody RequestBody)
+        {
 
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
@@ -85,7 +96,7 @@ namespace EventManagementAPI.Controllers{
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
-                createdTime = DateTime.Now,
+                createdTime = RequestBody.createdTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,
@@ -94,9 +105,12 @@ namespace EventManagementAPI.Controllers{
                 tags = RequestBody.tags
             };
 
-            try {
+            try
+            {
                 await _eventRepository.CreateAnEvent(newEvent);
-            } catch (BadHttpRequestException e) {
+            }
+            catch (BadHttpRequestException e)
+            {
                 return BadRequest(e.Message);
             }
 
@@ -104,7 +118,8 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPut("ModifyEvent")]
-        public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody) {
+        public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody)
+        {
 
             Event newEvent = new Event
             {
