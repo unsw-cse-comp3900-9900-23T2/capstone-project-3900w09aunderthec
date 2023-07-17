@@ -16,6 +16,7 @@ namespace EventManagementAPI.Controllers
         public int customerId { get; set; }
         public int ticketId { get; set; }
         public int numberOfTickets { get; set; }
+        public Dictionary<string, int> bookingTickets { get; set; }
         public int paymentMethod { get; set; }
     };
 
