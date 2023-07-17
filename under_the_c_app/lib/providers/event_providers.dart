@@ -70,6 +70,14 @@ class EventsProvider extends StateNotifier<List<Event>> {
     state = [...state, event];
   }
 
+  void removeEvent(Event event) {
+    cancelEvent(event);
+    state = [
+      for (final e in state)
+        if (e.eventId != event.eventId) e,
+    ];
+  }
+
   void changeEvent(Event event) {
     modifyEvent(event);
     state = state.map((e) => e.eventId == event.eventId ? event : e).toList();

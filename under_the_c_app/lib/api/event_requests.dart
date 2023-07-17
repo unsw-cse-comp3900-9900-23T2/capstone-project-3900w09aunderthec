@@ -149,3 +149,27 @@ Future<void> modifyEvent(Event eventInfo) async {
     throw Exception('event.dart.modifyEvent: Unknown error $e');
   }
 }
+
+Future<void> cancelEvent(Event eventInfo) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.cancelEvent);
+  try {
+    final response = await http.delete(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "eventId": eventInfo.eventId,
+        },
+      ),
+    );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.cancelEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.cancelEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.cancelEvent: Unknown error $e');
+  }
+}

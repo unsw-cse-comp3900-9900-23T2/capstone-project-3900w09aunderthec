@@ -7,6 +7,9 @@ import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
+
+import '../../../types/events/event_type.dart';
 
 class EventDetailsPage extends ConsumerWidget {
   final String eventId;
@@ -91,6 +94,39 @@ class EventDetailsPage extends ConsumerWidget {
                                                   ),
                                                   TextButton(
                                                     onPressed: () {
+                                                      ref
+                                                          .read(eventsProvider
+                                                              .notifier)
+                                                          .removeEvent(
+                                                            Event(
+                                                              hostuid:
+                                                                  sessionVariables
+                                                                      .uid
+                                                                      .toString(),
+                                                              eventId:
+                                                                  event.eventId,
+                                                              title:
+                                                                  event.title,
+                                                              venue:
+                                                                  event.venue,
+                                                              time: event.time,
+                                                              price: 0,
+                                                            ),
+                                                          );
+                                                      final uid =
+                                                          sessionVariables.uid
+                                                              .toString();
+                                                      ref
+                                                          .read(eventsProvider
+                                                              .notifier)
+                                                          .fetchEvents;
+                                                      ref
+                                                          .read(
+                                                              eventsByUserProvider(
+                                                                      uid)
+                                                                  .notifier)
+                                                          .fetchEvents(uid);
+
                                                       context
                                                           .go(AppRoutes.home);
                                                     },
