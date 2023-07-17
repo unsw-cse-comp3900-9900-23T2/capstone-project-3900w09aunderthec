@@ -8,17 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
 
-    public class BookTicketsRequestBody {
-        public double price { get; set; }
-        public string name { get; set; }
-        public int eventId { get; set; }
-    };
-
     public class CreateTicketsRequestBody
     {
         public double price { get; set; }
         public string name { get; set; }
         public int eventId { get; set; }
+        public int stock { get; set; }
     };
 
     public class UpdateTicketsRequestBody
@@ -26,6 +21,7 @@ namespace EventManagementAPI.Controllers{
         public int ticketId { get; set; }
         public double price { get; set; }
         public string name { get; set; }
+        public int stock { get; set; }
     };
 
     public class DeleteTicketsRequestBody
@@ -54,12 +50,6 @@ namespace EventManagementAPI.Controllers{
             return Ok(tickets);
         }
 
-        [HttpPost("BookTickets")]
-        public async Task<IActionResult> BookTickets([FromBody] BookTicketsRequestBody RequestBody)
-        {
-            throw new NotImplementedException();
-        }
-
         [HttpPost("CreateTickets")]
         public async Task<IActionResult> CreateTickets([FromBody] CreateTicketsRequestBody RequestBody) {
 
@@ -75,11 +65,12 @@ namespace EventManagementAPI.Controllers{
                 price = RequestBody.price,
                 eventIdRef = RequestBody.eventId,
                 toEvent = existingEvent,
+                stock = RequestBody.stock,
             };
 
             await _ticketRepository.CreateBookingTicket(newTicket);
 
-            return Ok();
+            return Ok(newTicket.ticketId);
         }
 
         [HttpGet("ShowTicketDetails")]
@@ -95,7 +86,7 @@ namespace EventManagementAPI.Controllers{
             return Ok(t);
         }
 
-        [HttpPost("ModifyTickets")]
+        [HttpPut("ModifyTickets")]
         public async Task<IActionResult> ModifyTickets([FromBody] UpdateTicketsRequestBody requestBody)
         {
             var t = await _ticketRepository.GetTicketById(requestBody.ticketId);
@@ -106,6 +97,7 @@ namespace EventManagementAPI.Controllers{
 
             t.price = requestBody.price;
             t.name = requestBody.name;
+            t.stock = requestBody.stock;
 
             await _ticketRepository.ModifyTicket(t);
 
@@ -122,7 +114,7 @@ namespace EventManagementAPI.Controllers{
             }
 
             await _ticketRepository.DeleteTicket(t);
-            return Ok();
+            return Ok(t);
         }
     }
 }

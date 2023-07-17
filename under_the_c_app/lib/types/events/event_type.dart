@@ -9,7 +9,7 @@ class Event {
   final double price;
   final String imageUrl;
   final String description;
-  final bool? allowRefunds;
+  final bool? isDirectRefunds;
   final double? rating;
   final List<String>? tags;
   // final Address address;
@@ -24,7 +24,7 @@ class Event {
       String? eventId,
       required this.venue,
       String? description,
-      bool? allowRefunds,
+      bool? isDirectRefunds,
       this.rating,
       bool? isPrivate,
       List<String>? tags,
@@ -34,7 +34,7 @@ class Event {
       : imageUrl = imageUrl ?? "images/events/money-event.jpg", //default image
         description = description ?? "",
         eventId = eventId ?? "",
-        allowRefunds = allowRefunds ?? false,
+        isDirectRefunds = isDirectRefunds ?? false,
         isPrivate = isPrivate ?? false,
         tags = [];
 }
@@ -51,8 +51,8 @@ class BackendEventData {
   final DateTime time;
   final String venue;
   final String description;
-  final bool allowRefunds;
-  final bool privateEvent;
+  final bool isDirectRefunds;
+  final bool isPrivateEvent;
   final double? rating;
   final String tags;
 
@@ -63,14 +63,14 @@ class BackendEventData {
     required this.time,
     required this.venue,
     required this.description,
-    required this.allowRefunds,
-    required this.privateEvent,
+    required this.isDirectRefunds,
+    required this.isPrivateEvent,
     required this.rating,
     required this.tags,
   });
   @override
   String toString() {
-    return 'AllEvents(eventId: $eventId, hosterFK: $hosterFK, title: $title, time: $time, venue: $venue, description: $description, allowRefunds: $allowRefunds, privateEvent: $privateEvent, rating: $rating, tags: $tags)';
+    return 'AllEvents(eventId: $eventId, hosterFK: $hosterFK, title: $title, time: $time, venue: $venue, description: $description, isDirectRefunds: $isDirectRefunds, isPrivateEvent: $isPrivateEvent, rating: $rating, tags: $tags)';
   }
 
   factory BackendEventData.fromJson(Map<String, dynamic> json) {
@@ -81,8 +81,8 @@ class BackendEventData {
       time: DateTime.parse(json['createdTime']),
       venue: json['venue'],
       description: json['description'],
-      allowRefunds: json['allowRefunds'],
-      privateEvent: json['privateEvent'],
+      isDirectRefunds: json['isDirectRefunds'],
+      isPrivateEvent: json['isPrivateEvent'],
       rating: json['rating'],
       tags: json['tags'],
     );

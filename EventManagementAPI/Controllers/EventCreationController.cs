@@ -12,9 +12,10 @@ namespace EventManagementAPI.Controllers{
         public int uid { get; set; }
         public string title { get; set; }
         public string venue { get; set; }
+        public DateTime eventTime { get; set; }
         public string description { get; set; }
-        public bool allowRefunds { get; set; }
-        public bool privateEvent { get; set; }
+        public bool isDirectRefunds { get; set; }
+        public bool isPrivateEvent { get; set; }
         public String tags { get; set; }
 
         public DateTime createdTime { get; set; }
@@ -22,10 +23,12 @@ namespace EventManagementAPI.Controllers{
     public class ModifyEventRequestBody {
         public int eventId { get; set; }
         public string? title { get; set; }
+        public DateTime? eventTime { get; set; }
+        public DateTime? createdTime { get; set; }
         public string? venue { get; set; }
         public string? description { get; set; }
-        public bool? allowRefunds { get; set; }
-        public bool? privateEvent { get; set; }
+        public bool? isDirectRefunds { get; set; }
+        public bool? isPrivateEvent { get; set; }
         public String? tags { get; set; }
     };
 
@@ -82,11 +85,11 @@ namespace EventManagementAPI.Controllers{
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
-                createdTime = RequestBody.createdTime,
+                eventTime = RequestBody.eventTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
-                allowRefunds = RequestBody.allowRefunds,
-                privateEvent = RequestBody.privateEvent,
+                isDirectRefunds = RequestBody.isDirectRefunds,
+                isPrivateEvent = RequestBody.isPrivateEvent,
                 rating = null,
                 tags = RequestBody.tags
             };
@@ -100,21 +103,29 @@ namespace EventManagementAPI.Controllers{
                 return BadRequest(e.Message);
             }
 
-            return Ok();
+            return Ok(newEvent);
         }
 
         [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody)
         {
 
+            var e = await _eventRepository.GetEventById(RequestBody.eventId);
+            if (e == null)
+            {
+                return NotFound("EventId does not refer to a valid event");
+            }
+
             EventModificationDto mod = new EventModificationDto
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
+                eventTime = RequestBody.eventTime,
+                createdTime = RequestBody.createdTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
-                allowRefunds = RequestBody.allowRefunds,
-                privateEvent = RequestBody.privateEvent,
+                isDirectRefunds = RequestBody.isDirectRefunds,
+                isPrivateEvent = RequestBody.isPrivateEvent,
                 tags = RequestBody.tags
             };
 
@@ -126,7 +137,7 @@ namespace EventManagementAPI.Controllers{
             // replace old event with newEvent
 
             await _eventRepository.ModifyEvent(mod);
-            return Ok();
+            return Ok(mod);
         }
 
         [HttpDelete("CancelEvent")]
@@ -139,7 +150,7 @@ namespace EventManagementAPI.Controllers{
                 return NotFound();
             }
 
-            return Ok();
+            return Ok(e);
         }
     }
 }

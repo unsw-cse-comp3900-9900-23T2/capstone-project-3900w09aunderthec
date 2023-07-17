@@ -28,7 +28,13 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("customerId")
                         .HasColumnType("int");
 
+                    b.Property<int>("gainedCredits")
+                        .HasColumnType("int");
+
                     b.Property<int>("numberOfTickets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("paymentMethod")
                         .HasColumnType("int");
 
                     b.Property<int>("ticketId")
@@ -44,6 +50,30 @@ namespace EventManagementAPI.Migrations
                     b.HasIndex("ticketId");
 
                     b.ToTable("bookings");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("bookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("numberOfTickets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ticketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("bookingId");
+
+                    b.HasIndex("ticketId");
+
+                    b.ToTable("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
@@ -122,14 +152,35 @@ namespace EventManagementAPI.Migrations
                     b.ToTable("commentLikes");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.CreditMoney", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double>("creditAmount")
+                        .HasColumnType("double");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("hosterId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("customerId");
+
+                    b.HasIndex("hosterId");
+
+                    b.ToTable("creditMoney");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.Property<int>("eventId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<bool>("allowRefunds")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("createdTime")
                         .HasColumnType("datetime(6)");
@@ -138,14 +189,20 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("eventTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("hosterFK")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isDirectRefunds")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("isPrivateEvent")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("numberSaved")
                         .HasColumnType("int");
-
-                    b.Property<bool>("privateEvent")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<double?>("rating")
                         .HasColumnType("double");
@@ -202,6 +259,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("commenterId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("replierId")
                         .HasColumnType("int");
 
@@ -253,6 +313,9 @@ namespace EventManagementAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("eventIdRef")
                         .HasColumnType("int");
 
@@ -262,6 +325,9 @@ namespace EventManagementAPI.Migrations
 
                     b.Property<double>("price")
                         .HasColumnType("double");
+
+                    b.Property<int>("stock")
+                        .HasColumnType("int");
 
                     b.Property<int>("toEventeventId")
                         .HasColumnType("int");
@@ -282,6 +348,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("email")
                         .IsRequired()
@@ -343,6 +412,25 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("toTicket");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Booking", "booking")
+                        .WithMany()
+                        .HasForeignKey("bookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Ticket", "ticket")
+                        .WithMany()
+                        .HasForeignKey("ticketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("booking");
+
+                    b.Navigation("ticket");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Customer", "commenter")
@@ -398,6 +486,25 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("comment");
 
                     b.Navigation("customer");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.CreditMoney", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Customer", "toCustomer")
+                        .WithMany()
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Hoster", "toHoster")
+                        .WithMany()
+                        .HasForeignKey("hosterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("toCustomer");
+
+                    b.Navigation("toHoster");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
@@ -479,7 +586,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.Ticket", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Event", "toEvent")
-                        .WithMany()
+                        .WithMany("tickets")
                         .HasForeignKey("toEventeventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -495,6 +602,8 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.Navigation("comments");
+
+                    b.Navigation("tickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Hoster", b =>

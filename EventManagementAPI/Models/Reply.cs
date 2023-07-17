@@ -19,5 +19,6 @@ namespace EventManagementAPI.Models
         public int commentId { get; set; }
         [JsonIgnore]
         public Comment comment { get; set; }
+        public DateTime createdTime { get; set; } = DateTime.Now;
     }
 }

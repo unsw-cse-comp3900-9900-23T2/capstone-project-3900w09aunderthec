@@ -1,5 +1,6 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using EventManagementAPI.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -116,22 +117,26 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<Event>> GetAllEvents(int? uid, string? sortby, string? tags)
+        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags)
         {
             IQueryable<Event> query;
 
-            query = _dbContext.events;
+            query = _dbContext.events.Include(e => e.tickets)
+                .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
             if (uid is not null)
             {
                 if (await _dbContext.hosts.AnyAsync(h => h.uid == uid))
                 {
-                    query = _dbContext.events.Where(e => e.hosterFK == uid);
+                    query = _dbContext.events.Include(e => e.tickets)
+                        .Where(e => e.eventTime > DateTime.Now && e.hosterFK == uid);
                 } else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
                 {
                     if (sortby == "recommended") {
                         // Sprint 3 - Change this to sort query by most recommended events
-                        query = _dbContext.events;
+                        query = _dbContext.events.Include(e => e.tickets)
+                            .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
                     } else {
+                        // Yes, this means customers seeing booked events will also see past events. Too bad!
                         query = _dbContext.bookings
                             .Join(_dbContext.tickets,
                                 b => b.ticketId,
@@ -150,11 +155,17 @@ namespace EventManagementAPI.Repositories
 
             switch (sortby)
             {
-                case "most_recent":
-                    query = query.OrderByDescending(e => e.createdTime);
+                case "soonest":
+                    query = query.OrderBy(e => e.eventTime);
                     break;
                 case "most_saved":
                     query = query.OrderByDescending(e => e.numberSaved);
+                    break;
+                case "price_high_to_low":
+                    query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                    break;
+                case "price_low_to_high":
+                    query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
                     break;
                 default:
                     break;
@@ -162,12 +173,39 @@ namespace EventManagementAPI.Repositories
 
             var events = await query.ToListAsync();
 
-            if(tags is not null)
+            if (tags is not null)
             {
-            events.RemoveAll(e => !(Enumerable.Intersect(e.tags.Split(","),tags.Split(",")).Count() == tags.Split(",").Count()));
+                events.RemoveAll(e => !(Enumerable.Intersect(e.tags.Split(","),tags.Split(",")).Count() == tags.Split(",").Count()));
             }
 
-            return events;
+            var eventList = new List<EventListingDTO>();
+
+            foreach (var e in events)
+            {
+                double cheapestPrice = 0.0;
+                if (e.tickets.Count != 0) {
+                    cheapestPrice = e.tickets.Min(t => t.price);
+                }
+
+                var eventDto = new EventListingDTO
+                {
+                    eventId = e.eventId,
+                    hosterId = e.hosterFK,
+                    title = e.title,
+                    description = e.description,
+                    venue = e.venue,
+                    eventTime = e.eventTime,
+                    isDirectRefunds = e.isDirectRefunds,
+                    isPrivateEvent = e.isPrivateEvent,
+                    tags = e.tags,
+                    numberSaved = e.numberSaved,
+                    cheapestPrice = cheapestPrice,
+                };
+
+                eventList.Add(eventDto);
+            }
+
+            return eventList;
         }
 
         public async Task CreateAnEvent(Event e)
@@ -199,10 +237,12 @@ namespace EventManagementAPI.Repositories
             Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
 
             if(mod.title is not null){e.title = mod.title;}
+            if(mod.eventTime is not null){e.eventTime = mod.eventTime ?? default(DateTime);}
+            if(mod.createdTime is not null){e.createdTime = mod.createdTime ?? default(DateTime);}
             if(mod.venue is not null){e.venue = mod.venue;}
             if(mod.description is not null){e.description = mod.description;}
-            if(mod.allowRefunds is not null){e.allowRefunds = mod.allowRefunds ?? default(bool);}
-            if(mod.privateEvent is not null){e.privateEvent = mod.privateEvent ?? default(bool);}
+            if(mod.isDirectRefunds is not null){e.isDirectRefunds = mod.isDirectRefunds ?? default(bool);}
+            if(mod.isPrivateEvent is not null){e.isPrivateEvent = mod.isPrivateEvent ?? default(bool);}
             if(mod.tags is not null){e.tags = mod.tags;}
 
             _dbContext.events.Update(e);
