@@ -1,6 +1,7 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
+using EventManagementAPI.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.Json;
@@ -187,8 +188,23 @@ namespace EventManagementAPI.Repositories
             return e;
         }
 
-        public async Task ModifyEvent(Event e)
+        public async Task ModifyEvent(EventModificationDto mod)
         {
+
+            if(!_dbContext.events.Any(e => e.eventId == mod.eventId))
+            {
+                throw new BadHttpRequestException("That event does not exist");
+            }
+
+            Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
+
+            if(mod.title is not null){e.title = mod.title;}
+            if(mod.venue is not null){e.venue = mod.venue;}
+            if(mod.description is not null){e.description = mod.description;}
+            if(mod.allowRefunds is not null){e.allowRefunds = mod.allowRefunds ?? default(bool);}
+            if(mod.privateEvent is not null){e.privateEvent = mod.privateEvent ?? default(bool);}
+            if(mod.tags is not null){e.tags = mod.tags;}
+
             _dbContext.events.Update(e);
             await _dbContext.SaveChangesAsync();
         }

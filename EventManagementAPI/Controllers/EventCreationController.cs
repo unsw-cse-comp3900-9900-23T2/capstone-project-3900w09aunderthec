@@ -3,20 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventManagementAPI.Controllers
-{
-
-    public class GetTagsRequestBody
-    {
-        public String title { get; set; }
-        public String description { get; set; }
-        public String venue { get; set; }
-    };
-    public class CreateEventRequestBody
-    {
+namespace EventManagementAPI.Controllers{
+    public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
         public string venue { get; set; }
@@ -26,20 +18,15 @@ namespace EventManagementAPI.Controllers
         public String tags { get; set; }
 
         public DateTime createdTime { get; set; }
-        // public List<Ticket> tickets;
     };
-    public class ModifyEventRequestBody
-    {
-        public int eventId { get; set; } // Id of event being modified
-        // public int hostUid { get; set; } // Uid of host to whom the event belongs. Cannot be modified.
-        public String title { get; set; }
-        public DateTime time { get; set; }
-        public String venue { get; set; }
-        public String description { get; set; }
-        public Boolean allowRefunds { get; set; }
-        public Boolean privateEvent { get; set; }
-        // public List<String> tags;
-        // public List<Ticket> tickets { get; set; }
+    public class ModifyEventRequestBody {
+        public int eventId { get; set; }
+        public string? title { get; set; }
+        public string? venue { get; set; }
+        public string? description { get; set; }
+        public bool? allowRefunds { get; set; }
+        public bool? privateEvent { get; set; }
+        public String? tags { get; set; }
     };
 
     public class CancelEventRequestBody
@@ -59,17 +46,16 @@ namespace EventManagementAPI.Controllers
             _eventRepository = eventRepository;
         }
 
-        [HttpPost("GetTags")]
-        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody)
-        {
+        [HttpGet("GetTags")]
+        public async Task<IActionResult> GetTags([FromQuery] string title, string description, string venue) {
 
             // Format string to make api call with
             // make api call
             // parse recommended tags from api response string
             // return recommended tags
 
-            string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
-                                      RequestBody.description + "\nVenue: " + RequestBody.venue;
+            string descriptorString = "Title: " + title + "\nDescription: " +
+                                      description + "\nVenue: " + venue;
 
             List<string> tagList = new List<string>();
 
@@ -121,19 +107,17 @@ namespace EventManagementAPI.Controllers
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody)
         {
 
-            Event newEvent = new Event
+            EventModificationDto mod = new EventModificationDto
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
-                createdTime = RequestBody.time,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 allowRefunds = RequestBody.allowRefunds,
                 privateEvent = RequestBody.privateEvent,
-                rating = null,
-                // comments = new List<Comment>(),
-                // tags = RequestBody.tags
+                tags = RequestBody.tags
             };
+
 
             // get event with eventId from DB
             // compare differences and message ticket holders if necessary
@@ -141,7 +125,7 @@ namespace EventManagementAPI.Controllers
             // get host with hostUid
             // replace old event with newEvent
 
-            await _eventRepository.ModifyEvent(newEvent);
+            await _eventRepository.ModifyEvent(mod);
             return Ok();
         }
 
