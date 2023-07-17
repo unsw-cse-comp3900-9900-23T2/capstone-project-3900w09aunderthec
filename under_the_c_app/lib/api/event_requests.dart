@@ -36,7 +36,7 @@ Future<List<Event>> getAllEvents() async {
 
 Future<List<Event>> getUserEvents(String uid) async {
   final registerUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'hostId': uid});
+      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'uid': uid});
   try {
     final response = await http.get(
       registerUrl,
