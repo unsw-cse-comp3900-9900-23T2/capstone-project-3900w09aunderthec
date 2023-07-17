@@ -8,23 +8,26 @@ class APIRoutes {
     'Accept': '*/*'
   };
 
-  // auth
+  // =============================AUTH ROUTES===================================
   static const String register = '/Authentification/RegisterUser';
   static const String getUserType = '/Authentification/GetUserType';
 
-  // events get
-  static const String getEvents = '/EventDisplay/ListEvents';
+  // ============================EVENT ROUTES===================================
   // static const String getHostEvents = '/EventDisplay/ListHostEvents';
+  static const String getEvents = '/EventDisplay/ListEvents';
   static const String getEventDetails = '/EventDisplay/showEventDetails';
   static const String getCustomerEvents = '/EventDisplay/ListMyEvents';
 
-  // events creation
   static const String createEvent = '/EventCreation/CreateEvent';
   static const String getTags = '/EventCreation/GetTags';
   static const String modifyEvent = '/EventCreation/ModifyEvent';
   static const String cancelEvent = '/EventCreation/CancelEvent';
 
-  // ticket
+  // ============================TICKET ROUTES==================================
   static const String getTicket = '/Ticket/ShowTicketDetails';
   static const String getTickets = '/Ticket/ShowTickets';
+  static const String createTickets = '/Ticket/CreateTickets';
+  static const String deleteTickets = '/Ticket/DeleteTickets';
+
+  // ============================TICKET ROUTES==================================
 }

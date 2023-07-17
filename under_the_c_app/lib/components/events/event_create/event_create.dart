@@ -61,9 +61,11 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
   String description = '';
   // String ticketType = '';
   // String ticketPrice = '';
-  bool allowRefunds = true;
-  bool privateEvent = true;
+  // bool allowRefunds = true;
+  // bool privateEvent = true;
   String tags = '';
+  bool isDirectRefunds = true;
+  bool isPrivateEvent = true;
 
   List<bool> selectedEventTypes = <bool>[true, false];
 
@@ -246,7 +248,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               child: ToggleButton(
                 onSelectionChanged: (handleSelectionChanged) {
-                  privateEvent = handleSelectionChanged[0];
+                  isPrivateEvent = handleSelectionChanged[0];
                 },
               )),
 
@@ -366,8 +368,8 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             time: time,
                             venue: venue,
                             description: description,
-                            allowRefunds: allowRefunds,
-                            isPrivate: privateEvent,
+                            isDirectRefunds: isDirectRefunds,
+                            isPrivate: isPrivateEvent,
                             tags: [tags],
                             price: 0,
                           ),

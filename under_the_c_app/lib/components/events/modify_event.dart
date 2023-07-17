@@ -67,7 +67,7 @@ class MyCustomForm extends ConsumerWidget {
   late TimeOfDay? dayTime;
   late String venue;
   late String description;
-  late bool allowRefunds;
+  late bool isDirectRefunds;
   late bool privateEvent;
   late String tags;
   late List<bool> selectedEventTypes;
@@ -105,13 +105,11 @@ class MyCustomForm extends ConsumerWidget {
           dayTime = TimeOfDay.fromDateTime(DateTime.parse(event.time));
           venue = event.venue;
           description = event.description;
-          allowRefunds = event.allowRefunds!;
+          isDirectRefunds = event.isDirectRefunds!;
           privateEvent = event.isPrivate!;
           tags = "music";
           // List<String>? tags = event.tags;
 
-          String previousTime = event.time;
-          bool? previousAllowRefunds = event.allowRefunds;
           // bool? previousPrivateEvent = event.isPrivate;
           // List<bool> previousSelectedEventTypes = [
           //   previousPrivateEvent ?? true,
@@ -332,7 +330,7 @@ class MyCustomForm extends ConsumerWidget {
                                   time: time,
                                   venue: venue,
                                   description: description,
-                                  allowRefunds: allowRefunds,
+                                  isDirectRefunds: isDirectRefunds,
                                   isPrivate: privateEvent,
                                   // tags: [tags],
                                   price: 0,
