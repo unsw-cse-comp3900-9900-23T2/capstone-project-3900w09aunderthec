@@ -7,12 +7,6 @@ using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
-
-    public class GetTagsRequestBody {
-        public String title { get; set; }
-        public String description { get; set; }
-        public String venue { get; set; }
-    };
     public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
@@ -53,16 +47,16 @@ namespace EventManagementAPI.Controllers{
             _eventRepository = eventRepository;
         }
 
-        [HttpPost("GetTags")]
-        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody) {
+        [HttpGet("GetTags")]
+        public async Task<IActionResult> GetTags([FromQuery] string title, string description, string venue) {
 
             // Format string to make api call with
             // make api call
             // parse recommended tags from api response string
             // return recommended tags
 
-            string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
-                                      RequestBody.description + "\nVenue: " + RequestBody.venue;
+            string descriptorString = "Title: " + title + "\nDescription: " +
+                                      description + "\nVenue: " + venue;
 
             List<string> tagList = new List<string>();
 
