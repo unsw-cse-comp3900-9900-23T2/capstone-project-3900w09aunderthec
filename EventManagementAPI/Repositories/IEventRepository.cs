@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 
 namespace EventManagementAPI.Repositories
 {
@@ -10,7 +11,7 @@ namespace EventManagementAPI.Repositories
         Task<List<Event>> GetAllEvents(int? uid, string? sortby, string? tags);
         Task CreateAnEvent(Event e);
         Task<Event> GetEventById(int id);
-        Task ModifyEvent(Event e);
+        Task ModifyEvent(EventModificationDto mod);
         Task<Event?> CancelEvent(int eventId);
     }
 }
