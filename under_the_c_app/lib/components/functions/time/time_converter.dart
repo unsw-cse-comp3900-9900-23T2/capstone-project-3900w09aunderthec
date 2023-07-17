@@ -34,7 +34,7 @@ String getDay(String time) {
 // Lower level APIs
 DateTime convertToDateTime(String timestamp) {
   try {
-    DateTime dateTime = DateTime.parse("2021-12-23 11:47:00");
+    DateTime dateTime = DateTime.parse(timestamp);
     return dateTime;
   } catch (e) {
     // Handle the exception or provide a default value
