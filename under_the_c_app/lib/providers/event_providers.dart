@@ -70,9 +70,14 @@ class EventsProvider extends StateNotifier<List<Event>> {
     state = [...state, event];
   }
 
-  void changeEvent(Event event) {
-    modifyEvent(event);
-    state = [...state, event];
+  void changeEvent(Event event) async {
+    // modifyEvent(event);
+    // state = [...state, event];
+    await modifyEvent(event);
+    final index = state.indexWhere((e) => e.eventId == event.eventId);
+    if (index != -1) {
+      state = List.from(state)..[index] = event;
+    }
   }
 
   Future<void> fetchEvents() async {

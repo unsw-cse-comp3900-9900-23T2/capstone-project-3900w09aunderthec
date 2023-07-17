@@ -127,6 +127,7 @@ Future<void> modifyEvent(Event eventInfo) async {
       body: jsonEncode(
         {
           "uid": uid,
+          "eventId": eventInfo.eventId,
           "title": eventInfo.title,
           "time": eventInfo.time,
           "venue": eventInfo.venue,

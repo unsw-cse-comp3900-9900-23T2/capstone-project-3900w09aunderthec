@@ -55,7 +55,6 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
   String title = '';
   String time = '';
-  // DateTime? chosenDate = DateTime.now();
   DateTime? chosenDate;
   TimeOfDay? dayTime;
   String venue = '';
