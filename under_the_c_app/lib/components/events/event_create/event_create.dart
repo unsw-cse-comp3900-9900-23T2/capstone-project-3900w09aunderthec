@@ -385,6 +385,8 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                     ref
                         .read(eventsByUserProvider(uid).notifier)
                         .fetchEvents(uid);
+
+                    context.go(AppRoutes.events);
                   }
                 },
                 child: const Text('Submit'),

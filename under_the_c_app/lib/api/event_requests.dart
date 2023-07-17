@@ -61,7 +61,6 @@ Future<List<Event>> getUserEvents(String uid) async {
   }
 }
 
-
 Future<Event> getEventDetails(String id) async {
   final url =
       Uri.https(APIRoutes.BASE_URL, APIRoutes.getEventDetails, {"eventId": id});
@@ -94,7 +93,8 @@ Future<void> createEvent(Event eventInfo) async {
         {
           "uid": uid,
           "title": eventInfo.title,
-          "time": "2023-07-14T00:26:39.068Z",
+          "time": eventInfo.time,
+          // "time": "2023-07-14T00:26:39.068Z",
           "venue": eventInfo.venue,
           "description": eventInfo.description,
           "allowRefunds": eventInfo.allowRefunds,
