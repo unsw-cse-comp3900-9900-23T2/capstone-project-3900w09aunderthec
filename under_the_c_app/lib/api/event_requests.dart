@@ -115,3 +115,35 @@ Future<void> createEvent(Event eventInfo) async {
     throw Exception('event.dart.createEvent: Unknown error $e');
   }
 }
+
+Future<void> modifyEvent(Event eventInfo) async {
+  final uid = sessionVariables.uid;
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.modifyEvent);
+  try {
+    final response = await http.put(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "uid": uid,
+          "title": eventInfo.title,
+          "time": eventInfo.time,
+          "venue": eventInfo.venue,
+          "description": eventInfo.description,
+          "allowRefunds": eventInfo.allowRefunds,
+          "privateEvent": eventInfo.isPrivate,
+          "tags": "tags",
+        },
+      ),
+    );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.modifyEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.modifyEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.modifyEvent: Unknown error $e');
+  }
+}

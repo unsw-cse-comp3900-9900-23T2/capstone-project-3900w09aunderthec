@@ -22,6 +22,11 @@ class EventsProvider extends StateNotifier<List<Event>> {
     state = [...state, event];
   }
 
+  void changeEvent(Event event) {
+    modifyEvent(event);
+    state = [...state, event];
+  }
+
   Future<void> fetchEvents() async {
     state = await getAllEvents();
     setEvents(state);
@@ -70,9 +75,9 @@ class EventsByUserProvider extends StateNotifier<List<Event>> {
   }
 }
 
-final eventsByUserProvider = StateNotifierProvider.family<EventsByUserProvider, List<Event>, String>(
+final eventsByUserProvider =
+    StateNotifierProvider.family<EventsByUserProvider, List<Event>, String>(
   (ref, uid) {
     return EventsByUserProvider(uid);
   },
 );
-

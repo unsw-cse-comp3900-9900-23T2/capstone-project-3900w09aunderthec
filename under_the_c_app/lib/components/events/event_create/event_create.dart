@@ -55,8 +55,9 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
   String title = '';
   String time = '';
-  DateTime? chosenDate = DateTime.now();
-  TimeOfDay? dayTime = TimeOfDay.now();
+  // DateTime? chosenDate = DateTime.now();
+  DateTime? chosenDate;
+  TimeOfDay? dayTime;
   String venue = '';
   String description = '';
   // String ticketType = '';
@@ -347,7 +348,10 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate() && tags != '') {
+                  if (_formKey.currentState!.validate() &&
+                      tags != '' &&
+                      chosenDate != null &&
+                      dayTime != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );

@@ -8,15 +8,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import '../../config/routes/routes.dart';
 import '../../providers/event_providers.dart';
+import '../../types/events/event_type.dart';
 import 'event_create/dropdown_list.dart';
 import 'event_create/tags.dart';
-// import 'switch_button.dart';
-// import 'dropdown_list.dart';
-// import 'package:date_time_picker/date_time_picker.dart';
-// import 'toggle_button.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 
 // TODO:
 // First, pull all previous variables
@@ -64,16 +61,16 @@ class MyCustomForm extends ConsumerWidget {
 
   final _formKey = GlobalKey<FormState>();
   final String eventId;
-  String title = '';
-  String time = '';
-  DateTime? chosenDate = DateTime.now();
-  TimeOfDay? dayTime = TimeOfDay.now();
-  String venue = '';
-  String description = '';
-  bool allowRefunds = true;
-  bool privateEvent = true;
-  String tags = 'Other';
-  List<bool> selectedEventTypes = <bool>[true, false];
+  late String title;
+  late String time;
+  late DateTime? chosenDate;
+  late TimeOfDay? dayTime;
+  late String venue;
+  late String description;
+  late bool allowRefunds;
+  late bool privateEvent;
+  late String tags;
+  late List<bool> selectedEventTypes;
 
   String formatTime(int time) {
     return time.toString().padLeft(2, '0');
@@ -91,26 +88,35 @@ class MyCustomForm extends ConsumerWidget {
     chosenDate = date;
   }
 
+  Future<List<String>> _fetchDroppedItems() async {
+    List<String> droppedItems = await getTags();
+    return droppedItems;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(eventProvider(eventId));
 
     return event.when(
         data: (event) {
-          String previousTitle = event.title;
+          title = event.title;
+          time = event.time;
+          chosenDate = DateTime.parse(event.time);
+          dayTime = TimeOfDay.fromDateTime(DateTime.parse(event.time));
+          venue = event.venue;
+          description = event.description;
+          allowRefunds = event.allowRefunds!;
+          privateEvent = event.isPrivate!;
+          tags = "music";
+          // List<String>? tags = event.tags;
+
           String previousTime = event.time;
-          DateTime previousChosenDate = DateTime.parse(event.time);
-          TimeOfDay previousDayTime =
-              TimeOfDay.fromDateTime(DateTime.parse(event.time));
-          String previousVenue = event.venue;
-          String previousDescription = event.description;
           bool? previousAllowRefunds = event.allowRefunds;
-          bool? previousPrivateEvent = event.isPrivate;
-          List<bool> previousSelectedEventTypes = [
-            previousPrivateEvent ?? true,
-            !(previousPrivateEvent ?? false),
-          ];
-          List<String>? tags = event.tags;
+          // bool? previousPrivateEvent = event.isPrivate;
+          // List<bool> previousSelectedEventTypes = [
+          //   previousPrivateEvent ?? true,
+          //   !(previousPrivateEvent ?? false),
+          // ];
 
           return Form(
             key: _formKey,
@@ -143,7 +149,7 @@ class MyCustomForm extends ConsumerWidget {
                                   width: 5,
                                 )),
                                 hintText: "Enter the name of the event"),
-                            initialValue: event.tags.toString(),
+                            initialValue: event.title,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please fill out the required field';
@@ -174,7 +180,7 @@ class MyCustomForm extends ConsumerWidget {
                                 )),
                                 hintText:
                                     "Enter the place where the event is held"),
-                            initialValue: previousVenue,
+                            initialValue: event.venue,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please fill out the required field';
@@ -205,7 +211,7 @@ class MyCustomForm extends ConsumerWidget {
                                 )),
                                 hintText: "Write a short summary of the event"),
                             maxLines: 4,
-                            initialValue: previousDescription,
+                            initialValue: event.description,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please fill out the required field';
@@ -231,7 +237,7 @@ class MyCustomForm extends ConsumerWidget {
                   child: DatePicker(
                     restorationId: 'main',
                     saveDate: saveSelectedDate,
-                    initialDate: previousChosenDate,
+                    initialDate: DateTime.parse(event.time),
                   ),
                 ),
                 const Padding(
@@ -248,7 +254,8 @@ class MyCustomForm extends ConsumerWidget {
                     themeMode: ThemeMode.dark,
                     useMaterial3: true,
                     getTime: saveSelectedTime,
-                    initialTime: previousDayTime,
+                    initialTime:
+                        TimeOfDay.fromDateTime(DateTime.parse(event.time)),
                   ),
                 ),
                 // Privacy Button
@@ -266,7 +273,11 @@ class MyCustomForm extends ConsumerWidget {
                       onSelectionChanged: (handleSelectionChanged) {
                         privateEvent = handleSelectionChanged[0];
                       },
-                      selectedEventTypes: previousSelectedEventTypes,
+                      // selectedEventTypes: previousSelectedEventTypes,
+                      selectedEventTypes: [
+                        event.isPrivate ?? true,
+                        !(event.isPrivate ?? false),
+                      ],
                     )),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -275,18 +286,71 @@ class MyCustomForm extends ConsumerWidget {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                //   child: DropdownList(
-                //     droppedItem: droppedItems,
-                //     // initial: tags![0],
-                //     initial: 'Other',
-                //     onValueChanged: (String value) {
-                //       tags = [value];
-                //     },
-                //   ),
-                // ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: FutureBuilder<List<String>>(
+                    future: _fetchDroppedItems(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return DropdownList(
+                          droppedItem: snapshot.data!,
+                          onValueChanged: (String value) {
+                            tags = value;
+                            // tags = [value];
+                          },
+                          initial: tags,
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
+                // Submit Button
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Processing Data')),
+                          );
+
+                          _formKey.currentState!.save();
+
+                          time =
+                              "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
+                          ref.read(eventsProvider.notifier).changeEvent(
+                                Event(
+                                  hostuid: sessionVariables.uid.toString(),
+                                  title: title,
+                                  time: time,
+                                  venue: venue,
+                                  description: description,
+                                  allowRefunds: allowRefunds,
+                                  isPrivate: privateEvent,
+                                  // tags: [tags],
+                                  price: 0,
+                                ),
+                              );
+                          final uid = sessionVariables.uid.toString();
+                          ref.read(eventsProvider.notifier).fetchEvents;
+                          ref
+                              .read(eventsByUserProvider(uid).notifier)
+                              .fetchEvents(uid);
+
+                          context.go(AppRoutes.eventDetails(eventId),
+                              extra: 'Details');
+                        }
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
