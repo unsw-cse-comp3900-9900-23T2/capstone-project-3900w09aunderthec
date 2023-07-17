@@ -1,6 +1,7 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
+using EventManagementAPI.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.Json;
@@ -115,15 +116,36 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<Event>> GetAllEvents(int? hostId, string? sortby, string? tags)
+        public async Task<List<Event>> GetAllEvents(int? uid, string? sortby, string? tags)
         {
             IQueryable<Event> query;
-            if (hostId is not null)
+
+            query = _dbContext.events;
+            if (uid is not null)
             {
-                query = _dbContext.events.Where(e => e.hosterFK == hostId);
-            } else
-            {
-                query = _dbContext.events;
+                if (await _dbContext.hosts.AnyAsync(h => h.uid == uid))
+                {
+                    query = _dbContext.events.Where(e => e.hosterFK == uid);
+                } else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
+                {
+                    if (sortby == "recommended") {
+                        // Sprint 3 - Change this to sort query by most recommended events
+                        query = _dbContext.events;
+                    } else {
+                        query = _dbContext.bookings
+                            .Join(_dbContext.tickets,
+                                b => b.ticketId,
+                                t => t.ticketId,
+                                (b,t) => new
+                                {
+                                    b.customerId,
+                                    t.toEvent
+                                })
+                            .Where(c => c.customerId == uid)
+                            .Select(c => c.toEvent);
+                    }
+                } else
+                {throw new BadHttpRequestException("That user does not exist");}
             }
 
             switch (sortby)
@@ -166,27 +188,23 @@ namespace EventManagementAPI.Repositories
             return e;
         }
 
-        public async Task<List<Event>> ListMyEvents(int userId)
+        public async Task ModifyEvent(EventModificationDto mod)
         {
 
-            var e = await _dbContext.bookings
-                .Join(_dbContext.tickets,
-                    b => b.ticketId,
-                    t => t.ticketId,
-                    (b,t) => new
-                    {
-                        b.customerId,
-                        t.toEvent
-                    })
-                .Where(c => c.customerId == userId)
-                .Select(c => c.toEvent)
-                .ToListAsync();
+            if(!_dbContext.events.Any(e => e.eventId == mod.eventId))
+            {
+                throw new BadHttpRequestException("That event does not exist");
+            }
 
-            return e;
-        }
+            Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
 
-        public async Task ModifyEvent(Event e)
-        {
+            if(mod.title is not null){e.title = mod.title;}
+            if(mod.venue is not null){e.venue = mod.venue;}
+            if(mod.description is not null){e.description = mod.description;}
+            if(mod.allowRefunds is not null){e.allowRefunds = mod.allowRefunds ?? default(bool);}
+            if(mod.privateEvent is not null){e.privateEvent = mod.privateEvent ?? default(bool);}
+            if(mod.tags is not null){e.tags = mod.tags;}
+
             _dbContext.events.Update(e);
             await _dbContext.SaveChangesAsync();
         }

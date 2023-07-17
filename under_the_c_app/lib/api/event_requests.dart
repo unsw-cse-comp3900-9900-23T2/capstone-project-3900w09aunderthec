@@ -36,7 +36,7 @@ Future<List<Event>> getAllEvents() async {
 
 Future<List<Event>> getUserEvents(String uid) async {
   final registerUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'hostId': uid});
+      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'uid': uid});
   try {
     final response = await http.get(
       registerUrl,
@@ -99,6 +99,7 @@ Future<void> createEvent(Event eventInfo) async {
           "description": eventInfo.description,
           "allowRefunds": eventInfo.allowRefunds,
           "privateEvent": eventInfo.isPrivate,
+          "createdTime": eventInfo.time,
           // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
           "tags": "tags"
         },
