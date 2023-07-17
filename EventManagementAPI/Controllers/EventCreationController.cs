@@ -3,43 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventManagementAPI.Controllers
-{
-
-    public class GetTagsRequestBody
-    {
-        public String title { get; set; }
-        public String description { get; set; }
-        public String venue { get; set; }
-    };
-    public class CreateEventRequestBody
-    {
+namespace EventManagementAPI.Controllers{
+    public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
         public string venue { get; set; }
+        public DateTime eventTime { get; set; }
         public string description { get; set; }
-        public bool allowRefunds { get; set; }
-        public bool privateEvent { get; set; }
+        public bool isDirectRefunds { get; set; }
+        public bool isPrivateEvent { get; set; }
         public String tags { get; set; }
 
         public DateTime createdTime { get; set; }
-        // public List<Ticket> tickets;
     };
-    public class ModifyEventRequestBody
-    {
-        public int eventId { get; set; } // Id of event being modified
-        // public int hostUid { get; set; } // Uid of host to whom the event belongs. Cannot be modified.
-        public String title { get; set; }
-        public DateTime time { get; set; }
-        public String venue { get; set; }
-        public String description { get; set; }
-        public Boolean allowRefunds { get; set; }
-        public Boolean privateEvent { get; set; }
-        // public List<String> tags;
-        // public List<Ticket> tickets { get; set; }
+    public class ModifyEventRequestBody {
+        public int eventId { get; set; }
+        public string? title { get; set; }
+        public DateTime? eventTime { get; set; }
+        public DateTime? createdTime { get; set; }
+        public string? venue { get; set; }
+        public string? description { get; set; }
+        public bool? isDirectRefunds { get; set; }
+        public bool? isPrivateEvent { get; set; }
+        public String? tags { get; set; }
     };
 
     public class CancelEventRequestBody
@@ -59,17 +49,16 @@ namespace EventManagementAPI.Controllers
             _eventRepository = eventRepository;
         }
 
-        [HttpPost("GetTags")]
-        public async Task<IActionResult> GetTags([FromBody] GetTagsRequestBody RequestBody)
-        {
+        [HttpGet("GetTags")]
+        public async Task<IActionResult> GetTags([FromQuery] string title, string description, string venue) {
 
             // Format string to make api call with
             // make api call
             // parse recommended tags from api response string
             // return recommended tags
 
-            string descriptorString = "Title: " + RequestBody.title + "\nDescription: " +
-                                      RequestBody.description + "\nVenue: " + RequestBody.venue;
+            string descriptorString = "Title: " + title + "\nDescription: " +
+                                      description + "\nVenue: " + venue;
 
             List<string> tagList = new List<string>();
 
@@ -96,11 +85,11 @@ namespace EventManagementAPI.Controllers
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
-                createdTime = RequestBody.createdTime,
+                eventTime = RequestBody.eventTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
-                allowRefunds = RequestBody.allowRefunds,
-                privateEvent = RequestBody.privateEvent,
+                isDirectRefunds = RequestBody.isDirectRefunds,
+                isPrivateEvent = RequestBody.isPrivateEvent,
                 rating = null,
                 tags = RequestBody.tags
             };
@@ -114,26 +103,32 @@ namespace EventManagementAPI.Controllers
                 return BadRequest(e.Message);
             }
 
-            return Ok();
+            return Ok(newEvent);
         }
 
         [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody)
         {
 
-            Event newEvent = new Event
+            var e = await _eventRepository.GetEventById(RequestBody.eventId);
+            if (e == null)
+            {
+                return NotFound("EventId does not refer to a valid event");
+            }
+
+            EventModificationDto mod = new EventModificationDto
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
-                createdTime = RequestBody.time,
+                eventTime = RequestBody.eventTime,
+                createdTime = RequestBody.createdTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
-                allowRefunds = RequestBody.allowRefunds,
-                privateEvent = RequestBody.privateEvent,
-                rating = null,
-                // comments = new List<Comment>(),
-                // tags = RequestBody.tags
+                isDirectRefunds = RequestBody.isDirectRefunds,
+                isPrivateEvent = RequestBody.isPrivateEvent,
+                tags = RequestBody.tags
             };
+
 
             // get event with eventId from DB
             // compare differences and message ticket holders if necessary
@@ -141,8 +136,8 @@ namespace EventManagementAPI.Controllers
             // get host with hostUid
             // replace old event with newEvent
 
-            await _eventRepository.ModifyEvent(newEvent);
-            return Ok();
+            await _eventRepository.ModifyEvent(mod);
+            return Ok(mod);
         }
 
         [HttpDelete("CancelEvent")]
@@ -155,7 +150,7 @@ namespace EventManagementAPI.Controllers
                 return NotFound();
             }
 
-            return Ok();
+            return Ok(e);
         }
     }
 }
