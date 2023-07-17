@@ -20,6 +20,7 @@ class BookTicket extends ConsumerWidget {
   final String eventId;
   final String eventTitle;
   final String eventVenue;
+
   const BookTicket(
       {super.key,
       required this.eventId,
@@ -29,6 +30,8 @@ class BookTicket extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tickets = ref.watch(ticketsProvider(eventId));
+
+    final selectedTicketsProvider = StateProvider<Map<int, int>>((ref) => {});
 
     return Scaffold(
       appBar: AppBar(
@@ -87,7 +90,10 @@ class BookTicket extends ConsumerWidget {
                   itemCount: tickets.length,
                   itemBuilder: (context, index) {
                     final ticket = tickets[index];
-                    return DisplayedTicket(item: ticket);
+                    return DisplayedTicket(
+                      item: ticket,
+                      selectedTicketsProvider: selectedTicketsProvider,
+                    );
                   },
                 ),
               ),
@@ -138,13 +144,29 @@ Container _buildDivider() {
   );
 }
 
-class DisplayedTicket extends StatelessWidget {
+class DisplayedTicket extends ConsumerWidget {
   final Tickets item;
-  int qty = 0;
+  final StateProvider<Map<int, int>> selectedTicketsProvider;
 
-  DisplayedTicket({Key? key, required this.item}) : super(key: key);
+  DisplayedTicket({
+    Key? key,
+    required this.item,
+    required this.selectedTicketsProvider,
+  }) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedTickets = ref.watch(selectedTicketsProvider);
+    final quantity = selectedTickets[item.ticketId] ?? 0;
+    print(selectedTickets);
+
+    void updateQuantity(int value) {
+      ref.read(selectedTicketsProvider.notifier).state = {
+        ...ref.read(selectedTicketsProvider.notifier).state,
+        item.ticketId: value,
+      };
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
       child: Row(
@@ -171,7 +193,6 @@ class DisplayedTicket extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Text("Sales end on July 17, 2023"),
               ],
             ),
           ),
@@ -196,13 +217,13 @@ class DisplayedTicket extends StatelessWidget {
                       padding: const EdgeInsets.all(2.0),
                       icon: const Icon(Icons.remove),
                       onPressed: () {
-                        if (qty > 0) {
-                          qty--;
+                        if (quantity > 0) {
+                          updateQuantity(quantity - 1);
                         }
                       },
                     ),
                     Text(
-                      "${qty}",
+                      "$quantity",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 20.0,
@@ -214,7 +235,7 @@ class DisplayedTicket extends StatelessWidget {
                       padding: const EdgeInsets.all(2.0),
                       icon: const Icon(Icons.add),
                       onPressed: () {
-                        qty++;
+                        updateQuantity(quantity + 1);
                       },
                     ),
                   ]),
