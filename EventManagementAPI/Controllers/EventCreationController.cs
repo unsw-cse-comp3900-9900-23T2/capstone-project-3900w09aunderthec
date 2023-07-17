@@ -143,7 +143,7 @@ namespace EventManagementAPI.Controllers{
         {
             var e = await _eventRepository.CancelEvent(requestBody.eventId);
 
-            if (e != null)
+            if (e == null)
             {
                 return NotFound();
             }

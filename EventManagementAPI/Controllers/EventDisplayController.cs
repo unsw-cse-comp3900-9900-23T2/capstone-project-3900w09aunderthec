@@ -48,7 +48,6 @@ namespace EventManagementAPI.Controllers{
             var e = await _eventDisplayRepository.ListMyEvents(uid);
             return Ok(e);
         }
-
     }
 }
 

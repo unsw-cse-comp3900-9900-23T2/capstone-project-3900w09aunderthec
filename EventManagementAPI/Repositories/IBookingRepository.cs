@@ -9,12 +9,10 @@ namespace EventManagementAPI.Repositories
     {
         public Task<int?> GetNumberOfTicketsInStock(int ticketId);
         public Task<double?> GetCreditMoney(int customerId, int hosterId);
-        public Task<Booking?> MakeBooking(int customerId, int ticketId, int numberOfTickets, int paymentMethod);
+        public Task<Booking?> MakeBooking(int customerId, Dictionary<string, int> bookingTickets, int paymentMethod);
         public Task<List<BookingResultDto>> GetBookings(int customerId);
         public Task<Booking?> GetBookingById(int bookingId);
         public Task<Booking?> RemoveBooking(int bookingId);
         public Task<TimeSpan?> GetTimeDifference(Booking booking);
-        public Task<bool?> IsDirectRefunds(int bookingId);
-        public Task<Booking?> NoDirectCancelBooking(int bookingId);
     }
 }

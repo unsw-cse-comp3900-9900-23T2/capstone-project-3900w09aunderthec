@@ -14,8 +14,6 @@ namespace EventManagementAPI.Controllers
     {
         // public string email { get; set; }
         public int customerId { get; set; }
-        public int ticketId { get; set; }
-        public int numberOfTickets { get; set; }
         public Dictionary<string, int> bookingTickets { get; set; }
         public int paymentMethod { get; set; }
     };
@@ -63,19 +61,15 @@ namespace EventManagementAPI.Controllers
         {
 
             var customerId = RequestBody.customerId;
-            var ticketId = RequestBody.ticketId;
-            var numberOfTickets = RequestBody.numberOfTickets;
+            var bookingTickets = RequestBody.bookingTickets;
             var paymentMethod = RequestBody.paymentMethod;
 
-            var booking = await _bookingRepository.MakeBooking(customerId, ticketId, numberOfTickets, paymentMethod);
+            var booking = await _bookingRepository.MakeBooking(customerId, bookingTickets, paymentMethod);
 
             if (booking == null)
             {
                 return NotFound();
             }
-
-            var totalPriceInt = Convert.ToInt32(booking.toTicket.price * numberOfTickets);
-            booking.toCustomer.loyaltyPoints += totalPriceInt * 10;
 
             var fromAddress = "underthecsharp@outlook.com";
             var toAddress = booking.toCustomer.email;
@@ -131,33 +125,14 @@ namespace EventManagementAPI.Controllers
                 return BadRequest("Cancellation requests must be made at least 7 days prior to the event.");
             }
 
-            var isDirectRefund = await _bookingRepository.IsDirectRefunds(RequestBody.bookingId);
+            var cancelBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
 
-            if (!isDirectRefund.HasValue)
+            if (cancelBooking == null)
             {
-                return NotFound("There is no refund policy of the event");
+                return NotFound("Booking to be cancelled failed");
             }
 
-            if (isDirectRefund == false)
-            {
-                var noDirectCancelBooking = await _bookingRepository.NoDirectCancelBooking(RequestBody.bookingId);
-
-                if (noDirectCancelBooking == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(noDirectCancelBooking);
-            }
-
-            var canceledBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
-
-            if (canceledBooking == null)
-            {
-                return NotFound("Booking to be cancelled not found");
-            }
-
-            return Ok(canceledBooking);
+            return Ok(cancelBooking);
         }
     }
 }
