@@ -61,7 +61,6 @@ Future<List<Event>> getUserEvents(String uid) async {
   }
 }
 
-
 Future<Event> getEventDetails(String id) async {
   final url =
       Uri.https(APIRoutes.BASE_URL, APIRoutes.getEventDetails, {"eventId": id});
@@ -105,6 +104,29 @@ Future<void> createEvent(Event eventInfo) async {
         },
       ),
     );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.createEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.createEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.createEvent: Unknown error $e');
+  }
+}
+
+Future<void> cancelEvent(int eventId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.cancelEvent);
+  try {
+    final response = await http.delete(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode({
+        "eventId": eventId,
+      }),
+    );
+
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw Exception(response.body);
     }
