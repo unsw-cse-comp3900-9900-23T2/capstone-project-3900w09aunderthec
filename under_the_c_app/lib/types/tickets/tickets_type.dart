@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Tickets {
   final int ticketId;
   final int eventIdRef;
