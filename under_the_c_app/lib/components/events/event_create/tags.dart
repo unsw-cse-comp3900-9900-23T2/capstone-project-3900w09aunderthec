@@ -4,16 +4,14 @@ import 'dart:io';
 import '../../../api/api_routes.dart';
 import 'package:http/http.dart' as http;
 
-Future<List<String>> getTags() async {
+Future<List<String>> getTags(
+    String title, String description, String venue) async {
   final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTags,
-      {"title": "string", "description": "string", "venue": "string"});
+      {"title": title, "description": description, "venue": venue});
   try {
     final response = await http.get(
       registerUrl,
       headers: APIRoutes.headers,
-      // body: jsonEncode(
-      //   {"title": "string", "description": "string", "venue": "string"},
-      // ),
     );
 
     if (response.statusCode == 200) {
