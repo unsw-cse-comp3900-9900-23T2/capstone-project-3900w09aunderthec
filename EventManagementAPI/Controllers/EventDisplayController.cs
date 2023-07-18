@@ -34,14 +34,6 @@ namespace EventManagementAPI.Controllers{
             return Ok(e);
         }
 
-        [HttpGet("ListSimilarEvents")]
-        public async Task<IActionResult> ListSimilarEvents([FromQuery] int uid, int eventId) {
-
-            // Not being implemented in sprint 1
-
-            throw new NotImplementedException();
-        }
-
     }
 }
 

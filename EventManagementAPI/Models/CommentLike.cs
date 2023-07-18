@@ -10,8 +10,6 @@ namespace EventManagementAPI.Models
         [Key]
         public int Id { get; set; }
         public int customerId { get; set; }
-        public Customer customer { get; set; }
         public int commentId { get; set; }
-        public Comment comment { get; set; }
     }
 }

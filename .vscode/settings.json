@@ -1,3 +1,4 @@
 {
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "cmake.sourceDirectory": "C:/Users/Redmond/Projects/3900/capstone-project-3900w09aunderthec/under_the_c_app/linux"
 }
