@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CommentCart extends ConsumerStatefulWidget {
-  const CommentCart({super.key});
+class CommendCard extends ConsumerStatefulWidget {
+  const CommendCard({super.key});
 
   @override
-  CommentCartState createState() => CommentCartState();
+  CommentCardState createState() => CommentCardState();
 }
 
-class CommentCartState extends ConsumerState<CommentCart> {
+class CommentCardState extends ConsumerState<CommendCard> {
   bool thumbLikeSelected = false;
   bool thumbDislikeSelected = false;
   bool commentSelected = false;

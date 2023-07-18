@@ -27,6 +27,7 @@ class EventDetailsPage extends ConsumerWidget {
         data: (event) {
           return Scaffold(
             extendBodyBehindAppBar: true,
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: null,
               backgroundColor: Colors.transparent,

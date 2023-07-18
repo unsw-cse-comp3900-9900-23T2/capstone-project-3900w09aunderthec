@@ -59,6 +59,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const MaterialPage(child: ResetPasswordPage());
         },
       ),
+      GoRoute(
+        path: AppRoutes.eventDetails(':id'),
+        pageBuilder: (context, state) {
+          final eventId = state.pathParameters['id'].toString();
+          return MaterialPage(child: EventDetailsPage(eventId: eventId));
+        },
+      ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
@@ -108,13 +115,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                 child: EventPage(isHost: sessionVariables.sessionIsHost),
               );
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.eventDetails(':id'),
-            pageBuilder: (context, state) {
-              final eventId = state.pathParameters['id'].toString();
-              return MaterialPage(child: EventDetailsPage(eventId: eventId));
             },
           ),
           GoRoute(

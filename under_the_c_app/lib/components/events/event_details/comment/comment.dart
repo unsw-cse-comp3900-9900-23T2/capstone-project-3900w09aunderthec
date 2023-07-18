@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment_card.dart';
 
-class Comment extends StatelessWidget {
+class Comment extends StatefulWidget {
   const Comment({Key? key}) : super(key: key);
+
+  @override
+  _CommentState createState() => _CommentState();
+}
+
+class _CommentState extends State<Comment> {
+  FocusNode _commentFocusNode = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    _commentFocusNode.addListener(_handleFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _commentFocusNode.removeListener(_handleFocusChange);
+    _commentFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _handleFocusChange() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,17 +83,23 @@ class Comment extends StatelessWidget {
               ],
             ),
             // my comment section
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              focusNode: _commentFocusNode,
+              decoration: const InputDecoration(
                 hintText: 'What do you want to talk about?',
                 border: InputBorder.none,
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 15, horizontal: 3),
               ),
             ),
+            if (_commentFocusNode.hasFocus)
+              ElevatedButton(
+                onPressed: () => (),
+                child: const Text("Submit"),
+              )
           ],
         ),
-        CommentCart()
+        const CommendCard()
       ],
     );
   }
