@@ -20,7 +20,7 @@ namespace EventManagementAPI.Repositories
             var ticket = await _dbContext.tickets.FindAsync(ticketId);
             if (ticket == null)
             {
-                return null;
+                throw new BadHttpRequestException("Ticket type does not exist");
             }
 
             return ticket.stock;
@@ -32,7 +32,7 @@ namespace EventManagementAPI.Repositories
 
             if (creditMoney == null)
             {
-                return null;
+                throw new BadHttpRequestException("Customer has no credits with this Host");
             }
 
             return creditMoney.creditAmount;
