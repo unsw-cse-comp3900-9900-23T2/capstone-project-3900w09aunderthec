@@ -1,6 +1,3 @@
-import 'dart:collection';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
@@ -16,6 +13,7 @@ class EventsFilter extends ConsumerStatefulWidget {
 class EventsFilterState extends ConsumerState<EventsFilter> {
   bool sortTagSelected = false;
   late List<FilterItem> filterList;
+  int? selectedSortTagIndex;
 
   @override
   void initState() {
@@ -24,8 +22,9 @@ class EventsFilterState extends ConsumerState<EventsFilter> {
   }
 
   @override
-  void toggleSortTag() {
+  void toggleSortTag(int index) {
     setState(() {
+      selectedSortTagIndex = selectedSortTagIndex == index ? null : index;
       sortTagSelected = !sortTagSelected;
 
       // for recency, popularity and price only
@@ -136,10 +135,19 @@ class EventsFilterState extends ConsumerState<EventsFilter> {
                   // else, unsort
                   ref.read(eventsProvider.notifier).reset();
                 }
-                toggleSortTag();
+                toggleSortTag(index);
               } else {}
             },
             style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  if (selectedSortTagIndex == index) {
+                    return Color.fromARGB(255, 2, 171, 44);
+                  } else {
+                    return Colors.purple;
+                  }
+                },
+              ),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
