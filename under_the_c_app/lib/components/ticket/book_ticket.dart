@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/api/send_email.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/ticket_providers.dart';
 import '../../api/ticket_requests.dart';
@@ -41,6 +40,11 @@ class BookTicket extends ConsumerWidget {
     void cleanMap() {
       var selectedTickets = ref.watch(selectedTicketsProvider);
       selectedTickets.removeWhere((key, value) => value == 0);
+    }
+
+    void resetTicketState() {
+      ref.read(selectedTicketsProvider.notifier).state = {};
+      ref.read(totalPriceProvider.notifier).state = 0;
     }
 
     return Scaffold(
@@ -130,9 +134,9 @@ class BookTicket extends ConsumerWidget {
                   onPressed: () {
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
-                      sendEmail();
-                      context.go(AppRoutes.ticketConfirmation);
-                      purchaseTickets();
+                      context.go(AppRoutes.ticketConfirmation(eventTitle));
+                      purchaseTickets(selectedTickets);
+                      resetTicketState();
                     }
                   },
                   child: const Text("Purchase"),

@@ -82,7 +82,7 @@ Future<Event> getEventDetails(String id) async {
   }
 }
 
-Future<void> createEvent(Event eventInfo) async {
+Future<Event> createEvent(Event eventInfo) async {
   final uid = sessionVariables.uid;
   final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.createEvent);
   try {
@@ -103,7 +103,10 @@ Future<void> createEvent(Event eventInfo) async {
         },
       ),
     );
-    if (response.statusCode < 200 || response.statusCode >= 300) {
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return BackendDataSingleEventToEvent(data);
+    } else {
       throw Exception(response.body);
     }
   } on SocketException catch (e) {

@@ -12,5 +12,6 @@ namespace EventManagementAPI.Repositories
         public Task<Ticket> GetTicketById(int ticketId);
         public Task ModifyTicket(TicketModificationDTO mod);
         public Task DeleteTicket(Ticket t);
+        public Task<Dictionary<string,int>> GetMyTickets(int eventId, int customerId);
     }
 }

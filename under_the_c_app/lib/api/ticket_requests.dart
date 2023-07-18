@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:under_the_c_app/config/session_variables.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/types/tickets/tickets_type.dart';
-import '../components/ticket/book_ticket.dart';
 
 Future<List<Tickets>> getTickets(String eventId) async {
   final requestUrl =
@@ -27,18 +25,22 @@ Future<List<Tickets>> getTickets(String eventId) async {
   }
 }
 
-Future<void> createTickets(Tickets newTicket, int stock) async {
+Future<void> createTickets(
+    Map<String, dynamic> ticketData, String eventId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.createTickets);
+
+  Map<String, dynamic> jsonBody = {
+    'price': int.parse(ticketData['price']),
+    'name': ticketData['name'],
+    'eventId': int.parse(eventId),
+    'stock': int.parse(ticketData['amount']),
+  };
+
   try {
     final response = await http.post(
       requestUrl,
       headers: APIRoutes.headers,
-      body: jsonEncode({
-        "price": newTicket.price.toInt(),
-        "name": newTicket.name,
-        "eventId": newTicket.eventIdRef,
-        "stock": stock
-      }),
+      body: jsonEncode(jsonBody),
     );
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -68,23 +70,23 @@ Future<void> deleteTickets(int ticketId) async {
   }
 }
 
-void purchaseTickets() async {
+void purchaseTickets(Map<int, int> selectedTickets) async {
   final bookTicketUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.bookTickets);
-  final container = ProviderContainer();
-  var selectedTickets = container.read(selectedTicketsProvider);
 
   Map<String, dynamic> jsonBody = {
-    'uid': sessionVariables.uid,
-    'tickets': selectedTickets
+    'customerId': sessionVariables.uid,
+    'bookingTickets': selectedTickets.map(
+      (key, value) => MapEntry(key.toString(), value),
+    ),
+    'paymentMethod': 0
   };
 
   try {
     final response = await http.post(
       bookTicketUrl,
       headers: {
-        "Access-Control-Allow-Origin": "*",
         'Content-Type': 'application/json',
-        'Accept': '*/*'
+        'Accept': '*/*',
       },
       body: jsonEncode(jsonBody),
     );
