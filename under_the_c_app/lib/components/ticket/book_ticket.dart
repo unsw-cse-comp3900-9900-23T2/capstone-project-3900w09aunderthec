@@ -42,6 +42,11 @@ class BookTicket extends ConsumerWidget {
       selectedTickets.removeWhere((key, value) => value == 0);
     }
 
+    void resetTicketState() {
+      ref.read(selectedTicketsProvider.notifier).state = {};
+      ref.read(totalPriceProvider.notifier).state = 0;
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -131,6 +136,7 @@ class BookTicket extends ConsumerWidget {
                     if (selectedTickets.isNotEmpty) {
                       context.go(AppRoutes.ticketConfirmation(eventTitle));
                       purchaseTickets(selectedTickets);
+                      resetTicketState();
                     }
                   },
                   child: const Text("Purchase"),
