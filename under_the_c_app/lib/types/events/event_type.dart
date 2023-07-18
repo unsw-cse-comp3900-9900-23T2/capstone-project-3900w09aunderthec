@@ -76,9 +76,9 @@ class BackendEventData {
   factory BackendEventData.fromJson(Map<String, dynamic> json) {
     return BackendEventData(
       eventId: json['eventId'],
-      hosterFK: json['hosterFK'],
+      hosterFK: json['hosterId'],
       title: json['title'],
-      time: DateTime.parse(json['createdTime']),
+      time: DateTime.parse(json['eventTime']),
       venue: json['venue'],
       description: json['description'],
       isDirectRefunds: json['isDirectRefunds'],

@@ -11,7 +11,6 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final allEvents = ref.watch(eventsProvider);
     final events = ref.watch(sortedEventsProvider);
 
     return Container(
