@@ -19,8 +19,9 @@ class APIRoutes {
   static const String getCustomerEvents = '/EventDisplay/ListMyEvents';
 
   static const String createEvent = '/EventCreation/CreateEvent';
-  static const String cancelEvent = '/EventCreation/CancelEvent';
+  static const String getTags = '/EventCreation/GetTags';
   static const String modifyEvent = '/EventCreation/ModifyEvent';
+  static const String cancelEvent = '/EventCreation/CancelEvent';
 
   // ============================TICKET ROUTES==================================
   static const String getTicket = '/Ticket/ShowTicketDetails';

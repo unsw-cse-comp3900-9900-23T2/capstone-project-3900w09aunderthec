@@ -40,40 +40,6 @@ class EventCreate extends StatelessWidget {
   }
 }
 
-// Create a question and input box
-class FormFields extends StatelessWidget {
-  const FormFields({Key? key, required this.fieldName, required this.hint})
-      : super(key: key);
-  final String fieldName;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          DefaultTextStyle(
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            child: Text(fieldName),
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                  width: 5,
-                )),
-                hintText: hint),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please fill out the required field';
-              }
-              return null;
-            },
-          ),
-        ]));
-  }
-}
-
 class MyCustomForm extends ConsumerStatefulWidget {
   const MyCustomForm({Key? key}) : super(key: key);
 
@@ -88,15 +54,13 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   String title = '';
   String time = '';
-  DateTime? chosenDate = DateTime.now();
-  TimeOfDay? dayTime = TimeOfDay.now();
+  DateTime? chosenDate;
+  TimeOfDay? dayTime;
   String venue = '';
   String description = '';
-  // String ticketType = '';
-  // String ticketPrice = '';
+  String tags = '';
   bool isDirectRefunds = true;
   bool isPrivateEvent = true;
-  String tags = 'Other';
 
   List<bool> selectedEventTypes = <bool>[true, false];
 
@@ -118,25 +82,22 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
     });
   }
 
+  Future<List<String>> _fetchDroppedItems() async {
+    // Check for duplicaate
+    // List<String> unique = [];
+    // List<String> droppedItems = await getTags();
+    // Set<String> uniqueTags = droppedItems.toSet();
+    // for (String tag in uniqueTags) {
+    //   unique.add(tag);
+    // }
+    // return unique;
+    List<String> droppedItems = await getTags();
+    return droppedItems;
+  }
+
   String formatTime(int time) {
     return time.toString().padLeft(2, '0');
   }
-
-  // Future<http.Response> createEvent() {
-  //   final url = Uri.https('10.0.2.2:7161', '/EventCreation/CreateEvent');
-  //   final headers = {'Content-Type': 'application/json'};
-  // final body = jsonEncode({
-  //   "uid": 1,
-  //   'title': title,
-  //   "time": time,
-  //   'venue': venue,
-  //   'description': description,
-  //   'isDirectRefunds': isDirectRefunds,
-  //   'isPrivateEvent': isPrivateEvent,
-  //   'tags': tags,
-  // });
-  //   return http.post(url, headers: headers, body: body);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -227,6 +188,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             width: 5,
                           )),
                           hintText: "Write a short summary of the event"),
+                      maxLines: 4,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please fill out the required field';
@@ -286,66 +248,66 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               )),
 
           // Ticket type
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: Text("Tickets",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Table(
-              border: TableBorder.all(color: Colors.black),
-              columnWidths: const <int, TableColumnWidth>{
-                0: FlexColumnWidth(),
-              },
-              children: [
-                const TableRow(
-                  children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Ticket Type'),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Price'),
-                    )
-                  ],
-                ),
-                TableRow(children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Type"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Amount"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                ]),
-              ],
-            ),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          //   child: Text("Tickets",
+          //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          // ),
+          // Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          //   child: Table(
+          //     border: TableBorder.all(color: Colors.black),
+          //     columnWidths: const <int, TableColumnWidth>{
+          //       0: FlexColumnWidth(),
+          //     },
+          //     children: [
+          //       const TableRow(
+          //         children: [
+          //           Padding(
+          //             padding:
+          //                 EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          //             child: Text('Ticket Type'),
+          //           ),
+          //           Padding(
+          //             padding:
+          //                 EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          //             child: Text('Price'),
+          //           )
+          //         ],
+          //       ),
+          //       TableRow(children: [
+          //         TextFormField(
+          //           decoration: const InputDecoration(
+          //               border: OutlineInputBorder(
+          //                   borderSide: BorderSide(
+          //                 width: 5,
+          //               )),
+          //               hintText: "Type"),
+          //           validator: (value) {
+          //             if (value == null || value.isEmpty) {
+          //               return 'Please fill out the required field';
+          //             }
+          //             return null;
+          //           },
+          //         ),
+          //         TextFormField(
+          //           decoration: const InputDecoration(
+          //               border: OutlineInputBorder(
+          //                   borderSide: BorderSide(
+          //                 width: 5,
+          //               )),
+          //               hintText: "Amount"),
+          //           validator: (value) {
+          //             if (value == null || value.isEmpty) {
+          //               return 'Please fill out the required field';
+          //             }
+          //             return null;
+          //           },
+          //         ),
+          //       ]),
+          //     ],
+          //   ),
+          // ),
           // FormFields(
           //     fieldName: "Refund Policy", hint: ""),
           // Event Tags
@@ -358,11 +320,21 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: DropdownList(
-              droppedItem: droppedItems,
-              initial: 'Other',
-              onValueChanged: (String value) {
-                tags = value;
+            child: FutureBuilder<List<String>>(
+              future: _fetchDroppedItems(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return DropdownList(
+                    droppedItem: snapshot.data!,
+                    onValueChanged: (String value) {
+                      tags = value;
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const CircularProgressIndicator();
+                }
               },
             ),
           ),
@@ -372,7 +344,10 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
+                  if (_formKey.currentState!.validate() &&
+                      tags != '' &&
+                      chosenDate != null &&
+                      dayTime != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );
@@ -381,6 +356,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
+                    print(isPrivateEvent);
                     ref
                         .read(eventsProvider.notifier)
                         .addEvent(
@@ -437,11 +413,6 @@ class ToggleButton extends StatefulWidget {
 }
 
 class _ToggleButtonState extends State<ToggleButton> {
-  /* 
-  if privacy
-    final List<bool> _selectedEventTypes = <bool>[true, false];
-  else
-  */
   final List<bool> _selectedEventTypes = <bool>[true, false];
 
   @override
@@ -517,10 +488,12 @@ class _TimePickerState extends State<TimePicker> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
                   child: ElevatedButton(
-                    child: const Text('Time picker'),
+                    child: Text(selectedTime != null
+                        ? (selectedTime?.format(context) ?? "")
+                        : "Time Picker"),
                     onPressed: () async {
                       final TimeOfDay? time = await showTimePicker(
                         context: context,
@@ -572,6 +545,9 @@ class DatePicker extends StatefulWidget {
 }
 
 class _DatePickerState extends State<DatePicker> with RestorationMixin {
+  DateTime nullDate = DateTime(
+      DateTime.now().year - 1, DateTime.now().month, DateTime.now().day);
+
   @override
   String? get restorationId => widget.restorationId;
 
@@ -616,6 +592,7 @@ class _DatePickerState extends State<DatePicker> with RestorationMixin {
   void _selectDate(DateTime? newSelectedDate) {
     if (newSelectedDate != null) {
       setState(() {
+        nullDate = newSelectedDate;
         _selectedDate.value = newSelectedDate;
       });
       widget.saveDate(newSelectedDate);
@@ -626,12 +603,16 @@ class _DatePickerState extends State<DatePicker> with RestorationMixin {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: 200,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: OutlinedButton(
           onPressed: () {
             _restorableDatePickerRouteFuture.present();
           },
-          child: const Text('Date Picker'),
+          child: Text(nullDate !=
+                  DateTime(DateTime.now().year - 1, DateTime.now().month,
+                      DateTime.now().day)
+              ? '${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'
+              : "Date Picker"),
         ),
       ),
     );

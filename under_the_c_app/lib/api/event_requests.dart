@@ -98,7 +98,6 @@ Future<void> createEvent(Event eventInfo) async {
           "description": eventInfo.description,
           "isDirectRefunds": eventInfo.isDirectRefunds,
           "isPrivateEvent": eventInfo.isPrivate,
-          // "createdTime": DateTime.now().toString(),
           // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
           "tags": "tags"
         },
@@ -116,17 +115,51 @@ Future<void> createEvent(Event eventInfo) async {
   }
 }
 
-Future<void> cancelEvent(int eventId) async {
+Future<void> modifyEvent(Event eventInfo) async {
+  final uid = sessionVariables.uid;
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.modifyEvent);
+  try {
+    final response = await http.put(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "uid": uid,
+          "eventId": eventInfo.eventId,
+          "title": eventInfo.title,
+          "eventTime": eventInfo.time,
+          "venue": eventInfo.venue,
+          "description": eventInfo.description,
+          "isDirectRefunds": eventInfo.isDirectRefunds,
+          "isPrivateEvent": eventInfo.isPrivate,
+          "tags": "tags",
+        },
+      ),
+    );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.modifyEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.modifyEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.modifyEvent: Unknown error $e');
+  }
+}
+
+Future<void> cancelEvent(Event eventInfo) async {
   final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.cancelEvent);
   try {
     final response = await http.delete(
       url,
       headers: APIRoutes.headers,
-      body: jsonEncode({
-        "eventId": eventId,
-      }),
+      body: jsonEncode(
+        {
+          "eventId": eventInfo.eventId,
+        },
+      ),
     );
-
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw Exception(response.body);
     }
