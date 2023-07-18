@@ -137,16 +137,16 @@ namespace EventManagementAPI.Repositories
                             .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
                     } else {
                         // Yes, this means customers seeing booked events will also see past events. Too bad!
-                        query = _dbContext.bookings
+                        query = _dbContext.bookingTickets
                             .Join(_dbContext.tickets,
-                                b => b.ticketId,
+                                bt => bt.ticketId,
                                 t => t.ticketId,
-                                (b,t) => new
+                                (bt,t) => new
                                 {
-                                    b.customerId,
+                                    bt.booking,
                                     t.toEvent
                                 })
-                            .Where(c => c.customerId == uid)
+                            .Where(c => c.booking.customerId == uid)
                             .Select(c => c.toEvent);
                     }
                 } else
@@ -226,14 +226,8 @@ namespace EventManagementAPI.Repositories
             return e;
         }
 
-        public async Task ModifyEvent(EventModificationDto mod)
+        public async Task ModifyEvent(EventModificationDTO mod)
         {
-
-            if(!_dbContext.events.Any(e => e.eventId == mod.eventId))
-            {
-                throw new BadHttpRequestException("That event does not exist");
-            }
-
             Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
 
             if(mod.title is not null){e.title = mod.title;}
