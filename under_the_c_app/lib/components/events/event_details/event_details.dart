@@ -6,6 +6,7 @@ import 'package:under_the_c_app/components/events/event_details/comment/comment.
 import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 
@@ -21,6 +22,7 @@ class EventDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(eventProvider(eventId));
+
     return event.when(
         data: (event) {
           return Scaffold(
@@ -215,17 +217,26 @@ class EventDetailsPage extends ConsumerWidget {
                     padding: const EdgeInsets.all(30),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go(AppRoutes.eventBook(
-                            event.eventId!, event.title, event.venue));
+                        if (sessionVariables.sessionIsHost &&
+                            sessionVariables.navLocation == 0) {
+                          context.go(AppRoutes.eventBook(
+                              event.eventId!, event.title, event.venue));
+                        } else if (!sessionVariables.sessionIsHost) {
+                          context.go(AppRoutes.eventBook(
+                              event.eventId!, event.title, event.venue));
+                        }
                       },
                       style: TextButton.styleFrom(
-                        minimumSize: const Size(200, 0),
+                        minimumSize: const Size(150, 0),
                         padding: const EdgeInsets.all(20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
                         ),
                       ),
-                      child: const Text("Buy Ticket"),
+                      child: Text(sessionVariables.sessionIsHost &&
+                              sessionVariables.navLocation == 0
+                          ? "Create Tickets"
+                          : "Buy Ticket"),
                     ),
                   ),
                 ),

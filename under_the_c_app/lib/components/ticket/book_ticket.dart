@@ -132,7 +132,7 @@ class BookTicket extends ConsumerWidget {
                     if (selectedTickets.isNotEmpty) {
                       sendEmail();
                       context.go(AppRoutes.ticketConfirmation);
-                      purchaseTickets();
+                      purchaseTickets(selectedTickets);
                     }
                   },
                   child: const Text("Purchase"),
