@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/comment_requests.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment_card.dart';
+import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
 class Comment extends ConsumerStatefulWidget {
-  const Comment({Key? key}) : super(key: key);
+  final eventId;
+  const Comment({required this.eventId, Key? key}) : super(key: key);
 
   @override
   _CommentState createState() => _CommentState();
@@ -32,6 +34,7 @@ class _CommentState extends ConsumerState<Comment> {
 
   @override
   Widget build(BuildContext context) {
+    final comments = ref.watch(commentsProvider(widget.eventId));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -88,6 +91,7 @@ class _CommentState extends ConsumerState<Comment> {
             // my comment section
             TextField(
               focusNode: _commentFocusNode,
+              maxLines: null,
               decoration: const InputDecoration(
                 hintText: 'What do you want to talk about?',
                 border: InputBorder.none,
@@ -104,14 +108,23 @@ class _CommentState extends ConsumerState<Comment> {
                   // CommentT comments = await createComment("23", commentId: "2",
                   //     comment: "I think this is an average concert");
 
-                  List<CommentT> comments = await getAllComments("23", commentId: "1");
-                  print("comments");
+                  // List<CommentT> comments = await getAllComments("23", commentId: "1");
+                  // print("comments");
                 },
                 child: const Text("Submit"),
               )
           ],
         ),
-        const CommendCard()
+        Column(
+          children: [
+            ...comments
+                .map((CommentT comment) => CommentCard(comment: comment))
+                .toList()
+          ],
+        ),
+
+        // make sure there's enough space when there's no comment
+        _commentFocusNode.hasFocus ? SizedBox(height: 180) : Container()
       ],
     );
   }

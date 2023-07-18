@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:under_the_c_app/types/events/comment_type.dart';
 
-class CommendCard extends ConsumerStatefulWidget {
-  const CommendCard({super.key});
+class CommentCard extends ConsumerStatefulWidget {
+  CommentT comment;
+  CommentCard({required this.comment, super.key});
 
   @override
   CommentCardState createState() => CommentCardState();
 }
 
-class CommentCardState extends ConsumerState<CommendCard> {
+class CommentCardState extends ConsumerState<CommentCard> {
   bool thumbLikeSelected = false;
   bool thumbDislikeSelected = false;
   bool commentSelected = false;
@@ -19,6 +21,14 @@ class CommentCardState extends ConsumerState<CommendCard> {
   @override
   initState() {
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(CommentCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.comment != widget.comment) {
+      // updateCommentData();
+    }
   }
 
   void incrementLikes() {

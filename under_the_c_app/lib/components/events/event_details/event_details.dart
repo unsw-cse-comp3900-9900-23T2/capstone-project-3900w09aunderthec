@@ -198,10 +198,13 @@ class EventDetailsPage extends ConsumerWidget {
                           ),
                         ),
                         // comment section
-                        const Padding(
-                          padding: EdgeInsets.only(left: 25, right: 25),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25, right: 25),
                           child: Column(
-                            children: [Comment(), SizedBox(height: 125)],
+                            children: [
+                              Comment(eventId: event.eventId),
+                              const SizedBox(height: 125)
+                            ],
                           ),
                         ),
                       ],
