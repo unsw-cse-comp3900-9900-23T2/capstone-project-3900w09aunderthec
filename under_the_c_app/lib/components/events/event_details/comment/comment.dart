@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:under_the_c_app/components/events/event_details/comment/comment_cart.dart';
+import 'package:under_the_c_app/components/events/event_details/comment/comment_card.dart';
 
 class Comment extends StatelessWidget {
   const Comment({Key? key}) : super(key: key);

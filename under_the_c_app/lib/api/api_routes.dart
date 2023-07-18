@@ -29,4 +29,11 @@ class APIRoutes {
   static const String createTickets = '/Ticket/CreateTickets';
   static const String deleteTickets = '/Ticket/DeleteTickets';
   static const String bookTickets = 'api/Booking/MakeBooking';
+
+  // ============================COMMENT ROUTES==================================
+  static const String getComments = 'api/Comment/ListComments';
+  static const String getCommentById = 'api/Comment/GetComment';
+  static const String createComment = 'api/Comment/PostComment';
+  static const String likeComment = 'api/Comment/ToggleLikeComment';
+  static const String dislikeComment = 'api/Comment/ToogleDislikeComment';
 }
