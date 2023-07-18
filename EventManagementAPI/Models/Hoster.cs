@@ -6,7 +6,7 @@ namespace EventManagementAPI.Models
 {
     public class Hoster : User
     {
-        public ICollection<Event> events { get; set; } = new List<Event>();
+    //     public ICollection<Event> events { get; set; } = new List<Event>();
         public string organisationName { get; set; }
     }
 }

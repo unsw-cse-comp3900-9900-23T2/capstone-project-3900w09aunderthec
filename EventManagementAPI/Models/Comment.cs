@@ -21,7 +21,7 @@ namespace EventManagementAPI.Models
         public int likes { get; set; } = 0;
         public int dislikes { get; set; } = 0;
         public DateTime createdTime { get; set; } = DateTime.Now;
-        [JsonIgnore]
-        public ICollection<Reply> replies { get; set; } = new List<Reply>();
+        // [JsonIgnore]
+        // public ICollection<Reply> replies { get; set; } = new List<Reply>();
     }
 }

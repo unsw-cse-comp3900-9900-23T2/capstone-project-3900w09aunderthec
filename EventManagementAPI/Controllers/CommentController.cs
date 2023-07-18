@@ -24,39 +24,39 @@ namespace EventManagementAPI.Controllers
         public int commentId { get; set; }
     }
 
-    public class LikeCommentRequestBody
+    public class LikeDislikeCommentRequestBody
     {
         public int customerId { get; set; }
         public int commentId { get; set; }
     }
 
-    public class UndoLikeCommentRequestBody
-    {
-        public int commentLikeId { get; set; }
-    }
+    // public class UndoLikeCommentRequestBody
+    // {
+    //     public int commentLikeId { get; set; }
+    // }
 
-    public class UndoDislikedCommentRequestBody
-    {
-        public int commentDislikeId { get; set; }
-    }
+    // public class UndoDislikedCommentRequestBody
+    // {
+    //     public int commentDislikeId { get; set; }
+    // }
 
     public class RetrieveCommentBody
     {
         public int commentId { get; set; }
     }
 
-    public class ReplyRequestBody
-    {
-        public int commenterId { get; set; }
-        public int replierId { get; set; }
-        public int commentId { get; set; }
-        public string reply { get; set; }
-    }
+    // public class ReplyRequestBody
+    // {
+    //     public int commenterId { get; set; }
+    //     public int replierId { get; set; }
+    //     public int commentId { get; set; }
+    //     public string reply { get; set; }
+    // }
 
-    public class RetrieveReplyRequestBody
-    {
-        public int replyId { get; set; }
-    }
+    // public class RetrieveReplyRequestBody
+    // {
+    //     public int replyId { get; set; }
+    // }
 
     [ApiController]
     [Route("api/[controller]")]
@@ -101,43 +101,43 @@ namespace EventManagementAPI.Controllers
             return Ok(eventComment);
         }
 
-        [HttpPost("IncrementLikeComment")]
-        public async Task<IActionResult> IncrementLikeComment([FromBody] LikeCommentRequestBody requestBody)
+        [HttpPost("ToggleLikeComment")]
+        public async Task<IActionResult> ToggleLikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
         {
             var commentId = requestBody.commentId;
             var customerId = requestBody.customerId;
 
-            var likeComment = await _commentRepository.LikeComment(commentId, customerId);
+            var likeComment = await _commentRepository.ToggleLikeComment(commentId, customerId);
             return Ok(likeComment);
         }
 
-        [HttpDelete("DecrementLikeComment")]
-        public async Task<IActionResult> DecrementLikeComment([FromBody] UndoLikeCommentRequestBody requestBody)
-        {
-            var commentLikeId = requestBody.commentLikeId;
+    //     [HttpDelete("DecrementLikeComment")]
+    //     public async Task<IActionResult> DecrementLikeComment([FromBody] UndoLikeCommentRequestBody requestBody)
+    //     {
+    //         var commentLikeId = requestBody.commentLikeId;
 
-            var undoLikeComment = await _commentRepository.UndoLikedComment(commentLikeId);
-            return Ok(undoLikeComment);
-       }
+    //         var undoLikeComment = await _commentRepository.UndoLikedComment(commentLikeId);
+    //         return Ok(undoLikeComment);
+    //    }
 
-       [HttpPost("IncrementDislikeComment")]
-       public async Task<IActionResult> IncrementDislikeComment([FromBody] LikeCommentRequestBody requestBody)
+       [HttpPost("ToggleDislikeComment")]
+       public async Task<IActionResult> ToggleDislikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
        {
             var commentId = requestBody.commentId;
             var customerId = requestBody.customerId;
 
-            var dislikeComment = await _commentRepository.DislikeComment(commentId, customerId);
+            var dislikeComment = await _commentRepository.ToggleDislikeComment(commentId, customerId);
             return Ok(dislikeComment);
         }
 
-        [HttpDelete("DecrementDislikeComment")]
-        public async Task<IActionResult> DecrementDislikeComment([FromBody] UndoDislikedCommentRequestBody requestBody)
-        {
-            var commentDislikeId = requestBody.commentDislikeId;
+        // [HttpDelete("DecrementDislikeComment")]
+        // public async Task<IActionResult> DecrementDislikeComment([FromBody] UndoDislikedCommentRequestBody requestBody)
+        // {
+        //     var commentDislikeId = requestBody.commentDislikeId;
 
-            var undoDislikeComment = await _commentRepository.UndoDislikeComment(commentDislikeId);
-            return Ok(undoDislikeComment);
-        }
+        //     var undoDislikeComment = await _commentRepository.UndoDislikeComment(commentDislikeId);
+        //     return Ok(undoDislikeComment);
+        // }
 
         [HttpDelete("RetrieveComment")]
         public async Task<IActionResult> RetrieveComment([FromBody] RetrieveCommentBody requestBody)
@@ -153,36 +153,36 @@ namespace EventManagementAPI.Controllers
             return Ok(retrieveCommentResult);
         }
 
-        [HttpPost("Reply")]
-        public async Task<IActionResult> Reply([FromBody] ReplyRequestBody requestBody)
-        {
-            var commenterId = requestBody.commenterId;
-            var replierId = requestBody.replierId;
-            var commentId = requestBody.commentId;
-            var reply = requestBody.reply;
+        // [HttpPost("Reply")]
+        // public async Task<IActionResult> Reply([FromBody] ReplyRequestBody requestBody)
+        // {
+        //     var commenterId = requestBody.commenterId;
+        //     var replierId = requestBody.replierId;
+        //     var commentId = requestBody.commentId;
+        //     var reply = requestBody.reply;
 
-            var newReply = await _commentRepository.Reply(commenterId, replierId, commentId, reply);
-            if (newReply == null)
-            {
-                return NotFound();
-            }
+        //     var newReply = await _commentRepository.Reply(commenterId, replierId, commentId, reply);
+        //     if (newReply == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-            return Ok(newReply.id);
-        }
+        //     return Ok(newReply.id);
+        // }
 
-        [HttpDelete("RetrieveReply")]
-        public async Task<IActionResult> RetrieveReply([FromBody] RetrieveReplyRequestBody requestBody)
-        {
-            var replyId = requestBody.replyId;
+        // [HttpDelete("RetrieveReply")]
+        // public async Task<IActionResult> RetrieveReply([FromBody] RetrieveReplyRequestBody requestBody)
+        // {
+        //     var replyId = requestBody.replyId;
 
-            var retrieveReplyResult = await _commentRepository.RetrieveReply(replyId);
-            if (retrieveReplyResult == null)
-            {
-                return NotFound();
-            }
+        //     var retrieveReplyResult = await _commentRepository.RetrieveReply(replyId);
+        //     if (retrieveReplyResult == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-            return Ok(retrieveReplyResult);
-        }
+        //     return Ok(retrieveReplyResult);
+        // }
 
     }
 }
