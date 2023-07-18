@@ -33,7 +33,7 @@ class EventDetailsPage extends ConsumerWidget {
             body: Stack(
               children: [
                 ListView(
-                  padding: EdgeInsets.only(top: 0),
+                  padding: const EdgeInsets.only(top: 0),
                   children: [
                     Column(
                       children: [

@@ -33,12 +33,12 @@ class EventsProvider extends StateNotifier<List<Event>> {
 
   Future<void> addEvent(Event event) async {
     // do http calls to create events
-    await createEvent(event);
+    Event createdEvent = await createEvent(event);
 
     // add the events only if it's not a private event
-    if (event.isPrivate != null && !event.isPrivate!) {
-      state = [...state, event];
-      _allEvents = [..._allEvents, event];
+    if (createdEvent.isPrivate != null && !createdEvent.isPrivate!) {
+      state = [...state, createdEvent];
+      _allEvents = [..._allEvents, createdEvent];
     }
   }
 
