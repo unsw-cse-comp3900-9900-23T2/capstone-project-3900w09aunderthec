@@ -78,6 +78,9 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("commentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("createdTime")
                         .HasColumnType("datetime(6)");
 
@@ -90,6 +93,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("eventId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("inReplyToId")
+                        .HasColumnType("int");
+
                     b.Property<int>("likes")
                         .HasColumnType("int");
 
@@ -98,6 +104,8 @@ namespace EventManagementAPI.Migrations
                     b.HasIndex("customerId");
 
                     b.HasIndex("eventId");
+
+                    b.HasIndex("inReplyToId");
 
                     b.ToTable("comments");
                 });
@@ -399,7 +407,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Booking", "booking")
-                        .WithMany("bookingTickets")
+                        .WithMany()
                         .HasForeignKey("bookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -429,9 +437,15 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EventManagementAPI.Models.Comment", "inReplyTo")
+                        .WithMany()
+                        .HasForeignKey("inReplyToId");
+
                     b.Navigation("commenter");
 
                     b.Navigation("eventShow");
+
+                    b.Navigation("inReplyTo");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.CommentDislike", b =>
@@ -576,11 +590,6 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("toEvent");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
-                {
-                    b.Navigation("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>

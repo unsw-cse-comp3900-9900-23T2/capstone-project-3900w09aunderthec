@@ -16,9 +16,13 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Comment?>> GetAllComments(string sortBy, int eventId)
+        public async Task<List<Comment?>> GetAllComments(string? sortBy, int? eventId, int? inReplyToComment)
         {
-            IQueryable<Comment> query = _dbContext.comments.Where(c => c.eventId == eventId);
+            if (eventId is null && inReplyToComment is null)
+            { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified");}
+
+            IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == inReplyToComment || c.eventId == eventId);
+            if (query is null) { throw new BadHttpRequestException("Event or comment to reply to does not exist");}
 
             switch (sortBy)
             {
@@ -51,8 +55,23 @@ namespace EventManagementAPI.Repositories
             return comment;
         }
 
-        public async Task<Comment?> CreateComment(int customerId, int eventId, string comment)
+        public async Task<Comment?> CreateComment(int customerId, int eventId, int? commentId, string comment)
         {
+            var inReplyToComment = new Comment();
+
+            if (commentId.HasValue)
+            {
+                inReplyToComment = await GetCommentById(commentId.Value);
+
+                if (inReplyToComment == null)
+                {
+                    return null;
+                }
+            } else
+            {
+                inReplyToComment = null;
+            }
+            
             var newComment = new Comment();
             newComment.comment = comment;
 
@@ -64,117 +83,147 @@ namespace EventManagementAPI.Repositories
             newComment.customerId = customerId;
             newComment.commenter = customer;
 
+            if (commentId.HasValue)
+            {
+                newComment.commentId = commentId.Value;
+                newComment.inReplyTo = inReplyToComment;
+            } else
+            {
+                newComment.commentId = null;
+                newComment.inReplyTo = null;
+            } 
+
             _dbContext.comments.Add(newComment);
             await _dbContext.SaveChangesAsync();
             return newComment;
         }
 
-        public async Task<Comment?> DeleteComment(int id)
-        {
-            var comment = await GetCommentById(id);
-
-            if (comment == null)
-            {
-                throw new BadHttpRequestException("Comment does not exist");
-            }
-
-            _dbContext.comments.Remove(comment);
-
-            await _dbContext.SaveChangesAsync();
-
-            return comment;
-        }
-
-        public async Task<bool> LikeComment(int customerId, int commentId)
+        public async Task<string> ToggleLikeComment(int customerId, int commentId)
         {
             var customer = await _dbContext.customers.FindAsync(customerId);
-            var comment = await _dbContext.comments.FindAsync(commentId);
+            if (customer == null) { throw new BadHttpRequestException("Customer does not exist");}
 
-            if (customer == null ||  comment == null)
+            var comment = await _dbContext.comments.FindAsync(commentId);
+            if (comment == null) { throw new BadHttpRequestException("Comment does not exist");}
+
+            var existingLike = await _dbContext.commentLikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
+
+            if (existingLike is not null)
             {
-                return false;
-            }
+                _dbContext.commentLikes.Remove(existingLike);
+                comment.likes--;
+                await _dbContext.SaveChangesAsync();
+
+                return "Like removed";
+            } 
 
             var likeComment = new CommentLike();
             likeComment.customerId = customerId;
-            likeComment.customer = customer;
             likeComment.commentId = commentId;
-            likeComment.comment = comment;
 
             _dbContext.commentLikes.Add(likeComment);
             comment.likes++;
             await _dbContext.SaveChangesAsync();
 
-            return true;
+            return "Comment liked";
         }
-
-        public async Task<bool> UndoLikedComment(int commentLikeId)
-        {
-            var commentLike = await _dbContext.commentLikes.FindAsync(commentLikeId);
-
-            if (commentLike == null)
-            {
-                return false;
-            }
-
-            var commentId = commentLike.commentId;
-            var comment = await _dbContext.comments.FindAsync(commentId);
-
-            if ( comment != null )
-            {
-                comment.likes--;
-            }
-            
-            _dbContext.commentLikes.Remove(commentLike);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> DislikeComment(int customerId, int commentId)
+        public async Task<string> ToggleDislikeComment(int customerId, int commentId)
         {
             var customer = await _dbContext.customers.FindAsync(customerId);
-            var comment = await _dbContext.comments.FindAsync(commentId);
+            if (customer == null) { throw new BadHttpRequestException("Customer does not exist");}
 
-            if (customer == null || comment == null)
+            var comment = await _dbContext.comments.FindAsync(commentId);
+            if (comment == null) { throw new BadHttpRequestException("Comment does not exist");}
+
+            var existingDislike = await _dbContext.commentDislikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
+
+            if (existingDislike is not null)
             {
-                return false;
+                _dbContext.commentDislikes.Remove(existingDislike);
+                comment.dislikes--;
+                await _dbContext.SaveChangesAsync();
+
+                return "Dislike removed";
             }
 
-            var likeComment = new CommentDislike();
-            likeComment.customerId = customerId;
-            likeComment.customer = customer;
-            likeComment.commentId = commentId;
-            likeComment.comment = comment;
+            var dislikeComment = new CommentDislike();
+            dislikeComment.customerId = customerId;
+            dislikeComment.commentId = commentId;
 
-            _dbContext.commentDislikes.Add(likeComment);
+            _dbContext.commentDislikes.Add(dislikeComment);
             comment.dislikes++;
             await _dbContext.SaveChangesAsync();
-
-            return true;
+            
+            return "Comment disliked";
         }
 
-        public async Task<bool> UndoDislikeComment(int commentDislikeId)
-        {
-            var commentDislike = await _dbContext.commentDislikes.FindAsync(commentDislikeId);
+        // public async Task<bool> UndoLikedComment(int commentLikeId)
+        // {
+        //     var commentLike = await _dbContext.commentLikes.FindAsync(commentLikeId);
 
-            if (commentDislike == null)
-            {
-                return false;
-            }
+        //     if (commentLike == null)
+        //     {
+        //         return false;
+        //     }
 
-            var commentId = commentDislike.commentId;
-            var comment = await _dbContext.comments.FindAsync(commentId);
-            if (comment != null)
-            {
-                comment.dislikes--;
-            }
+        //     var commentId = commentLike.commentId;
+        //     var comment = await _dbContext.comments.FindAsync(commentId);
 
-            _dbContext.commentDislikes.Remove(commentDislike);
-            await _dbContext.SaveChangesAsync();   
+        //     if ( comment != null )
+        //     {
+        //         comment.likes--;
+        //     }
+            
+        //     _dbContext.commentLikes.Remove(commentLike);
+        //     await _dbContext.SaveChangesAsync();
 
-            return true;
-        }
+        //     return true;
+        // }
+
+        // public async Task<bool> DislikeComment(int customerId, int commentId)
+        // {
+        //     var customer = await _dbContext.customers.FindAsync(customerId);
+        //     var comment = await _dbContext.comments.FindAsync(commentId);
+
+        //     if (customer == null || comment == null)
+        //     {
+        //         return false;
+        //     }
+
+        //     var likeComment = new CommentDislike();
+        //     likeComment.customerId = customerId;
+        //     likeComment.customer = customer;
+        //     likeComment.commentId = commentId;
+        //     likeComment.comment = comment;
+
+        //     _dbContext.commentDislikes.Add(likeComment);
+        //     comment.dislikes++;
+        //     await _dbContext.SaveChangesAsync();
+
+        //     return true;
+        // }
+
+        // public async Task<bool> UndoDislikeComment(int commentDislikeId)
+        // {
+        //     var commentDislike = await _dbContext.commentDislikes.FindAsync(commentDislikeId);
+
+        //     if (commentDislike == null)
+        //     {
+        //         return false;
+        //     }
+
+        //     var commentId = commentDislike.commentId;
+        //     var comment = await _dbContext.comments.FindAsync(commentId);
+        //     if (comment != null)
+        //     {
+        //         comment.dislikes--;
+        //     }
+
+        //     _dbContext.commentDislikes.Remove(commentDislike);
+        //     await _dbContext.SaveChangesAsync();   
+
+        //     return true;
+        // }
 
         public async Task<Comment?> RetrieveComment(int commentId)
         {
@@ -202,55 +251,55 @@ namespace EventManagementAPI.Repositories
             return user;
         }
 
-        public async Task<Reply?> Reply(int commenterId, int replierId, int commentId, string reply)
-        {
-            User? commenter = await GetUser(commenterId); 
-            if (commenter == null) {
-                throw new BadHttpRequestException("Commenter does not exist");
-            }
+        // public async Task<Reply?> Reply(int commenterId, int replierId, int commentId, string reply)
+        // {
+        //     User? commenter = await GetUser(commenterId); 
+        //     if (commenter == null) {
+        //         throw new BadHttpRequestException("Commenter does not exist");
+        //     }
 
-            User? replier = await GetUser(replierId);
-            if (replier == null)
-            {
-                throw new BadHttpRequestException("Replier does not exist");
-            }
+        //     User? replier = await GetUser(replierId);
+        //     if (replier == null)
+        //     {
+        //         throw new BadHttpRequestException("Replier does not exist");
+        //     }
 
-            var comment = await _dbContext.comments.FindAsync(commentId);
-            if (comment == null)
-            {
-                throw new BadHttpRequestException("Comment does not exist");
-            }
+        //     var comment = await _dbContext.comments.FindAsync(commentId);
+        //     if (comment == null)
+        //     {
+        //         throw new BadHttpRequestException("Comment does not exist");
+        //     }
 
-            var newReply = new Reply
-            {
-                replier = replier,
-                comment = comment,
-                commenter = commenter,
-                replierId = replierId,
-                commentId = commentId,
-                commenterId = commenterId,
-                reply = reply,
-            };
+        //     var newReply = new Reply
+        //     {
+        //         replier = replier,
+        //         comment = comment,
+        //         commenter = commenter,
+        //         replierId = replierId,
+        //         commentId = commentId,
+        //         commenterId = commenterId,
+        //         reply = reply,
+        //     };
 
-            _dbContext.replies.Add(newReply);
-            await _dbContext.SaveChangesAsync();
+        //     _dbContext.replies.Add(newReply);
+        //     await _dbContext.SaveChangesAsync();
 
-            return newReply;
-        }
+        //     return newReply;
+        // }
 
-        public async Task<Reply?> RetrieveReply(int replyId)
-        {
-            var reply = await _dbContext.replies.FindAsync(replyId);
+        // public async Task<Reply?> RetrieveReply(int replyId)
+        // {
+        //     var reply = await _dbContext.replies.FindAsync(replyId);
 
-            if (reply == null)
-            {
-                throw new BadHttpRequestException("Reply does not exist");
-            }
+        //     if (reply == null)
+        //     {
+        //         throw new BadHttpRequestException("Reply does not exist");
+        //     }
 
-            _dbContext.replies.Remove(reply);
-            await _dbContext.SaveChangesAsync();
+        //     _dbContext.replies.Remove(reply);
+        //     await _dbContext.SaveChangesAsync();
 
-            return reply;
-        }
+        //     return reply;
+        // }
     }
 }

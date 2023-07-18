@@ -28,7 +28,7 @@ namespace EventManagementAPI.Models
         public DateTime createdTime { get; set; } = DateTime.Now;
         [JsonIgnore]
         public ICollection<Ticket> tickets { get; set; } = new List<Ticket>();
-        [JsonIgnore]
-        public ICollection<Comment> comments { get; set; } = new List<Comment>();
+        // [JsonIgnore]
+        // public ICollection<Comment> comments { get; set; } = new List<Comment>();
     }
 }
