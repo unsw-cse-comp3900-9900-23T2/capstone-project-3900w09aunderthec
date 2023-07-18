@@ -5,6 +5,7 @@ class FilterItem {
   final String name;
   final Icon icon;
   final dynamic value;
+  bool selected;
 
-  FilterItem({required this.name, required this.icon, required this.value});
+  FilterItem({required this.name, required this.icon, required this.value, required this.selected});
 }

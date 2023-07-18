@@ -11,7 +11,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(sortedEventsProvider);
+    final events = ref.watch(eventsProvider);
 
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),

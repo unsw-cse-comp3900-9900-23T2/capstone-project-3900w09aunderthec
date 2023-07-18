@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/event_requests.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-/* Sorting or filtering events */
-
+/* For Event Filter */
 enum EventFilterType {
   none,
   arts,
@@ -18,54 +17,10 @@ enum EventFilterType {
   others
 }
 
+/* For Event Sort */
 enum EventSortType { none, recency, popularity, price }
 
-class EventSortState {
-  EventSortType sortType;
-  bool isSorted;
-  EventSortState({this.sortType = EventSortType.none, this.isSorted = false});
-}
-
-final eventFilterTypeProvider = StateProvider((ref) => EventFilterType.none);
-final eventSortTypeProvider = StateProvider((ref) => EventSortState());
-
-final sortedEventsProvider = Provider<List<Event>>(
-  (ref) {
-    final List<Event> events = ref.watch(eventsProvider);
-    final sortState = ref.watch(eventSortTypeProvider);
-
-    if (sortState.isSorted) {
-      switch (sortState.sortType) {
-        case EventSortType.recency:
-          // Can't change the current "events", because it will not trigger re-render of the sortedEventsProvider,
-          // in order to make it re-render successfully, we need to return a new instance (in this case a new array)
-          final List<Event> sortedEvents = List.from(events)
-            ..sort(
-              (a, b) {
-                DateTime dateTime1 = DateTime.parse(a.time);
-                DateTime dateTime2 = DateTime.parse(b.time);
-                // sort in descending order (from most recent to the least recent)
-                return dateTime1.compareTo(dateTime2);
-              },
-            );
-          return sortedEvents;
-        case EventSortType.popularity:
-          return events;
-
-        case EventSortType.price:
-          return events;
-
-        case EventSortType.none:
-          return events;
-      }
-    } else {
-      //return the unsorted events
-      return events;
-    }
-  },
-);
-
-/* Fetching all events */
+/* Fetching events */
 class EventsProvider extends StateNotifier<List<Event>> {
   List<Event> _allEvents;
 
@@ -102,6 +57,37 @@ class EventsProvider extends StateNotifier<List<Event>> {
         .where((event) =>
             event.title.toLowerCase().startsWith(query.toLowerCase()))
         .toList();
+  }
+
+  void sort(EventSortType query) {
+    switch (query) {
+      case EventSortType.recency:
+        // Can't change the current "events", because it will not trigger re-render of the sortedEventsProvider,
+        // in order to make it re-render successfully, we need to return a new instance (in this case a new array)
+        final List<Event> sortedEvents = List.from(_allEvents)
+          ..sort(
+            (a, b) {
+              DateTime dateTime1 = DateTime.parse(a.time);
+              DateTime dateTime2 = DateTime.parse(b.time);
+              // sort in descending order (from most recent to the least recent)
+              return dateTime1.compareTo(dateTime2);
+            },
+          );
+
+        state = sortedEvents;
+      case EventSortType.popularity:
+        break;
+
+      case EventSortType.price:
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  void reset() {
+    state = _allEvents;
   }
 }
 
