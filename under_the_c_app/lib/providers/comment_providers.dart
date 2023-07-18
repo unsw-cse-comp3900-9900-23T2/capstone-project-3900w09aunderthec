@@ -19,12 +19,8 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 
   Future<void> fetchComments() async {
     state = await getAllComments(eventId);
-    setComments(state);
   }
 
-  void setComments(List<CommentT> comments) {
-    state = comments;
-  }
 
   Future<void> likeComment(String commentId) async {
     // await likeCommentAPI(commentId); // call the function from your API file
