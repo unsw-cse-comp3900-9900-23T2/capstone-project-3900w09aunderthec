@@ -31,13 +31,7 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("gainedCredits")
                         .HasColumnType("int");
 
-                    b.Property<int>("numberOfTickets")
-                        .HasColumnType("int");
-
                     b.Property<int>("paymentMethod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ticketId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("timeCreated")
@@ -47,9 +41,31 @@ namespace EventManagementAPI.Migrations
 
                     b.HasIndex("customerId");
 
+                    b.ToTable("bookings");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("bookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("numberOfTickets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ticketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("bookingId");
+
                     b.HasIndex("ticketId");
 
-                    b.ToTable("bookings");
+                    b.ToTable("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
@@ -401,15 +417,26 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventManagementAPI.Models.Ticket", "toTicket")
+                    b.Navigation("toCustomer");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
+                {
+                    b.HasOne("EventManagementAPI.Models.Booking", "booking")
+                        .WithMany("bookingTickets")
+                        .HasForeignKey("bookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventManagementAPI.Models.Ticket", "ticket")
                         .WithMany()
                         .HasForeignKey("ticketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("toCustomer");
+                    b.Navigation("booking");
 
-                    b.Navigation("toTicket");
+                    b.Navigation("ticket");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
@@ -592,6 +619,11 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("toEvent");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
+                {
+                    b.Navigation("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>

@@ -8,6 +8,12 @@ using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers{
+
+    public class GetTagsRequestBody {
+        public String title { get; set; }
+        public String description { get; set; }
+        public String venue { get; set; }
+    };
     public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
@@ -17,8 +23,7 @@ namespace EventManagementAPI.Controllers{
         public bool isDirectRefunds { get; set; }
         public bool isPrivateEvent { get; set; }
         public String tags { get; set; }
-
-        public DateTime createdTime { get; set; }
+        // public List<Ticket> tickets;
     };
     public class ModifyEventRequestBody {
         public int eventId { get; set; }
@@ -109,7 +114,6 @@ namespace EventManagementAPI.Controllers{
         [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody)
         {
-
             var e = await _eventRepository.GetEventById(RequestBody.eventId);
             if (e == null)
             {
@@ -145,7 +149,7 @@ namespace EventManagementAPI.Controllers{
         {
             var e = await _eventRepository.CancelEvent(requestBody.eventId);
 
-            if (e != null)
+            if (e == null)
             {
                 return NotFound();
             }

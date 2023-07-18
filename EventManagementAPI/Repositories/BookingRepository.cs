@@ -39,16 +39,10 @@ namespace EventManagementAPI.Repositories
             return creditMoney.creditAmount;
         }
 
-        public async Task<Booking?> MakeBooking(int customerId, int ticketId, int numberOfTickets, int paymentMethod)
+        public async Task<Booking?> MakeBooking(int customerId, Dictionary<string, int> bookingTickets, int paymentMethod)
         {
             var customer = await _dbContext.customers.FindAsync(customerId);
             if (customer == null)
-            {
-                return null;
-            }
-
-            var ticket = await _dbContext.tickets.FindAsync(ticketId);
-            if (ticket == null)
             {
                 return null;
             }
@@ -57,18 +51,43 @@ namespace EventManagementAPI.Repositories
             {
                 customerId = customerId,
                 toCustomer = customer,
-                ticketId = ticketId,
-                toTicket = ticket,
-                numberOfTickets = numberOfTickets,
                 paymentMethod = paymentMethod,
-                gainedCredits = Convert.ToInt32(ticket.price * numberOfTickets) * 10,
             };
+
+            var totalPrice = 0.0;
+
+            foreach (KeyValuePair<string, int> ticketPair in bookingTickets)
+            {
+                string ticketIdString = ticketPair.Key;
+                int ticketId = int.Parse(ticketIdString);
+                int numberOfTickets = ticketPair.Value;
+                var ticket = await _dbContext.tickets.FindAsync(ticketId);
+                if (ticket == null)
+                {
+                    return null;
+                }
+
+                var newBookingTicket = new BookingTicket
+                {
+                    bookingId = booking.Id,
+                    booking = booking,
+                    ticketId = ticketId,
+                    ticket = ticket,
+                    numberOfTickets = numberOfTickets,
+                };
+
+                _dbContext.bookingTickets.Add(newBookingTicket);
+
+                var subTotal = ticket.price * numberOfTickets;
+                totalPrice += subTotal;
+
+                ticket.stock -= numberOfTickets;
+            }
+
+            booking.gainedCredits = Convert.ToInt32(totalPrice) * 10;
 
             // customer gains loyalty points
             customer.loyaltyPoints += booking.gainedCredits;
-
-            // reduce number of tickets in stock
-            ticket.stock -= numberOfTickets;
 
             _dbContext.bookings.Add(booking);
              await _dbContext.SaveChangesAsync();
@@ -80,10 +99,12 @@ namespace EventManagementAPI.Repositories
         {
             var bookings = await _dbContext.bookings
                 .Where(b => b.customerId == customerId)
+                .Include(b => b.bookingTickets)
+                    .ThenInclude(t => t.ticket)
+                        .ThenInclude(e => e.toEvent)
                 .Select(b => new BookingResultDto
                 {
                     booking = b,
-                    eventName = b.toTicket.toEvent.title,
                 })
                 .ToListAsync();
 
@@ -93,8 +114,9 @@ namespace EventManagementAPI.Repositories
         public async Task<Booking?> GetBookingById(int bookingId)
         {
             var b = await _dbContext.bookings
-                .Include(b => b.toTicket)
-                    .ThenInclude(t => t.toEvent)
+                .Include(b => b.bookingTickets)
+                    .ThenInclude(t => t.ticket)
+                        .ThenInclude(t => t.toEvent)
                 .Include(b => b.toCustomer)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
@@ -117,21 +139,76 @@ namespace EventManagementAPI.Repositories
             }
             customer.loyaltyPoints -= booking.gainedCredits;
 
-            var ticket = await _dbContext.tickets.FindAsync(booking.ticketId);
-            if (ticket == null)
+            var tickets = await _dbContext.bookingTickets.Where(t => t.bookingId == bookingId).Include(t => t.ticket).ThenInclude(e => e.toEvent).ToListAsync();
+
+            if (tickets.Count == 0)
             {
                 return null;
             }
-            ticket.stock += booking.numberOfTickets;
+
+            var totalPrice = 0.0;
+
+            foreach (BookingTicket bookingTicket in tickets)
+            {
+                var ticket = bookingTicket.ticket;
+                if (ticket == null)
+                {
+                    return null;
+                }
+
+                ticket.stock += bookingTicket.numberOfTickets;
+
+                totalPrice += (ticket.price * bookingTicket.numberOfTickets);
+
+                _dbContext.bookingTickets.Remove(bookingTicket);
+            }
+
+            var e = tickets[0].ticket.toEvent;
+
+            if (e == null)
+            {
+                return null;
+            }
+
+            var hoster = await _dbContext.hosts.FindAsync(e.hosterFK);
+
+            if (hoster == null)
+            {
+                return null;
+            }
+
+            if (!e.isDirectRefunds)
+            {
+                var creditMoney = new CreditMoney
+                {
+                    customerId = booking.customerId,
+                    toCustomer = customer,
+                    hosterId = e.hosterFK,
+                    toHoster = hoster,
+                    creditAmount = totalPrice,
+                };
+
+                _dbContext.creditMoney.Add(creditMoney);
+            } else
+            {
+                // do something to refund
+            }
 
             _dbContext.bookings.Remove(booking);
             await _dbContext.SaveChangesAsync();
+
             return booking;
         }
 
         public async Task<TimeSpan?> GetTimeDifference(Booking booking)
         {
-            var ticket = await _dbContext.tickets.FindAsync(booking.ticketId);
+            var bookingTickets = await _dbContext.bookingTickets.Where(bt => bt.bookingId == booking.Id).ToListAsync();
+            if (bookingTickets.Count == 0)
+            {
+                return null;
+            }
+
+            var ticket = await _dbContext.tickets.FindAsync(bookingTickets[0].ticketId);
             if (ticket == null)
             {
                 return null;
@@ -146,88 +223,6 @@ namespace EventManagementAPI.Repositories
             var timeDifference = e.eventTime - DateTime.Now;
 
             return timeDifference;
-        }
-
-        public async Task<bool?> IsDirectRefunds(int bookingId)
-        {
-            var booking = await _dbContext.bookings.FindAsync(bookingId);
-            if (booking == null)
-            {
-                return null;
-            }
-
-            var ticket = await _dbContext.tickets.FindAsync(booking.ticketId);
-            if (ticket == null)
-            {
-                return null;
-            }
-
-            var e = await _dbContext.events.FindAsync(ticket.eventIdRef);
-            if (e == null) {
-                return null;
-            }
-
-            return e.isDirectRefunds;
-        }
-
-        public async Task<Booking?> NoDirectCancelBooking(int bookingId)
-        {
-            var booking = await _dbContext.bookings.FindAsync(bookingId);
-
-            if (booking == null)
-            {
-                return null;
-            }
-
-            var customer = await _dbContext.customers.FindAsync(booking.customerId);
-            if (customer == null)
-            {
-                return null;
-            }
-            customer.loyaltyPoints -= booking.gainedCredits;
-
-            var ticket = await _dbContext.tickets.FindAsync(booking.ticketId);
-            if (ticket == null)
-            {
-                return null;
-            }
-            ticket.stock += booking.numberOfTickets;
-
-            _dbContext.bookings.Remove(booking);
-
-            var e = await _dbContext.events.FindAsync(ticket.eventIdRef);
-            if (e == null)
-            {
-                return null;
-            }
-
-            var creditMoney = await _dbContext.creditMoney.FirstOrDefaultAsync(c => c.customerId == customer.uid && c.hosterId == e.hosterFK);
-
-            var hoster = await _dbContext.hosts.FindAsync(e.hosterFK);
-            if (hoster == null)
-            {
-                return null;
-            }
-
-            if (creditMoney == null)
-            {
-                var newCreditMoney = new CreditMoney
-                {
-                    customerId = customer.uid,
-                    toCustomer = customer,
-                    hosterId = e.hosterFK,
-                    toHoster = hoster,
-                    creditAmount = Math.Round(ticket.price * booking.numberOfTickets, 2),
-                };
-
-                _dbContext.creditMoney.Add(newCreditMoney);
-            } else
-            {
-                creditMoney.creditAmount += Math.Round(ticket.price * booking.numberOfTickets, 2);
-            }
-
-            await _dbContext.SaveChangesAsync();
-            return booking;
         }
     }
 }
