@@ -2,7 +2,7 @@ using EventManagementAPI.Models;
 
 namespace EventManagementAPI.DTOs
 {
-    public class EventModificationDto
+    public class EventModificationDTO
     {
         public int eventId { get; set; }
         public string? title { get; set; }

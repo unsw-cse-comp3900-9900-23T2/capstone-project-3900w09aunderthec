@@ -62,9 +62,9 @@ class EventsProvider extends StateNotifier<List<Event>> {
     fetchEvents();
   }
 
-  void addEvent(Event event) {
+  Future<void> addEvent(Event event) async {
     // do http calls to create events
-    createEvent(event);
+    await createEvent(event);
 
     // update the state for the EventsProvider
     state = [...state, event];

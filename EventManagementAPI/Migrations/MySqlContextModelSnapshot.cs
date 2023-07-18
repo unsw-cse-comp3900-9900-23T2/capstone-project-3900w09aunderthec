@@ -31,13 +31,7 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("gainedCredits")
                         .HasColumnType("int");
 
-                    b.Property<int>("numberOfTickets")
-                        .HasColumnType("int");
-
                     b.Property<int>("paymentMethod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ticketId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("timeCreated")
@@ -46,8 +40,6 @@ namespace EventManagementAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("customerId");
-
-                    b.HasIndex("ticketId");
 
                     b.ToTable("bookings");
                 });
@@ -409,21 +401,13 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventManagementAPI.Models.Ticket", "toTicket")
-                        .WithMany()
-                        .HasForeignKey("ticketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("toCustomer");
-
-                    b.Navigation("toTicket");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Booking", "booking")
-                        .WithMany()
+                        .WithMany("bookingTickets")
                         .HasForeignKey("bookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -606,6 +590,11 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("toEvent");
+                });
+
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
+                {
+                    b.Navigation("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
