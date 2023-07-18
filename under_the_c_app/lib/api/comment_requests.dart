@@ -35,6 +35,35 @@ Future<List<CommentT>> getAllComments(String eventId,
   }
 }
 
+// Future<List<CommentT>> getCommentById(String eventId,
+//     {String? sortby, String? commentId}) async {
+//   final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getComments,
+//       {"eventId": eventId, "sortby": sortby, "inReplyToComment": commentId});
+//   try {
+//     final response = await http.get(
+//       registerUrl,
+//       headers: APIRoutes.headers,
+//     );
+
+//     if (response.statusCode == 200) {
+//       final List<dynamic> jsonList = jsonDecode(response.body);
+//       final List<CommentT> events = jsonList
+//           .map((json) => backendDataSingleCommentToComment(json))
+//           .toList();
+//       return events;
+//     } else {
+//       throw Exception(
+//           'comment.dart.getEvents: Server returned status code ${response.statusCode}');
+//     }
+//   } on SocketException catch (e) {
+//     throw Exception('comment.dart.getAllcomments: Network error $e');
+//   } on HttpException catch (e) {
+//     throw Exception('comment.dart.getAllcomments: Http Exception error $e');
+//   } catch (e) {
+//     throw Exception('comment.dart.getAllcomments: Unknown error $e');
+//   }
+// }
+
 Future<CommentT> createComment(String eventId,
     {String? commentId, required String comment}) async {
   final uid = sessionVariables.uid;
@@ -64,5 +93,57 @@ Future<CommentT> createComment(String eventId,
     throw Exception('comment.dart.createcomment: Http Exception error $e');
   } catch (e) {
     throw Exception('comment.dart.createcomment: Unknown error $e');
+  }
+}
+
+Future<void> likeComment(String commentId) async {
+  final uid = sessionVariables.uid;
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.likeComment);
+  try {
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "customerId": uid,
+          "commentId": commentId,
+        },
+      ),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('comment.dart.likecomment: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('comment.dart.likecomment: Http Exception error $e');
+  } catch (e) {
+    throw Exception('comment.dart.likecomment: Unknown error $e');
+  }
+}
+
+Future<void> dislikeComment(String commentId) async {
+  final uid = sessionVariables.uid;
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.dislikeComment);
+  try {
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "customerId": uid,
+          "commentId": commentId,
+        },
+      ),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('comment.dart.likecomment: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('comment.dart.likecomment: Http Exception error $e');
+  } catch (e) {
+    throw Exception('comment.dart.likecomment: Unknown error $e');
   }
 }

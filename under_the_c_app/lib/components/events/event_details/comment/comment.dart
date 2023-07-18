@@ -104,9 +104,6 @@ class _CommentState extends ConsumerState<Comment> {
             if (_commentFocusNode.hasFocus)
               ElevatedButton(
                 onPressed: () {
-                  // create comment in the root
-                  // await createComment(widget.eventId,
-                  //     comment: commentController.text);
                   ref
                       .read(commentsProvider(widget.eventId).notifier)
                       .addComment(comment: commentController.text);

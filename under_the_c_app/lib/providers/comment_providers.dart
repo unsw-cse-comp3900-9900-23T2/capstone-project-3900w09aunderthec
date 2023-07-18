@@ -3,13 +3,10 @@ import 'package:under_the_c_app/api/comment_requests.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
 class CommentsProvider extends StateNotifier<List<CommentT>> {
-  List<CommentT> _allEvents;
   String eventId;
 
   // final bool isHost;
-  CommentsProvider(this.eventId)
-      : _allEvents = [],
-        super([]) {
+  CommentsProvider(this.eventId) : super([]) {
     fetchComments();
   }
 
@@ -18,21 +15,15 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
         await createComment(eventId, commentId: commentId, comment: comment);
 
     state = [...state, newComment];
-    _allEvents = [..._allEvents, newComment];
   }
 
   Future<void> fetchComments() async {
     state = await getAllComments(eventId);
-    setEvents(state);
+    setComments(state);
   }
 
-  void setEvents(List<CommentT> events) {
-    _allEvents = events;
-    state = events;
-  }
-
-  void reset() {
-    state = _allEvents;
+  void setComments(List<CommentT> comments) {
+    state = comments;
   }
 }
 
