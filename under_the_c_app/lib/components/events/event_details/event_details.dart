@@ -138,7 +138,7 @@ class EventDetailsPage extends ConsumerWidget {
                             sessionVariables.navLocation == 0) {
                           context.go(AppRoutes.eventBook(
                               event.eventId!, event.title, event.venue));
-                        } else {
+                        } else if (!sessionVariables.sessionIsHost) {
                           context.go(AppRoutes.eventBook(
                               event.eventId!, event.title, event.venue));
                         }
