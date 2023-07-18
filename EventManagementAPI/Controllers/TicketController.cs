@@ -120,5 +120,13 @@ namespace EventManagementAPI.Controllers{
             await _ticketRepository.DeleteTicket(t);
             return Ok(t);
         }
+
+        [HttpGet("GetMyTickets")]
+        public async Task<IActionResult> GetMyTickets([FromQuery] int eventId, int customerId)
+        {
+            var l = await _ticketRepository.GetMyTickets(eventId, customerId);
+
+            return Ok(l);
+        }
     }
 }
