@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:under_the_c_app/api/comment_requests.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment_card.dart';
+import 'package:under_the_c_app/types/events/comment_type.dart';
 
-class Comment extends StatefulWidget {
+class Comment extends ConsumerStatefulWidget {
   const Comment({Key? key}) : super(key: key);
 
   @override
   _CommentState createState() => _CommentState();
 }
 
-class _CommentState extends State<Comment> {
-  FocusNode _commentFocusNode = FocusNode();
+class _CommentState extends ConsumerState<Comment> {
+  final FocusNode _commentFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -33,7 +36,7 @@ class _CommentState extends State<Comment> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // title
-        Text(
+        const Text(
           "Comments",
           style: TextStyle(
             fontSize: 20,
@@ -41,7 +44,7 @@ class _CommentState extends State<Comment> {
             color: Color.fromARGB(221, 5, 5, 5),
           ),
         ),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         // "What do you want to talk about" seciton
         Column(
           children: [
@@ -94,7 +97,10 @@ class _CommentState extends State<Comment> {
             ),
             if (_commentFocusNode.hasFocus)
               ElevatedButton(
-                onPressed: () => (),
+                onPressed: () async {
+                  List<CommentT> comments = await getAllComments("23");
+                  print("comments");
+                },
                 child: const Text("Submit"),
               )
           ],

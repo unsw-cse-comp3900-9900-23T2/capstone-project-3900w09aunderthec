@@ -20,7 +20,7 @@ Future<List<CommentT>> getAllComments(String eventId) async {
       final List<CommentT> events = jsonList
           .map((json) => backendDataSingleCommentToComment(json))
           .toList();
-      return backendDataCommentListToComment(events);
+      return events;
     } else {
       throw Exception(
           'comment.dart.getEvents: Server returned status code ${response.statusCode}');
