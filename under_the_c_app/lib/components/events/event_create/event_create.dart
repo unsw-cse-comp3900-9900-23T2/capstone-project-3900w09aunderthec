@@ -402,7 +402,10 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                         final uid = sessionVariables.uid.toString();
                         ref
                             .read(eventsByUserProvider(uid).notifier)
-                            .fetchEvents(uid);
+                            .fetchEvents(uid)
+                            .then((_) {
+                          context.go(AppRoutes.events);
+                        });
                       },
                     );
                   }
