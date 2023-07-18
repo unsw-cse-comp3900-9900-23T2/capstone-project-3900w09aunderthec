@@ -35,35 +35,6 @@ Future<List<CommentT>> getAllComments(String eventId,
   }
 }
 
-// Future<List<CommentT>> getCommentById(String eventId,
-//     {String? sortby, String? commentId}) async {
-//   final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getComments,
-//       {"eventId": eventId, "sortby": sortby, "inReplyToComment": commentId});
-//   try {
-//     final response = await http.get(
-//       registerUrl,
-//       headers: APIRoutes.headers,
-//     );
-
-//     if (response.statusCode == 200) {
-//       final List<dynamic> jsonList = jsonDecode(response.body);
-//       final List<CommentT> events = jsonList
-//           .map((json) => backendDataSingleCommentToComment(json))
-//           .toList();
-//       return events;
-//     } else {
-//       throw Exception(
-//           'comment.dart.getEvents: Server returned status code ${response.statusCode}');
-//     }
-//   } on SocketException catch (e) {
-//     throw Exception('comment.dart.getAllcomments: Network error $e');
-//   } on HttpException catch (e) {
-//     throw Exception('comment.dart.getAllcomments: Http Exception error $e');
-//   } catch (e) {
-//     throw Exception('comment.dart.getAllcomments: Unknown error $e');
-//   }
-// }
-
 Future<CommentT> createComment(String eventId,
     {String? commentId, required String comment}) async {
   final uid = sessionVariables.uid;
@@ -96,7 +67,7 @@ Future<CommentT> createComment(String eventId,
   }
 }
 
-Future<void> likeComment(String commentId) async {
+Future<void> likeCommentAPI(String commentId) async {
   final uid = sessionVariables.uid;
   final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.likeComment);
   try {
@@ -122,7 +93,7 @@ Future<void> likeComment(String commentId) async {
   }
 }
 
-Future<void> dislikeComment(String commentId) async {
+Future<void> dislikeCommentAPI(String commentId) async {
   final uid = sessionVariables.uid;
   final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.dislikeComment);
   try {

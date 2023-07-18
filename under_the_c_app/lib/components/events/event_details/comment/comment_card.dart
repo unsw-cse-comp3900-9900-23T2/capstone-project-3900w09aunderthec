@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/user_request.dart';
+import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 import 'package:under_the_c_app/types/users/customer_type.dart';
 
@@ -38,13 +39,24 @@ class CommentCardState extends ConsumerState<CommentCard> {
 
   void toggleThumbLike() {
     setState(() {
-      thumbLikeSelected = !thumbLikeSelected;
+      // initailize once only
+      if (!thumbLikeSelected) {
+        ref
+            .read(commentsProvider(widget.comment.eventId).notifier)
+            .likeComment(widget.comment.id!);
+      }
+      thumbLikeSelected = true;
     });
   }
 
   void toggleThumbDislike() {
     setState(() {
-      thumbDislikeSelected = !thumbDislikeSelected;
+      if (!thumbDislikeSelected) {
+        ref
+            .read(commentsProvider(widget.comment.eventId).notifier)
+            .dislikeComment(widget.comment.id!);
+      }
+      thumbDislikeSelected = true;
     });
   }
 
@@ -139,7 +151,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
                                   : Colors.grey,
                             ),
                             Text(widget.comment.nDislikes.toString(),
-                                style:  const TextStyle(color: Colors.grey))
+                                style: const TextStyle(color: Colors.grey))
                           ],
                         ),
                         const SizedBox(width: 12),
