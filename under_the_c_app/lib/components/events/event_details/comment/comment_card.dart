@@ -1,7 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CommentCart extends StatelessWidget {
+class CommentCart extends ConsumerStatefulWidget {
   const CommentCart({super.key});
+
+  @override
+  CommentCartState createState() => CommentCartState();
+}
+
+class CommentCartState extends ConsumerState<CommentCart> {
+  bool thumbLikeSelected = false;
+  bool thumbDislikeSelected = false;
+  bool commentSelected = false;
+  int nLikes = 0;
+  int nDislikes = 0;
+  int nComment = 0;
+
+  @override
+  initState() {
+    super.initState();
+  }
+
+  void incrementLikes() {
+    setState(() {
+      nLikes++;
+    });
+  }
+
+  void decrementLikes() {
+    setState(() {
+      nLikes--;
+    });
+  }
+
+  void incrementDislikes() {
+    setState(() {
+      nDislikes++;
+    });
+  }
+
+  void decrementDislikes() {
+    setState(() {
+      nDislikes--;
+    });
+  }
+
+  void incrementNComments() {
+    setState(() {
+      nComment++;
+    });
+  }
+
+  void decrementNComments() {
+    setState(() {
+      nComment--;
+    });
+  }
+
+  void toggleThumbLike() {
+    setState(() {
+      thumbLikeSelected = !thumbLikeSelected;
+    });
+  }
+
+  void toggleThumbDislike() {
+    setState(() {
+      thumbDislikeSelected = !thumbDislikeSelected;
+    });
+  }
+
+  void toggleComment() {
+    setState(() {
+      commentSelected = !commentSelected;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,21 +119,50 @@ class CommentCart extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () => {},
-                      icon: Icon(Icons.favorite_border),
-                      color: Colors.grey,
+                      onPressed: () => {
+                        toggleThumbLike(),
+                        thumbLikeSelected ? incrementLikes() : decrementLikes()
+                      },
+                      icon: Icon(thumbLikeSelected
+                          ? Icons.thumb_up
+                          : Icons.thumb_up_alt_outlined),
+                      color: thumbLikeSelected
+                          ? const Color.fromARGB(255, 255, 17, 0)
+                          : Colors.grey,
                     ),
-                    Text("12", style: TextStyle(color: Colors.grey))
+                    Text("$nLikes", style: TextStyle(color: Colors.grey))
                   ],
                 ),
-                SizedBox(width: 14),
+                SizedBox(width: 12),
                 Row(
                   children: [
                     IconButton(
-                        onPressed: () => {},
-                        icon: Icon(Icons.comment_outlined),
-                        color: Colors.grey),
-                    Text("5", style: TextStyle(color: Colors.grey))
+                      onPressed: () => {
+                        toggleThumbDislike(),
+                        thumbDislikeSelected
+                            ? incrementDislikes()
+                            : decrementDislikes()
+                      },
+                      icon: Icon(thumbDislikeSelected
+                          ? Icons.thumb_down
+                          : Icons.thumb_down_alt_outlined),
+                      color: thumbDislikeSelected ? Colors.blue : Colors.grey,
+                    ),
+                    Text("$nDislikes", style: TextStyle(color: Colors.grey))
+                  ],
+                ),
+                const SizedBox(width: 12),
+                Row(
+                  children: [
+                    IconButton(
+                        onPressed: () => {toggleComment()},
+                        icon: Icon(commentSelected
+                            ? Icons.comment
+                            : Icons.comment_outlined),
+                        color: commentSelected
+                            ? Color.fromARGB(255, 149, 37, 176)
+                            : Colors.grey),
+                    Text("$nComment", style: TextStyle(color: Colors.grey))
                   ],
                 )
               ],
