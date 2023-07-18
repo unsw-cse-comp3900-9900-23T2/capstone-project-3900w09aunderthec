@@ -98,8 +98,13 @@ class _CommentState extends ConsumerState<Comment> {
             if (_commentFocusNode.hasFocus)
               ElevatedButton(
                 onPressed: () async {
-                  CommentT comments = await createComment("23", commentId: "2",
-                      comment: "I think this is an average concert");
+                  // CommentT comments = await createComment("23", commentId: "2",
+                  //     comment: "I think this is an average concert");
+
+                  // CommentT comments = await createComment("23", commentId: "2",
+                  //     comment: "I think this is an average concert");
+
+                  List<CommentT> comments = await getAllComments("23", commentId: "1");
                   print("comments");
                 },
                 child: const Text("Submit"),

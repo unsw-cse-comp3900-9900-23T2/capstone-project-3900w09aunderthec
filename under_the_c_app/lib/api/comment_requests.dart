@@ -6,9 +6,10 @@ import 'package:under_the_c_app/api/converters/comment_converter.dart';
 import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
-Future<List<CommentT>> getAllComments(String eventId) async {
-  final registerUrl = Uri.https(
-      APIRoutes.BASE_URL, APIRoutes.getComments, {"eventId": eventId});
+Future<List<CommentT>> getAllComments(String eventId,
+    {String? sortby, String? commentId}) async {
+  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getComments,
+      {"eventId": eventId, "sortby": sortby, "inReplyToComment": commentId});
   try {
     final response = await http.get(
       registerUrl,
@@ -58,10 +59,10 @@ Future<CommentT> createComment(String eventId,
       throw Exception(response.body);
     }
   } on SocketException catch (e) {
-    throw Exception('event.dart.createEvent: Network error $e');
+    throw Exception('comment.dart.createcomment: Network error $e');
   } on HttpException catch (e) {
-    throw Exception('event.dart.createEvent: Http Exception error $e');
+    throw Exception('comment.dart.createcomment: Http Exception error $e');
   } catch (e) {
-    throw Exception('event.dart.createEvent: Unknown error $e');
+    throw Exception('comment.dart.createcomment: Unknown error $e');
   }
 }
