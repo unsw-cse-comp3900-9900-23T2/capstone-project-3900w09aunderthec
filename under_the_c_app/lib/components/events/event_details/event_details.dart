@@ -219,8 +219,7 @@ class EventDetailsPage extends ConsumerWidget {
                       onPressed: () {
                         if (sessionVariables.sessionIsHost &&
                             sessionVariables.navLocation == 0) {
-                          context.go(AppRoutes.eventBook(
-                              event.eventId!, event.title, event.venue));
+                          context.go(AppRoutes.ticketCreate(event.eventId!));
                         } else if (!sessionVariables.sessionIsHost) {
                           context.go(AppRoutes.eventBook(
                               event.eventId!, event.title, event.venue));

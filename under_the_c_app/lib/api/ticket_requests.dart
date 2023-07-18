@@ -27,18 +27,22 @@ Future<List<Tickets>> getTickets(String eventId) async {
   }
 }
 
-Future<void> createTickets(Tickets newTicket, int stock) async {
+Future<void> createTickets(
+    Map<String, dynamic> ticketData, String eventId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.createTickets);
+
+  Map<String, dynamic> jsonBody = {
+    'price': int.parse(ticketData['price']),
+    'name': ticketData['name'],
+    'eventId': int.parse(eventId),
+    'stock': int.parse(ticketData['amount']),
+  };
+
   try {
     final response = await http.post(
       requestUrl,
       headers: APIRoutes.headers,
-      body: jsonEncode({
-        "price": newTicket.price.toInt(),
-        "name": newTicket.name,
-        "eventId": newTicket.eventIdRef,
-        "stock": stock
-      }),
+      body: jsonEncode(jsonBody),
     );
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
