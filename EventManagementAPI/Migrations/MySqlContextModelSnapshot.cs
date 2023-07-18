@@ -124,10 +124,6 @@ namespace EventManagementAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("commentId");
-
-                    b.HasIndex("customerId");
-
                     b.ToTable("commentDislikes");
                 });
 
@@ -144,10 +140,6 @@ namespace EventManagementAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("commentId");
-
-                    b.HasIndex("customerId");
 
                     b.ToTable("commentLikes");
                 });
@@ -407,7 +399,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Booking", "booking")
-                        .WithMany()
+                        .WithMany("bookingTickets")
                         .HasForeignKey("bookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -432,7 +424,7 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("EventManagementAPI.Models.Event", "eventShow")
-                        .WithMany("comments")
+                        .WithMany()
                         .HasForeignKey("eventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -446,44 +438,6 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("eventShow");
 
                     b.Navigation("inReplyTo");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.CommentDislike", b =>
-                {
-                    b.HasOne("EventManagementAPI.Models.Comment", "comment")
-                        .WithMany()
-                        .HasForeignKey("commentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventManagementAPI.Models.Customer", "customer")
-                        .WithMany()
-                        .HasForeignKey("customerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("comment");
-
-                    b.Navigation("customer");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.CommentLike", b =>
-                {
-                    b.HasOne("EventManagementAPI.Models.Comment", "comment")
-                        .WithMany()
-                        .HasForeignKey("commentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventManagementAPI.Models.Customer", "customer")
-                        .WithMany()
-                        .HasForeignKey("customerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("comment");
-
-                    b.Navigation("customer");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.CreditMoney", b =>
@@ -508,7 +462,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Hoster", "host")
-                        .WithMany("events")
+                        .WithMany()
                         .HasForeignKey("hosterFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -538,7 +492,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.Reply", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Comment", "comment")
-                        .WithMany("replies")
+                        .WithMany()
                         .HasForeignKey("commentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -592,21 +546,14 @@ namespace EventManagementAPI.Migrations
                     b.Navigation("toEvent");
                 });
 
-            modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
+            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
                 {
-                    b.Navigation("replies");
+                    b.Navigation("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>
                 {
-                    b.Navigation("comments");
-
                     b.Navigation("tickets");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.Hoster", b =>
-                {
-                    b.Navigation("events");
                 });
 #pragma warning restore 612, 618
         }
