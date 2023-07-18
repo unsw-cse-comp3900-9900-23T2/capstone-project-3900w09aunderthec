@@ -86,7 +86,6 @@ class MyCustomForm extends ConsumerStatefulWidget {
 // Create event form
 class MyCustomFormState extends ConsumerState<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
-
   String title = '';
   String time = '';
   DateTime? chosenDate = DateTime.now();
@@ -382,7 +381,9 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
-                    ref.read(eventsProvider.notifier).addEvent(
+                    ref
+                        .read(eventsProvider.notifier)
+                        .addEvent(
                           Event(
                             hostuid: sessionVariables.uid.toString(),
                             title: title,
@@ -394,12 +395,16 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             tags: [tags],
                             price: 0,
                           ),
-                        );
-                    final uid = sessionVariables.uid.toString();
-                    ref.read(eventsProvider.notifier).fetchEvents;
-                    ref
-                        .read(eventsByUserProvider(uid).notifier)
-                        .fetchEvents(uid);
+                        )
+                        // avoiding the currency issue of fetching events happening after add events
+                        .then(
+                      (_) {
+                        final uid = sessionVariables.uid.toString();
+                        ref
+                            .read(eventsByUserProvider(uid).notifier)
+                            .fetchEvents(uid);
+                      },
+                    );
                   }
                 },
                 child: const Text('Submit'),
