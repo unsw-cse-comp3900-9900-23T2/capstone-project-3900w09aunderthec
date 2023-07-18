@@ -3,17 +3,17 @@ import 'package:under_the_c_app/types/events/comment_type.dart';
 List<CommentT> backendDataCommentListToComment(data) {
   List<CommentT> comments = [];
   for (var comment in data) {
-    comment.add(
-      CommentT(
-        content: comment.comment,
-        commentId: comment.id.toString(),
-        uid: comment.customerId.toString(),
-        replyToId: comment.inReplyTo.toString(),
-        nLikes: comment.nLikes,
-        nDislikes: comment.nDislikes,
-        createdTime: DateTime.parse(comment.createdTime),
-      ),
-    );
+    comments.add(backendDataSingleCommentToComment(comment)
+        // CommentT(
+        //   content: comment.comment,
+        //   id: comment.id.toString(),
+        //   uid: comment.customerId.toString(),
+        //   replyToId: comment.inReplyTo.toString(),
+        //   nLikes: comment.nLikes,
+        //   nDislikes: comment.nDislikes,
+        //   createdTime: DateTime.parse(comment.createdTime),
+        // ),
+        );
   }
   return comments;
 }
@@ -21,8 +21,8 @@ List<CommentT> backendDataCommentListToComment(data) {
 //   return CommentT(
 CommentT backendDataSingleCommentToComment(data) {
   return CommentT(
+    id: data['id'].toString(),
     content: data['comment'],
-    commentId: data['id'].toString(),
     uid: data['customerId'].toString(),
     replyToId: data['inReplyTo'].toString(),
     nLikes: data['nLikes'],
