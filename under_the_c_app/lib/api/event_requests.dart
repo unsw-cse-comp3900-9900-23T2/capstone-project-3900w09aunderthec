@@ -127,7 +127,7 @@ Future<void> modifyEvent(Event eventInfo) async {
           "uid": uid,
           "eventId": eventInfo.eventId,
           "title": eventInfo.title,
-          "time": eventInfo.time,
+          "eventTime": eventInfo.time,
           "venue": eventInfo.venue,
           "description": eventInfo.description,
           "isDirectRefunds": eventInfo.isDirectRefunds,
