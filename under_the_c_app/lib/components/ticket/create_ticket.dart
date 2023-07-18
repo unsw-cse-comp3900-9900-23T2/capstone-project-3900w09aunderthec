@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/config/routes/routes.dart';
 
 import '../../api/ticket_requests.dart';
 
@@ -62,6 +64,7 @@ class CreateTicket extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () {
                   createTickets(ticketData, eventId);
+                  context.go(AppRoutes.events);
                 },
                 child: const Text('Create Ticket'),
               ),

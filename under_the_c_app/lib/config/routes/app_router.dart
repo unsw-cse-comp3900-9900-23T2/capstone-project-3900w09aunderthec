@@ -146,9 +146,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-            path: AppRoutes.ticketConfirmation,
+            path: AppRoutes.ticketConfirmation(':eventName'),
             pageBuilder: (context, state) {
-              return const MaterialPage(child: TicketConfirmation());
+              final eventName = state.pathParameters['eventName'].toString();
+              return MaterialPage(
+                  child: TicketConfirmation(eventName: eventName));
             },
           ),
           GoRoute(

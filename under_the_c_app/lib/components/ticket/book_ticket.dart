@@ -129,7 +129,7 @@ class BookTicket extends ConsumerWidget {
                   onPressed: () {
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
-                      context.go(AppRoutes.ticketConfirmation);
+                      context.go(AppRoutes.ticketConfirmation(eventTitle));
                       purchaseTickets(selectedTickets);
                     }
                   },

@@ -34,6 +34,7 @@ class AppRoutes {
   static const String analytics = '/analytics';
 
   // tickets
-  static const String ticketConfirmation = '/ticket/confirmation';
+  static String ticketConfirmation(String eventName) =>
+      '/ticket/confirmation/$eventName';
   static String ticketCreate(String id) => '/ticket/create/$id';
 }

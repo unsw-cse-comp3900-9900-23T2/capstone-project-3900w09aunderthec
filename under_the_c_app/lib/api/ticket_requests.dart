@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:under_the_c_app/config/session_variables.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/types/tickets/tickets_type.dart';
-import '../components/ticket/book_ticket.dart';
 
 Future<List<Tickets>> getTickets(String eventId) async {
   final requestUrl =
