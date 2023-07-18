@@ -15,6 +15,7 @@ class Comment extends ConsumerStatefulWidget {
 
 class _CommentState extends ConsumerState<Comment> {
   final FocusNode _commentFocusNode = FocusNode();
+  final TextEditingController commentController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -90,6 +91,7 @@ class _CommentState extends ConsumerState<Comment> {
             ),
             // my comment section
             TextField(
+              controller: commentController,
               focusNode: _commentFocusNode,
               maxLines: null,
               decoration: const InputDecoration(
@@ -101,15 +103,17 @@ class _CommentState extends ConsumerState<Comment> {
             ),
             if (_commentFocusNode.hasFocus)
               ElevatedButton(
-                onPressed: () async {
-                  // CommentT comments = await createComment("23", commentId: "2",
-                  //     comment: "I think this is an average concert");
+                onPressed: () {
+                  // create comment in the root
+                  // await createComment(widget.eventId,
+                  //     comment: commentController.text);
+                  ref
+                      .read(commentsProvider(widget.eventId).notifier)
+                      .addComment(comment: commentController.text);
 
-                  // CommentT comments = await createComment("23", commentId: "2",
-                  //     comment: "I think this is an average concert");
-
-                  // List<CommentT> comments = await getAllComments("23", commentId: "1");
-                  // print("comments");
+                  // clear the text field and unfocus the text field to hide keyboard
+                  commentController.clear();
+                  _commentFocusNode.unfocus();
                 },
                 child: const Text("Submit"),
               )
