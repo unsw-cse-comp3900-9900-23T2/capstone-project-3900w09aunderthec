@@ -319,7 +319,6 @@ class MyCustomForm extends ConsumerWidget {
                           );
 
                           _formKey.currentState!.save();
-
                           time =
                               "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
                           ref.read(eventsProvider.notifier).changeEvent(

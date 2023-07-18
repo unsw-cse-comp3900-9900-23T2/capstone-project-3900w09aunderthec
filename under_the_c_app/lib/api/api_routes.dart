@@ -28,6 +28,5 @@ class APIRoutes {
   static const String getTickets = '/Ticket/ShowTickets';
   static const String createTickets = '/Ticket/CreateTickets';
   static const String deleteTickets = '/Ticket/DeleteTickets';
-
-  // ============================TICKET ROUTES==================================
+  static const String bookTickets = '/Ticket/BookTickets';
 }

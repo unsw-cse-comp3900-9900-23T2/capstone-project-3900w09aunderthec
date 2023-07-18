@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using EventManagementAPI.DTOs;
 
 namespace EventManagementAPI.Controllers{
 
@@ -16,12 +17,12 @@ namespace EventManagementAPI.Controllers{
         public int stock { get; set; }
     };
 
-    public class UpdateTicketsRequestBody
+    public class ModifyTicketsRequestBody
     {
         public int ticketId { get; set; }
-        public double price { get; set; }
-        public string name { get; set; }
-        public int stock { get; set; }
+        public double? price { get; set; }
+        public string? name { get; set; }
+        public int? stock { get; set; }
     };
 
     public class DeleteTicketsRequestBody
@@ -87,21 +88,24 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpPut("ModifyTickets")]
-        public async Task<IActionResult> ModifyTickets([FromBody] UpdateTicketsRequestBody requestBody)
+        public async Task<IActionResult> ModifyTickets([FromBody] ModifyTicketsRequestBody requestBody)
         {
             var t = await _ticketRepository.GetTicketById(requestBody.ticketId);
             if (t == null)
             {
-                return NotFound();
+                return NotFound("That ticket does not exist");
             }
 
-            t.price = requestBody.price;
-            t.name = requestBody.name;
-            t.stock = requestBody.stock;
+           TicketModificationDTO mod = new TicketModificationDTO
+            {
+                ticketId = requestBody.ticketId,
+                name = requestBody.name,
+                price = requestBody.price,
+                stock = requestBody.stock
+            };
 
-            await _ticketRepository.ModifyTicket(t);
-
-            return Ok(t);
+            await _ticketRepository.ModifyTicket(mod);
+            return Ok(mod);
         }
 
         [HttpDelete("DeleteTickets")]

@@ -215,7 +215,8 @@ class EventDetailsPage extends ConsumerWidget {
                     padding: const EdgeInsets.all(30),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go(AppRoutes.eventBook(event.eventId!));
+                        context.go(AppRoutes.eventBook(
+                            event.eventId!, event.title, event.venue));
                       },
                       style: TextButton.styleFrom(
                         minimumSize: const Size(200, 0),

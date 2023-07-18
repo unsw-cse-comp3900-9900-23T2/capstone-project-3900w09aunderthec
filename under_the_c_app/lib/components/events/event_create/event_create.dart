@@ -52,17 +52,12 @@ class MyCustomForm extends ConsumerStatefulWidget {
 // Create event form
 class MyCustomFormState extends ConsumerState<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
-
   String title = '';
   String time = '';
   DateTime? chosenDate;
   TimeOfDay? dayTime;
   String venue = '';
   String description = '';
-  // String ticketType = '';
-  // String ticketPrice = '';
-  // bool allowRefunds = true;
-  // bool privateEvent = true;
   String tags = '';
   bool isDirectRefunds = true;
   bool isPrivateEvent = true;
@@ -253,66 +248,66 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               )),
 
           // Ticket type
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: Text("Tickets",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Table(
-              border: TableBorder.all(color: Colors.black),
-              columnWidths: const <int, TableColumnWidth>{
-                0: FlexColumnWidth(),
-              },
-              children: [
-                const TableRow(
-                  children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Ticket Type'),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: Text('Price'),
-                    )
-                  ],
-                ),
-                TableRow(children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Type"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          width: 5,
-                        )),
-                        hintText: "Amount"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill out the required field';
-                      }
-                      return null;
-                    },
-                  ),
-                ]),
-              ],
-            ),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          //   child: Text("Tickets",
+          //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          // ),
+          // Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          //   child: Table(
+          //     border: TableBorder.all(color: Colors.black),
+          //     columnWidths: const <int, TableColumnWidth>{
+          //       0: FlexColumnWidth(),
+          //     },
+          //     children: [
+          //       const TableRow(
+          //         children: [
+          //           Padding(
+          //             padding:
+          //                 EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          //             child: Text('Ticket Type'),
+          //           ),
+          //           Padding(
+          //             padding:
+          //                 EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          //             child: Text('Price'),
+          //           )
+          //         ],
+          //       ),
+          //       TableRow(children: [
+          //         TextFormField(
+          //           decoration: const InputDecoration(
+          //               border: OutlineInputBorder(
+          //                   borderSide: BorderSide(
+          //                 width: 5,
+          //               )),
+          //               hintText: "Type"),
+          //           validator: (value) {
+          //             if (value == null || value.isEmpty) {
+          //               return 'Please fill out the required field';
+          //             }
+          //             return null;
+          //           },
+          //         ),
+          //         TextFormField(
+          //           decoration: const InputDecoration(
+          //               border: OutlineInputBorder(
+          //                   borderSide: BorderSide(
+          //                 width: 5,
+          //               )),
+          //               hintText: "Amount"),
+          //           validator: (value) {
+          //             if (value == null || value.isEmpty) {
+          //               return 'Please fill out the required field';
+          //             }
+          //             return null;
+          //           },
+          //         ),
+          //       ]),
+          //     ],
+          //   ),
+          // ),
           // FormFields(
           //     fieldName: "Refund Policy", hint: ""),
           // Event Tags
@@ -361,7 +356,10 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
-                    ref.read(eventsProvider.notifier).addEvent(
+                    print(isPrivateEvent);
+                    ref
+                        .read(eventsProvider.notifier)
+                        .addEvent(
                           Event(
                             hostuid: sessionVariables.uid.toString(),
                             title: title,
@@ -373,14 +371,19 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             tags: [tags],
                             price: 0,
                           ),
-                        );
-                    final uid = sessionVariables.uid.toString();
-                    ref.read(eventsProvider.notifier).fetchEvents;
-                    ref
-                        .read(eventsByUserProvider(uid).notifier)
-                        .fetchEvents(uid);
-
-                    context.go(AppRoutes.events);
+                        )
+                        // avoiding the currency issue of fetching events happening after add events
+                        .then(
+                      (_) {
+                        final uid = sessionVariables.uid.toString();
+                        ref
+                            .read(eventsByUserProvider(uid).notifier)
+                            .fetchEvents(uid)
+                            .then((_) {
+                          context.go(AppRoutes.events);
+                        });
+                      },
+                    );
                   }
                 },
                 child: const Text('Submit'),
