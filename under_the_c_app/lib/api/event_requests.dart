@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/api/converters/event_converter.dart';

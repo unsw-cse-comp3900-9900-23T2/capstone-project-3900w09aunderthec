@@ -4,9 +4,9 @@ class CommentT {
   final String uid;
   final String eventId;
   final String replyToId;
-  final int nLikes;
-  final int nDislikes;
-  final DateTime createdTime;
+  final int? nLikes;
+  final int? nDislikes;
+  final DateTime? createdTime;
 
   CommentT({
     String? eventId,
@@ -14,11 +14,15 @@ class CommentT {
     required this.id,
     required this.uid,
     required this.replyToId,
-    required this.nLikes,
-    required this.nDislikes,
-    required this.createdTime,
-  }) : eventId = eventId ?? "";
+    int? nLikes,
+    int? nDislikes,
+    DateTime? createdTime,
+  })  : eventId = eventId ?? "",
+        nLikes = nLikes ?? 0,
+        nDislikes = nDislikes ?? 0,
+        createdTime = createdTime ?? DateTime.now();
 }
+
 
 // class BackendCommentData {
 //   final String? commentId;
