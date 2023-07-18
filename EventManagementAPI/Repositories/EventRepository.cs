@@ -2,7 +2,6 @@
 using EventManagementAPI.Models;
 using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
-using EventManagementAPI.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.Json;
