@@ -19,10 +19,10 @@ namespace EventManagementAPI.Controllers
         public string comment { get; set; }
     }
 
-    public class GetCommentRequestBody
-    {
-        public int commentId { get; set; }
-    }
+    // public class GetCommentRequestBody
+    // {
+    //     public int commentId { get; set; }
+    // }
 
     public class LikeDislikeCommentRequestBody
     {
@@ -40,10 +40,10 @@ namespace EventManagementAPI.Controllers
     //     public int commentDislikeId { get; set; }
     // }
 
-    public class RetrieveCommentBody
-    {
-        public int commentId { get; set; }
-    }
+    // public class RetrieveCommentBody
+    // {
+    //     public int commentId { get; set; }
+    // }
 
     // public class ReplyRequestBody
     // {
@@ -69,14 +69,14 @@ namespace EventManagementAPI.Controllers
             _commentRepository = commentRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetEventComments([FromQuery] int eventId, [FromQuery] string sortby, [FromQuery] int? inReplyToComment)
+        [HttpGet("ListComments")]
+        public async Task<IActionResult> ListComments([FromQuery] int? eventId, [FromQuery] string? sortby, [FromQuery] int? inReplyToComment)
         {
             var eventComments = await _commentRepository.GetAllComments(sortby, eventId, inReplyToComment);
             return Ok(eventComments);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetComment/{id}")]
         public async Task<IActionResult> GetCommentDetails(int id)
         {
             var comment = await _commentRepository.GetCommentById(id);
@@ -89,13 +89,14 @@ namespace EventManagementAPI.Controllers
             return Ok(comment);
         }
         
-        [HttpPost]
+        [HttpPost("PostComment")]
         public async Task<IActionResult> CreateEventComment([FromBody] CreateCommentsRequestBody requestBody)
         {
             var comment = requestBody.comment;
             var commenterId = requestBody.commenterId;
             var commentId = requestBody.commentId;
             var eventId = requestBody.eventId;
+
 
             var eventComment = await _commentRepository.CreateComment(commenterId, eventId, commentId, comment);
             return Ok(eventComment);
@@ -139,19 +140,18 @@ namespace EventManagementAPI.Controllers
         //     return Ok(undoDislikeComment);
         // }
 
-        [HttpDelete("RetrieveComment")]
-        public async Task<IActionResult> RetrieveComment([FromBody] RetrieveCommentBody requestBody)
-        {
-            var commentId = requestBody.commentId;
-            var retrieveCommentResult = await _commentRepository.RetrieveComment(commentId);
+        // [HttpGet("GetComment")]
+        // public async Task<IActionResult> RetrieveComment([FromQuery] int commentId)
+        // {
+        //     var retrieveCommentResult = await _commentRepository.RetrieveComment(commentId);
 
-            if (retrieveCommentResult == null)
-            {
-                return NotFound();
-            }
+        //     if (retrieveCommentResult == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-            return Ok(retrieveCommentResult);
-        }
+        //     return Ok(retrieveCommentResult);
+        // }
 
         // [HttpPost("Reply")]
         // public async Task<IActionResult> Reply([FromBody] ReplyRequestBody requestBody)

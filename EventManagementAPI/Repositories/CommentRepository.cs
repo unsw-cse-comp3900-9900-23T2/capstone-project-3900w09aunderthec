@@ -16,9 +16,13 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Comment?>> GetAllComments(string sortBy, int eventId, int? inReplyToComment)
+        public async Task<List<Comment?>> GetAllComments(string? sortBy, int? eventId, int? inReplyToComment)
         {
-            IQueryable<Comment> query = _dbContext.comments.Where(c => c.eventId == eventId && c.commentId == inReplyToComment);
+            if (eventId is null && inReplyToComment is null)
+            { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified");}
+
+            IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == inReplyToComment || c.eventId == eventId);
+            if (query is null) { throw new BadHttpRequestException("Event or comment to reply to does not exist");}
 
             switch (sortBy)
             {

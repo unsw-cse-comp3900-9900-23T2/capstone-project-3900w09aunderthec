@@ -7,7 +7,7 @@ namespace EventManagementAPI.Repositories
 {
     public interface ICommentRepository
     {
-        public Task<List<Comment?>> GetAllComments(string sortBy, int eventId, int? inReplyToComment);
+        public Task<List<Comment?>> GetAllComments(string? sortBy, int? eventId, int? inReplyToComment);
         public Task<Comment?> GetCommentById(int id);
         public Task<Comment?> CreateComment(int customerId, int eventId, int? commentId, string comment);
         public Task<string> ToggleLikeComment(int customerId, int commentId);
