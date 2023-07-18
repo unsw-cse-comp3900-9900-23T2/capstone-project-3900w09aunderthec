@@ -407,7 +407,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Booking", "booking")
-                        .WithMany("bookingTickets")
+                        .WithMany()
                         .HasForeignKey("bookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -590,11 +590,6 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("toEvent");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
-                {
-                    b.Navigation("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
