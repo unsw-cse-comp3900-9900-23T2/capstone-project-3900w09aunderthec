@@ -51,8 +51,9 @@ class ViewBookingPage extends ConsumerWidget {
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: GestureDetector(
                   onTap: () {
-                    // context.go(AppRoutes.eventDetails(event.eventId!),
-                    //     extra: 'Details');
+                    // Go to event
+                    // Need event id
+                    // context.go(AppRoutes.eventDetails(event.eventId!), extra: 'Details');
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8),
@@ -61,54 +62,12 @@ class ViewBookingPage extends ConsumerWidget {
                         "Booking Id: ${booking.id}",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Card(
-                          color: const Color.fromARGB(255, 241, 241, 241),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.all(15),
-                                          child: Icon(
-                                            Icons.confirmation_num_outlined,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.1,
-                                          ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              "Event Name: ${booking.eventName}",
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            const Text("Event Time: "),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const Text("{NoTickets} Tickets"),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  child: ClipRRect(
-                                    child: Image.asset(
-                                      "images/events/money-event.jpg",
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ]))
+                      BookingCard(
+                        eventName: booking.eventName,
+                        imageUrl: "images/events/money-event.jpg",
+                        date: "27/08/23",
+                        noTicket: "3",
+                      ),
                     ]),
                   ),
                 ),
@@ -118,5 +77,71 @@ class ViewBookingPage extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+class BookingCard extends StatelessWidget {
+  final String eventName;
+  final String imageUrl;
+  final String date;
+  final String noTicket;
+
+  const BookingCard({
+    Key? key,
+    required this.eventName,
+    required this.imageUrl,
+    required this.date,
+    required this.noTicket,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        color: const Color.fromARGB(255, 241, 241, 241),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.confirmation_num_outlined,
+                      size: MediaQuery.of(context).size.width * 0.1,
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        "Event Name: $eventName",
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text("Event Time: $date"),
+                    ],
+                  ),
+                ],
+              ),
+              Text("$noTicket Tickets"),
+              ElevatedButton(
+                onPressed: () {
+                  // Go to my tickets
+                  // context.go(AppRoutes.home);
+                },
+                child: const Text('View Tickets'),
+              ),
+            ],
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.4,
+            child: ClipRRect(
+              child: Image.asset(
+                imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ]));
   }
 }
