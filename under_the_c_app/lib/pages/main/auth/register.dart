@@ -62,21 +62,19 @@ class _RegisterPageState extends State<RegisterPage> {
         bool isHost = _userValue == 1 ? false : true;
 
         final registerUrl =
-        Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser');
+            Uri.https('10.0.2.2:7161', '/Authentication/RegisterUser');
 
-        final response = await http.post(
-          registerUrl,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json',
-            'Accept': '*/*'
-          },
-          body: jsonEncode({
-            'username': usernameController.text,
-            'email': emailController.text,
-            'isHost': isHost.toString()
-          })
-        );
+        final response = await http.post(registerUrl,
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              'Content-Type': 'application/json',
+              'Accept': '*/*'
+            },
+            body: jsonEncode({
+              'username': usernameController.text,
+              'email': emailController.text,
+              'isHost': isHost.toString()
+            }));
 
         // handle http response
         if (response.statusCode != 200) {

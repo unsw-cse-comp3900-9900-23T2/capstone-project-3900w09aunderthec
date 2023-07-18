@@ -68,23 +68,23 @@ Future<void> deleteTickets(int ticketId) async {
   }
 }
 
-void purchaseTickets() async {
+void purchaseTickets(Map<int, int> selectedTickets) async {
   final bookTicketUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.bookTickets);
-  final container = ProviderContainer();
-  var selectedTickets = container.read(selectedTicketsProvider);
 
   Map<String, dynamic> jsonBody = {
-    'uid': sessionVariables.uid,
-    'tickets': selectedTickets
+    'customerId': sessionVariables.uid,
+    'bookingTickets': selectedTickets.map(
+      (key, value) => MapEntry(key.toString(), value),
+    ),
+    'paymentMethod': 0
   };
 
   try {
     final response = await http.post(
       bookTicketUrl,
       headers: {
-        "Access-Control-Allow-Origin": "*",
         'Content-Type': 'application/json',
-        'Accept': '*/*'
+        'Accept': '*/*',
       },
       body: jsonEncode(jsonBody),
     );

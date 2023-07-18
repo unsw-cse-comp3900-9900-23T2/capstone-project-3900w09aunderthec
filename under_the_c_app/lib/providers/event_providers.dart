@@ -42,6 +42,23 @@ class EventsProvider extends StateNotifier<List<Event>> {
     }
   }
 
+  void removeEvent(Event event) {
+    cancelEvent(event);
+    state = [
+      for (final e in state)
+        if (e.eventId != event.eventId) e,
+    ];
+  }
+
+  void changeEvent(Event event) {
+    modifyEvent(event);
+    state = state.map((e) => e.eventId == event.eventId ? event : e).toList();
+    // final index = state.indexWhere((e) => e.eventId == event.eventId);
+    // if (index != -1) {
+    //   state = List.from(state)..[index] = event;
+    // }
+  }
+
   Future<void> fetchEvents() async {
     state = await getAllEvents();
     setEvents(state);
