@@ -78,10 +78,25 @@ class EventsProvider extends StateNotifier<List<Event>> {
           );
 
         state = sortedEvents;
+        break;
       case EventSortType.popularity:
+        final List<Event> sortedEvents = List.from(_allEvents)
+          ..sort(
+            (a, b) {
+              double aRating = a.rating ?? -10.0;
+              double bRating = b.rating ?? -10.0;
+              return aRating.compareTo(bRating);
+            },
+          );
         break;
 
       case EventSortType.price:
+        final List<Event> sortedEvents = List.from(_allEvents)
+          ..sort(
+            (a, b) {
+              return a.price.compareTo(b.price);
+            },
+          );
         break;
 
       default:
