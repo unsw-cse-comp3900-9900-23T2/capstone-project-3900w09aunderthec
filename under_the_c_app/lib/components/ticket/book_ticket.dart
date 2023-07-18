@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/api/send_email.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/ticket_providers.dart';
 import '../../api/ticket_requests.dart';
@@ -130,7 +129,6 @@ class BookTicket extends ConsumerWidget {
                   onPressed: () {
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
-                      sendEmail();
                       context.go(AppRoutes.ticketConfirmation);
                       purchaseTickets(selectedTickets);
                     }
