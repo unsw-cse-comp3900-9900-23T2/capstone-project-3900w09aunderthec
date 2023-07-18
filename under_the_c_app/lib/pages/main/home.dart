@@ -12,6 +12,9 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final events = ref.watch(eventsProvider);
+    final privateEvents = events
+        .where((event) => event.isPrivate == false)
+        .toList();
 
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -75,7 +78,7 @@ class HomePage extends ConsumerWidget {
           // for list of event cards
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-              final event = events[index];
+              final event = privateEvents[index];
               return SizedBox(
                 width: 375,
                 child: GestureDetector(
@@ -94,7 +97,7 @@ class HomePage extends ConsumerWidget {
                   ),
                 ),
               );
-            }, childCount: events.length),
+            }, childCount: privateEvents.length),
           )
         ],
       ),

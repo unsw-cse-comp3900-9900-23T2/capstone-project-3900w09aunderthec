@@ -98,7 +98,7 @@ Future<void> createEvent(Event eventInfo) async {
           "description": eventInfo.description,
           "isDirectRefunds": eventInfo.isDirectRefunds,
           "isPrivateEvent": eventInfo.isPrivate,
-          "createdTime": DateTime.now().toString(),
+          // "createdTime": DateTime.now().toString(),
           // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
           "tags": "tags"
         },
