@@ -33,13 +33,30 @@ class EventsProvider extends StateNotifier<List<Event>> {
 
   Future<void> addEvent(Event event) async {
     // do http calls to create events
-    await createEvent(event);
+    Event createdEvent = await createEvent(event);
 
     // add the events only if it's not a private event
-    if (event.isPrivate != null && !event.isPrivate!) {
-      state = [...state, event];
-      _allEvents = [..._allEvents, event];
+    if (createdEvent.isPrivate != null && !createdEvent.isPrivate!) {
+      state = [...state, createdEvent];
+      _allEvents = [..._allEvents, createdEvent];
     }
+  }
+
+  void removeEvent(Event event) {
+    cancelEvent(event);
+    state = [
+      for (final e in state)
+        if (e.eventId != event.eventId) e,
+    ];
+  }
+
+  void changeEvent(Event event) {
+    modifyEvent(event);
+    state = state.map((e) => e.eventId == event.eventId ? event : e).toList();
+    // final index = state.indexWhere((e) => e.eventId == event.eventId);
+    // if (index != -1) {
+    //   state = List.from(state)..[index] = event;
+    // }
   }
 
   Future<void> fetchEvents() async {

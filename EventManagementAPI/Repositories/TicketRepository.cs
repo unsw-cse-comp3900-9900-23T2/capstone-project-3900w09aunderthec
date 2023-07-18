@@ -55,5 +55,38 @@ namespace EventManagementAPI.Repositories
             _dbContext.tickets.Remove(t);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<Dictionary<string,int>> GetMyTickets(int eventId, int customerId) {
+            if (!await _dbContext.customers
+                .AnyAsync(c => c.uid == customerId)) {
+                throw new BadHttpRequestException("That customer does not exist");
+            }
+            if (!await _dbContext.events
+                .AnyAsync(e => e.eventId == eventId)) {
+                throw new BadHttpRequestException("That event does not exist");
+            }
+
+            var query = await _dbContext.bookingTickets
+                .Join(_dbContext.tickets,
+                    bt => bt.ticketId,
+                    t => t.ticketId,
+                    (bt,t) => new
+                    {
+                        bt.booking.customerId,
+                        t.name,
+                        bt.numberOfTickets
+                    })
+                .Where(c => c.customerId == customerId)
+                .ToListAsync();
+
+            var response = new Dictionary<string,int>();
+            
+            foreach(var tuple in query)
+            {
+                response.Add(tuple.name, tuple.numberOfTickets);
+            }
+
+            return response;
+        }
     }
 }

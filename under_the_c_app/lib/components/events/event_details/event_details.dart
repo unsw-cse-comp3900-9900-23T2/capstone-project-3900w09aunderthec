@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/events/event_create/tags.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment.dart';
 import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
+
+import '../../../types/events/event_type.dart';
 
 class EventDetailsPage extends ConsumerWidget {
   final String eventId;
@@ -35,7 +39,7 @@ class EventDetailsPage extends ConsumerWidget {
             body: Stack(
               children: [
                 ListView(
-                  padding: EdgeInsets.only(top: 0),
+                  padding: const EdgeInsets.only(top: 0),
                   children: [
                     Column(
                       children: [
@@ -54,12 +58,91 @@ class EventDetailsPage extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  event.title,
-                                  style: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.6),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      event.title,
+                                      style: const TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.6),
+                                    ),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {
+                                              context.go(AppRoutes.eventModify(
+                                                  event.eventId!));
+                                            },
+                                            icon: const Icon(Icons.edit)),
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog<String>(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                title:
+                                                    const Text('Delete Event'),
+                                                content:
+                                                    const Text('Are you sure?'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'Cancel'),
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      ref
+                                                          .read(eventsProvider
+                                                              .notifier)
+                                                          .removeEvent(
+                                                            Event(
+                                                              hostuid:
+                                                                  sessionVariables
+                                                                      .uid
+                                                                      .toString(),
+                                                              eventId:
+                                                                  event.eventId,
+                                                              title:
+                                                                  event.title,
+                                                              venue:
+                                                                  event.venue,
+                                                              time: event.time,
+                                                              price: 0,
+                                                            ),
+                                                          );
+                                                      final uid =
+                                                          sessionVariables.uid
+                                                              .toString();
+                                                      ref
+                                                          .read(eventsProvider
+                                                              .notifier)
+                                                          .fetchEvents;
+                                                      ref
+                                                          .read(
+                                                              eventsByUserProvider(
+                                                                      uid)
+                                                                  .notifier)
+                                                          .fetchEvents(uid);
+
+                                                      context
+                                                          .go(AppRoutes.home);
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.delete),
+                                        ),
+                                      ],
+                                    )
+                                  ],
                                 ),
                                 const SizedBox(height: 8),
                                 PriceTag(

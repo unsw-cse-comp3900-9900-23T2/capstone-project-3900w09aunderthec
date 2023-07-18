@@ -16,6 +16,7 @@ import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
 import '../../components/ticket/create_ticket.dart';
+import '../../components/events/modify_event.dart';
 import '../../pages/main/auth/login/login_page.dart';
 import '../auth_state_provider.dart';
 
@@ -29,6 +30,7 @@ final Map<String, String> pageTitleMap = {
   '/events': 'Events',
   '/profile': 'Profile',
   '/event_details/:id': 'Event Details',
+  '/event_modify/:id': 'Event Modify',
   '/event_booking/:id': 'Event Booking',
 };
 
@@ -128,6 +130,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                 eventTitle: eventTitle,
                 eventVenue: eventVenue,
               ));
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.eventModify(':id'),
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: EventModify(eventId: eventId));
             },
           ),
           GoRoute(

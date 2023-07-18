@@ -14,6 +14,7 @@ class AppRoutes {
   static String eventBook(String id, String title, String venue) =>
       '/event/book/$id/$title/$venue';
   static const String eventAdd = '/event/add';
+  static String eventModify(String id) => '/event/modify/$id';
 
   /* for non shared*/
   // for host
