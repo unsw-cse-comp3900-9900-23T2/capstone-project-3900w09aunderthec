@@ -45,7 +45,7 @@ namespace EventManagementAPI.Repositories
 
             if (comment == null)
             {
-                return null;
+                throw new BadHttpRequestException("Comment does not exist");
             }
 
             return comment;
@@ -75,7 +75,7 @@ namespace EventManagementAPI.Repositories
 
             if (comment == null)
             {
-                return null;
+                throw new BadHttpRequestException("Comment does not exist");
             }
 
             _dbContext.comments.Remove(comment);
@@ -182,7 +182,7 @@ namespace EventManagementAPI.Repositories
 
             if (comment == null )
             {
-                return null;
+                throw new BadHttpRequestException("Comment does not exist");
             }
 
             _dbContext.comments.Remove(comment);
@@ -206,19 +206,19 @@ namespace EventManagementAPI.Repositories
         {
             User? commenter = await GetUser(commenterId); 
             if (commenter == null) {
-                return null;
+                throw new BadHttpRequestException("Commenter does not exist");
             }
 
             User? replier = await GetUser(replierId);
             if (replier == null)
             {
-                return null;
+                throw new BadHttpRequestException("Replier does not exist");
             }
 
             var comment = await _dbContext.comments.FindAsync(commentId);
             if (comment == null)
             {
-                return null;
+                throw new BadHttpRequestException("Comment does not exist");
             }
 
             var newReply = new Reply
@@ -244,7 +244,7 @@ namespace EventManagementAPI.Repositories
 
             if (reply == null)
             {
-                return null;
+                throw new BadHttpRequestException("Reply does not exist");
             }
 
             _dbContext.replies.Remove(reply);

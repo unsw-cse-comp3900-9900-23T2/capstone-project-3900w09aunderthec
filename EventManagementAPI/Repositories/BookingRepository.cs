@@ -2,7 +2,6 @@
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
 using EventManagementAPI.DTOs;
 
 namespace EventManagementAPI.Repositories
@@ -21,7 +20,7 @@ namespace EventManagementAPI.Repositories
             var ticket = await _dbContext.tickets.FindAsync(ticketId);
             if (ticket == null)
             {
-                return null;
+                throw new BadHttpRequestException("Ticket type does not exist");
             }
 
             return ticket.stock;
@@ -33,7 +32,7 @@ namespace EventManagementAPI.Repositories
 
             if (creditMoney == null)
             {
-                return null;
+                throw new BadHttpRequestException("Customer has no credits with this Host");
             }
 
             return creditMoney.creditAmount;
@@ -134,10 +133,6 @@ namespace EventManagementAPI.Repositories
         public async Task<Booking?> GetBookingById(int bookingId)
         {
             var b = await _dbContext.bookings
-                // .Include(b => b.bookingTickets)
-                //     .ThenInclude(t => t.ticket)
-                //         .ThenInclude(t => t.toEvent)
-                // .Include(b => b.toCustomer)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             return b;
