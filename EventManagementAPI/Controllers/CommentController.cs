@@ -15,7 +15,7 @@ namespace EventManagementAPI.Controllers
     {
         public int commenterId { get; set; }
         public int eventId { get; set; }
-        public int? commentId { get; set; }
+        public int? replyTo { get; set; }
         public string comment { get; set; }
     }
 
@@ -94,10 +94,10 @@ namespace EventManagementAPI.Controllers
         {
             var comment = requestBody.comment;
             var commenterId = requestBody.commenterId;
-            var commentId = requestBody.commentId;
+            var replyTo = requestBody.replyTo;
             var eventId = requestBody.eventId;
 
-            var eventComment = await _commentRepository.CreateComment(commenterId, eventId, commentId, comment);
+            var eventComment = await _commentRepository.CreateComment(commenterId, eventId, replyTo, comment);
             return Ok(eventComment);
         }
 

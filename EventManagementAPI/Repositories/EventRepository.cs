@@ -221,8 +221,7 @@ namespace EventManagementAPI.Repositories
 
         public async Task<Event> GetEventById(int id)
         {
-            var e = await _dbContext.events
-                .FirstOrDefaultAsync(e => e.eventId == id);
+            var e = await _dbContext.events.Include(e => e.comments).FirstOrDefaultAsync(e => e.eventId == id);
             return e;
         }
 

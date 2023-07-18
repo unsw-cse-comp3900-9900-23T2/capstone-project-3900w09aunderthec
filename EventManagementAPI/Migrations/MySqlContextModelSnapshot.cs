@@ -86,9 +86,6 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("commentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("createdTime")
                         .HasColumnType("datetime(6)");
 
@@ -101,10 +98,10 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("eventId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("inReplyToId")
+                    b.Property<int>("likes")
                         .HasColumnType("int");
 
-                    b.Property<int>("likes")
+                    b.Property<int?>("replyToId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -113,7 +110,7 @@ namespace EventManagementAPI.Migrations
 
                     b.HasIndex("eventId");
 
-                    b.HasIndex("inReplyToId");
+                    b.HasIndex("replyToId");
 
                     b.ToTable("comments");
                 });
@@ -447,21 +444,19 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventManagementAPI.Models.Event", "eventShow")
+                    b.HasOne("EventManagementAPI.Models.Event", null)
                         .WithMany("comments")
                         .HasForeignKey("eventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventManagementAPI.Models.Comment", "inReplyTo")
+                    b.HasOne("EventManagementAPI.Models.Comment", "replyTo")
                         .WithMany()
-                        .HasForeignKey("inReplyToId");
+                        .HasForeignKey("replyToId");
 
                     b.Navigation("commenter");
 
-                    b.Navigation("eventShow");
-
-                    b.Navigation("inReplyTo");
+                    b.Navigation("replyTo");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.CommentDislike", b =>

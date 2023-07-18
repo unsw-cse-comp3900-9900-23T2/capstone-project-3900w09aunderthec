@@ -16,9 +16,9 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Comment?>> GetAllComments(string sortBy, int eventId, int? inReplyToComment)
+        public async Task<List<Comment?>> GetAllComments(string sortBy, int eventId, int? replyToComment)
         {
-            IQueryable<Comment> query = _dbContext.comments.Where(c => c.eventId == eventId && c.commentId == inReplyToComment);
+            IQueryable<Comment> query = _dbContext.comments.Where(c => c.eventId == eventId && c.replyToId == replyToComment);
 
             switch (sortBy)
             {
@@ -73,7 +73,6 @@ namespace EventManagementAPI.Repositories
 
             var e = await _dbContext.events.FindAsync(eventId);
             newComment.eventId = eventId;
-            newComment.eventShow = e;
 
             var customer = await _dbContext.customers.FindAsync(customerId);
             newComment.customerId = customerId;
@@ -81,12 +80,12 @@ namespace EventManagementAPI.Repositories
 
             if (commentId.HasValue)
             {
-                newComment.commentId = commentId.Value;
-                newComment.inReplyTo = inReplyToComment;
+                newComment.replyToId = commentId.Value;
+                newComment.replyTo = inReplyToComment;
             } else
             {
-                newComment.commentId = null;
-                newComment.inReplyTo = null;
+                newComment.replyToId = null;
+                newComment.replyTo = null;
             } 
 
             _dbContext.comments.Add(newComment);
