@@ -15,6 +15,6 @@ namespace EventManagementAPI.Models
         public int paymentMethod { get; set; }
         public int gainedCredits { get; set; }
         public DateTime timeCreated { get; set; } = DateTime.Now;
-        public ICollection<BookingTicket> bookingTickets { get; set; }
+        //public ICollection<BookingTicket> bookingTickets { get; set; }
     }
 }

@@ -44,7 +44,7 @@ namespace EventManagementAPI.Repositories
             var customer = await _dbContext.customers.FindAsync(customerId);
             if (customer == null)
             {
-                return null;
+                throw new BadHttpRequestException("Customer does not exist");
             }
 
             var booking = new Booking
@@ -64,8 +64,21 @@ namespace EventManagementAPI.Repositories
                 var ticket = await _dbContext.tickets.FindAsync(ticketId);
                 if (ticket == null)
                 {
-                    return null;
+                    throw new BadHttpRequestException("One of the ticket types does not exist, booking not made.");
                 }
+
+                if (ticket.stock - numberOfTickets < 0)
+                {
+                    throw new BadHttpRequestException(String.Format("Not enough stock to purchase {0} {1} tickets, only {3} remain. Booking not made", numberOfTickets, ticket.name, ticket.stock));
+                }
+            }
+
+            foreach (KeyValuePair<string, int> ticketPair in bookingTickets)
+            {
+                string ticketIdString = ticketPair.Key;
+                int ticketId = int.Parse(ticketIdString);
+                int numberOfTickets = ticketPair.Value;
+                var ticket = await _dbContext.tickets.FindAsync(ticketId);
 
                 var newBookingTicket = new BookingTicket
                 {
@@ -95,29 +108,36 @@ namespace EventManagementAPI.Repositories
             return booking;
         }
 
-        public async Task<List<BookingResultDto>> GetBookings(int customerId)
+        public async Task<List<BookingResultDTO>> GetBookings(int customerId)
         {
-            var bookings = await _dbContext.bookings
-                .Where(b => b.customerId == customerId)
-                .Include(b => b.bookingTickets)
-                    .ThenInclude(t => t.ticket)
-                        .ThenInclude(e => e.toEvent)
-                .Select(b => new BookingResultDto
+
+            var bookings = _dbContext.bookingTickets
+                .Join(_dbContext.tickets,
+                    bt => bt.ticketId,
+                    t => t.ticketId,
+                    (bt,t) => new
+                    {
+                        bt.booking,
+                        t.toEvent
+                    })
+                .Where(c => c.booking.customerId == customerId)
+                .Select(c => new BookingResultDTO
                 {
-                    booking = b,
+                    booking = c.booking,
+                    eventName = c.toEvent.title
                 })
                 .ToListAsync();
 
-            return bookings;
+            return await bookings;
         }
 
         public async Task<Booking?> GetBookingById(int bookingId)
         {
             var b = await _dbContext.bookings
-                .Include(b => b.bookingTickets)
-                    .ThenInclude(t => t.ticket)
-                        .ThenInclude(t => t.toEvent)
-                .Include(b => b.toCustomer)
+                // .Include(b => b.bookingTickets)
+                //     .ThenInclude(t => t.ticket)
+                //         .ThenInclude(t => t.toEvent)
+                // .Include(b => b.toCustomer)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             return b;
@@ -129,32 +149,25 @@ namespace EventManagementAPI.Repositories
 
             if (booking == null)
             {
-                return null;
+                throw new BadHttpRequestException("Booking does not exist");
             }
 
             var customer = await _dbContext.customers.FindAsync(booking.customerId);
-            if (customer == null)
-            {
-                return null;
-            }
             customer.loyaltyPoints -= booking.gainedCredits;
 
-            var tickets = await _dbContext.bookingTickets.Where(t => t.bookingId == bookingId).Include(t => t.ticket).ThenInclude(e => e.toEvent).ToListAsync();
+            var bookingTickets = await _dbContext.bookingTickets.Where(t => t.bookingId == bookingId).ToListAsync();
 
-            if (tickets.Count == 0)
+            var e = bookingTickets[0].ticket.toEvent;
+            if (e == null)
             {
-                return null;
+                throw new BadHttpRequestException("The relevant event has been deleted. This should not be possible! - Deleting an event should auto refund and delete relevant bookings");
             }
 
-            var totalPrice = 0.0;
+            var totalPrice = 0.0;            
 
-            foreach (BookingTicket bookingTicket in tickets)
+            foreach (BookingTicket bookingTicket in bookingTickets)
             {
                 var ticket = bookingTicket.ticket;
-                if (ticket == null)
-                {
-                    return null;
-                }
 
                 ticket.stock += bookingTicket.numberOfTickets;
 
@@ -163,21 +176,9 @@ namespace EventManagementAPI.Repositories
                 _dbContext.bookingTickets.Remove(bookingTicket);
             }
 
-            var e = tickets[0].ticket.toEvent;
-
-            if (e == null)
-            {
-                return null;
-            }
-
             var hoster = await _dbContext.hosts.FindAsync(e.hosterFK);
 
-            if (hoster == null)
-            {
-                return null;
-            }
-
-            if (!e.isDirectRefunds)
+            if (!e.isDirectRefunds && (e.eventTime - DateTime.Now < new TimeSpan(7, 0, 0 ,0)))
             {
                 var creditMoney = new CreditMoney
                 {

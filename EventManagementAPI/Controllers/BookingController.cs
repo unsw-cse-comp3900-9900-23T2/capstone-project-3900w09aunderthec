@@ -7,6 +7,7 @@ using EventManagementAPI.Services;
 using System.Text;
 using Org.BouncyCastle.Cms;
 using System;
+using System.Net.Mail;
 
 namespace EventManagementAPI.Controllers
 {
@@ -59,7 +60,6 @@ namespace EventManagementAPI.Controllers
         [HttpPost("MakeBooking")]
         public async Task<IActionResult> MakeBooking([FromBody] MakeBookingRequestBody RequestBody)
         {
-
             var customerId = RequestBody.customerId;
             var bookingTickets = RequestBody.bookingTickets;
             var paymentMethod = RequestBody.paymentMethod;
@@ -83,7 +83,11 @@ namespace EventManagementAPI.Controllers
                 .AppendLine("Under the C")
                 .ToString();
 
+            try {
             _emailService.SendEmail(fromAddress, toAddress, subject, body);
+            } catch (SmtpException e) {
+                return Ok("Booking successful, however the confirmation email failed to be delivered. It may have been rejected by spam filters, or the address may be nonexistent");
+            }
 
             return Ok(booking);
         }

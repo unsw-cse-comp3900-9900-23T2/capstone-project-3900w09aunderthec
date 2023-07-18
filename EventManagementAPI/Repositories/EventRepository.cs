@@ -226,14 +226,8 @@ namespace EventManagementAPI.Repositories
             return e;
         }
 
-        public async Task ModifyEvent(EventModificationDto mod)
+        public async Task ModifyEvent(EventModificationDTO mod)
         {
-
-            if (!_dbContext.events.Any(e => e.eventId == mod.eventId))
-            {
-                throw new BadHttpRequestException("That event does not exist");
-            }
-
             Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
 
             if(mod.title is not null){e.title = mod.title;}

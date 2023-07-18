@@ -117,10 +117,10 @@ namespace EventManagementAPI.Controllers{
             var e = await _eventRepository.GetEventById(RequestBody.eventId);
             if (e == null)
             {
-                return NotFound("EventId does not refer to a valid event");
+                return NotFound("That event does not exist");
             }
 
-            EventModificationDto mod = new EventModificationDto
+            EventModificationDTO mod = new EventModificationDTO
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
