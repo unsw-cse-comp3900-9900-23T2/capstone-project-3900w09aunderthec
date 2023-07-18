@@ -15,6 +15,7 @@ import 'package:under_the_c_app/pages/main/home.dart';
 import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
+import '../../components/booking/view_booking/view_booking.dart';
 import '../../components/events/modify_event.dart';
 import '../../pages/main/auth/login/login_page.dart';
 import '../auth_state_provider.dart';
@@ -101,7 +102,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
 
-          // events routes
+          // ==========events routes==========
           GoRoute(
             path: AppRoutes.events,
             pageBuilder: (context, state) {
@@ -144,10 +145,19 @@ final routerProvider = Provider<GoRouter>((ref) {
               return const MaterialPage(child: EventCreate());
             },
           ),
+          // ==========Tickets==========
           GoRoute(
             path: AppRoutes.ticketConfirmation,
             pageBuilder: (context, state) {
               return const MaterialPage(child: TicketConfirmation());
+            },
+          ),
+          // ==========Booking==========
+          GoRoute(
+            path: AppRoutes.viewBooking(':id'),
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: ViewBookingPage(eventId: eventId));
             },
           ),
         ],
