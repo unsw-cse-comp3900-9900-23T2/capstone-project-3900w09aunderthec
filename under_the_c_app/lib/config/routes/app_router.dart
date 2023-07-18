@@ -166,8 +166,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.viewBooking(':id'),
             pageBuilder: (context, state) {
-              final eventId = state.pathParameters['id'].toString();
-              return MaterialPage(child: ViewBookingPage(eventId: eventId));
+              final uid = state.pathParameters['id'].toString();
+              return MaterialPage(child: ViewBookingPage());
             },
           ),
         ],
