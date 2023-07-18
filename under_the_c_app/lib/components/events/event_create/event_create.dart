@@ -61,8 +61,9 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
   String tags = '';
   bool isDirectRefunds = true;
   bool isPrivateEvent = true;
-
+  bool generateButtonPressed = false;
   List<bool> selectedEventTypes = <bool>[true, false];
+  List<String>? droppedItems;
 
   void handleSelectionChanged(List<bool> newSelection) {
     setState(() {
@@ -82,16 +83,10 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
     });
   }
 
-  Future<List<String>> _fetchDroppedItems() async {
-    // Check for duplicaate
-    // List<String> unique = [];
-    // List<String> droppedItems = await getTags();
-    // Set<String> uniqueTags = droppedItems.toSet();
-    // for (String tag in uniqueTags) {
-    //   unique.add(tag);
-    // }
-    // return unique;
-    List<String> droppedItems = await getTags();
+  Future<List<String>> _fetchDroppedItems(
+      String tagTitle, String tagDescription, String tagVenue) async {
+    List<String> droppedItems =
+        await getTags(tagTitle, tagDescription, tagVenue);
     return droppedItems;
   }
 
@@ -247,67 +242,6 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                 },
               )),
 
-          // Ticket type
-          // const Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-          //   child: Text("Tickets",
-          //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          // ),
-          // Container(
-          //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          //   child: Table(
-          //     border: TableBorder.all(color: Colors.black),
-          //     columnWidths: const <int, TableColumnWidth>{
-          //       0: FlexColumnWidth(),
-          //     },
-          //     children: [
-          //       const TableRow(
-          //         children: [
-          //           Padding(
-          //             padding:
-          //                 EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          //             child: Text('Ticket Type'),
-          //           ),
-          //           Padding(
-          //             padding:
-          //                 EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          //             child: Text('Price'),
-          //           )
-          //         ],
-          //       ),
-          //       TableRow(children: [
-          //         TextFormField(
-          //           decoration: const InputDecoration(
-          //               border: OutlineInputBorder(
-          //                   borderSide: BorderSide(
-          //                 width: 5,
-          //               )),
-          //               hintText: "Type"),
-          //           validator: (value) {
-          //             if (value == null || value.isEmpty) {
-          //               return 'Please fill out the required field';
-          //             }
-          //             return null;
-          //           },
-          //         ),
-          //         TextFormField(
-          //           decoration: const InputDecoration(
-          //               border: OutlineInputBorder(
-          //                   borderSide: BorderSide(
-          //                 width: 5,
-          //               )),
-          //               hintText: "Amount"),
-          //           validator: (value) {
-          //             if (value == null || value.isEmpty) {
-          //               return 'Please fill out the required field';
-          //             }
-          //             return null;
-          //           },
-          //         ),
-          //       ]),
-          //     ],
-          //   ),
-          // ),
           // FormFields(
           //     fieldName: "Refund Policy", hint: ""),
           // Event Tags
@@ -320,23 +254,37 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: FutureBuilder<List<String>>(
-              future: _fetchDroppedItems(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return DropdownList(
-                    droppedItem: snapshot.data!,
-                    onValueChanged: (String value) {
-                      tags = value;
+            child: generateButtonPressed
+                ? FutureBuilder<List<String>>(
+                    future: _fetchDroppedItems(title, venue, description),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return DropdownList(
+                          droppedItem: snapshot.data!,
+                          onValueChanged: (String value) {
+                            tags = value;
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
                     },
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
-            ),
+                  )
+                : SizedBox(),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+
+                setState(() {
+                  generateButtonPressed = true;
+                });
+              }
+            },
+            child: const Text('Generate'),
           ),
           // Submit Button
           Center(
@@ -356,34 +304,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
-                    // ref
-                    //     .read(eventsProvider.notifier)
-                    //     .addEvent(
-                    //       Event(
-                    //         hostuid: sessionVariables.uid.toString(),
-                    //         title: title,
-                    //         time: time,
-                    //         venue: venue,
-                    //         description: description,
-                    //         isDirectRefunds: isDirectRefunds,
-                    //         isPrivate: isPrivateEvent,
-                    //         tags: [tags],
-                    //         price: 0,
-                    //       ),
-                    //     )
-                    //     // avoiding the currency issue of fetching events happening after add events
-                    //     .then(
-                    //   (_) {
-                    //     final uid = sessionVariables.uid.toString();
-                    //     ref
-                    //         .read(eventsByUserProvider(uid).notifier)
-                    //         .fetchEvents(uid)
-                    //         .then((_) {
-                    //       context.go(AppRoutes.events);
-                    //     });
-                    //   },
-                    // );
-                    await ref.read(eventsProvider.notifier).addEvent(
+                    ref.read(eventsProvider.notifier).addEvent(
                           Event(
                             hostuid: sessionVariables.uid.toString(),
                             title: title,

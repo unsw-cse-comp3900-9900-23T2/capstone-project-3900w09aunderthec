@@ -89,7 +89,7 @@ class MyCustomForm extends ConsumerWidget {
   }
 
   Future<List<String>> _fetchDroppedItems() async {
-    List<String> droppedItems = await getTags();
+    List<String> droppedItems = await getTags(title, description, venue);
     return droppedItems;
   }
 
@@ -109,12 +109,6 @@ class MyCustomForm extends ConsumerWidget {
           privateEvent = event.isPrivate!;
           tags = "music";
           // List<String>? tags = event.tags;
-
-          // bool? previousPrivateEvent = event.isPrivate;
-          // List<bool> previousSelectedEventTypes = [
-          //   previousPrivateEvent ?? true,
-          //   !(previousPrivateEvent ?? false),
-          // ];
 
           return Form(
             key: _formKey,

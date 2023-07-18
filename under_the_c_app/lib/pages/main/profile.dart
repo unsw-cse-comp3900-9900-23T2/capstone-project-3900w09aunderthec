@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../config/routes/routes.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
+
 class ProfilePage extends StatefulWidget {
   final String imageUrl = ''; // replace with the actual URL
   final int loyalPoints = 0;
@@ -38,6 +41,14 @@ class _ProfilePageState extends State<ProfilePage> {
               context.go('/reset');
             },
             child: const Text('Reset Password'),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              context
+                  .go(AppRoutes.viewBooking(sessionVariables.uid.toString()));
+            },
+            child: const Text('View Booking'),
           ),
         ],
       ),
