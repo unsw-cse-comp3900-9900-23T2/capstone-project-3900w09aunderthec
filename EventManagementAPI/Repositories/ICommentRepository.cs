@@ -7,10 +7,9 @@ namespace EventManagementAPI.Repositories
 {
     public interface ICommentRepository
     {
-        public Task<List<Comment?>> GetAllComments(string sortBy, int eventId);
+        public Task<List<Comment?>> GetAllComments(string sortBy, int eventId, int? inReplyToComment);
         public Task<Comment?> GetCommentById(int id);
-        public Task<Comment?> CreateComment(int customerId, int eventId, string comment);
-        public Task<Comment?> DeleteComment(int id);
+        public Task<Comment?> CreateComment(int customerId, int eventId, int? commentId, string comment);
         public Task<bool> LikeComment(int customerId, int commentId);
         public Task<bool> UndoLikedComment(int commentLikeId);
         public Task<bool> DislikeComment(int customerId, int commentId);

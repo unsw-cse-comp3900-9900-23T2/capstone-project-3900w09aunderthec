@@ -15,6 +15,7 @@ namespace EventManagementAPI.Controllers
     {
         public int commenterId { get; set; }
         public int eventId { get; set; }
+        public int? commentId { get; set; }
         public string comment { get; set; }
     }
 
@@ -69,9 +70,9 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEventComments([FromQuery] int eventId, [FromQuery] string sortby)
+        public async Task<IActionResult> GetEventComments([FromQuery] int eventId, [FromQuery] string sortby, [FromQuery] int? inReplyToComment)
         {
-            var eventComments = await _commentRepository.GetAllComments(sortby, eventId);
+            var eventComments = await _commentRepository.GetAllComments(sortby, eventId, inReplyToComment);
             return Ok(eventComments);
         }
 
@@ -93,10 +94,11 @@ namespace EventManagementAPI.Controllers
         {
             var comment = requestBody.comment;
             var commenterId = requestBody.commenterId;
+            var commentId = requestBody.commentId;
             var eventId = requestBody.eventId;
 
-            var eventComment = await _commentRepository.CreateComment(commenterId, eventId, comment);
-            return Ok(eventComment.eventId);
+            var eventComment = await _commentRepository.CreateComment(commenterId, eventId, commentId, comment);
+            return Ok(eventComment);
         }
 
         [HttpPost("IncrementLikeComment")]

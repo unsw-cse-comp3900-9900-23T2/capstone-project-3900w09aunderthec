@@ -13,6 +13,8 @@ namespace EventManagementAPI.Models
         public int customerId { get; set; }
         [JsonIgnore]
         public Customer commenter { get; set; }
+        public int? commentId { get; set; }
+        public Comment? inReplyTo { get; set; }
         public int eventId { get; set; }
         [JsonIgnore]
         public Event eventShow { get; set; }

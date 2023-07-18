@@ -16,9 +16,9 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Comment?>> GetAllComments(string sortBy, int eventId)
+        public async Task<List<Comment?>> GetAllComments(string sortBy, int eventId, int? inReplyToComment)
         {
-            IQueryable<Comment> query = _dbContext.comments.Where(c => c.eventId == eventId);
+            IQueryable<Comment> query = _dbContext.comments.Where(c => c.eventId == eventId && c.commentId == inReplyToComment);
 
             switch (sortBy)
             {
@@ -51,8 +51,23 @@ namespace EventManagementAPI.Repositories
             return comment;
         }
 
-        public async Task<Comment?> CreateComment(int customerId, int eventId, string comment)
+        public async Task<Comment?> CreateComment(int customerId, int eventId, int? commentId, string comment)
         {
+            var inReplyToComment = new Comment();
+
+            if (commentId.HasValue)
+            {
+                inReplyToComment = await GetCommentById(commentId.Value);
+
+                if (inReplyToComment == null)
+                {
+                    return null;
+                }
+            } else
+            {
+                inReplyToComment = null;
+            }
+            
             var newComment = new Comment();
             newComment.comment = comment;
 
@@ -64,25 +79,19 @@ namespace EventManagementAPI.Repositories
             newComment.customerId = customerId;
             newComment.commenter = customer;
 
+            if (commentId.HasValue)
+            {
+                newComment.commentId = commentId.Value;
+                newComment.inReplyTo = inReplyToComment;
+            } else
+            {
+                newComment.commentId = null;
+                newComment.inReplyTo = null;
+            } 
+
             _dbContext.comments.Add(newComment);
             await _dbContext.SaveChangesAsync();
             return newComment;
-        }
-
-        public async Task<Comment?> DeleteComment(int id)
-        {
-            var comment = await GetCommentById(id);
-
-            if (comment == null)
-            {
-                return null;
-            }
-
-            _dbContext.comments.Remove(comment);
-
-            await _dbContext.SaveChangesAsync();
-
-            return comment;
         }
 
         public async Task<bool> LikeComment(int customerId, int commentId)

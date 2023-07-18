@@ -86,6 +86,9 @@ namespace EventManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("commentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("createdTime")
                         .HasColumnType("datetime(6)");
 
@@ -98,6 +101,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("eventId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("inReplyToId")
+                        .HasColumnType("int");
+
                     b.Property<int>("likes")
                         .HasColumnType("int");
 
@@ -106,6 +112,8 @@ namespace EventManagementAPI.Migrations
                     b.HasIndex("customerId");
 
                     b.HasIndex("eventId");
+
+                    b.HasIndex("inReplyToId");
 
                     b.ToTable("comments");
                 });
@@ -445,9 +453,15 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EventManagementAPI.Models.Comment", "inReplyTo")
+                        .WithMany()
+                        .HasForeignKey("inReplyToId");
+
                     b.Navigation("commenter");
 
                     b.Navigation("eventShow");
+
+                    b.Navigation("inReplyTo");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.CommentDislike", b =>
