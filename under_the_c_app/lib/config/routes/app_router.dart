@@ -15,6 +15,7 @@ import 'package:under_the_c_app/pages/main/home.dart';
 import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
+import '../../components/ticket/create_ticket.dart';
 import '../../pages/main/auth/login/login_page.dart';
 import '../auth_state_provider.dart';
 
@@ -139,6 +140,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.ticketConfirmation,
             pageBuilder: (context, state) {
               return const MaterialPage(child: TicketConfirmation());
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.ticketCreate(':id'),
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: CreateTicket(eventId: eventId));
             },
           ),
         ],

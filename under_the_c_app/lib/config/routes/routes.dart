@@ -34,4 +34,5 @@ class AppRoutes {
 
   // tickets
   static const String ticketConfirmation = '/ticket/confirmation';
+  static String ticketCreate(String id) => '/ticket/create/$id';
 }
