@@ -118,7 +118,10 @@ class _CommentState extends ConsumerState<Comment> {
         Column(
           children: [
             ...comments
-                .map((CommentT comment) => CommentCard(comment: comment))
+                .map((CommentT comment) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: CommentCard(comment: comment),
+                    ))
                 .toList()
           ],
         ),

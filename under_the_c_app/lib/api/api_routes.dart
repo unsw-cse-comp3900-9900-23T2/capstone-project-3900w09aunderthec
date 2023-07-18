@@ -36,4 +36,8 @@ class APIRoutes {
   static const String createComment = 'api/Comment/PostComment';
   static const String likeComment = 'api/Comment/ToggleLikeComment';
   static const String dislikeComment = 'api/Comment/ToogleDislikeComment';
+
+  // ============================COMMENT ROUTES==================================
+  static const String getCustomerById = 'api/Customer';
+
 }
