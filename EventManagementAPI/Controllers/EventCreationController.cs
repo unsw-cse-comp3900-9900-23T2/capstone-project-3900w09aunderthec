@@ -14,6 +14,7 @@ namespace EventManagementAPI.Controllers{
         public String description { get; set; }
         public String venue { get; set; }
     };
+
     public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
@@ -23,8 +24,8 @@ namespace EventManagementAPI.Controllers{
         public bool isDirectRefunds { get; set; }
         public bool isPrivateEvent { get; set; }
         public String tags { get; set; }
-        // public List<Ticket> tickets;
     };
+
     public class ModifyEventRequestBody {
         public int eventId { get; set; }
         public string? title { get; set; }
@@ -46,7 +47,6 @@ namespace EventManagementAPI.Controllers{
     [Route("[controller]")]
     public class EventCreationController : ControllerBase
     {
-
         private readonly IEventRepository _eventRepository;
 
         public EventCreationController(IEventRepository eventRepository)
@@ -56,12 +56,6 @@ namespace EventManagementAPI.Controllers{
 
         [HttpGet("GetTags")]
         public async Task<IActionResult> GetTags([FromQuery] string title, string description, string venue) {
-
-            // Format string to make api call with
-            // make api call
-            // parse recommended tags from api response string
-            // return recommended tags
-
             string descriptorString = "Title: " + title + "\nDescription: " +
                                       description + "\nVenue: " + venue;
 
@@ -86,7 +80,7 @@ namespace EventManagementAPI.Controllers{
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
 
-            Event newEvent = new Event
+            var newEvent = new Event
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
@@ -120,7 +114,7 @@ namespace EventManagementAPI.Controllers{
                 return NotFound("That event does not exist");
             }
 
-            EventModificationDTO mod = new EventModificationDTO
+            var mod = new EventModificationDTO
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,

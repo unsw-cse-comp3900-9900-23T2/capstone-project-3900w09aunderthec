@@ -14,6 +14,13 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Check email format
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>
+        /// A boolean value to indicate whether the email address is in a valid format
+        /// </returns>
 		public bool validateEmailRegex(String email)
 		{
             // Email validating Regular Expression
@@ -24,6 +31,13 @@ namespace EventManagementAPI.Repositories
             return true;
 		}
         
+        /// <summary>
+        /// Check if the email exists in the database
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>
+        /// A boolean value wether the email address is used before
+        /// </returns>
         public async Task<bool> checkDuplicateEmails(String email)
         {
             int count = await _dbContext.customers
@@ -32,12 +46,17 @@ namespace EventManagementAPI.Repositories
             return true;
         }
 
+        /// <summary>
+        /// Create a new user
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="email"></param>
+        /// <param name="isHost"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public async Task createUser(String username, String email, Boolean isHost)
         {
-            // Console.WriteLine("createUser called");
-            // Console.WriteLine(username);
-            // Console.WriteLine(email);
-            // Console.WriteLine(isHost);
             if (isHost) {
                 _dbContext.hosts.Add(
                 new Hoster{
@@ -52,13 +71,18 @@ namespace EventManagementAPI.Repositories
                     email = email,
                 });
             }
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get initial data
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>
+        /// An InitialData object
+        /// </returns>
         public async Task<InitialData> getInitialData(String email)
         {
-            // Console.WriteLine("getInitialData called");
-            // Console.WriteLine(email);
             bool emailExistsInHosts = await _dbContext.hosts.AnyAsync(h => h.email == email);
 
             if (emailExistsInHosts)

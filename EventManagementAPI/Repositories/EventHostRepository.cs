@@ -14,6 +14,12 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Get all event hosters
+        /// </summary>
+        /// <returns>
+        /// A list of Hoster objects
+        /// </returns>
         public async Task<List<Hoster>> GetAllEventHosts()
         {
             return await _dbContext.hosts.ToListAsync();
