@@ -16,12 +16,26 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Create a ticket
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public async Task CreateBookingTicket(Ticket t)
         {
             _dbContext.tickets.Add(t);
             await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get a list of tickets for an event
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// A list of Ticket objects
+        /// </returns>
         public async Task<List<Ticket>> ShowEventTickets(int eventId)
         {
             var tickets = await _dbContext.tickets
@@ -31,14 +45,29 @@ namespace EventManagementAPI.Repositories
             return tickets;
         }
 
+        /// <summary>
+        /// Get details of a ticket
+        /// </summary>
+        /// <param name="ticketId"></param>
+        /// <returns>
+        /// A Ticket object with details
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Ticket> GetTicketById(int ticketId)
         {
-            var t = await _dbContext.tickets.FindAsync(ticketId);
+            var t = await _dbContext.tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
 
             return t;
         }
 
-        public async Task ModifyTicket(TicketModificationDTO mod)
+        /// <summary>
+        /// Update a ticket
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns>
+        /// A Ticket object that is updated
+        /// </returns>
+        public async Task<Ticket> ModifyTicket(TicketModificationDTO mod)
         {
             Ticket t = await _dbContext.tickets.FirstAsync(t => t.ticketId == mod.ticketId);
 
@@ -48,8 +77,16 @@ namespace EventManagementAPI.Repositories
 
             _dbContext.tickets.Update(t);
             await _dbContext.SaveChangesAsync();
+            return t;
         }
 
+        /// <summary>
+        /// Delete a ticket
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public async Task DeleteTicket(Ticket t)
         {
             _dbContext.tickets.Remove(t);
