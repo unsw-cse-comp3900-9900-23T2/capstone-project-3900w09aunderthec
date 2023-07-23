@@ -123,40 +123,66 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags)
+        /// <summary>
+        /// Get a list of events based on various criteria
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="sortby"></param>
+        /// <param name="tags"></param>
+        /// <param name="showPreviousEvents"></param>
+        /// <returns>
+        /// A list of EventListingDTO
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags, bool showPreviousEvents)
         {
             IQueryable<Event> query;
 
-            query = _dbContext.events.Include(e => e.tickets)
-                .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
-            if (uid is not null)
+            if (uid.HasValue)
             {
                 if (await _dbContext.hosts.AnyAsync(h => h.uid == uid))
                 {
-                    query = _dbContext.events.Include(e => e.tickets)
-                        .Where(e => e.eventTime > DateTime.Now && e.hosterFK == uid);
-                } else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
-                {
-                    if (sortby == "recommended") {
-                        // Sprint 3 - Change this to sort query by most recommended events
-                        query = _dbContext.events.Include(e => e.tickets)
-                            .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
-                    } else {
-                        // Yes, this means customers seeing booked events will also see past events. Too bad!
-                        query = _dbContext.bookingTickets
-                            .Join(_dbContext.tickets,
-                                bt => bt.ticketId,
-                                t => t.ticketId,
-                                (bt,t) => new
-                                {
-                                    bt.booking,
-                                    t.toEvent
-                                })
-                            .Where(c => c.booking.customerId == uid)
-                            .Select(c => c.toEvent);
+                    // if uid refers to a hoster
+                    // get all hoster events
+                    // can't see other events
+                    // optional to show past events
+                    query = _dbContext.events.Include(e => e.tickets);
+                    if (!showPreviousEvents)
+                    {
+                        query = query.Where(e => e.eventTime > DateTime.Now);
                     }
-                } else
-                {throw new BadHttpRequestException("That user does not exist");}
+                    query = query.Where(e => e.hosterFK == uid);
+                }
+                else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
+                {
+                    // if uid refers to a customer
+                    // get all events that the customer has made bookings
+                    // is can be public or private
+                    // optional to show past events
+                    query = _dbContext.bookingTickets
+                        .Join(_dbContext.tickets,
+                            bt => bt.ticketId,
+                            t => t.ticketId,
+                            (bt, t) => new
+                            {
+                                bt.booking,
+                                t.toEvent
+                            })
+                        .Select(c => c.toEvent);
+                    if (!showPreviousEvents)
+                    {
+                        query = query.Where(e => e.eventTime > DateTime.Now);
+                    }
+                }
+                else
+                {
+                    throw new KeyNotFoundException("uid does not relate to an existing user");
+                }
+            } else
+            {
+                // if uid is not given
+                // show all public upcoming events
+                query = _dbContext.events.Where(e => e.eventTime > DateTime.Now && !e.isPrivateEvent);
             }
 
             switch (sortby)
