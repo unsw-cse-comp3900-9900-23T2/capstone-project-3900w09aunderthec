@@ -93,14 +93,23 @@ namespace EventManagementAPI.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get all booked tickets for an event
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <param name="customerId"></param>
+        /// <returns>
+        /// A list of key-value pairs where the key represents the ticket name and value represents the number of tickets booked
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Dictionary<string,int>> GetMyTickets(int eventId, int customerId) {
             if (!await _dbContext.customers
                 .AnyAsync(c => c.uid == customerId)) {
-                throw new BadHttpRequestException("That customer does not exist");
+                throw new KeyNotFoundException("That customer does not exist");
             }
             if (!await _dbContext.events
                 .AnyAsync(e => e.eventId == eventId)) {
-                throw new BadHttpRequestException("That event does not exist");
+                throw new KeyNotFoundException("That event does not exist");
             }
 
             var query = await _dbContext.bookingTickets

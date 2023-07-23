@@ -213,7 +213,14 @@ namespace EventManagementAPI.Repositories
             return booking;
         }
 
-
+        /// <summary>
+        /// Get the time span between the current time and the event time
+        /// </summary>
+        /// <param name="booking"></param>
+        /// <returns>
+        /// A TimeSpan object
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<TimeSpan?> GetTimeDifference(Booking booking)
         {
             var bookingTickets = await _dbContext.bookingTickets.Where(bt => bt.bookingId == booking.Id).ToListAsync();

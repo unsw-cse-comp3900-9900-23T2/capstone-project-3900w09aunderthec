@@ -79,6 +79,13 @@ namespace EventManagementAPI.Repositories
             _httpClientFactory = httpClientFactory;
         }
 
+        /// <summary>
+        /// Get tags
+        /// </summary>
+        /// <param name="descriptorString"></param>
+        /// <returns>
+        /// A list of tag string
+        /// </returns>
         public async Task<List<string>> GetTags(string descriptorString)
         {
             var client = _httpClientFactory.CreateClient();
@@ -207,25 +214,45 @@ namespace EventManagementAPI.Repositories
             return eventList;
         }
 
+        /// <summary>
+        /// Create a new event
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task CreateAnEvent(Event e)
         {
             if (!await _dbContext.hosts
                 .AnyAsync(h => h.uid == e.hosterFK)) {
-                throw new BadHttpRequestException("That host does not exist");
+                throw new KeyNotFoundException("That host does not exist");
             }
                 
             _dbContext.events.Add(e);
             await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get event details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// An Event object with details
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Event> GetEventById(int id)
         {
-            var e = await _dbContext.events
-                .FirstOrDefaultAsync(e => e.eventId == id);
+            var e = await _dbContext.events.FirstOrDefaultAsync(e => e.eventId == id) ?? throw new KeyNotFoundException("event does not exist");
             return e;
         }
 
-        public async Task ModifyEvent(EventModificationDTO mod)
+        /// <summary>
+        /// Update an event
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns>
+        /// A modified Event object
+        /// </returns>
+        public async Task<Event> ModifyEvent(EventModificationDTO mod)
         {
             Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
 
@@ -240,11 +267,20 @@ namespace EventManagementAPI.Repositories
 
             _dbContext.events.Update(e);
             await _dbContext.SaveChangesAsync();
+            return e;
         }
 
-        public async Task<Event?> CancelEvent(int eventId)
+        /// <summary>
+        /// Delete an event
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// An event object to be deleted
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<Event> CancelEvent(int eventId)
         {
-            var e = await _dbContext.events.FindAsync(eventId);
+            var e = await _dbContext.events.FindAsync(eventId) ?? throw new KeyNotFoundException("event to delete does not exist");
 
             if (e != null)
             {

@@ -11,7 +11,7 @@ namespace EventManagementAPI.Repositories
         Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags);
         Task CreateAnEvent(Event e);
         Task<Event> GetEventById(int id);
-        Task ModifyEvent(EventModificationDTO mod);
-        Task<Event?> CancelEvent(int eventId);
+        Task<Event> ModifyEvent(EventModificationDTO mod);
+        Task<Event> CancelEvent(int eventId);
     }
 }
