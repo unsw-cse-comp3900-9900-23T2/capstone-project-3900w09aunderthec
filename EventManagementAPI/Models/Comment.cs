@@ -10,9 +10,9 @@ namespace EventManagementAPI.Models
         [Key]
         public int Id { get; set; }
         public string comment { get; set; }
-        public int customerId { get; set; }
+        public int commenteruid { get; set; }
         [JsonIgnore]
-        public Customer commenter { get; set; }
+        public User commenter { get; set; }
         public int? commentId { get; set; }
         public Comment? replyTo { get; set; }
         public int eventId { get; set; }

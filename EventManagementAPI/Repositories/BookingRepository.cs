@@ -179,7 +179,7 @@ namespace EventManagementAPI.Repositories
 
             foreach (BookingTicket bookingTicket in bookingTickets)
             {
-                var ticket = bookingTicket.ticket;
+                var ticket = await _dbContext.tickets.FindAsync(bookingTicket.ticketId) ?? throw new KeyNotFoundException("ticket does not exist");
 
                 ticket.stock += bookingTicket.numberOfTickets;
 

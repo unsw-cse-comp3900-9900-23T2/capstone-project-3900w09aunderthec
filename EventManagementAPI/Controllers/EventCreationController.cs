@@ -33,7 +33,6 @@ namespace EventManagementAPI.Controllers{
         public int eventId { get; set; }
         public string? title { get; set; }
         public DateTime? eventTime { get; set; }
-        public DateTime? createdTime { get; set; }
         public string? venue { get; set; }
         public string? description { get; set; }
         public bool? isDirectRefunds { get; set; }
@@ -133,7 +132,7 @@ namespace EventManagementAPI.Controllers{
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
                 eventTime = RequestBody.eventTime,
-                createdTime = RequestBody.createdTime,
+                createdTime = e.createdTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 isDirectRefunds = RequestBody.isDirectRefunds,

@@ -30,11 +30,6 @@ namespace EventManagementAPI.Controllers
         public int commentId { get; set; }
     }
 
-    public class RetrieveRequestBody
-    {
-        public int commentId { get; set; }
-    }
-
     [ApiController]
     [Route("api/[controller]")]
     public class CommentController : ControllerBase
@@ -111,6 +106,10 @@ namespace EventManagementAPI.Controllers
             {
                 return BadRequest(e.Message);
             } 
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
@@ -125,7 +124,7 @@ namespace EventManagementAPI.Controllers
 
             try
             {
-                var likeComment = await _commentRepository.ToggleLikeComment(commentId, customerId);
+                var likeComment = await _commentRepository.ToggleLikeComment(customerId, commentId);
                 return Ok(likeComment);
             } 
             catch (KeyNotFoundException e) {
@@ -149,7 +148,7 @@ namespace EventManagementAPI.Controllers
 
             try
             {
-                var dislikeComment = await _commentRepository.ToggleDislikeComment(commentId, customerId);
+                var dislikeComment = await _commentRepository.ToggleDislikeComment(customerId, commentId);
                 return Ok(dislikeComment);
             } 
             catch (KeyNotFoundException e)
@@ -174,30 +173,6 @@ namespace EventManagementAPI.Controllers
             try
             {
                 var comment = await _commentRepository.PinComment(commentId);
-                return Ok(comment);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (BadHttpRequestException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpDelete("RetrieveComment")]
-        public async Task<IActionResult> RetrieveComment([FromBody] RetrieveRequestBody requestBody)
-        {
-            var commentId = requestBody.commentId;
-
-            try
-            {
-                var comment = await _commentRepository.RetrieveComment(commentId);
                 return Ok(comment);
             }
             catch (KeyNotFoundException e)

@@ -81,11 +81,11 @@ namespace EventManagementAPI.Migrations
                     b.Property<int?>("commentId")
                         .HasColumnType("int");
 
+                    b.Property<int>("commenteruid")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("createdTime")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int>("customerId")
-                        .HasColumnType("int");
 
                     b.Property<int>("dislikes")
                         .HasColumnType("int");
@@ -93,19 +93,22 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("eventId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("inReplyToId")
-                        .HasColumnType("int");
+                    b.Property<bool>("isPinned")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("likes")
                         .HasColumnType("int");
 
+                    b.Property<int?>("replyToId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("customerId");
+                    b.HasIndex("commenteruid");
 
                     b.HasIndex("eventId");
 
-                    b.HasIndex("inReplyToId");
+                    b.HasIndex("replyToId");
 
                     b.ToTable("comments");
                 });
@@ -399,7 +402,7 @@ namespace EventManagementAPI.Migrations
             modelBuilder.Entity("EventManagementAPI.Models.BookingTicket", b =>
                 {
                     b.HasOne("EventManagementAPI.Models.Booking", "booking")
-                        .WithMany("bookingTickets")
+                        .WithMany()
                         .HasForeignKey("bookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -417,9 +420,9 @@ namespace EventManagementAPI.Migrations
 
             modelBuilder.Entity("EventManagementAPI.Models.Comment", b =>
                 {
-                    b.HasOne("EventManagementAPI.Models.Customer", "commenter")
+                    b.HasOne("EventManagementAPI.Models.User", "commenter")
                         .WithMany()
-                        .HasForeignKey("customerId")
+                        .HasForeignKey("commenteruid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -429,15 +432,15 @@ namespace EventManagementAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventManagementAPI.Models.Comment", "inReplyTo")
+                    b.HasOne("EventManagementAPI.Models.Comment", "replyTo")
                         .WithMany()
-                        .HasForeignKey("inReplyToId");
+                        .HasForeignKey("replyToId");
 
                     b.Navigation("commenter");
 
                     b.Navigation("eventShow");
 
-                    b.Navigation("inReplyTo");
+                    b.Navigation("replyTo");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.CreditMoney", b =>
@@ -544,11 +547,6 @@ namespace EventManagementAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("toEvent");
-                });
-
-            modelBuilder.Entity("EventManagementAPI.Models.Booking", b =>
-                {
-                    b.Navigation("bookingTickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.Event", b =>

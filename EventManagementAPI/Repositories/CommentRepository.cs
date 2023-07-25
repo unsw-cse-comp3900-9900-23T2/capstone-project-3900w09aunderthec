@@ -33,7 +33,7 @@ namespace EventManagementAPI.Repositories
             if (eventId is null && replyToComment is null)
             { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified");}
 
-            IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == replyToComment || c.eventId == eventId) ?? throw new DbUpdateException("Event or comment to reply to does not exist");
+            IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == replyToComment && c.eventId == eventId) ?? throw new DbUpdateException("Event or comment to reply to does not exist");
 
             switch (sortBy)
             {
@@ -79,26 +79,27 @@ namespace EventManagementAPI.Repositories
         /// A Comment object that is newly created
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<Comment?> CreateComment(int customerId, int eventId, int? commentId, string comment)
+        public async Task<Comment?> CreateComment(int uid, int eventId, int? commentId, string comment)
         {
-            var replyToComment = commentId.HasValue ? await GetCommentById(customerId) : null;
-            
+            var replyToComment = commentId.HasValue ? await GetCommentById(commentId.Value) : null;
+
             if (commentId.HasValue && replyToComment == null)
             {
                 throw new KeyNotFoundException("reply to comment does not exist");
             }
 
             var e = await _dbContext.events.FindAsync(eventId);
-            var customer = await _dbContext.customers.FindAsync(customerId);
+            User? user = await _dbContext.customers.FindAsync(uid);
 
             if (e == null)
             {
                 throw new KeyNotFoundException("relevant event does not exist");
             }
 
-            if (customer == null)
+            if (user == null)
             {
-                throw new KeyNotFoundException("revelant customer does not exist");
+                user ??= await _dbContext.hosts.FindAsync(uid) ?? throw new KeyNotFoundException("no relevant user found");
+                if (user.uid != e.hosterFK) throw new UnauthorizedAccessException("only this event hosters can reply");
             }
 
             var newComment = new Comment
@@ -106,8 +107,8 @@ namespace EventManagementAPI.Repositories
                 comment = comment,
                 eventId = eventId,
                 eventShow = e,
-                customerId = customerId,
-                commenter = customer,
+                commenteruid = uid,
+                commenter = user,
                 commentId = commentId,
                 replyTo = replyToComment,
             };
