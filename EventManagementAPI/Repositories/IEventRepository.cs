@@ -8,10 +8,10 @@ namespace EventManagementAPI.Repositories
     public interface IEventRepository
     {
         Task<List<string>> GetTags(string descriptorString);
-        Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags);
+        Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags, bool showPreviousEvents);
         Task CreateAnEvent(Event e);
         Task<Event> GetEventById(int id);
-        Task ModifyEvent(EventModificationDTO mod);
-        Task<Event?> CancelEvent(int eventId);
+        Task<Event> ModifyEvent(EventModificationDTO mod);
+        Task<Event> CancelEvent(int eventId);
     }
 }

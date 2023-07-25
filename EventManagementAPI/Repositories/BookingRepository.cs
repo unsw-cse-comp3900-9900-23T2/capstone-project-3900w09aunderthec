@@ -15,15 +15,18 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Get the stock of a specific ticket
+        /// </summary>
+        /// <param name="ticketId"></param>
+        /// <returns>
+        /// An integer indicates the stock
+        /// </returns>
+        /// <exception cref="BadHttpRequestException"></exception>
         public async Task<int?> GetNumberOfTicketsInStock(int ticketId)
         {
             var ticket = await _dbContext.tickets.FindAsync(ticketId);
-            if (ticket == null)
-            {
-                throw new BadHttpRequestException("Ticket type does not exist");
-            }
-
-            return ticket.stock;
+            return ticket == null ? throw new BadHttpRequestException("Ticket type does not exist") : ticket.stock;
         }
 
         public async Task<double?> GetCreditMoney(int customerId, int hosterId)
@@ -107,6 +110,13 @@ namespace EventManagementAPI.Repositories
             return booking;
         }
 
+        /// <summary>
+        /// Get a list of customer bookings
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns>
+        /// A list of BookingResultDTo which includes booking and event details
+        /// </returns>
         public async Task<List<BookingResultDTO>> GetBookings(int customerId)
         {
 
@@ -123,13 +133,20 @@ namespace EventManagementAPI.Repositories
                 .Select(c => new BookingResultDTO
                 {
                     booking = c.booking,
-                    eventName = c.toEvent.title
+                    eventName = c.toEvent
                 })
                 .ToListAsync();
 
             return await bookings;
         }
 
+        /// <summary>
+        /// Get the details of a booking
+        /// </summary>
+        /// <param name="bookingId"></param>
+        /// <returns>
+        /// A booking object
+        /// </returns>
         public async Task<Booking?> GetBookingById(int bookingId)
         {
             var b = await _dbContext.bookings
@@ -162,7 +179,7 @@ namespace EventManagementAPI.Repositories
 
             foreach (BookingTicket bookingTicket in bookingTickets)
             {
-                var ticket = bookingTicket.ticket;
+                var ticket = await _dbContext.tickets.FindAsync(bookingTicket.ticketId) ?? throw new KeyNotFoundException("ticket does not exist");
 
                 ticket.stock += bookingTicket.numberOfTickets;
 
@@ -196,28 +213,23 @@ namespace EventManagementAPI.Repositories
             return booking;
         }
 
+        /// <summary>
+        /// Get the time span between the current time and the event time
+        /// </summary>
+        /// <param name="booking"></param>
+        /// <returns>
+        /// A TimeSpan object
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<TimeSpan?> GetTimeDifference(Booking booking)
         {
             var bookingTickets = await _dbContext.bookingTickets.Where(bt => bt.bookingId == booking.Id).ToListAsync();
-            if (bookingTickets.Count == 0)
-            {
-                return null;
-            }
+            if (bookingTickets.Count == 0) throw new KeyNotFoundException("no relevant booking tickets found");
 
-            var ticket = await _dbContext.tickets.FindAsync(bookingTickets[0].ticketId);
-            if (ticket == null)
-            {
-                return null;
-            }
-
-            var e = await _dbContext.events.FindAsync(ticket.eventIdRef);
-            if (e == null)
-            {
-                return null;
-            }
+            var ticket = await _dbContext.tickets.FindAsync(bookingTickets[0].ticketId) ?? throw new KeyNotFoundException("ticket not found");
+            var e = await _dbContext.events.FindAsync(ticket.eventIdRef) ?? throw new KeyNotFoundException("event not found");
 
             var timeDifference = e.eventTime - DateTime.Now;
-
             return timeDifference;
         }
     }

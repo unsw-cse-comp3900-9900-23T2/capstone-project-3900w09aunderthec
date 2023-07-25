@@ -84,7 +84,7 @@ namespace EventManagementAPI.Controllers
                 .ToString();
 
             try {
-            _emailService.SendEmail(fromAddress, toAddress, subject, body);
+                _emailService.SendEmail(fromAddress, toAddress, subject, body);
             } catch (SmtpException e) {
                 return Ok("Booking successful, however the confirmation email failed to be delivered. It may have been rejected by spam filters, or the address may be nonexistent");
             }

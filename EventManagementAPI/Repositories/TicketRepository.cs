@@ -16,12 +16,26 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Create a ticket
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public async Task CreateBookingTicket(Ticket t)
         {
             _dbContext.tickets.Add(t);
             await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get a list of tickets for an event
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// A list of Ticket objects
+        /// </returns>
         public async Task<List<Ticket>> ShowEventTickets(int eventId)
         {
             var tickets = await _dbContext.tickets
@@ -31,14 +45,29 @@ namespace EventManagementAPI.Repositories
             return tickets;
         }
 
+        /// <summary>
+        /// Get details of a ticket
+        /// </summary>
+        /// <param name="ticketId"></param>
+        /// <returns>
+        /// A Ticket object with details
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Ticket> GetTicketById(int ticketId)
         {
-            var t = await _dbContext.tickets.FindAsync(ticketId);
+            var t = await _dbContext.tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
 
             return t;
         }
 
-        public async Task ModifyTicket(TicketModificationDTO mod)
+        /// <summary>
+        /// Update a ticket
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns>
+        /// A Ticket object that is updated
+        /// </returns>
+        public async Task<Ticket> ModifyTicket(TicketModificationDTO mod)
         {
             Ticket t = await _dbContext.tickets.FirstAsync(t => t.ticketId == mod.ticketId);
 
@@ -48,22 +77,39 @@ namespace EventManagementAPI.Repositories
 
             _dbContext.tickets.Update(t);
             await _dbContext.SaveChangesAsync();
+            return t;
         }
 
+        /// <summary>
+        /// Delete a ticket
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public async Task DeleteTicket(Ticket t)
         {
             _dbContext.tickets.Remove(t);
             await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get all booked tickets for an event
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <param name="customerId"></param>
+        /// <returns>
+        /// A list of key-value pairs where the key represents the ticket name and value represents the number of tickets booked
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Dictionary<string,int>> GetMyTickets(int eventId, int customerId) {
             if (!await _dbContext.customers
                 .AnyAsync(c => c.uid == customerId)) {
-                throw new BadHttpRequestException("That customer does not exist");
+                throw new KeyNotFoundException("That customer does not exist");
             }
             if (!await _dbContext.events
                 .AnyAsync(e => e.eventId == eventId)) {
-                throw new BadHttpRequestException("That event does not exist");
+                throw new KeyNotFoundException("That event does not exist");
             }
 
             var query = await _dbContext.bookingTickets

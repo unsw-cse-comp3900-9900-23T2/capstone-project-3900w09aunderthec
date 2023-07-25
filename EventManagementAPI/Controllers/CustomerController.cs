@@ -108,15 +108,6 @@ namespace EventManagementAPI.Controllers
             return Ok(subscibeResult);
         }
 
-        [HttpPost("UndoSubscribe")]
-        public async Task<IActionResult> UndoSubscribeHoster([FromBody] UndoSubscribeHosterRequestBody requestBody)
-        {
-            var subscriptionId = requestBody.subscriptionId;
-
-            var undoSubscribeResult = await _customerRepository.UndoSubscribeHoster(subscriptionId);
-            return Ok(undoSubscribeResult);
-        }
-
         [HttpPost("SaveEvent")]
         public async Task<IActionResult> SaveEvent([FromBody] SaveEventRequestBody requestBody)
         {
@@ -125,15 +116,6 @@ namespace EventManagementAPI.Controllers
 
             var saveEvent = await _customerRepository.SaveEvent(customerId, eventId);
             return Ok(saveEvent);
-        }
-
-        [HttpPost("UndoSaveEvent")]
-        public async Task<IActionResult> UndoSaveEvent([FromBody] UndoSaveEventRequestBody requestBody)
-        {
-            var saveEventId = requestBody.saveEventId;
-
-            var undoSubscribeResult = await _customerRepository.UndoSaveEvent(saveEventId);
-            return Ok(undoSubscribeResult);
         }
     }
 }

@@ -4,6 +4,7 @@ using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EventManagementAPI.Repositories
 {
@@ -16,95 +17,120 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Comment?>> GetAllComments(string? sortBy, int? eventId, int? inReplyToComment)
+        /// <summary>
+        /// Get a list comments based on optional sorting criteria
+        /// </summary>
+        /// <param name="sortBy"></param>
+        /// <param name="eventId"></param>
+        /// <param name="inReplyToComment"></param>
+        /// <returns>
+        /// A list of Comment objects that are in specified order
+        /// </returns>
+        /// <exception cref="BadHttpRequestException"></exception>
+        /// <exception cref="DbUpdateException"></exception>
+        public async Task<List<Comment>> GetAllComments(string? sortBy, int? eventId, int? replyToComment)
         {
-            if (eventId is null && inReplyToComment is null)
+            if (eventId is null && replyToComment is null)
             { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified");}
 
-            IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == inReplyToComment || c.eventId == eventId);
-            if (query is null) { throw new BadHttpRequestException("Event or comment to reply to does not exist");}
+            IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == replyToComment && c.eventId == eventId) ?? throw new DbUpdateException("Event or comment to reply to does not exist");
 
             switch (sortBy)
             {
-                case "most recent":
+                case "soonest":
                     query = query.OrderByDescending(c => c.createdTime);
                     break;
-                case "most liked":
+                case "most_liked":
                     query = query.OrderByDescending(c => c.likes);
                     break;
-                case "most disliked":
+                case "most_disliked":
                     query = query.OrderByDescending(c => c.dislikes);
                     break;
                 default:
                     break;
             }
 
-            var comments =await query.ToListAsync();
+            var comments = await query.ToListAsync();
             return comments;
         }
 
+        /// <summary>
+        /// Get details of a comment by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// A Comment object whose id matches the parameter
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Comment?> GetCommentById(int id)
         {
-            var comment = await _dbContext.comments.FindAsync(id);
-
-            if (comment == null)
-            {
-                throw new BadHttpRequestException("Comment does not exist");
-            }
-
+            var comment = await _dbContext.comments.FindAsync(id) ?? throw new KeyNotFoundException("Comment does not exist");
             return comment;
         }
 
-        public async Task<Comment?> CreateComment(int customerId, int eventId, int? commentId, string comment)
+        /// <summary>
+        /// Customers can create comments
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="eventId"></param>
+        /// <param name="commentId"></param>
+        /// <param name="comment"></param>
+        /// <returns>
+        /// A Comment object that is newly created
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<Comment?> CreateComment(int uid, int eventId, int? commentId, string comment)
         {
-            var inReplyToComment = new Comment();
+            var replyToComment = commentId.HasValue ? await GetCommentById(commentId.Value) : null;
 
-            if (commentId.HasValue)
+            if (commentId.HasValue && replyToComment == null)
             {
-                inReplyToComment = await GetCommentById(commentId.Value);
-
-                if (inReplyToComment == null)
-                {
-                    return null;
-                }
-            } else
-            {
-                inReplyToComment = null;
+                throw new KeyNotFoundException("reply to comment does not exist");
             }
-            
-            var newComment = new Comment();
-            newComment.comment = comment;
 
             var e = await _dbContext.events.FindAsync(eventId);
-            newComment.eventId = eventId;
-            newComment.eventShow = e;
+            User? user = await _dbContext.customers.FindAsync(uid);
 
-            var customer = await _dbContext.customers.FindAsync(customerId);
-            newComment.customerId = customerId;
-            newComment.commenter = customer;
+            if (e == null)
+            {
+                throw new KeyNotFoundException("relevant event does not exist");
+            }
 
-            if (commentId.HasValue)
+            if (user == null)
             {
-                newComment.commentId = commentId.Value;
-                newComment.inReplyTo = inReplyToComment;
-            } else
+                user ??= await _dbContext.hosts.FindAsync(uid) ?? throw new KeyNotFoundException("no relevant user found");
+                if (user.uid != e.hosterFK) throw new UnauthorizedAccessException("only this event hosters can reply");
+            }
+
+            var newComment = new Comment
             {
-                newComment.commentId = null;
-                newComment.inReplyTo = null;
-            } 
+                comment = comment,
+                eventId = eventId,
+                eventShow = e,
+                commenteruid = uid,
+                commenter = user,
+                commentId = commentId,
+                replyTo = replyToComment,
+            };
 
             _dbContext.comments.Add(newComment);
             await _dbContext.SaveChangesAsync();
             return newComment;
         }
 
+        /// <summary>
+        /// Like or cancel like a comment
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="commentId"></param>
+        /// <returns>
+        /// A string that indicates whether a user has liked a comment or cancelled like
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<string> ToggleLikeComment(int customerId, int commentId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId);
-            if (customer == null) { throw new BadHttpRequestException("Customer does not exist");}
-
-            var comment = await _dbContext.comments.FindAsync(commentId);
-            if (comment == null) { throw new BadHttpRequestException("Comment does not exist");}
+            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
+            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
             var existingLike = await _dbContext.commentLikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
 
@@ -115,11 +141,13 @@ namespace EventManagementAPI.Repositories
                 await _dbContext.SaveChangesAsync();
 
                 return "Like removed";
-            } 
+            }
 
-            var likeComment = new CommentLike();
-            likeComment.customerId = customerId;
-            likeComment.commentId = commentId;
+            var likeComment = new CommentLike()
+            {
+                customerId = customerId,
+                commentId = commentId,
+            };
 
             _dbContext.commentLikes.Add(likeComment);
             comment.likes++;
@@ -127,13 +155,20 @@ namespace EventManagementAPI.Repositories
 
             return "Comment liked";
         }
+
+        /// <summary>
+        /// Dislike or cancel dislike a comment
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="commentId"></param>
+        /// <returns>
+        /// A string that indicates whether a user has disliked a comment or cancelled dislike
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<string> ToggleDislikeComment(int customerId, int commentId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId);
-            if (customer == null) { throw new BadHttpRequestException("Customer does not exist");}
-
-            var comment = await _dbContext.comments.FindAsync(commentId);
-            if (comment == null) { throw new BadHttpRequestException("Comment does not exist");}
+            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
+            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
             var existingDislike = await _dbContext.commentDislikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
 
@@ -146,9 +181,11 @@ namespace EventManagementAPI.Repositories
                 return "Dislike removed";
             }
 
-            var dislikeComment = new CommentDislike();
-            dislikeComment.customerId = customerId;
-            dislikeComment.commentId = commentId;
+            var dislikeComment = new CommentDislike()
+            {
+                customerId = customerId,
+                commentId = commentId,
+            };
 
             _dbContext.commentDislikes.Add(dislikeComment);
             comment.dislikes++;
@@ -157,149 +194,45 @@ namespace EventManagementAPI.Repositories
             return "Comment disliked";
         }
 
-        // public async Task<bool> UndoLikedComment(int commentLikeId)
-        // {
-        //     var commentLike = await _dbContext.commentLikes.FindAsync(commentLikeId);
-
-        //     if (commentLike == null)
-        //     {
-        //         return false;
-        //     }
-
-        //     var commentId = commentLike.commentId;
-        //     var comment = await _dbContext.comments.FindAsync(commentId);
-
-        //     if ( comment != null )
-        //     {
-        //         comment.likes--;
-        //     }
-            
-        //     _dbContext.commentLikes.Remove(commentLike);
-        //     await _dbContext.SaveChangesAsync();
-
-        //     return true;
-        // }
-
-        // public async Task<bool> DislikeComment(int customerId, int commentId)
-        // {
-        //     var customer = await _dbContext.customers.FindAsync(customerId);
-        //     var comment = await _dbContext.comments.FindAsync(commentId);
-
-        //     if (customer == null || comment == null)
-        //     {
-        //         return false;
-        //     }
-
-        //     var likeComment = new CommentDislike();
-        //     likeComment.customerId = customerId;
-        //     likeComment.customer = customer;
-        //     likeComment.commentId = commentId;
-        //     likeComment.comment = comment;
-
-        //     _dbContext.commentDislikes.Add(likeComment);
-        //     comment.dislikes++;
-        //     await _dbContext.SaveChangesAsync();
-
-        //     return true;
-        // }
-
-        // public async Task<bool> UndoDislikeComment(int commentDislikeId)
-        // {
-        //     var commentDislike = await _dbContext.commentDislikes.FindAsync(commentDislikeId);
-
-        //     if (commentDislike == null)
-        //     {
-        //         return false;
-        //     }
-
-        //     var commentId = commentDislike.commentId;
-        //     var comment = await _dbContext.comments.FindAsync(commentId);
-        //     if (comment != null)
-        //     {
-        //         comment.dislikes--;
-        //     }
-
-        //     _dbContext.commentDislikes.Remove(commentDislike);
-        //     await _dbContext.SaveChangesAsync();   
-
-        //     return true;
-        // }
-
-        public async Task<Comment?> RetrieveComment(int commentId)
+        /// <summary>
+        /// Customer can delete a comment he has made
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <returns>
+        /// The Comment that has deleted
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<Comment> RetrieveComment(int commentId)
         {
-            var comment = await _dbContext.comments.FindAsync(commentId);
-
-            if (comment == null )
-            {
-                throw new BadHttpRequestException("Comment does not exist");
-            }
+            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
             _dbContext.comments.Remove(comment);
-
             await _dbContext.SaveChangesAsync();
             return comment;
         }
 
-        public async Task<User?> GetUser(int uid)
+        /// <summary>
+        /// Event hoster can pin a comment
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <returns>
+        /// The Comment object that has been pinned
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        /// <exception cref="BadHttpRequestException"></exception>
+        public async Task<Comment> PinComment(int commentId)
         {
+            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
-            User? user = await _dbContext.customers.FindAsync(uid);
-            if (user == null)
+            if (comment.replyTo != null)
             {
-                user = await _dbContext.hosts.FindAsync(uid);
+                throw new BadHttpRequestException("Only root comments can be pinned");
             }
-            return user;
+
+            comment.isPinned = !comment.isPinned;
+            _dbContext.comments.Update(comment);
+            await _dbContext.SaveChangesAsync();
+            return comment;
         }
-
-        // public async Task<Reply?> Reply(int commenterId, int replierId, int commentId, string reply)
-        // {
-        //     User? commenter = await GetUser(commenterId); 
-        //     if (commenter == null) {
-        //         throw new BadHttpRequestException("Commenter does not exist");
-        //     }
-
-        //     User? replier = await GetUser(replierId);
-        //     if (replier == null)
-        //     {
-        //         throw new BadHttpRequestException("Replier does not exist");
-        //     }
-
-        //     var comment = await _dbContext.comments.FindAsync(commentId);
-        //     if (comment == null)
-        //     {
-        //         throw new BadHttpRequestException("Comment does not exist");
-        //     }
-
-        //     var newReply = new Reply
-        //     {
-        //         replier = replier,
-        //         comment = comment,
-        //         commenter = commenter,
-        //         replierId = replierId,
-        //         commentId = commentId,
-        //         commenterId = commenterId,
-        //         reply = reply,
-        //     };
-
-        //     _dbContext.replies.Add(newReply);
-        //     await _dbContext.SaveChangesAsync();
-
-        //     return newReply;
-        // }
-
-        // public async Task<Reply?> RetrieveReply(int replyId)
-        // {
-        //     var reply = await _dbContext.replies.FindAsync(replyId);
-
-        //     if (reply == null)
-        //     {
-        //         throw new BadHttpRequestException("Reply does not exist");
-        //     }
-
-        //     _dbContext.replies.Remove(reply);
-        //     await _dbContext.SaveChangesAsync();
-
-        //     return reply;
-        // }
     }
 }

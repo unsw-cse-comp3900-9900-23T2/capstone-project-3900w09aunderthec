@@ -3,6 +3,7 @@ using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace EventManagementAPI.Repositories
 {
@@ -15,30 +16,53 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Retrieve a list of customers
+        /// </summary>
+        /// <returns>
+        /// A list of Customer objects
+        /// </returns>
         public async Task<List<Customer>> GetAllCustomers()
         {
             return await _dbContext.customers.ToListAsync();
         }
 
+        /// <summary>
+        /// Get details of a customer
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns>
+        /// A Customer object
+        /// </returns>
         public async Task<Customer?> GetCustomerById(int customerId)
         {
             return await _dbContext.customers.FindAsync(customerId);
         }
 
+        /// <summary>
+        /// Update Customer object
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="customerDocument"></param>
+        /// <returns>
+        /// Updated Customer object
+        /// </returns>
         public async Task<Customer> UpdateCustomerByPatch(int id, JsonPatchDocument<Customer> customerDocument)
         {
-            var customerById = await _dbContext.customers.FindAsync(id);
-            if (customerById == null)
-            {
-                return customerById;
-            }
-
+            var customerById = await _dbContext.customers.FindAsync(id) ?? throw new KeyNotFoundException("customer to be updated not found");
             customerDocument.ApplyTo(customerById);
             await _dbContext.SaveChangesAsync();
 
             return customerById;
         }
 
+        /// <summary>
+        /// Update a customer
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns>
+        /// Updated Customer object
+        /// </returns>
         public async Task<Customer> UpdateCustomer(Customer customer)
         {
             _dbContext.customers.Update(customer);
@@ -47,89 +71,78 @@ namespace EventManagementAPI.Repositories
             return customer;
         }
 
-        public async Task<bool> SubscribeHoster(int customerId, int hosterId)
+        /// <summary>
+        /// Subscribe or Unsubscribe a hoster
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="hosterId"></param>
+        /// <returns>
+        /// A subscription object that either newly created or deleted
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<Subscription> SubscribeHoster(int customerId, int hosterId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId);
-            var hoster = await _dbContext.hosts.FindAsync(hosterId);
+            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
+            var hoster = await _dbContext.hosts.FindAsync(hosterId) ?? throw new KeyNotFoundException("hoster not found");
 
-            if (customer == null || hoster == null)
-            {
-                return false;
-            }
-
-            var subscription = new Subscription();
-            subscription.hoster = hoster;
-            subscription.hosterIdRef = hosterId;
-            subscription.customer = customer;
-            subscription.customerIdRef = customerId;
-
-            _dbContext.subscriptions.Add(subscription);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> UndoSubscribeHoster(int subscriptionId)
-        {
-            var subscription = await _dbContext.subscriptions.FindAsync(subscriptionId);
+            var subscription = await _dbContext.subscriptions.FirstOrDefaultAsync(s => s.customerIdRef == customerId && s.hosterIdRef == hosterId);
 
             if (subscription == null)
             {
-                return false;
+                var newSubscription = new Subscription
+                {
+                    hoster = hoster,
+                    hosterIdRef = hosterId,
+                    customer = customer,
+                    customerIdRef = customerId,
+                };
+                _dbContext.subscriptions.Add(newSubscription);
+                await _dbContext.SaveChangesAsync();
+                return newSubscription;
+            } else
+            {
+                _dbContext.subscriptions.Remove(subscription);
             }
-
-            _dbContext.subscriptions.Remove(subscription);
+            
             await _dbContext.SaveChangesAsync();
-            return true;
+            return subscription;
         }
 
-        public async Task<bool> SaveEvent(int customerId, int eventId)
+        /// <summary>
+        /// Save or Unsave an event
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// An EventSaved object that either newly created or deleted
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<EventSaved> SaveEvent(int customerId, int eventId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId);
-            var e = await _dbContext.events.FindAsync(eventId);
+            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
+            var e = await _dbContext.events.FindAsync(eventId) ?? throw new KeyNotFoundException("event not found");
 
-            if (customer == null || e == null)
+            var eventSaved = await _dbContext.eventsSaved.FirstOrDefaultAsync(es => es.customerId == customerId && es.eventId == eventId);
+
+            if (eventSaved == null)
             {
-                return false;
+                var newEventSaved = new EventSaved
+                {
+                    customerId = customerId,
+                    customer = customer,
+                    eventId = eventId,
+                    eventShow = e,
+                };
+                e.numberSaved++;
+                _dbContext.Add(newEventSaved);
+                await _dbContext.SaveChangesAsync();
+                return newEventSaved;
             }
 
-            e.numberSaved++;
-
-            var saveEvent = new EventSaved()
-            {
-                customerId = customerId,
-                eventId = eventId,
-                customer = customer,
-                eventShow = e,
-            };
-
-            _dbContext.Add(saveEvent);
+            e.numberSaved--;
+            _dbContext.Remove(eventSaved);
             await _dbContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> UndoSaveEvent(int saveEventId)
-        {
-            var saveEvent = await _dbContext.eventsSaved.FindAsync(saveEventId);
-
-            if (saveEvent == null)
-            {
-                return false;
-            }
-
-            var eventId = saveEvent.eventId;
-            var e = await _dbContext.events.FindAsync(eventId);
-
-            if (e != null)
-            {
-                e.numberSaved--;
-            }
-
-            _dbContext.Remove(saveEvent);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
+            return eventSaved;
         }
     }
 }
