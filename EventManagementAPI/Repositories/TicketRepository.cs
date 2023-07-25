@@ -74,7 +74,7 @@ namespace EventManagementAPI.Repositories
             if(mod.name is not null){t.name = mod.name;}
             if(mod.price is not null){t.price = mod.price ?? default(Double);}
             if(mod.stock is not null){t.stock = mod.stock ?? default(int);}
-            if(mod.availableTime is not null){t.availableTime = mod.availableTime.Value};
+            if(mod.availableTime is not null){ t.availableTime = mod.availableTime.Value; }
 
             _dbContext.tickets.Update(t);
             await _dbContext.SaveChangesAsync();

@@ -308,6 +308,9 @@ namespace EventManagementAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("availableTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("createdTime")
                         .HasColumnType("datetime(6)");
 

@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication;
 
 public class JsonMessage
 {
@@ -214,9 +215,15 @@ namespace EventManagementAPI.Repositories
 
             foreach (var e in events)
             {
+                var eventShow = await _dbContext.events.Include(e => e.tickets).FirstOrDefaultAsync(ev => ev.eventId == e.eventId);
+                if (eventShow == null)
+                {
+                    throw new KeyNotFoundException("event not found");
+                }
+
                 double cheapestPrice = 0.0;
-                if (e.tickets.Count != 0) {
-                    cheapestPrice = e.tickets.Min(t => t.price);
+                if (eventShow.tickets.Count != 0) {
+                    cheapestPrice = eventShow.tickets.Min(t => t.price);
                 }
 
                 var eventDto = new EventListingDTO
