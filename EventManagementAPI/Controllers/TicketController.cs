@@ -15,6 +15,7 @@ namespace EventManagementAPI.Controllers{
         public string name { get; set; }
         public int eventId { get; set; }
         public int stock { get; set; }
+        public DateTime availableTime { get; set; }
     };
 
     public class ModifyTicketsRequestBody
@@ -23,6 +24,7 @@ namespace EventManagementAPI.Controllers{
         public double? price { get; set; }
         public string? name { get; set; }
         public int? stock { get; set; }
+        public DateTime availableTime { get; set; }
     };
 
     public class DeleteTicketsRequestBody
@@ -67,6 +69,7 @@ namespace EventManagementAPI.Controllers{
                 eventIdRef = RequestBody.eventId,
                 toEvent = existingEvent,
                 stock = RequestBody.stock,
+                availableTime = RequestBody.availableTime,
             };
 
             await _ticketRepository.CreateBookingTicket(newTicket);
@@ -101,7 +104,8 @@ namespace EventManagementAPI.Controllers{
                 ticketId = requestBody.ticketId,
                 name = requestBody.name,
                 price = requestBody.price,
-                stock = requestBody.stock
+                stock = requestBody.stock,
+                availableTime = requestBody.availableTime,
             };
 
             await _ticketRepository.ModifyTicket(mod);

@@ -18,6 +18,7 @@ namespace EventManagementAPI.Models
         public String name { get; set; }
         public Double price { get; set; }
         public int stock { get; set; }
+        public DateTime availableTime { get; set; }
         public DateTime createdTime { get; set; } = DateTime.Now;
     }
 }

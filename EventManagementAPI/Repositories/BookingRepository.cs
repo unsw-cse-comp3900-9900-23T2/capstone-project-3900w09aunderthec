@@ -103,6 +103,7 @@ namespace EventManagementAPI.Repositories
 
             // customer gains loyalty points
             customer.loyaltyPoints += booking.gainedCredits;
+            customer.vipLevel = customer.loyaltyPoints / 1000;
 
             _dbContext.bookings.Add(booking);
              await _dbContext.SaveChangesAsync();
@@ -164,8 +165,9 @@ namespace EventManagementAPI.Repositories
                 throw new BadHttpRequestException("Booking does not exist");
             }
 
-            var customer = await _dbContext.customers.FindAsync(booking.customerId);
+            var customer = await _dbContext.customers.FindAsync(booking.customerId) ?? throw new KeyNotFoundException("customer not found");
             customer.loyaltyPoints -= booking.gainedCredits;
+            customer.vipLevel = customer.loyaltyPoints / 1000;
 
             var bookingTickets = await _dbContext.bookingTickets.Where(t => t.bookingId == bookingId).ToListAsync();
 
