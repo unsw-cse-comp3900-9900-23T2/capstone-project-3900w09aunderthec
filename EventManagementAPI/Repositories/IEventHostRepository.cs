@@ -7,5 +7,7 @@ namespace EventManagementAPI.Repositories
     public interface IEventHostRepository
     {
         Task<List<Hoster>> GetAllEventHosts();
+        public Task<Hoster?> GetHosterById(int hosterId);
+        public List<Customer> GetBuyers(int eventId);
     }
 }

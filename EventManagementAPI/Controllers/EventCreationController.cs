@@ -6,6 +6,9 @@ using EventManagementAPI.Models;
 using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using EventManagementAPI.Services;
+using System.Text;
+using System.Net.Mail;
 
 namespace EventManagementAPI.Controllers{
 
@@ -43,15 +46,26 @@ namespace EventManagementAPI.Controllers{
         public int eventId { get; set; }
     }
 
+    public class EmailNotificationRequestBody
+    {
+        public int eventId { get; set; }
+        public string subject { get; set; }
+        public string body { get; set; }
+    }
+
     [ApiController]
     [Route("[controller]")]
     public class EventCreationController : ControllerBase
     {
         private readonly IEventRepository _eventRepository;
+        private readonly IEventHostRepository _eventHostRepository;
+        private readonly EmailService _emailService;
 
-        public EventCreationController(IEventRepository eventRepository)
+        public EventCreationController(IEventRepository eventRepository, IEventHostRepository eventHostRepository, EmailService emailService)
         {
             _eventRepository = eventRepository;
+            _eventHostRepository = eventHostRepository;
+            _emailService = emailService;
         }
 
         [HttpGet("GetTags")]
@@ -148,7 +162,38 @@ namespace EventManagementAPI.Controllers{
                 return NotFound();
             }
 
+            var hosterId = e.hosterFK;
+            var hoster = _eventHostRepository.GetHosterById(hosterId);
+
             return Ok(e);
+        }
+
+        [HttpPost("EmailNotification")]
+        public IActionResult EmailNotification([FromBody] EmailNotificationRequestBody requestBody)
+        {
+            var eventId = requestBody.eventId;
+            var subject = requestBody.subject;
+            var body = requestBody.body;
+
+            var buyers = _eventHostRepository.GetBuyers(eventId);
+
+            var fromAddress = "underthecsharp@outlook.com";
+            var emailBody = new StringBuilder()
+                .AppendLine("Dear Customer, ")
+                .AppendLine("")
+                .AppendLine(body)
+                .AppendLine("")
+                .AppendLine("Kind Regards,")
+                .AppendLine("Under the C")
+                .ToString();
+
+            foreach (Customer buyer in buyers)
+            {
+                var toAddress = buyer.email;
+                _emailService.SendEmail(fromAddress, toAddress, subject, emailBody);
+            }
+
+            return Ok();
         }
     }
 }
