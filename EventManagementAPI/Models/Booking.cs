@@ -14,6 +14,7 @@ namespace EventManagementAPI.Models
         // 1 represents credit/debit card; 2 represents digital wallet; 3 represent bank transfer
         public int paymentMethod { get; set; }
         public int gainedCredits { get; set; }
+        public double creditMoneyUsed { get; set; }
         public DateTime timeCreated { get; set; } = DateTime.Now;
         // public ICollection<BookingTicket> bookingTickets { get; set; }
     }

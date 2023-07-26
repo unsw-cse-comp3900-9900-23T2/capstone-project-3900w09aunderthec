@@ -46,7 +46,7 @@ namespace EventManagementAPI.Controllers
         {
             try
             {
-                var eventComments = await _commentRepository.GetAllComments(sortby, eventId, replyToComment);
+                var eventComments = await _commentRepository.GetComments(sortby, eventId, replyToComment);
                 return Ok(eventComments);
             } 
             catch (KeyNotFoundException e)

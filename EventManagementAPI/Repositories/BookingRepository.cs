@@ -29,26 +29,30 @@ namespace EventManagementAPI.Repositories
             return ticket == null ? throw new BadHttpRequestException("Ticket type does not exist") : ticket.stock;
         }
 
+        /// <summary>
+        /// Get the amount of credit money the customer has with the hoster
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="hosterId"></param>
+        /// <returns>
+        /// A double indicates the amount of credit money
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<double?> GetCreditMoney(int customerId, int hosterId)
         {
             var creditMoney = await _dbContext.creditMoney.FirstOrDefaultAsync(c => c.customerId == customerId && c.hosterId == hosterId);
 
             if (creditMoney == null)
             {
-                throw new BadHttpRequestException("Customer has no credits with this Host");
+                throw new KeyNotFoundException("Customer has no credits with this Host");
             }
 
             return creditMoney.creditAmount;
         }
 
-        public async Task<Booking?> MakeBooking(int customerId, Dictionary<string, int> bookingTickets, int paymentMethod)
+        public async Task<BookingCreationDto> MakeBooking(int customerId, Dictionary<string, int> bookingTickets, int paymentMethod)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId);
-            if (customer == null)
-            {
-                throw new BadHttpRequestException("Customer does not exist");
-            }
-
+            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
             var booking = new Booking
             {
                 customerId = customerId,
@@ -63,12 +67,7 @@ namespace EventManagementAPI.Repositories
                 string ticketIdString = ticketPair.Key;
                 int ticketId = int.Parse(ticketIdString);
                 int numberOfTickets = ticketPair.Value;
-                var ticket = await _dbContext.tickets.FindAsync(ticketId);
-                if (ticket == null)
-                {
-                    throw new BadHttpRequestException("One of the ticket types does not exist, booking not made.");
-                }
-
+                var ticket = await _dbContext.tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("One of the ticket types does not exist, booking not made.");
                 if (ticket.stock - numberOfTickets < 0)
                 {
                     throw new BadHttpRequestException(String.Format("Not enough stock to purchase {0} {1} tickets, only {3} remain. Booking not made", numberOfTickets, ticket.name, ticket.stock));
@@ -80,7 +79,7 @@ namespace EventManagementAPI.Repositories
                 string ticketIdString = ticketPair.Key;
                 int ticketId = int.Parse(ticketIdString);
                 int numberOfTickets = ticketPair.Value;
-                var ticket = await _dbContext.tickets.FindAsync(ticketId);
+                var ticket = await _dbContext.tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
 
                 var newBookingTicket = new BookingTicket
                 {
@@ -99,16 +98,61 @@ namespace EventManagementAPI.Repositories
                 ticket.stock -= numberOfTickets;
             }
 
-            booking.gainedCredits = Convert.ToInt32(totalPrice) * 10;
+            var vipLevel = customer.vipLevel;
+            var loyaltyPoints = customer.availableLoyaltyPoints;
+            // every 10 vip levels can get 1% off
+            // maximum 15% off
+            // minimum 0
+            var discountPercentage = Math.Clamp((vipLevel / 10) * 0.01, 0, 0.15);
+
+            // use loyalty points to get discount
+            // one point equals one cent
+            var discount = totalPrice * discountPercentage;
+            double totalPriceToPay;
+            double discountGet;
+            if (discount * 100 <= loyaltyPoints)
+            {
+                discountGet = Math.Round(discount, 2);
+                loyaltyPoints -= Convert.ToInt32(discount * 100);
+                totalPriceToPay = totalPrice - discount;
+            } else
+            {
+                discountGet = Math.Round(loyaltyPoints / 100.0, 2);
+                loyaltyPoints = 0;
+                totalPriceToPay = totalPrice - discountGet;
+            }
+
+            booking.gainedCredits = Convert.ToInt32(totalPriceToPay) * 10;
 
             // customer gains loyalty points
             customer.loyaltyPoints += booking.gainedCredits;
+            customer.availableLoyaltyPoints = loyaltyPoints + booking.gainedCredits;
             customer.vipLevel = customer.loyaltyPoints / 1000;
+
+            // use credit money for payment
+            double creditMoneyUsed;
+
+            if (totalPriceToPay > customer.creditMoney)
+            {
+
+            } else
+            {
+                creditMoneyUsed = totalPriceToPay;
+                customer.creditMoney -= creditMoneyUsed;
+            }
 
             _dbContext.bookings.Add(booking);
              await _dbContext.SaveChangesAsync();
 
-            return booking;
+            var bookingCreation = new BookingCreationDto {
+                Booking = booking,
+                DiscountGet = discountGet,
+                NewLoyaltyPoints = customer.loyaltyPoints,
+                NewAvailableLoyaltyPoints = customer.availableLoyaltyPoints,
+                NewVipLevel = customer.vipLevel,
+            };
+
+            return bookingCreation;
         }
 
         /// <summary>

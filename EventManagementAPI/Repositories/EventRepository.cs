@@ -148,10 +148,6 @@ namespace EventManagementAPI.Repositories
                     // can't see other events
                     // optional to show past events
                     query = _dbContext.events.Include(e => e.tickets);
-                    if (!showPreviousEvents)
-                    {
-                        query = query.Where(e => e.eventTime > DateTime.Now);
-                    }
                     query = query.Where(e => e.hosterFK == uid);
                 }
                 else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
@@ -170,10 +166,6 @@ namespace EventManagementAPI.Repositories
                                 t.toEvent
                             })
                         .Select(c => c.toEvent);
-                    if (!showPreviousEvents)
-                    {
-                        query = query.Where(e => e.eventTime > DateTime.Now);
-                    }
                 }
                 else
                 {
@@ -183,25 +175,33 @@ namespace EventManagementAPI.Repositories
             {
                 // if uid is not given
                 // show all public upcoming events
-                query = _dbContext.events.Where(e => e.eventTime > DateTime.Now && !e.isPrivateEvent);
+                query = _dbContext.events.Where(e => !e.isPrivateEvent);
             }
 
-            switch (sortby)
+            if (!showPreviousEvents)
             {
-                case "soonest":
-                    query = query.OrderBy(e => e.eventTime);
-                    break;
-                case "most_saved":
-                    query = query.OrderByDescending(e => e.numberSaved);
-                    break;
-                case "price_high_to_low":
-                    query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
-                    break;
-                case "price_low_to_high":
-                    query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
-                    break;
-                default:
-                    break;
+                query.Where(e => e.eventTime > DateTime.Now);
+            }
+
+            if (sortby is not null)
+            {
+                switch (sortby)
+                {
+                    case "soonest":
+                        query = query.OrderBy(e => e.eventTime);
+                        break;
+                    case "most_saved":
+                        query = query.OrderByDescending(e => e.numberSaved);
+                        break;
+                    case "price_high_to_low":
+                        query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                        break;
+                    case "price_low_to_high":
+                        query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                        break;
+                    default:
+                        break;
+                }
             }
 
             var events = await query.ToListAsync();
@@ -215,12 +215,7 @@ namespace EventManagementAPI.Repositories
 
             foreach (var e in events)
             {
-                var eventShow = await _dbContext.events.Include(e => e.tickets).FirstOrDefaultAsync(ev => ev.eventId == e.eventId);
-                if (eventShow == null)
-                {
-                    throw new KeyNotFoundException("event not found");
-                }
-
+                var eventShow = await _dbContext.events.Include(e => e.tickets).FirstOrDefaultAsync(ev => ev.eventId == e.eventId) ?? throw new KeyNotFoundException("event not found");
                 double cheapestPrice = 0.0;
                 if (eventShow.tickets.Count != 0) {
                     cheapestPrice = eventShow.tickets.Min(t => t.price);

@@ -48,13 +48,15 @@ namespace EventManagementAPI.Controllers
         [HttpPost("GetCreditMoney")]
         public async Task<IActionResult> GetCreditMoney([FromQuery] int customerId, [FromQuery] int hosterId)
         {
-            var creditAmount = await _bookingRepository.GetCreditMoney(customerId, hosterId);
-            if (creditAmount == null)
+            try
+            {
+                var creditAmount = await _bookingRepository.GetCreditMoney(customerId, hosterId);
+                return Ok(creditAmount);
+            }
+            catch (KeyNotFoundException e)
             {
                 return NotFound();
             }
-
-            return Ok(creditAmount);
         }
 
         [HttpPost("MakeBooking")]

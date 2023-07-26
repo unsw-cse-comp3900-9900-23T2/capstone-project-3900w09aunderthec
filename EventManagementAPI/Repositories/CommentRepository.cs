@@ -1,5 +1,6 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -18,20 +19,20 @@ namespace EventManagementAPI.Repositories
         }
 
         /// <summary>
-        /// Get a list comments based on optional sorting criteria
+        /// Get a list comments based on optional sorting criteria including pinned comments
         /// </summary>
         /// <param name="sortBy"></param>
         /// <param name="eventId"></param>
         /// <param name="inReplyToComment"></param>
         /// <returns>
-        /// A list of Comment objects that are in specified order
+        /// A CommentListingDto object includes pinned comments and oridinary comments
         /// </returns>
         /// <exception cref="BadHttpRequestException"></exception>
         /// <exception cref="DbUpdateException"></exception>
-        public async Task<List<Comment>> GetAllComments(string? sortBy, int? eventId, int? replyToComment)
+        public async Task<CommentListingDto> GetComments(string? sortBy, int? eventId, int? replyToComment)
         {
             if (eventId is null && replyToComment is null)
-            { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified");}
+            { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified"); }
 
             IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == replyToComment && c.eventId == eventId) ?? throw new DbUpdateException("Event or comment to reply to does not exist");
 
@@ -50,8 +51,16 @@ namespace EventManagementAPI.Repositories
                     break;
             }
 
-            var comments = await query.ToListAsync();
-            return comments;
+            var pinnedComments = await query.Where(c => c.isPinned).ToListAsync();
+            var comments = await query.Where(c => c.isPinned == false).ToListAsync();
+
+            var getCommentsDto = new CommentListingDto
+            {
+                PinnedComments = pinnedComments,
+                Comments = comments,
+            };
+
+            return getCommentsDto;
         }
 
         /// <summary>
