@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 public class JsonMessage
 {
@@ -148,10 +149,6 @@ namespace EventManagementAPI.Repositories
                     // can't see other events
                     // optional to show past events
                     query = _dbContext.events.Include(e => e.tickets);
-                    if (!showPreviousEvents)
-                    {
-                        query = query.Where(e => e.eventTime > DateTime.Now);
-                    }
                     query = query.Where(e => e.hosterFK == uid);
                 }
                 else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
@@ -170,10 +167,6 @@ namespace EventManagementAPI.Repositories
                                 t.toEvent
                             })
                         .Select(c => c.toEvent);
-                    if (!showPreviousEvents)
-                    {
-                        query = query.Where(e => e.eventTime > DateTime.Now);
-                    }
                 }
                 else
                 {
@@ -183,25 +176,33 @@ namespace EventManagementAPI.Repositories
             {
                 // if uid is not given
                 // show all public upcoming events
-                query = _dbContext.events.Where(e => e.eventTime > DateTime.Now && !e.isPrivateEvent);
+                query = _dbContext.events.Where(e => !e.isPrivateEvent);
             }
 
-            switch (sortby)
+            if (!showPreviousEvents)
             {
-                case "soonest":
-                    query = query.OrderBy(e => e.eventTime);
-                    break;
-                case "most_saved":
-                    query = query.OrderByDescending(e => e.numberSaved);
-                    break;
-                case "price_high_to_low":
-                    query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
-                    break;
-                case "price_low_to_high":
-                    query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
-                    break;
-                default:
-                    break;
+                query.Where(e => e.eventTime > DateTime.Now);
+            }
+
+            if (sortby != null)
+            {
+                switch (sortby)
+                {
+                    case "soonest":
+                        query = query.OrderBy(e => e.eventTime);
+                        break;
+                    case "most_saved":
+                        query = query.OrderByDescending(e => e.numberSaved);
+                        break;
+                    case "price_high_to_low":
+                        query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                        break;
+                    case "price_low_to_high":
+                        query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                        break;
+                    default:
+                        break;
+                }
             }
 
             var events = await query.ToListAsync();
