@@ -146,9 +146,9 @@ class EventsByUserProvider extends StateNotifier<List<Event>> {
   }
 
   Future<void> fetchEvents(String uid) async {
-    state = await getUserEvents(uid);
+    // here fetch events including past events
+    state = await getUserEvents(uid, includePastEvents: true);
   }
-
 }
 
 final eventsByUserProvider =
