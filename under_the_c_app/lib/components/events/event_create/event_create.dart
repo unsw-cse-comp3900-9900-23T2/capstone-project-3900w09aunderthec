@@ -293,7 +293,6 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               child: ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate() &&
-                      tags != '' &&
                       chosenDate != null &&
                       dayTime != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
