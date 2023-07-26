@@ -303,7 +303,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
-                    ref.read(eventsProvider.notifier).addEvent(
+                    await ref.read(eventsProvider.notifier).addEvent(
                           Event(
                             hostuid: sessionVariables.uid.toString(),
                             title: title,
