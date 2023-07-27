@@ -22,6 +22,7 @@ List<CommentT> backendDataCommentListToComment(data) {
 CommentT backendDataSingleCommentToComment(data) {
   return CommentT(
     id: data['id'].toString(),
+    eventId: data['eventId'].toString(),
     content: data['comment'],
     uid: data['customerId'].toString(),
     replyToId: data['replyToComment'].toString(),
