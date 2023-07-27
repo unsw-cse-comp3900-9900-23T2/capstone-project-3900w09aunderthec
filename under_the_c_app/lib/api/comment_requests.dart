@@ -9,7 +9,7 @@ import 'package:under_the_c_app/types/events/comment_type.dart';
 Future<List<CommentT>> getAllComments(String eventId,
     {String? sortby, String? commentId}) async {
   final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getComments,
-      {"eventId": eventId, "sortby": sortby, "inReplyToComment": commentId});
+      {"eventId": eventId, "sortby": sortby, "replyToComment": commentId});
   try {
     final response = await http.get(
       registerUrl,
@@ -17,10 +17,20 @@ Future<List<CommentT>> getAllComments(String eventId,
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(response.body);
-      final List<CommentT> events = jsonList
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      final List<dynamic> jsonPinnedCommentsList =
+          jsonResponse['pinnedComments'];
+      final List<dynamic> jsonCommentsList = jsonResponse['comments'];
+
+      // add all pinned comments
+      final List<CommentT> events = jsonPinnedCommentsList
           .map((json) => backendDataSingleCommentToComment(json))
           .toList();
+
+      // add all other comments
+      events.addAll(jsonCommentsList
+          .map((json) => backendDataSingleCommentToComment(json)));
+
       return events;
     } else {
       throw Exception(

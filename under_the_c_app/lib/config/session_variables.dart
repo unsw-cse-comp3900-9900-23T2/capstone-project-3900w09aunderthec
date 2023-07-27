@@ -1,6 +1,6 @@
 class sessionVariables {
   static bool sessionIsHost = false;
-  static int uid = 2;
+  static int uid = 4;
   static String email = "";
   static int vipLevel = 0;
   static int loyaltyPoints = 0;

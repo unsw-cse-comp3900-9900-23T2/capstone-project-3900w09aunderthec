@@ -24,7 +24,7 @@ CommentT backendDataSingleCommentToComment(data) {
     id: data['id'].toString(),
     content: data['comment'],
     uid: data['customerId'].toString(),
-    replyToId: data['inReplyTo'].toString(),
+    replyToId: data['replyToComment'].toString(),
     nLikes: data['likes'],
     nDislikes: data['dislikes'],
     createdTime: DateTime.parse(data['createdTime']),
