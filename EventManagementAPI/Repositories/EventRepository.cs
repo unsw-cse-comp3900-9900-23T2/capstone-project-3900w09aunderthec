@@ -9,6 +9,8 @@ using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 public class JsonMessage
 {
@@ -79,6 +81,13 @@ namespace EventManagementAPI.Repositories
             _httpClientFactory = httpClientFactory;
         }
 
+        /// <summary>
+        /// Get tags
+        /// </summary>
+        /// <param name="descriptorString"></param>
+        /// <returns>
+        /// A list of tag string
+        /// </returns>
         public async Task<List<string>> GetTags(string descriptorString)
         {
             var client = _httpClientFactory.CreateClient();
@@ -116,58 +125,84 @@ namespace EventManagementAPI.Repositories
             return returnList;
         }
 
-        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags)
+        /// <summary>
+        /// Get a list of events based on various criteria
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="sortby"></param>
+        /// <param name="tags"></param>
+        /// <param name="showPreviousEvents"></param>
+        /// <returns>
+        /// A list of EventListingDTO
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags, bool showPreviousEvents)
         {
             IQueryable<Event> query;
 
-            query = _dbContext.events.Include(e => e.tickets)
-                .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
-            if (uid is not null)
+            if (uid.HasValue)
             {
-                if (await _dbContext.hosts.AnyAsync(h => h.uid == uid))
+                if (await _dbContext.Hosts.AnyAsync(h => h.uid == uid))
                 {
-                    query = _dbContext.events.Include(e => e.tickets)
-                        .Where(e => e.eventTime > DateTime.Now && e.hosterFK == uid);
-                } else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
+                    // if uid refers to a hoster
+                    // get all hoster events
+                    // can't see other events
+                    // optional to show past events
+                    query = _dbContext.Events.Include(e => e.tickets);
+                    query = query.Where(e => e.hosterFK == uid);
+                }
+                else if (await _dbContext.Customers.AnyAsync(c => c.uid == uid))
                 {
-                    if (sortby == "recommended") {
-                        // Sprint 3 - Change this to sort query by most recommended events
-                        query = _dbContext.events.Include(e => e.tickets)
-                            .Where(e => e.eventTime > DateTime.Now && e.isPrivateEvent == false);
-                    } else {
-                        // Yes, this means customers seeing booked events will also see past events. Too bad!
-                        query = _dbContext.bookingTickets
-                            .Join(_dbContext.tickets,
-                                bt => bt.ticketId,
-                                t => t.ticketId,
-                                (bt,t) => new
-                                {
-                                    bt.booking,
-                                    t.toEvent
-                                })
-                            .Where(c => c.booking.customerId == uid)
-                            .Select(c => c.toEvent);
-                    }
-                } else
-                {throw new BadHttpRequestException("That user does not exist");}
+                    // if uid refers to a customer
+                    // get all events that the customer has made bookings
+                    // is can be public or private
+                    // optional to show past events
+                    query = _dbContext.BookingTickets
+                        .Join(_dbContext.Tickes,
+                            bt => bt.ticketId,
+                            t => t.ticketId,
+                            (bt, t) => new
+                            {
+                                bt.booking,
+                                t.toEvent
+                            })
+                        .Select(c => c.toEvent);
+                }
+                else
+                {
+                    throw new KeyNotFoundException("uid does not relate to an existing user");
+                }
+            } else
+            {
+                // if uid is not given
+                // show all public upcoming events
+                query = _dbContext.Events.Where(e => !e.isPrivateEvent);
             }
 
-            switch (sortby)
+            if (!showPreviousEvents)
             {
-                case "soonest":
-                    query = query.OrderBy(e => e.eventTime);
-                    break;
-                case "most_saved":
-                    query = query.OrderByDescending(e => e.numberSaved);
-                    break;
-                case "price_high_to_low":
-                    query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
-                    break;
-                case "price_low_to_high":
-                    query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
-                    break;
-                default:
-                    break;
+                query = query.Where(e => e.eventTime > DateTime.Now);
+            }
+
+            if (sortby is not null)
+            {
+                switch (sortby)
+                {
+                    case "soonest":
+                        query = query.OrderBy(e => e.eventTime);
+                        break;
+                    case "most_saved":
+                        query = query.OrderByDescending(e => e.numberSaved);
+                        break;
+                    case "price_high_to_low":
+                        query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                        break;
+                    case "price_low_to_high":
+                        query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                        break;
+                    default:
+                        break;
+                }
             }
 
             var events = await query.ToListAsync();
@@ -181,9 +216,10 @@ namespace EventManagementAPI.Repositories
 
             foreach (var e in events)
             {
+                var eventShow = await _dbContext.Events.Include(e => e.tickets).FirstOrDefaultAsync(ev => ev.eventId == e.eventId) ?? throw new KeyNotFoundException("event not found");
                 double cheapestPrice = 0.0;
-                if (e.tickets.Count != 0) {
-                    cheapestPrice = e.tickets.Min(t => t.price);
+                if (eventShow.tickets.Count != 0) {
+                    cheapestPrice = eventShow.tickets.Min(t => t.price);
                 }
 
                 var eventDto = new EventListingDTO
@@ -207,27 +243,47 @@ namespace EventManagementAPI.Repositories
             return eventList;
         }
 
+        /// <summary>
+        /// Create a new event
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task CreateAnEvent(Event e)
         {
-            if (!await _dbContext.hosts
+            if (!await _dbContext.Hosts
                 .AnyAsync(h => h.uid == e.hosterFK)) {
-                throw new BadHttpRequestException("That host does not exist");
+                throw new KeyNotFoundException("That host does not exist");
             }
                 
-            _dbContext.events.Add(e);
+            _dbContext.Events.Add(e);
             await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get event details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// An Event object with details
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Event> GetEventById(int id)
         {
-            var e = await _dbContext.events
-                .FirstOrDefaultAsync(e => e.eventId == id);
+            var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == id) ?? throw new KeyNotFoundException("event does not exist");
             return e;
         }
 
-        public async Task ModifyEvent(EventModificationDTO mod)
+        /// <summary>
+        /// Update an event
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns>
+        /// A modified Event object
+        /// </returns>
+        public async Task<Event> ModifyEvent(EventModificationDTO mod)
         {
-            Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
+            Event e = await _dbContext.Events.FirstAsync(e => e.eventId == mod.eventId);
 
             if(mod.title is not null){e.title = mod.title;}
             if(mod.eventTime is not null){e.eventTime = mod.eventTime ?? default(DateTime);}
@@ -238,13 +294,22 @@ namespace EventManagementAPI.Repositories
             if(mod.isPrivateEvent is not null){e.isPrivateEvent = mod.isPrivateEvent ?? default(bool);}
             if(mod.tags is not null){e.tags = mod.tags;}
 
-            _dbContext.events.Update(e);
+            _dbContext.Events.Update(e);
             await _dbContext.SaveChangesAsync();
+            return e;
         }
 
-        public async Task<Event?> CancelEvent(int eventId)
+        /// <summary>
+        /// Delete an event
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// An event object to be deleted
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<Event> CancelEvent(int eventId)
         {
-            var e = await _dbContext.events.FindAsync(eventId);
+            var e = await _dbContext.Events.FindAsync(eventId) ?? throw new KeyNotFoundException("event to delete does not exist");
 
             if (e != null)
             {

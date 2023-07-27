@@ -25,6 +25,7 @@ class AppRoutes {
   // for customer
   static const String customer = '/customer';
   static const String customerProfile = '/customer/profile';
+  static String viewBooking(String id) => '/customer/profile/view_booking/$id';
 
   // for guest
   static const String guest = '/guest';
@@ -34,5 +35,7 @@ class AppRoutes {
   static const String analytics = '/analytics';
 
   // tickets
-  static const String ticketConfirmation = '/ticket/confirmation';
+  static String ticketConfirmation(String eventName) =>
+      '/ticket/confirmation/$eventName';
+  static String ticketCreate(String id) => '/ticket/create/$id';
 }

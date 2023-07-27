@@ -33,9 +33,10 @@ Future<List<Event>> getAllEvents() async {
   }
 }
 
-Future<List<Event>> getUserEvents(String uid) async {
+Future<List<Event>> getUserEvents(String uid,
+    {bool? includePastEvents = false}) async {
   final registerUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'uid': uid});
+      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'uid': uid, "showPreviousEvents": includePastEvents.toString()});
   try {
     final response = await http.get(
       registerUrl,

@@ -10,18 +10,17 @@ namespace EventManagementAPI.Models
         [Key]
         public int Id { get; set; }
         public string comment { get; set; }
-        public int customerId { get; set; }
+        public int commenteruid { get; set; }
         [JsonIgnore]
-        public Customer commenter { get; set; }
+        public User commenter { get; set; }
         public int? commentId { get; set; }
-        public Comment? inReplyTo { get; set; }
+        public Comment? replyTo { get; set; }
         public int eventId { get; set; }
         [JsonIgnore]
         public Event eventShow { get; set; }
         public int likes { get; set; } = 0;
         public int dislikes { get; set; } = 0;
+        public bool isPinned { get; set; } = false;
         public DateTime createdTime { get; set; } = DateTime.Now;
-        // [JsonIgnore]
-        // public ICollection<Reply> replies { get; set; } = new List<Reply>();
     }
 }

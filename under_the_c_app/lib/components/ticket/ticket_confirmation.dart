@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/config/routes/routes.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 
 class TicketConfirmation extends StatelessWidget {
-  const TicketConfirmation({super.key});
+  final String eventName;
+  const TicketConfirmation({
+    super.key,
+    required this.eventName,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,9 +59,9 @@ class TicketConfirmation extends StatelessWidget {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  const Text(
-                    "{Event Name}",
-                    style: TextStyle(
+                  Text(
+                    "Event: $eventName",
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
@@ -62,13 +69,6 @@ class TicketConfirmation extends StatelessWidget {
                   ),
                   const SizedBox(
                     height: 10.0,
-                  ),
-                  const Text(
-                    "{Time of purchase}",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 10.0,
-                    ),
                   ),
                   const SizedBox(
                     height: 20.0,
@@ -83,40 +83,30 @@ class TicketConfirmation extends StatelessWidget {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  const Text(
-                    "Order number: {order number}",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   const SizedBox(
                     height: 20.0,
-                  ),
-                  const Text(
-                    "You have booked {no tickets} ticket",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 10.0,
-                    ),
                   ),
                   const SizedBox(
                     height: 10.0,
                   ),
                   const Text(
-                    "An email confirmation has been sent to {email} along with your ticket and a receipt.",
+                    "An email confirmation has been sent to you along with your ticket and a receipt.",
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 10.0,
+                      fontSize: 15.0,
                     ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 8.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go('/home');
+                        context.go(AppRoutes.viewBooking(
+                            sessionVariables.uid.toString()));
                       },
                       child: const Text("View Ticket"),
                     ),

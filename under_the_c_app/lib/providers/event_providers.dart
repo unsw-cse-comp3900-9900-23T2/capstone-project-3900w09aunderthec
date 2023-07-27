@@ -30,7 +30,7 @@ class EventsProvider extends StateNotifier<List<Event>> {
         super([]) {
     fetchEvents();
   }
-
+  
   Future<void> addEvent(Event event) async {
     // do http calls to create events
     Event createdEvent = await createEvent(event);
@@ -145,8 +145,9 @@ class EventsByUserProvider extends StateNotifier<List<Event>> {
     fetchEvents(uid);
   }
 
-  Future<void> fetchEvents(String uid) async {
-    state = await getUserEvents(uid);
+  Future<void> fetchEvents(String uid, {bool? includePastEvents = true} ) async {
+    // here fetch events including past events
+    state = await getUserEvents(uid, includePastEvents: includePastEvents);
   }
 }
 

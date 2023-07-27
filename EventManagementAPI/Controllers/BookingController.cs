@@ -8,6 +8,7 @@ using System.Text;
 using Org.BouncyCastle.Cms;
 using System;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace EventManagementAPI.Controllers
 {
@@ -45,18 +46,6 @@ namespace EventManagementAPI.Controllers
             return Ok(bookings);
         }
 
-        [HttpPost("GetCreditMoney")]
-        public async Task<IActionResult> GetCreditMoney([FromQuery] int customerId, [FromQuery] int hosterId)
-        {
-            var creditAmount = await _bookingRepository.GetCreditMoney(customerId, hosterId);
-            if (creditAmount == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(creditAmount);
-        }
-
         [HttpPost("MakeBooking")]
         public async Task<IActionResult> MakeBooking([FromBody] MakeBookingRequestBody RequestBody)
         {
@@ -64,32 +53,45 @@ namespace EventManagementAPI.Controllers
             var bookingTickets = RequestBody.bookingTickets;
             var paymentMethod = RequestBody.paymentMethod;
 
-            var booking = await _bookingRepository.MakeBooking(customerId, bookingTickets, paymentMethod);
-
-            if (booking == null)
+            try
             {
-                return NotFound();
+                var bookingCreationDto = await _bookingRepository.MakeBooking(customerId, bookingTickets, paymentMethod);
+
+                var fromAddress = "underthecsharp@outlook.com";
+                var toAddress = bookingCreationDto.booking.toCustomer.email;
+                var subject = "Booking Confirmed!";
+                var body = new StringBuilder()
+                    .AppendLine("Dear Customer, ")
+                    .AppendLine("")
+                    .AppendLine("Your booking has been successful")
+                    .AppendLine("")
+                    .AppendLine("Kind Regards,")
+                    .AppendLine("Under the C")
+                    .ToString();
+
+                try
+                {
+                    _emailService.SendEmail(fromAddress, toAddress, subject, body);
+                }
+                catch (SmtpException e)
+                {
+                    return Ok("Booking successful, however the confirmation email failed to be delivered. It may have been rejected by spam filters, or the address may be nonexistent");
+                }
+
+                return Ok(bookingCreationDto);
             }
-
-            var fromAddress = "underthecsharp@outlook.com";
-            var toAddress = booking.toCustomer.email;
-            var subject = "Booking Confirmed!";
-            var body = new StringBuilder()
-                .AppendLine("Dear Customer, ")
-                .AppendLine("")
-                .AppendLine("Your booking has been successful")
-                .AppendLine("")
-                .AppendLine("Kind Regards,")
-                .AppendLine("Under the C")
-                .ToString();
-
-            try {
-            _emailService.SendEmail(fromAddress, toAddress, subject, body);
-            } catch (SmtpException e) {
-                return Ok("Booking successful, however the confirmation email failed to be delivered. It may have been rejected by spam filters, or the address may be nonexistent");
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
             }
-
-            return Ok(booking);
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpGet("GetBookingDetails/{bookingId}")]
@@ -108,18 +110,14 @@ namespace EventManagementAPI.Controllers
         [HttpDelete("CancelBooking")]
         public async Task<IActionResult> CancelBooking([FromBody] CancelBookingRequestBody RequestBody)
         {
-            var booking = await _bookingRepository.GetBookingById(RequestBody.bookingId);
-
-            if (booking == null)
+            TimeSpan? timeDifference;
+            try
             {
-                return NotFound("BookingId does not refer to a valid booking");
+                timeDifference = await _bookingRepository.GetTimeDifference(RequestBody.bookingId);
             }
-
-            var timeDifference = await _bookingRepository.GetTimeDifference(booking);
-
-            if (timeDifference == null)
+            catch (KeyNotFoundException e)
             {
-                return NotFound("Bookings do not refer to a valid time difference");
+                return NotFound(e.Message);
             }
 
             TimeSpan timeDiff = timeDifference.GetValueOrDefault();
@@ -129,14 +127,16 @@ namespace EventManagementAPI.Controllers
                 return BadRequest("Cancellation requests must be made at least 7 days prior to the event.");
             }
 
-            var cancelBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
-
-            if (cancelBooking == null)
+            try
             {
-                return NotFound("Booking to be cancelled failed");
-            }
+                var cancelBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
 
-            return Ok(cancelBooking);
+                return Ok(cancelBooking);
+            }
+            catch (KeyNotFoundException e2)
+            {
+                return NotFound(e2.Message);
+            }
         }
     }
 }

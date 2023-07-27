@@ -39,4 +39,5 @@ class APIRoutes {
   static const String getCustomerById = 'api/Customer';
 
 
+  static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
 }

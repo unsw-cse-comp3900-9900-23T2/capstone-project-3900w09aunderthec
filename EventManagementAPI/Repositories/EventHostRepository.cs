@@ -14,9 +14,53 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Get all event hosters
+        /// </summary>
+        /// <returns>
+        /// A list of Hoster objects
+        /// </returns>
         public async Task<List<Hoster>> GetAllEventHosts()
         {
-            return await _dbContext.hosts.ToListAsync();
+            return await _dbContext.Hosts.ToListAsync();
+        }
+
+        /// <summary>
+        /// Get hoster by given id
+        /// </summary>
+        /// <param name="hosterId"></param>
+        /// <returns>
+        /// A Hoster object
+        /// </returns>
+        public async Task<Hoster?> GetHosterById(int hosterId)
+        {
+            return await _dbContext.Hosts.FindAsync(hosterId);
+        }
+
+        /// <summary>
+        /// Get all distinct customers who bought tickets for this event
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// A list of Customer objects
+        /// </returns>
+        public List<Customer> GetBuyers(int eventId)
+        {
+            var buyers = _dbContext.BookingTickets
+                .Join(_dbContext.Tickes,
+                    bt => bt.ticketId,
+                    t => t.ticketId,
+                    (bt, t) => new
+                    {
+                        bt.booking,
+                        t.toEvent
+                    })
+                .Where(e => e.toEvent.eventId == eventId)
+                .Select(e => e.booking.toCustomer)
+                .Distinct()
+                .ToList();
+
+            return buyers;
         }
     }
 }
