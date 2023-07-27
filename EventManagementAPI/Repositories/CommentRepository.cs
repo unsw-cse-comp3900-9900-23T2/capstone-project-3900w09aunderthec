@@ -1,5 +1,6 @@
 ﻿using EventManagementAPI.Context;
 using EventManagementAPI.Models;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -18,22 +19,22 @@ namespace EventManagementAPI.Repositories
         }
 
         /// <summary>
-        /// Get a list comments based on optional sorting criteria
+        /// Get a list comments based on optional sorting criteria including pinned comments
         /// </summary>
         /// <param name="sortBy"></param>
         /// <param name="eventId"></param>
         /// <param name="inReplyToComment"></param>
         /// <returns>
-        /// A list of Comment objects that are in specified order
+        /// A CommentListingDto object includes pinned comments and oridinary comments
         /// </returns>
         /// <exception cref="BadHttpRequestException"></exception>
         /// <exception cref="DbUpdateException"></exception>
-        public async Task<List<Comment>> GetAllComments(string? sortBy, int? eventId, int? replyToComment)
+        public async Task<CommentListingDto> GetComments(string? sortBy, int? eventId, int? replyToComment)
         {
             if (eventId is null && replyToComment is null)
-            { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified");}
+            { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified"); }
 
-            IQueryable<Comment> query = _dbContext.comments.Where(c => c.commentId == replyToComment && c.eventId == eventId) ?? throw new DbUpdateException("Event or comment to reply to does not exist");
+            IQueryable<Comment> query = _dbContext.Comments.Where(c => c.commentId == replyToComment && c.eventId == eventId) ?? throw new DbUpdateException("Event or comment to reply to does not exist");
 
             switch (sortBy)
             {
@@ -50,8 +51,16 @@ namespace EventManagementAPI.Repositories
                     break;
             }
 
-            var comments = await query.ToListAsync();
-            return comments;
+            var pinnedComments = await query.Where(c => c.isPinned).ToListAsync();
+            var comments = await query.Where(c => c.isPinned == false).ToListAsync();
+
+            var getCommentsDto = new CommentListingDto
+            {
+                PinnedComments = pinnedComments,
+                Comments = comments,
+            };
+
+            return getCommentsDto;
         }
 
         /// <summary>
@@ -64,7 +73,7 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Comment?> GetCommentById(int id)
         {
-            var comment = await _dbContext.comments.FindAsync(id) ?? throw new KeyNotFoundException("Comment does not exist");
+            var comment = await _dbContext.Comments.FindAsync(id) ?? throw new KeyNotFoundException("Comment does not exist");
             return comment;
         }
 
@@ -88,8 +97,8 @@ namespace EventManagementAPI.Repositories
                 throw new KeyNotFoundException("reply to comment does not exist");
             }
 
-            var e = await _dbContext.events.FindAsync(eventId);
-            User? user = await _dbContext.customers.FindAsync(uid);
+            var e = await _dbContext.Events.FindAsync(eventId);
+            User? user = await _dbContext.Customers.FindAsync(uid);
 
             if (e == null)
             {
@@ -98,7 +107,7 @@ namespace EventManagementAPI.Repositories
 
             if (user == null)
             {
-                user ??= await _dbContext.hosts.FindAsync(uid) ?? throw new KeyNotFoundException("no relevant user found");
+                user ??= await _dbContext.Hosts.FindAsync(uid) ?? throw new KeyNotFoundException("no relevant user found");
                 if (user.uid != e.hosterFK) throw new UnauthorizedAccessException("only this event hosters can reply");
             }
 
@@ -113,7 +122,7 @@ namespace EventManagementAPI.Repositories
                 replyTo = replyToComment,
             };
 
-            _dbContext.comments.Add(newComment);
+            _dbContext.Comments.Add(newComment);
             await _dbContext.SaveChangesAsync();
             return newComment;
         }
@@ -129,14 +138,14 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<string> ToggleLikeComment(int customerId, int commentId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
-            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
+            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
+            var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
-            var existingLike = await _dbContext.commentLikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
+            var existingLike = await _dbContext.CommentLikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
 
             if (existingLike is not null)
             {
-                _dbContext.commentLikes.Remove(existingLike);
+                _dbContext.CommentLikes.Remove(existingLike);
                 comment.likes--;
                 await _dbContext.SaveChangesAsync();
 
@@ -149,7 +158,7 @@ namespace EventManagementAPI.Repositories
                 commentId = commentId,
             };
 
-            _dbContext.commentLikes.Add(likeComment);
+            _dbContext.CommentLikes.Add(likeComment);
             comment.likes++;
             await _dbContext.SaveChangesAsync();
 
@@ -167,14 +176,14 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<string> ToggleDislikeComment(int customerId, int commentId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
-            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
+            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
+            var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
-            var existingDislike = await _dbContext.commentDislikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
+            var existingDislike = await _dbContext.CommentDislikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
 
             if (existingDislike is not null)
             {
-                _dbContext.commentDislikes.Remove(existingDislike);
+                _dbContext.CommentDislikes.Remove(existingDislike);
                 comment.dislikes--;
                 await _dbContext.SaveChangesAsync();
 
@@ -187,7 +196,7 @@ namespace EventManagementAPI.Repositories
                 commentId = commentId,
             };
 
-            _dbContext.commentDislikes.Add(dislikeComment);
+            _dbContext.CommentDislikes.Add(dislikeComment);
             comment.dislikes++;
             await _dbContext.SaveChangesAsync();
             
@@ -204,9 +213,9 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Comment> RetrieveComment(int commentId)
         {
-            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
+            var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
-            _dbContext.comments.Remove(comment);
+            _dbContext.Comments.Remove(comment);
             await _dbContext.SaveChangesAsync();
             return comment;
         }
@@ -222,7 +231,7 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="BadHttpRequestException"></exception>
         public async Task<Comment> PinComment(int commentId)
         {
-            var comment = await _dbContext.comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
+            var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
             if (comment.replyTo != null)
             {
@@ -230,7 +239,7 @@ namespace EventManagementAPI.Repositories
             }
 
             comment.isPinned = !comment.isPinned;
-            _dbContext.comments.Update(comment);
+            _dbContext.Comments.Update(comment);
             await _dbContext.SaveChangesAsync();
             return comment;
         }
