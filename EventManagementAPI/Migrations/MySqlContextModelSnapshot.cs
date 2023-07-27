@@ -320,9 +320,6 @@ namespace EventManagementAPI.Migrations
                 {
                     b.HasBaseType("EventManagementAPI.Models.User");
 
-                    b.Property<int>("availableLoyaltyPoints")
-                        .HasColumnType("int");
-
                     b.Property<double>("creditMoney")
                         .HasColumnType("double");
 
