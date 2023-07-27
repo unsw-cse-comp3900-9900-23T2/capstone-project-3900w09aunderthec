@@ -27,12 +27,23 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
   }
 
   Future<void> likeComment(String commentId) async {
-    // await likeCommentAPI(commentId); // call the function from your API file
-    // await fetchComments();
+    await likeCommentAPI(commentId); // call the function from your API file
+    state = state.map((c) {
+      if (c.id == commentId) {
+        return CommentT(
+            content: c.content,
+            id: c.id,
+            uid: c.uid,
+            replyToId: c.replyToId,
+            nLikes: c.nLikes! + 1);
+      } else {
+        return c;
+      }
+    }).toList();
   }
 
   Future<void> dislikeComment(String commentId) async {
-    // await dislikeCommentAPI(commentId); // call the function from your API file
+    await dislikeCommentAPI(commentId); // call the function from your API file
     // await fetchComments();
   }
 }

@@ -6,8 +6,8 @@ import 'package:under_the_c_app/types/events/comment_type.dart';
 import 'package:under_the_c_app/types/users/customer_type.dart';
 
 class CommentCard extends ConsumerStatefulWidget {
-  CommentT comment;
-  CommentCard({required this.comment, super.key});
+  final CommentT comment;
+  const CommentCard({required this.comment, super.key});
 
   @override
   CommentCardState createState() => CommentCardState();
