@@ -46,9 +46,9 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ShowTickets")]
-        public async Task<IActionResult> ShowTickets([FromQuery] int eventId) {
+        public async Task<IActionResult> ShowTickets([FromQuery] int eventId, int customerId) {
 
-            var tickets = await _ticketRepository.ShowEventTickets(eventId);
+            var tickets = await _ticketRepository.ShowEventTickets(eventId, customerId);
 
             return Ok(tickets);
         }

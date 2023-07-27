@@ -36,10 +36,13 @@ namespace EventManagementAPI.Repositories
         /// <returns>
         /// A list of Ticket objects
         /// </returns>
-        public async Task<List<Ticket>> ShowEventTickets(int eventId)
+        public async Task<List<Ticket>> ShowEventTickets(int eventId, int customerId)
         {
+            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
+            var vipQueueDays = Math.Min(customer.vipLevel / 50, 5);
+
             var tickets = await _dbContext.Tickes
-                .Where(t => t.eventIdRef == eventId)
+                .Where(t => t.eventIdRef == eventId && t.availableTime.AddDays(-vipQueueDays) <= DateTime.Now)
                 .ToListAsync();
 
             return tickets;
