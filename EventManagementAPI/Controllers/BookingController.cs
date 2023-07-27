@@ -110,17 +110,10 @@ namespace EventManagementAPI.Controllers
         [HttpDelete("CancelBooking")]
         public async Task<IActionResult> CancelBooking([FromBody] CancelBookingRequestBody RequestBody)
         {
-            var booking = await _bookingRepository.GetBookingById(RequestBody.bookingId);
-
-            if (booking == null)
-            {
-                return NotFound("BookingId does not refer to a valid booking");
-            }
-
             TimeSpan? timeDifference;
             try
             {
-                timeDifference = await _bookingRepository.GetTimeDifference(booking);
+                timeDifference = await _bookingRepository.GetTimeDifference(RequestBody.bookingId);
             }
             catch (KeyNotFoundException e)
             {
@@ -134,14 +127,16 @@ namespace EventManagementAPI.Controllers
                 return BadRequest("Cancellation requests must be made at least 7 days prior to the event.");
             }
 
-            var cancelBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
-
-            if (cancelBooking == null)
+            try
             {
-                return NotFound("Booking to be cancelled failed");
-            }
+                var cancelBooking = await _bookingRepository.RemoveBooking(RequestBody.bookingId);
 
-            return Ok(cancelBooking);
+                return Ok(cancelBooking);
+            }
+            catch (KeyNotFoundException e2)
+            {
+                return NotFound(e2.Message);
+            }
         }
     }
 }

@@ -69,7 +69,6 @@ namespace EventManagementAPI.Repositories
 
             double totalPrice = await CalculateTotalPrice(bookingTickets, booking);
             var vipLevel = customer.vipLevel;
-            var loyaltyPoints = customer.availableLoyaltyPoints;
             // every 10 vip levels can get 1% off
             // maximum 15% off
             // minimum 0
@@ -77,9 +76,11 @@ namespace EventManagementAPI.Repositories
 
             // use loyalty points to get discount
             // one point equals one cent
-            var discount = totalPrice * discountPercentage;
+            var discount = Math.Round(totalPrice * discountPercentage, 2);
 
-            booking.loyaltyPointsEarned = Convert.ToInt32(totalPrice) * 10;
+            var totalPriceToPay = totalPrice - discount;
+
+            booking.loyaltyPointsEarned = Convert.ToInt32(totalPriceToPay * 10);
 
             // customer gains loyalty points
             customer.loyaltyPoints += booking.loyaltyPointsEarned;
@@ -87,28 +88,30 @@ namespace EventManagementAPI.Repositories
 
             // use credit money for payment
             double creditMoneyUsed;
-            if (totalPrice > customer.creditMoney)
+            if (totalPriceToPay > customer.creditMoney)
             {
                 creditMoneyUsed = customer.creditMoney;
                 customer.creditMoney = 0;
-                totalPrice -= customer.creditMoney;
+                totalPriceToPay -= customer.creditMoney;
             } else
             {
-                creditMoneyUsed = totalPrice;
+                creditMoneyUsed = totalPriceToPay;
                 customer.creditMoney -= creditMoneyUsed;
-                totalPrice = 0;
+                totalPriceToPay = 0;
             }
 
             booking.creditMoneyUsed = creditMoneyUsed;
-            booking.totalPricePayed = totalPrice;
+            booking.totalPricePayed = totalPriceToPay;
 
             _dbContext.Bookings.Add(booking);
-             await _dbContext.SaveChangesAsync();
+            _dbContext.Customers.Update(customer);
+            await _dbContext.SaveChangesAsync();
 
             var bookingCreation = new BookingCreationDto {
                 booking = booking,
                 creditMoneyUsed = creditMoneyUsed,
-                totalPrice = totalPrice,
+                totalPrice = totalPriceToPay,
+                discountPercentage = discountPercentage,
                 discountGet = discount,
                 newLoyaltyPoints = customer.loyaltyPoints,
                 newVipLevel = customer.vipLevel,
@@ -153,8 +156,6 @@ namespace EventManagementAPI.Repositories
 
                 ticket.stock -= numberOfTickets;
             }
-
-            await _dbContext.SaveChangesAsync();
 
             return totalPrice;
         }
@@ -255,9 +256,9 @@ namespace EventManagementAPI.Repositories
         /// A TimeSpan object
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<TimeSpan?> GetTimeDifference(Booking booking)
+        public async Task<TimeSpan?> GetTimeDifference(int bookingId)
         {
-            var bookingTickets = await _dbContext.BookingTickets.Where(bt => bt.bookingId == booking.Id).ToListAsync();
+            var bookingTickets = await _dbContext.BookingTickets.Where(bt => bt.bookingId == bookingId).ToListAsync();
             if (bookingTickets.Count == 0) throw new KeyNotFoundException("no relevant booking tickets found");
 
             var ticket = await _dbContext.Tickes.FindAsync(bookingTickets[0].ticketId) ?? throw new KeyNotFoundException("ticket not found");

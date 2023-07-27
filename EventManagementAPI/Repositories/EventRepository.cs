@@ -180,7 +180,7 @@ namespace EventManagementAPI.Repositories
 
             if (!showPreviousEvents)
             {
-                query.Where(e => e.eventTime > DateTime.Now);
+                query = query.Where(e => e.eventTime > DateTime.Now);
             }
 
             if (sortby is not null)

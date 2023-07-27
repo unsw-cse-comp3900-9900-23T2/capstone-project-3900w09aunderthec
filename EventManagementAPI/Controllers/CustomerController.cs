@@ -104,8 +104,15 @@ namespace EventManagementAPI.Controllers
             var customerId = requestBody.customerId;
             var hosterId = requestBody.hosterId;
 
-            var subscibeResult = await _customerRepository.SubscribeHoster(customerId, hosterId);
-            return Ok(subscibeResult);
+            try
+            {
+                var subscibeResult = await _customerRepository.SubscribeHoster(customerId, hosterId);
+                return Ok(subscibeResult);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost("SaveEvent")]
@@ -114,8 +121,15 @@ namespace EventManagementAPI.Controllers
             var customerId = requestBody.customerId;
             var eventId = requestBody.eventId;
 
-            var saveEvent = await _customerRepository.SaveEvent(customerId, eventId);
-            return Ok(saveEvent);
+            try
+            {
+                var saveEvent = await _customerRepository.SaveEvent(customerId, eventId);
+                return Ok(saveEvent);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
     }
 }
