@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 public class JsonMessage
 {
