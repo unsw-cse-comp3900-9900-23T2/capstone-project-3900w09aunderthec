@@ -128,45 +128,6 @@ namespace EventManagementAPI.Repositories
         }
 
         /// <summary>
-        /// Like or cancel like a comment
-        /// </summary>
-        /// <param name="customerId"></param>
-        /// <param name="commentId"></param>
-        /// <returns>
-        /// A string that indicates whether a user has liked a comment or cancelled like
-        /// </returns>
-        /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<string> ToggleLikeComment(int customerId, int commentId)
-        {
-            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
-            var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
-
-            var existingLike = await _dbContext.CommentLikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
-
-            if (existingLike is not null)
-            {
-                _dbContext.CommentLikes.Remove(existingLike);
-                comment.likes--;
-                await _dbContext.SaveChangesAsync();
-
-                return "Like removed";
-            }
-
-            var likeComment = new CommentLike()
-            {
-                customerId = customerId,
-                commentId = commentId,
-            };
-
-            _dbContext.CommentLikes.Add(likeComment);
-            comment.likes++;
-            await _dbContext.SaveChangesAsync();
-
-            return "Comment liked";
-        }
-
-
-        /// <summary>
         /// Check if the given user has liked the comment
         /// </summary>
         /// <param name="uid"></param>
@@ -177,7 +138,12 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<bool> isLikeComment(int uid, int commentId)
         {
-            var customer = await _dbContext.Customers.FindAsync(uid) ?? throw new KeyNotFoundException("Customer does not exist");
+            var customer = await _dbContext.Customers.FindAsync(uid);
+            var host = await _dbContext.Hosts.FindAsync(uid);
+            if (customer == null && host == null)
+                throw new KeyNotFoundException("Customer does not exist");
+
+
             var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
             var liked = await _dbContext.CommentLikes.FirstOrDefaultAsync(l => l.customerId == uid && l.commentId == commentId);
             return liked != null;
@@ -194,10 +160,54 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<bool> isDislikeComment(int uid, int commentId)
         {
-            var customer = await _dbContext.Customers.FindAsync(uid) ?? throw new KeyNotFoundException("Customer does not exist");
+            var customer = await _dbContext.Customers.FindAsync(uid);
+            var host = await _dbContext.Hosts.FindAsync(uid);
+            if (customer == null && host == null)
+                throw new KeyNotFoundException("Customer does not exist");
             var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
             var liked = await _dbContext.CommentDislikes.FirstOrDefaultAsync(l => l.customerId == uid && l.commentId == commentId);
             return liked != null;
+        }
+
+        /// <summary>
+        /// Like or cancel like a comment
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="commentId"></param>
+        /// <returns>
+        /// A string that indicates whether a user has liked a comment or cancelled like
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<string> ToggleLikeComment(int uid, int commentId)
+        {
+            var customer = await _dbContext.Customers.FindAsync(uid);
+            var host = await _dbContext.Hosts.FindAsync(uid);
+            if (customer == null && host == null)
+                throw new KeyNotFoundException("Customer does not exist");
+            var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
+
+            var existingLike = await _dbContext.CommentLikes.FirstOrDefaultAsync(l => l.customerId == uid && l.commentId == commentId);
+
+            if (existingLike is not null)
+            {
+                _dbContext.CommentLikes.Remove(existingLike);
+                comment.likes--;
+                await _dbContext.SaveChangesAsync();
+
+                return "Like removed";
+            }
+
+            var likeComment = new CommentLike()
+            {
+                customerId = uid,
+                commentId = commentId,
+            };
+
+            _dbContext.CommentLikes.Add(likeComment);
+            comment.likes++;
+            await _dbContext.SaveChangesAsync();
+
+            return "Comment liked";
         }
 
         /// <summary>
@@ -209,12 +219,15 @@ namespace EventManagementAPI.Repositories
         /// A string that indicates whether a user has disliked a comment or cancelled dislike
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<string> ToggleDislikeComment(int customerId, int commentId)
+        public async Task<string> ToggleDislikeComment(int uid, int commentId)
         {
-            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
+            var customer = await _dbContext.Customers.FindAsync(uid);
+            var host = await _dbContext.Hosts.FindAsync(uid);
+            if (customer == null && host == null)
+                throw new KeyNotFoundException("Customer does not exist");
             var comment = await _dbContext.Comments.FindAsync(commentId) ?? throw new KeyNotFoundException("Comment does not exist");
 
-            var existingDislike = await _dbContext.CommentDislikes.FirstOrDefaultAsync(l => l.customerId == customerId && l.commentId == commentId);
+            var existingDislike = await _dbContext.CommentDislikes.FirstOrDefaultAsync(l => l.customerId == uid && l.commentId == commentId);
 
             if (existingDislike is not null)
             {
@@ -227,7 +240,7 @@ namespace EventManagementAPI.Repositories
 
             var dislikeComment = new CommentDislike()
             {
-                customerId = customerId,
+                customerId = uid,
                 commentId = commentId,
             };
 
