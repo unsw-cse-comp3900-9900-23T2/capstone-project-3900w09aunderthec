@@ -235,12 +235,13 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
             ),
           ),
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              child: ToggleButton(
-                onSelectionChanged: (handleSelectionChanged) {
-                  isPrivateEvent = handleSelectionChanged[0];
-                },
-              )),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: ToggleButton(
+              onSelectionChanged: (handleSelectionChanged) {
+                isPrivateEvent = handleSelectionChanged[0];
+              },
+            ),
+          ),
 
           // FormFields(
           //     fieldName: "Refund Policy", hint: ""),
