@@ -141,23 +141,23 @@ namespace EventManagementAPI.Repositories
 
             if (uid.HasValue)
             {
-                if (await _dbContext.hosts.AnyAsync(h => h.uid == uid))
+                if (await _dbContext.Hosts.AnyAsync(h => h.uid == uid))
                 {
                     // if uid refers to a hoster
                     // get all hoster events
                     // can't see other events
                     // optional to show past events
-                    query = _dbContext.events.Include(e => e.tickets);
+                    query = _dbContext.Events.Include(e => e.tickets);
                     query = query.Where(e => e.hosterFK == uid);
                 }
-                else if (await _dbContext.customers.AnyAsync(c => c.uid == uid))
+                else if (await _dbContext.Customers.AnyAsync(c => c.uid == uid))
                 {
                     // if uid refers to a customer
                     // get all events that the customer has made bookings
                     // is can be public or private
                     // optional to show past events
-                    query = _dbContext.bookingTickets
-                        .Join(_dbContext.tickets,
+                    query = _dbContext.BookingTickets
+                        .Join(_dbContext.Tickes,
                             bt => bt.ticketId,
                             t => t.ticketId,
                             (bt, t) => new
@@ -175,7 +175,7 @@ namespace EventManagementAPI.Repositories
             {
                 // if uid is not given
                 // show all public upcoming events
-                query = _dbContext.events.Where(e => !e.isPrivateEvent);
+                query = _dbContext.Events.Where(e => !e.isPrivateEvent);
             }
 
             if (!showPreviousEvents)
@@ -215,7 +215,7 @@ namespace EventManagementAPI.Repositories
 
             foreach (var e in events)
             {
-                var eventShow = await _dbContext.events.Include(e => e.tickets).FirstOrDefaultAsync(ev => ev.eventId == e.eventId) ?? throw new KeyNotFoundException("event not found");
+                var eventShow = await _dbContext.Events.Include(e => e.tickets).FirstOrDefaultAsync(ev => ev.eventId == e.eventId) ?? throw new KeyNotFoundException("event not found");
                 double cheapestPrice = 0.0;
                 if (eventShow.tickets.Count != 0) {
                     cheapestPrice = eventShow.tickets.Min(t => t.price);
@@ -250,12 +250,12 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task CreateAnEvent(Event e)
         {
-            if (!await _dbContext.hosts
+            if (!await _dbContext.Hosts
                 .AnyAsync(h => h.uid == e.hosterFK)) {
                 throw new KeyNotFoundException("That host does not exist");
             }
                 
-            _dbContext.events.Add(e);
+            _dbContext.Events.Add(e);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -269,7 +269,7 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Event> GetEventById(int id)
         {
-            var e = await _dbContext.events.FirstOrDefaultAsync(e => e.eventId == id) ?? throw new KeyNotFoundException("event does not exist");
+            var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == id) ?? throw new KeyNotFoundException("event does not exist");
             return e;
         }
 
@@ -282,7 +282,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<Event> ModifyEvent(EventModificationDTO mod)
         {
-            Event e = await _dbContext.events.FirstAsync(e => e.eventId == mod.eventId);
+            Event e = await _dbContext.Events.FirstAsync(e => e.eventId == mod.eventId);
 
             if(mod.title is not null){e.title = mod.title;}
             if(mod.eventTime is not null){e.eventTime = mod.eventTime ?? default(DateTime);}
@@ -293,7 +293,7 @@ namespace EventManagementAPI.Repositories
             if(mod.isPrivateEvent is not null){e.isPrivateEvent = mod.isPrivateEvent ?? default(bool);}
             if(mod.tags is not null){e.tags = mod.tags;}
 
-            _dbContext.events.Update(e);
+            _dbContext.Events.Update(e);
             await _dbContext.SaveChangesAsync();
             return e;
         }
@@ -308,7 +308,7 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Event> CancelEvent(int eventId)
         {
-            var e = await _dbContext.events.FindAsync(eventId) ?? throw new KeyNotFoundException("event to delete does not exist");
+            var e = await _dbContext.Events.FindAsync(eventId) ?? throw new KeyNotFoundException("event to delete does not exist");
 
             if (e != null)
             {

@@ -22,7 +22,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<List<Hoster>> GetAllEventHosts()
         {
-            return await _dbContext.hosts.ToListAsync();
+            return await _dbContext.Hosts.ToListAsync();
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<Hoster?> GetHosterById(int hosterId)
         {
-            return await _dbContext.hosts.FindAsync(hosterId);
+            return await _dbContext.Hosts.FindAsync(hosterId);
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public List<Customer> GetBuyers(int eventId)
         {
-            var buyers = _dbContext.bookingTickets
-                .Join(_dbContext.tickets,
+            var buyers = _dbContext.BookingTickets
+                .Join(_dbContext.Tickes,
                     bt => bt.ticketId,
                     t => t.ticketId,
                     (bt, t) => new

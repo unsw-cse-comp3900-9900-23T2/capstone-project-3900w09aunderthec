@@ -8,6 +8,7 @@ using System.Text;
 using Org.BouncyCastle.Cms;
 using System;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace EventManagementAPI.Controllers
 {
@@ -45,20 +46,6 @@ namespace EventManagementAPI.Controllers
             return Ok(bookings);
         }
 
-        [HttpPost("GetCreditMoney")]
-        public async Task<IActionResult> GetCreditMoney([FromQuery] int customerId, [FromQuery] int hosterId)
-        {
-            try
-            {
-                var creditAmount = await _bookingRepository.GetCreditMoney(customerId, hosterId);
-                return Ok(creditAmount);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound();
-            }
-        }
-
         [HttpPost("MakeBooking")]
         public async Task<IActionResult> MakeBooking([FromBody] MakeBookingRequestBody RequestBody)
         {
@@ -66,32 +53,45 @@ namespace EventManagementAPI.Controllers
             var bookingTickets = RequestBody.bookingTickets;
             var paymentMethod = RequestBody.paymentMethod;
 
-            var booking = await _bookingRepository.MakeBooking(customerId, bookingTickets, paymentMethod);
-
-            if (booking == null)
+            try
             {
-                return NotFound();
+                var bookingCreationDto = await _bookingRepository.MakeBooking(customerId, bookingTickets, paymentMethod);
+
+                var fromAddress = "underthecsharp@outlook.com";
+                var toAddress = bookingCreationDto.booking.toCustomer.email;
+                var subject = "Booking Confirmed!";
+                var body = new StringBuilder()
+                    .AppendLine("Dear Customer, ")
+                    .AppendLine("")
+                    .AppendLine("Your booking has been successful")
+                    .AppendLine("")
+                    .AppendLine("Kind Regards,")
+                    .AppendLine("Under the C")
+                    .ToString();
+
+                try
+                {
+                    _emailService.SendEmail(fromAddress, toAddress, subject, body);
+                }
+                catch (SmtpException e)
+                {
+                    return Ok("Booking successful, however the confirmation email failed to be delivered. It may have been rejected by spam filters, or the address may be nonexistent");
+                }
+
+                return Ok(bookingCreationDto);
             }
-
-            var fromAddress = "underthecsharp@outlook.com";
-            var toAddress = booking.toCustomer.email;
-            var subject = "Booking Confirmed!";
-            var body = new StringBuilder()
-                .AppendLine("Dear Customer, ")
-                .AppendLine("")
-                .AppendLine("Your booking has been successful")
-                .AppendLine("")
-                .AppendLine("Kind Regards,")
-                .AppendLine("Under the C")
-                .ToString();
-
-            try {
-                _emailService.SendEmail(fromAddress, toAddress, subject, body);
-            } catch (SmtpException e) {
-                return Ok("Booking successful, however the confirmation email failed to be delivered. It may have been rejected by spam filters, or the address may be nonexistent");
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
             }
-
-            return Ok(booking);
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpGet("GetBookingDetails/{bookingId}")]
@@ -117,11 +117,14 @@ namespace EventManagementAPI.Controllers
                 return NotFound("BookingId does not refer to a valid booking");
             }
 
-            var timeDifference = await _bookingRepository.GetTimeDifference(booking);
-
-            if (timeDifference == null)
+            TimeSpan? timeDifference;
+            try
             {
-                return NotFound("Bookings do not refer to a valid time difference");
+                timeDifference = await _bookingRepository.GetTimeDifference(booking);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
             }
 
             TimeSpan timeDiff = timeDifference.GetValueOrDefault();
