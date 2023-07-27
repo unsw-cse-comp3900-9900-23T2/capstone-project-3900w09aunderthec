@@ -24,7 +24,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<List<Customer>> GetAllCustomers()
         {
-            return await _dbContext.customers.ToListAsync();
+            return await _dbContext.Customers.ToListAsync();
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<Customer?> GetCustomerById(int customerId)
         {
-            return await _dbContext.customers.FindAsync(customerId);
+            return await _dbContext.Customers.FindAsync(customerId);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<Customer> UpdateCustomerByPatch(int id, JsonPatchDocument<Customer> customerDocument)
         {
-            var customerById = await _dbContext.customers.FindAsync(id) ?? throw new KeyNotFoundException("customer to be updated not found");
+            var customerById = await _dbContext.Customers.FindAsync(id) ?? throw new KeyNotFoundException("customer to be updated not found");
             customerDocument.ApplyTo(customerById);
             await _dbContext.SaveChangesAsync();
 
@@ -65,7 +65,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<Customer> UpdateCustomer(Customer customer)
         {
-            _dbContext.customers.Update(customer);
+            _dbContext.Customers.Update(customer);
             await _dbContext.SaveChangesAsync();
 
             return customer;
@@ -82,10 +82,10 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Subscription> SubscribeHoster(int customerId, int hosterId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
-            var hoster = await _dbContext.hosts.FindAsync(hosterId) ?? throw new KeyNotFoundException("hoster not found");
+            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
+            var hoster = await _dbContext.Hosts.FindAsync(hosterId) ?? throw new KeyNotFoundException("hoster not found");
 
-            var subscription = await _dbContext.subscriptions.FirstOrDefaultAsync(s => s.customerIdRef == customerId && s.hosterIdRef == hosterId);
+            var subscription = await _dbContext.Subscriptions.FirstOrDefaultAsync(s => s.customerIdRef == customerId && s.hosterIdRef == hosterId);
 
             if (subscription == null)
             {
@@ -96,12 +96,12 @@ namespace EventManagementAPI.Repositories
                     customer = customer,
                     customerIdRef = customerId,
                 };
-                _dbContext.subscriptions.Add(newSubscription);
+                _dbContext.Subscriptions.Add(newSubscription);
                 await _dbContext.SaveChangesAsync();
                 return newSubscription;
             } else
             {
-                _dbContext.subscriptions.Remove(subscription);
+                _dbContext.Subscriptions.Remove(subscription);
             }
             
             await _dbContext.SaveChangesAsync();
@@ -119,10 +119,10 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<EventSaved> SaveEvent(int customerId, int eventId)
         {
-            var customer = await _dbContext.customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
-            var e = await _dbContext.events.FindAsync(eventId) ?? throw new KeyNotFoundException("event not found");
+            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
+            var e = await _dbContext.Events.FindAsync(eventId) ?? throw new KeyNotFoundException("event not found");
 
-            var eventSaved = await _dbContext.eventsSaved.FirstOrDefaultAsync(es => es.customerId == customerId && es.eventId == eventId);
+            var eventSaved = await _dbContext.EventsSaved.FirstOrDefaultAsync(es => es.customerId == customerId && es.eventId == eventId);
 
             if (eventSaved == null)
             {

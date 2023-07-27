@@ -40,7 +40,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<bool> checkDuplicateEmails(String email)
         {
-            int count = await _dbContext.customers
+            int count = await _dbContext.Customers
                                         .CountAsync(e => e.email == email);
             if (count > 0) return false;
             return true;
@@ -58,14 +58,14 @@ namespace EventManagementAPI.Repositories
         public async Task createUser(String username, String email, Boolean isHost)
         {
             if (isHost) {
-                _dbContext.hosts.Add(
+                _dbContext.Hosts.Add(
                 new Hoster{
                     username = username,
                     email = email,
                     organisationName = username
                 });
             } else {
-                _dbContext.customers.Add(
+                _dbContext.Customers.Add(
                 new Customer{
                     username = username,
                     email = email,
@@ -83,11 +83,11 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<InitialData> getInitialData(String email)
         {
-            bool emailExistsInHosts = await _dbContext.hosts.AnyAsync(h => h.email == email);
+            bool emailExistsInHosts = await _dbContext.Hosts.AnyAsync(h => h.email == email);
 
             if (emailExistsInHosts)
             {
-                var userEntity = await _dbContext.hosts.FirstOrDefaultAsync(e => e.email == email);
+                var userEntity = await _dbContext.Hosts.FirstOrDefaultAsync(e => e.email == email);
 
                 return new InitialData
                 {
@@ -97,7 +97,7 @@ namespace EventManagementAPI.Repositories
                 };
             } else
             {
-                var userEntity = await _dbContext.customers.FirstOrDefaultAsync(e => e.email == email);
+                var userEntity = await _dbContext.Customers.FirstOrDefaultAsync(e => e.email == email);
 
                 return new InitialData
                 {
