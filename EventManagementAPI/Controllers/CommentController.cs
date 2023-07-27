@@ -48,15 +48,15 @@ namespace EventManagementAPI.Controllers
             {
                 var eventComments = await _commentRepository.GetComments(sortby, eventId, replyToComment);
                 return Ok(eventComments);
-            } 
+            }
             catch (KeyNotFoundException e)
             {
                 return NotFound(e.Message);
-            } 
+            }
             catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
-            } 
+            }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
@@ -70,21 +70,21 @@ namespace EventManagementAPI.Controllers
             {
                 var comment = await _commentRepository.GetCommentById(id);
                 return Ok(comment);
-            } 
+            }
             catch (KeyNotFoundException e)
             {
                 return NotFound(e.Message);
-            } 
+            }
             catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
-            } 
+            }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
-        
+
         [HttpPost("PostComment")]
         public async Task<IActionResult> CreateEventComment([FromBody] CreateCommentsRequestBody requestBody)
         {
@@ -97,18 +97,68 @@ namespace EventManagementAPI.Controllers
             {
                 var eventComment = await _commentRepository.CreateComment(commenterId, eventId, commentId, comment);
                 return Ok(eventComment);
-            } 
+            }
             catch (KeyNotFoundException e)
             {
                 return NotFound(e.Message);
-            } 
+            }
             catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
-            } 
+            }
             catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("isLikeComment")]
+        public async Task<IActionResult> isLikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
+        {
+            var commentId = requestBody.commentId;
+            var customerId = requestBody.customerId;
+
+            try
+            {
+                var likeComment = await _commentRepository.isLikeComment(customerId, commentId);
+                return Ok(likeComment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("isDislikeComment")]
+        public async Task<IActionResult> isDislikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
+        {
+            var commentId = requestBody.commentId;
+            var customerId = requestBody.customerId;
+
+            try
+            {
+                var likeComment = await _commentRepository.isDislikeComment(customerId, commentId);
+                return Ok(likeComment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
             }
             catch (Exception e)
             {
@@ -126,14 +176,15 @@ namespace EventManagementAPI.Controllers
             {
                 var likeComment = await _commentRepository.ToggleLikeComment(customerId, commentId);
                 return Ok(likeComment);
-            } 
-            catch (KeyNotFoundException e) {
+            }
+            catch (KeyNotFoundException e)
+            {
                 return NotFound(e.Message);
-            } 
+            }
             catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
-            } 
+            }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
@@ -150,15 +201,15 @@ namespace EventManagementAPI.Controllers
             {
                 var dislikeComment = await _commentRepository.ToggleDislikeComment(customerId, commentId);
                 return Ok(dislikeComment);
-            } 
+            }
             catch (KeyNotFoundException e)
             {
                 return NotFound(e.Message);
-            } 
+            }
             catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
-            } 
+            }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
