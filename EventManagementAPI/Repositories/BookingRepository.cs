@@ -79,6 +79,7 @@ namespace EventManagementAPI.Repositories
             var discount = Math.Round(totalPrice * discountPercentage, 2);
 
             var totalPriceToPay = totalPrice - discount;
+            var totalPricePayed = totalPriceToPay;
 
             booking.loyaltyPointsEarned = Convert.ToInt32(totalPriceToPay * 10);
 
@@ -92,16 +93,16 @@ namespace EventManagementAPI.Repositories
             {
                 creditMoneyUsed = customer.creditMoney;
                 customer.creditMoney = 0;
-                totalPriceToPay -= customer.creditMoney;
+                totalPricePayed -= customer.creditMoney;
             } else
             {
                 creditMoneyUsed = totalPriceToPay;
                 customer.creditMoney -= creditMoneyUsed;
-                totalPriceToPay = 0;
+                totalPricePayed = 0;
             }
 
             booking.creditMoneyUsed = creditMoneyUsed;
-            booking.totalPricePayed = totalPriceToPay;
+            booking.totalPricePayed = totalPricePayed;
 
             _dbContext.Bookings.Add(booking);
             _dbContext.Customers.Update(customer);
@@ -111,6 +112,7 @@ namespace EventManagementAPI.Repositories
                 booking = booking,
                 creditMoneyUsed = creditMoneyUsed,
                 totalPrice = totalPriceToPay,
+                totalPricePayed = totalPricePayed,
                 discountPercentage = discountPercentage,
                 discountGet = discount,
                 newLoyaltyPoints = customer.loyaltyPoints,
