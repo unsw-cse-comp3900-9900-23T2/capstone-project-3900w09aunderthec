@@ -128,3 +128,25 @@ Future<void> dislikeCommentAPI(String commentId) async {
     throw Exception('comment.dart.likecomment: Unknown error $e');
   }
 }
+
+Future<bool> isLikeCommentAPI(String uid, String commentId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.isLikeComment,
+      {"customerId": uid, "commentId": commentId});
+  try {
+    final response = await http.get(
+      url,
+      headers: APIRoutes.headers,
+    );
+    if (response.statusCode == 200) {
+      return response.body.toLowerCase() == 'true';
+    } else {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('comment.dart.isLikeComment: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('comment.dart.isLikeComment: Http Exception error $e');
+  } catch (e) {
+    throw Exception('comment.dart.isLikeComment: Unknown error $e');
+  }
+}
