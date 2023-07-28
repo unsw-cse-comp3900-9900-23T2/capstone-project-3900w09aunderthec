@@ -149,12 +149,15 @@ class EventDetailsPage extends ConsumerWidget {
                                       fontSize: 12, letterSpacing: 0.2),
                                 ),
                                 const SizedBox(height: 10),
-                                SlimButton(
-                                  text: "Send Notification",
-                                  onPressed: () {
-                                    context.go(AppRoutes.notification(eventId));
-                                  },
-                                )
+                                if (sessionVariables.sessionIsHost &&
+                                    sessionVariables.navLocation == 0)
+                                  SlimButton(
+                                    text: "Send Notification",
+                                    onPressed: () {
+                                      context
+                                          .go(AppRoutes.notification(eventId));
+                                    },
+                                  )
                               ],
                             ),
                           ),

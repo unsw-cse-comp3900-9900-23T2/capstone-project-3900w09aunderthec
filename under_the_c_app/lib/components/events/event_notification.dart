@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/api/event_requests.dart';
 
 import '../../config/routes/routes.dart';
 
@@ -33,32 +34,32 @@ class EventNotificationPage extends ConsumerWidget {
               _buildFormRow(
                 title: 'Notification Subject',
                 hintText: 'Enter subject',
-                height: 50,
+                height: 1,
                 onChanged: (value) {
                   ref.read(eventNotificationProvider.notifier).state = {
                     ...notificationData,
-                    'name': value,
+                    'subject': value,
                   };
                 },
               ),
               _buildFormRow(
                 title: 'Notification Message',
                 hintText: 'Enter Message',
-                height: 300,
+                height: 8,
                 onChanged: (value) {
                   ref.read(eventNotificationProvider.notifier).state = {
                     ...notificationData,
-                    'price': value,
+                    'body': value,
                   };
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  //createTicksets(ticketData, eventId);
+                  sendNotification(notificationData, int.parse(eventId));
                   context.go(AppRoutes.events);
                 },
-                child: const Text('Create Ticket'),
+                child: const Text('Send Notification'),
               ),
             ],
           ),
@@ -83,6 +84,7 @@ class EventNotificationPage extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         TextField(
+          maxLines: height,
           decoration: InputDecoration(
             hintText: hintText,
             border: const OutlineInputBorder(),

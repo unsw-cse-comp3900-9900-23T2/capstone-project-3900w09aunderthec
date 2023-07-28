@@ -26,4 +26,8 @@
     <None Remove="Models\" />
     <None Remove="Repositories\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 </Project>
