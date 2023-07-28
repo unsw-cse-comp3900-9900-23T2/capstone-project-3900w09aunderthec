@@ -29,6 +29,7 @@ Event BackendDataSingleEventToEvent(data) {
     imageUrl: 'images/events/money-event.jpg',
     time: data['eventTime'].toString(),
     venue: data['venue'],
+    isPrivate: data['isPrivateEvent'],
     // TODO: [PLHV-198] EventCreate: We need set up price in the backend, can't always have price = 0.
     price: 0,
     description: data['description'],

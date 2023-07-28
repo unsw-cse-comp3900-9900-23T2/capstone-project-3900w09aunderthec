@@ -235,12 +235,13 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
             ),
           ),
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              child: ToggleButton(
-                onSelectionChanged: (handleSelectionChanged) {
-                  isPrivateEvent = handleSelectionChanged[0];
-                },
-              )),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: ToggleButton(
+              onSelectionChanged: (handleSelectionChanged) {
+                isPrivateEvent = handleSelectionChanged[0];
+              },
+            ),
+          ),
 
           // FormFields(
           //     fieldName: "Refund Policy", hint: ""),
@@ -293,7 +294,6 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               child: ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate() &&
-                      tags != '' &&
                       chosenDate != null &&
                       dayTime != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -304,7 +304,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
-                    ref.read(eventsProvider.notifier).addEvent(
+                    await ref.read(eventsProvider.notifier).addEvent(
                           Event(
                             hostuid: sessionVariables.uid.toString(),
                             title: title,
