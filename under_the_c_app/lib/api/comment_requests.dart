@@ -131,7 +131,7 @@ Future<void> dislikeCommentAPI(String commentId) async {
 
 Future<bool> isLikeCommentAPI(String uid, String commentId) async {
   final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.isLikeComment,
-      {"customerId": uid, "commentId": commentId});
+      {"uid": uid, "commentId": commentId});
   try {
     final response = await http.get(
       url,

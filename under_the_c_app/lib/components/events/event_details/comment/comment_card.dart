@@ -15,7 +15,8 @@ class CommentCard extends ConsumerStatefulWidget {
 }
 
 class CommentCardState extends ConsumerState<CommentCard> {
-  // var thumbLikeSelected;
+  bool likeSelected = false;
+
   bool thumbDislikeSelected = false;
   bool commentSelected = false;
   Future<Customer>? customerFuture;
@@ -24,10 +25,16 @@ class CommentCardState extends ConsumerState<CommentCard> {
   initState() {
     super.initState();
     customerFuture = fetchCustomerData();
-    // thumbLikeSelected = ref.watch(
-    //   isLikeProvider(IsLikeCommentParams(
-    //       uid: widget.comment.uid, commentId: widget.comment.id!)),
-    // );
+
+    final uid = sessionVariables.uid;
+    ref
+        .read(isLikeProvider.notifier)
+        .checkIfLiked(uid.toString(), widget.comment.id!)
+        .then((val) {
+      setState(() {
+        likeSelected = val;
+      });
+    });
   }
 
   @override
@@ -42,42 +49,22 @@ class CommentCardState extends ConsumerState<CommentCard> {
     return await getCustomerById(widget.comment.uid);
   }
 
-  void toggleThumbLike() {
-    final isLiked = ref.watch(
-      isLikeProvider(
-        IsLikeCommentParams(
-          uid: widget.comment.uid,
-          commentId: widget.comment.id!,
-        ),
-      ),
-    );
+  void setLike(bool result) {
+    setState(() {
+      likeSelected = result;
+    });
+  }
 
-    isLiked.when(
-      data: (data) {
-        if (!data) {
-          ref
-              .read(commentsProvider(widget.comment.eventId).notifier)
-              .likeComment(widget.comment.id!);
-        }
+  void toggleThumbLike() {
+    setState(
+      () {
+        likeSelected = !likeSelected;
       },
-      loading: () {
-        // Handle loading state if necessary
-      },
-      error: (error, stackTrace) {
-        // Handle error state if necessary
-      },
+      // initailize once only
     );
-    // setState(
-    //   () {
-    //     // initailize once only
-    //     if (!thumbLikeSelected) {
-    //       ref
-    //           .read(commentsProvider(widget.comment.eventId).notifier)
-    //           .likeComment(widget.comment.id!);
-    //     }
-    //     thumbLikeSelected = true;
-    //   },
-    // );
+    ref
+        .read(commentsProvider(widget.comment.eventId).notifier)
+        .likeComment(widget.comment.id!);
   }
 
   void toggleThumbDislike() {
@@ -99,11 +86,8 @@ class CommentCardState extends ConsumerState<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    final uid = sessionVariables.uid;
-    final thumbLikeSelected = ref.watch(
-      isLikeProvider(IsLikeCommentParams(
-          uid: uid.toString(), commentId: widget.comment.id!)),
-    );
+    // likeSelected = ref.watch(isLikeProvider);
+    // likeSelected = thumbLikeSelected;
     return FutureBuilder<Customer>(
         future: customerFuture,
         builder: (BuildContext context, AsyncSnapshot<Customer> snapshot) {
@@ -161,25 +145,10 @@ class CommentCardState extends ConsumerState<CommentCard> {
                               onPressed: () => {
                                 toggleThumbLike(),
                               },
-                              icon: thumbLikeSelected.when(
-                                data: (data) => Icon(data
-                                    ? Icons.thumb_up
-                                    : Icons.thumb_up_alt_outlined),
-                                loading: () =>
-                                    const Icon(Icons.thumb_up_alt_outlined),
-                                error: (error, _) =>
-                                    const Icon(Icons.thumb_up_alt_outlined),
-                              ),
-                              // icon: Icon(thumbLikeSelected
-                              //     ? Icons.thumb_up
-                              //     : Icons.thumb_up_alt_outlined),
-                              color: thumbLikeSelected.when(
-                                data: (data) => data
-                                    ? const Color.fromARGB(255, 255, 17, 0)
-                                    : Colors.grey,
-                                loading: () => Colors.grey,
-                                error: (err, _) => Colors.grey,
-                              ),
+                              icon: Icon(likeSelected
+                                  ? Icons.thumb_up
+                                  : Icons.thumb_up_alt_outlined),
+                              color: likeSelected ? Colors.red : Colors.grey,
                             ),
                             Text(
                               widget.comment.nLikes.toString(),

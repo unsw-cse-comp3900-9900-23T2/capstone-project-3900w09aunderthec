@@ -29,18 +29,18 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 
   Future<void> likeComment(String commentId) async {
     await likeCommentAPI(commentId); // call the function from your API file
-    state = state.map((c) {
-      if (c.id == commentId) {
-        return CommentT(
-            content: c.content,
-            id: c.id,
-            uid: c.uid,
-            replyToId: c.replyToId,
-            nLikes: c.nLikes! + 1);
-      } else {
-        return c;
-      }
-    }).toList();
+    // state = state.map((c) {
+    //   if (c.id == commentId) {
+    //     return CommentT(
+    //         content: c.content,
+    //         id: c.id,
+    //         uid: c.uid,
+    //         replyToId: c.replyToId,
+    //         nLikes: c.nLikes! + 1);
+    //   } else {
+    //     return c;
+    //   }
+    // }).toList();
   }
 
   Future<void> dislikeComment(String commentId) async {
@@ -54,19 +54,35 @@ final commentsProvider =
         (ref, eventId) => CommentsProvider(eventId));
 
 /* Handle like, dislike providers */
-class IsLikeCommentParams extends Equatable {
-  final String uid;
-  final String commentId;
-  const IsLikeCommentParams({required this.uid, required this.commentId});
+final isLikeProvider =
+    StateNotifierProvider<LikeNotifier, bool>((ref) => LikeNotifier());
 
-  @override
-  List<String> get props => [uid, commentId];
+class LikeNotifier extends StateNotifier<bool> {
+  LikeNotifier() : super(false);
+
+  Future<bool> checkIfLiked(String uid, String commentId) async {
+    final isLike = await isLikeCommentAPI(uid, commentId);
+    state = isLike;
+    return isLike;
+  }
 }
 
-final isLikeProvider = FutureProvider.family<bool, IsLikeCommentParams>(
-  (ref, isLikeCommentPrams) async {
-    final isLike = await isLikeCommentAPI(
-        isLikeCommentPrams.uid, isLikeCommentPrams.commentId);
-    return isLike;
-  },
-);
+/* v2 */
+// class IsLikeCommentParams extends Equatable {
+//   final String uid;
+//   final String commentId;
+//   const IsLikeCommentParams({required this.uid, required this.commentId});
+
+//   @override
+//   List<String> get props => [uid, commentId];
+// }
+
+// final isLikeProvider = FutureProvider.family<bool, IsLikeCommentParams>(
+//   (ref, isLikeCommentPrams) async {
+//     final isLike = await isLikeCommentAPI(
+//         isLikeCommentPrams.uid, isLikeCommentPrams.commentId);
+//     return isLike;
+//   },
+// );
+
+
