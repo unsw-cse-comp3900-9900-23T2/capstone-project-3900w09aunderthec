@@ -139,14 +139,11 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpGet("isDislikeComment")]
-        public async Task<IActionResult> isDislikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
+        public async Task<IActionResult> isDislikeComment([FromQuery] int uid, [FromQuery] int commentId)
         {
-            var commentId = requestBody.commentId;
-            var customerId = requestBody.customerId;
-
             try
             {
-                var likeComment = await _commentRepository.isDislikeComment(customerId, commentId);
+                var likeComment = await _commentRepository.isDislikeComment(uid, commentId);
                 return Ok(likeComment);
             }
             catch (KeyNotFoundException e)

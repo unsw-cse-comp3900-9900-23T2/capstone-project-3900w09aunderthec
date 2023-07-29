@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/comment_requests.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
@@ -33,7 +32,6 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 
   Future<void> dislikeComment(String commentId) async {
     await dislikeCommentAPI(commentId); // call the function from your API file
-    // await fetchComments();
   }
 }
 
@@ -55,6 +53,15 @@ class LikeNotifier extends StateNotifier<bool> {
   }
 }
 
-/* Handle the nLikes provider
- */
+/* Handle if it's disliked provider */
+final isDislikeProvider =
+    StateNotifierProvider<DislikeNotifier, bool>((ref) => DislikeNotifier());
 
+class DislikeNotifier extends StateNotifier<bool> {
+  DislikeNotifier() : super(false);
+  Future<bool> checkIfDislike(String uid, String commentId) async {
+    final isDislike = await isDislikeCommentAPI(uid, commentId);
+    state = isDislike;
+    return isDislike;
+  }
+}

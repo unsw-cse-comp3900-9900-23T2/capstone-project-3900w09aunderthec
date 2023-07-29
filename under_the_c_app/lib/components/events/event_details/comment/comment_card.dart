@@ -17,7 +17,8 @@ class CommentCard extends ConsumerStatefulWidget {
 class CommentCardState extends ConsumerState<CommentCard> {
   bool likeSelected = false;
   int nLikes = 0;
-  bool thumbDislikeSelected = false;
+  int nDislikes = 0;
+  bool dislikeSelected = false;
   bool commentSelected = false;
   Future<Customer>? customerFuture;
 
@@ -40,6 +41,21 @@ class CommentCardState extends ConsumerState<CommentCard> {
           nLikes = widget.comment.nLikes! + 1;
         } else {
           nLikes = widget.comment.nLikes!;
+        }
+      });
+    });
+
+    // fetch if it's disliked from the db and update to the UI
+    ref
+        .read(isDislikeProvider.notifier)
+        .checkIfDislike(uid.toString(), widget.comment.id!)
+        .then((val) {
+      setState(() {
+        dislikeSelected = val;
+        if (dislikeSelected) {
+          nDislikes = widget.comment.nDislikes! + 1;
+        } else {
+          nDislikes = widget.comment.nDislikes!;
         }
       });
     });
@@ -86,12 +102,20 @@ class CommentCardState extends ConsumerState<CommentCard> {
 
   void toggleThumbDislike() {
     setState(() {
-      if (!thumbDislikeSelected) {
-        ref
-            .read(commentsProvider(widget.comment.eventId).notifier)
-            .dislikeComment(widget.comment.id!);
-      }
-      thumbDislikeSelected = true;
+      // update in the UI
+      setState(() {
+        dislikeSelected = !dislikeSelected;
+        if (dislikeSelected) {
+          nDislikes += 1;
+        } else {
+          nDislikes -= 1;
+        }
+      });
+
+      // update in the db
+      ref
+          .read(commentsProvider(widget.comment.eventId).notifier)
+          .dislikeComment(widget.comment.id!);
     });
   }
 
@@ -178,14 +202,14 @@ class CommentCardState extends ConsumerState<CommentCard> {
                               onPressed: () => {
                                 toggleThumbDislike(),
                               },
-                              icon: Icon(thumbDislikeSelected
+                              icon: Icon(dislikeSelected
                                   ? Icons.thumb_down
                                   : Icons.thumb_down_alt_outlined),
-                              color: thumbDislikeSelected
+                              color: dislikeSelected
                                   ? Colors.blue
                                   : Colors.grey,
                             ),
-                            Text(widget.comment.nDislikes.toString(),
+                            Text(nDislikes.toString(),
                                 style: const TextStyle(color: Colors.grey))
                           ],
                         ),
