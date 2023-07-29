@@ -69,6 +69,7 @@ Future<Event> getEventDetails(String id) async {
     final response = await http.get(url, headers: APIRoutes.headers);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
+      print(data);
       return BackendDataSingleEventToEvent(data);
     } else {
       throw HttpException('HTTP error: ${response.statusCode}');
@@ -99,7 +100,8 @@ Future<Event> createEvent(Event eventInfo) async {
           "isDirectRefunds": eventInfo.isDirectRefunds,
           "isPrivateEvent": eventInfo.isPrivate,
           // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
-          "tags": "tags"
+          // "tags": "tags"
+          "tags": eventInfo.tags?[0],
         },
       ),
     );

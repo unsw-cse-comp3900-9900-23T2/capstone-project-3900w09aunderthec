@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/types/bookings/booking_type.dart';
 
 import '../../../config/routes/routes.dart';
 import '../../../providers/booking_providers.dart';
@@ -52,8 +53,7 @@ class ViewBookingPage extends ConsumerWidget {
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: GestureDetector(
                   onTap: () {
-                    // Go to event
-                    // Need event id
+                    // Go to event, Need event id
                     // context.go(AppRoutes.eventDetails(event.eventId!), extra: 'Details');
                     context.go(AppRoutes.eventDetails("1"), extra: 'Details');
                   },
@@ -65,10 +65,9 @@ class ViewBookingPage extends ConsumerWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       BookingCard(
-                        eventName: booking.eventName,
+                        bookingInfo: booking,
                         imageUrl: "images/events/money-event.jpg",
-                        date: "27/08/23",
-                        noTicket: "3",
+                        noTicket: "4",
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -80,6 +79,35 @@ class ViewBookingPage extends ConsumerWidget {
                           ElevatedButton(
                             onPressed: () {
                               // Cancel booking and refund
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Bookings Confirmation'),
+                                    content: const Text(
+                                        'Are you sure you want to cancel all bookings?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Close the alert
+                                          context.go(AppRoutes.viewBooking(
+                                              sessionVariables.uid.toString()));
+                                        },
+                                        child: const Text('No'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Close the alert
+                                          // TO-DO call cancelAll api request
+                                        },
+                                        child: const Text('Yes'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             },
                             child: const Text('Cancel Booking'),
                           ),
@@ -98,16 +126,14 @@ class ViewBookingPage extends ConsumerWidget {
 }
 
 class BookingCard extends StatelessWidget {
-  final String eventName;
+  final Booking bookingInfo;
   final String imageUrl;
-  final String date;
   final String noTicket;
 
   const BookingCard({
     Key? key,
-    required this.eventName,
+    required this.bookingInfo,
     required this.imageUrl,
-    required this.date,
     required this.noTicket,
   }) : super(key: key);
   @override
@@ -131,11 +157,11 @@ class BookingCard extends StatelessWidget {
                   Column(
                     children: [
                       Text(
-                        "Event Name: $eventName",
+                        "Event Name: ${bookingInfo.eventName}",
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      Text("Event Time: $date"),
+                      Text("Event Time: ${bookingInfo.eventTime}"),
                     ],
                   ),
                 ],
@@ -147,15 +173,15 @@ class BookingCard extends StatelessWidget {
                   // context.go(AppRoutes.home);
                   showDialog(
                       context: context,
-                      builder: (context) => const AlertDialog(
+                      builder: (context) => AlertDialog(
                             backgroundColor: Colors.black,
                             content: EventTickets(
-                              eventName: "{Name}",
-                              eventTag: "{Tag}",
-                              eventVenue: "{Venue}",
-                              eventTime: "{Time}",
+                              eventName: bookingInfo.eventName,
+                              eventTag: bookingInfo.eventTag.toString(),
+                              eventVenue: bookingInfo.eventVenue,
+                              eventTime: bookingInfo.eventTime,
                               eventCost: "{Cost}",
-                              bookingNo: "{Booking No}",
+                              bookingNo: bookingInfo.id.toString(),
                             ),
                           ));
                 },
@@ -233,7 +259,9 @@ class TicketInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imageUrl = "images/tickets/barcode.jpg";
+    String imageUrl = 'images/tickets/bc.png';
+    // String imageUrl = 'images/tickets/bar-code.png';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,7 +306,7 @@ class TicketInfo extends StatelessWidget {
                     ticketDetailsWidget('Date', eventTime, 'Time', eventTime),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 12.0, right: 53.0),
+                padding: const EdgeInsets.only(top: 12.0, right: 25),
                 child: ticketDetailsWidget(
                     'Cost', eventCost, 'Order No', bookingNo),
               ),
@@ -291,7 +319,6 @@ class TicketInfo extends StatelessWidget {
             width: 250.0,
             height: 60.0,
             child: Image.asset(
-              // "images/tickets/barcode.jpg",
               imageUrl,
               fit: BoxFit.cover,
             ),

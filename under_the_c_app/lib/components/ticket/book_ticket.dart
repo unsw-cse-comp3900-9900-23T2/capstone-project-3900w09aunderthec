@@ -6,8 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/ticket_providers.dart';
+import 'package:under_the_c_app/types/bookings/booking_type.dart';
 import '../../api/ticket_requests.dart';
+import '../../providers/booking_providers.dart';
 import 'display_ticket.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 
 const priceTextStyle = TextStyle(
   color: Colors.black,
@@ -134,6 +137,13 @@ class BookTicket extends ConsumerWidget {
                   onPressed: () {
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
+                      ref.read(bookingProvider.notifier).addBooking(
+                            TicketBooking(
+                              eventId: eventId,
+                              totalPrice: totalPrice,
+                              selectedTickets: selectedTickets,
+                            ),
+                          );
                       context.go(AppRoutes.ticketConfirmation(eventTitle));
                       purchaseTickets(selectedTickets);
                       resetTicketState();

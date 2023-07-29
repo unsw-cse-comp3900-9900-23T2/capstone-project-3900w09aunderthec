@@ -91,44 +91,44 @@ class EventPage extends ConsumerWidget {
                 bottom: 0,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.purple,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Bookings Confirmation'),
-                                content: const Text(
-                                    'Are you sure you want to cancel all bookings?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert
-                                    },
-                                    child: const Text('No'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert
-                                      // TO-DO call cancelAll api request
-                                    },
-                                    child: const Text('Yes'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.remove),
-                        iconSize: 45,
-                        color: const Color.fromARGB(255, 255, 225, 253)),
-                  ),
+                  // child: Container(
+                  //   decoration: BoxDecoration(
+                  //       color: Colors.purple,
+                  //       borderRadius: BorderRadius.circular(20)),
+                  //   child: IconButton(
+                  //       onPressed: () {
+                  //         showDialog(
+                  //           context: context,
+                  //           builder: (BuildContext context) {
+                  //             return AlertDialog(
+                  //               title: const Text('Bookings Confirmation'),
+                  //               content: const Text(
+                  //                   'Are you sure you want to cancel all bookings?'),
+                  //               actions: [
+                  //                 TextButton(
+                  //                   onPressed: () {
+                  //                     Navigator.of(context)
+                  //                         .pop(); // Close the alert
+                  //                   },
+                  //                   child: const Text('No'),
+                  //                 ),
+                  //                 TextButton(
+                  //                   onPressed: () {
+                  //                     Navigator.of(context)
+                  //                         .pop(); // Close the alert
+                  //                     // TO-DO call cancelAll api request
+                  //                   },
+                  //                   child: const Text('Yes'),
+                  //                 ),
+                  //               ],
+                  //             );
+                  //           },
+                  //         );
+                  //       },
+                  //       icon: const Icon(Icons.remove),
+                  //       iconSize: 45,
+                  //       color: const Color.fromARGB(255, 255, 225, 253)),
+                  // ),
                 ),
               ),
       ],
