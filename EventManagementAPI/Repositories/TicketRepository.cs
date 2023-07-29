@@ -25,7 +25,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task CreateBookingTicket(Ticket t)
         {
-            _dbContext.Tickes.Add(t);
+            _dbContext.Tickets.Add(t);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -41,7 +41,7 @@ namespace EventManagementAPI.Repositories
             var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("customer not found");
             var vipQueueDays = Math.Min(customer.vipLevel / 50, 5);
 
-            var tickets = await _dbContext.Tickes
+            var tickets = await _dbContext.Tickets
                 .Where(t => t.eventIdRef == eventId && t.availableTime.AddDays(-vipQueueDays) <= DateTime.Now)
                 .ToListAsync();
 
@@ -58,7 +58,7 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Ticket> GetTicketById(int ticketId)
         {
-            var t = await _dbContext.Tickes.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
+            var t = await _dbContext.Tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
 
             return t;
         }
@@ -72,14 +72,14 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task<Ticket> ModifyTicket(TicketModificationDTO mod)
         {
-            Ticket t = await _dbContext.Tickes.FirstAsync(t => t.ticketId == mod.ticketId);
+            Ticket t = await _dbContext.Tickets.FirstAsync(t => t.ticketId == mod.ticketId);
 
             if(mod.name is not null){t.name = mod.name;}
             if(mod.price is not null){t.price = mod.price ?? default(Double);}
             if(mod.stock is not null){t.stock = mod.stock ?? default(int);}
             if(mod.availableTime is not null){ t.availableTime = mod.availableTime.Value; }
 
-            _dbContext.Tickes.Update(t);
+            _dbContext.Tickets.Update(t);
             await _dbContext.SaveChangesAsync();
             return t;
         }
@@ -93,7 +93,7 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task DeleteTicket(Ticket t)
         {
-            _dbContext.Tickes.Remove(t);
+            _dbContext.Tickets.Remove(t);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -117,7 +117,7 @@ namespace EventManagementAPI.Repositories
             }
 
             var query = await _dbContext.BookingTickets
-                .Join(_dbContext.Tickes,
+                .Join(_dbContext.Tickets,
                     bt => bt.ticketId,
                     t => t.ticketId,
                     (bt,t) => new
