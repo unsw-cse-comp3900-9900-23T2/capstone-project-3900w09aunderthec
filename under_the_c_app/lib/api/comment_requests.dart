@@ -24,12 +24,12 @@ Future<List<CommentT>> getAllComments(String eventId,
 
       // add all pinned comments
       final List<CommentT> events = jsonPinnedCommentsList
-          .map((json) => backendDataSingleCommentToComment(json))
+          .map((json) => backendDataSinglePinnedCommentToComment(json))
           .toList();
 
       // add all other comments
       events.addAll(jsonCommentsList
-          .map((json) => backendDataSingleCommentToComment(json)));
+          .map((json) => backendDataSingleUnpinnedCommentToComment(json)));
 
       return events;
     } else {
@@ -64,7 +64,7 @@ Future<CommentT> createComment(String eventId,
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return backendDataSingleCommentToComment(data);
+      return backendDataSingleUnpinnedCommentToComment(data);
     } else {
       throw Exception(response.body);
     }

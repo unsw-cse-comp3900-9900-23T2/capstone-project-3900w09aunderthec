@@ -7,6 +7,7 @@ class CommentT {
   final int? nLikes;
   final int? nDislikes;
   final DateTime? createdTime;
+  final bool isPinned;
 
   CommentT({
     String? eventId,
@@ -14,6 +15,7 @@ class CommentT {
     required this.id,
     required this.uid,
     required this.replyToId,
+    required this.isPinned,
     int? nLikes,
     int? nDislikes,
     DateTime? createdTime,
