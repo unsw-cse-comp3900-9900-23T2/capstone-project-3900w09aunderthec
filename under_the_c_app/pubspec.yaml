@@ -42,6 +42,7 @@ dependencies:
   lorem_ipsum: ^0.0.3
   shared_preferences: ^2.1.2
   intl: ^0.18.1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

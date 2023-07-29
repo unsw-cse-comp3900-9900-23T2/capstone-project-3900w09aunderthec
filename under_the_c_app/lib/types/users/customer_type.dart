@@ -2,9 +2,10 @@ import 'package:under_the_c_app/types/subscription_type.dart';
 
 class Customer {
   final int customerId;
+  final String userName;
   final List<Subscription> subscriptions;
   final int loyaltyPoints = 0;
   final int vipLevel = 0;
 
-  Customer({required this.customerId, required this.subscriptions});
+  Customer({required this.customerId, required this.subscriptions, required this.userName});
 }

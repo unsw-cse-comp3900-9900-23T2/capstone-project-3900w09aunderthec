@@ -116,15 +116,12 @@ namespace EventManagementAPI.Controllers
             }
         }
 
-        [HttpPost("isLikeComment")]
-        public async Task<IActionResult> isLikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
+        [HttpGet("isLikeComment")]
+        public async Task<IActionResult> isLikeComment([FromQuery] int uid, [FromQuery] int commentId)
         {
-            var commentId = requestBody.commentId;
-            var customerId = requestBody.customerId;
-
             try
             {
-                var likeComment = await _commentRepository.isLikeComment(customerId, commentId);
+                var likeComment = await _commentRepository.isLikeComment(uid, commentId);
                 return Ok(likeComment);
             }
             catch (KeyNotFoundException e)
@@ -141,15 +138,12 @@ namespace EventManagementAPI.Controllers
             }
         }
 
-        [HttpPost("isDislikeComment")]
-        public async Task<IActionResult> isDislikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
+        [HttpGet("isDislikeComment")]
+        public async Task<IActionResult> isDislikeComment([FromQuery] int uid, [FromQuery] int commentId)
         {
-            var commentId = requestBody.commentId;
-            var customerId = requestBody.customerId;
-
             try
             {
-                var likeComment = await _commentRepository.isDislikeComment(customerId, commentId);
+                var likeComment = await _commentRepository.isDislikeComment(uid, commentId);
                 return Ok(likeComment);
             }
             catch (KeyNotFoundException e)
