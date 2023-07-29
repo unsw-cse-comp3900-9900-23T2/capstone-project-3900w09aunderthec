@@ -29,18 +29,6 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 
   Future<void> likeComment(String commentId) async {
     await likeCommentAPI(commentId); // call the function from your API file
-    // state = state.map((c) {
-    //   if (c.id == commentId) {
-    //     return CommentT(
-    //         content: c.content,
-    //         id: c.id,
-    //         uid: c.uid,
-    //         replyToId: c.replyToId,
-    //         nLikes: c.nLikes! + 1);
-    //   } else {
-    //     return c;
-    //   }
-    // }).toList();
   }
 
   Future<void> dislikeComment(String commentId) async {
@@ -53,7 +41,7 @@ final commentsProvider =
     StateNotifierProvider.family<CommentsProvider, List<CommentT>, String>(
         (ref, eventId) => CommentsProvider(eventId));
 
-/* Handle like, dislike providers */
+/* Handle if it's liked providers */
 final isLikeProvider =
     StateNotifierProvider<LikeNotifier, bool>((ref) => LikeNotifier());
 
@@ -67,22 +55,6 @@ class LikeNotifier extends StateNotifier<bool> {
   }
 }
 
-/* v2 */
-// class IsLikeCommentParams extends Equatable {
-//   final String uid;
-//   final String commentId;
-//   const IsLikeCommentParams({required this.uid, required this.commentId});
-
-//   @override
-//   List<String> get props => [uid, commentId];
-// }
-
-// final isLikeProvider = FutureProvider.family<bool, IsLikeCommentParams>(
-//   (ref, isLikeCommentPrams) async {
-//     final isLike = await isLikeCommentAPI(
-//         isLikeCommentPrams.uid, isLikeCommentPrams.commentId);
-//     return isLike;
-//   },
-// );
-
+/* Handle the nLikes provider
+ */
 

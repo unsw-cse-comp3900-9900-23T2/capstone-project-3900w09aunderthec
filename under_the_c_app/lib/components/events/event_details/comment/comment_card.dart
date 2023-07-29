@@ -16,7 +16,7 @@ class CommentCard extends ConsumerStatefulWidget {
 
 class CommentCardState extends ConsumerState<CommentCard> {
   bool likeSelected = false;
-
+  int nLikes = 0;
   bool thumbDislikeSelected = false;
   bool commentSelected = false;
   Future<Customer>? customerFuture;
@@ -27,12 +27,20 @@ class CommentCardState extends ConsumerState<CommentCard> {
     customerFuture = fetchCustomerData();
 
     final uid = sessionVariables.uid;
+
+    // fetch if it's liked from the db and update in the UI
     ref
         .read(isLikeProvider.notifier)
         .checkIfLiked(uid.toString(), widget.comment.id!)
         .then((val) {
       setState(() {
         likeSelected = val;
+        // set nlikes in the UI
+        if (likeSelected) {
+          nLikes = widget.comment.nLikes! + 1;
+        } else {
+          nLikes = widget.comment.nLikes!;
+        }
       });
     });
   }
@@ -56,12 +64,21 @@ class CommentCardState extends ConsumerState<CommentCard> {
   }
 
   void toggleThumbLike() {
+    // update in the UI
     setState(
       () {
         likeSelected = !likeSelected;
+        // when user clicked like
+        if (likeSelected) {
+          nLikes += 1;
+        } else {
+          // when user undo like
+          nLikes -= 1;
+        }
       },
-      // initailize once only
     );
+
+    // update in the db
     ref
         .read(commentsProvider(widget.comment.eventId).notifier)
         .likeComment(widget.comment.id!);
@@ -86,8 +103,6 @@ class CommentCardState extends ConsumerState<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    // likeSelected = ref.watch(isLikeProvider);
-    // likeSelected = thumbLikeSelected;
     return FutureBuilder<Customer>(
         future: customerFuture,
         builder: (BuildContext context, AsyncSnapshot<Customer> snapshot) {
@@ -151,7 +166,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
                               color: likeSelected ? Colors.red : Colors.grey,
                             ),
                             Text(
-                              widget.comment.nLikes.toString(),
+                              nLikes.toString(),
                               style: const TextStyle(color: Colors.grey),
                             )
                           ],
