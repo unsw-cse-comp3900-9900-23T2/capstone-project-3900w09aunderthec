@@ -17,7 +17,7 @@ const priceTextStyle = TextStyle(
 );
 
 final selectedTicketsProvider = StateProvider<Map<int, int>>((ref) => {});
-final totalPriceProvider = StateProvider<int>((ref) {
+final totalPriceProvider = StateProvider<double>((ref) {
   return 0;
 });
 

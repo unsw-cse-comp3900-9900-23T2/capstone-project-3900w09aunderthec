@@ -22,7 +22,7 @@ class DisplayedTicket extends ConsumerWidget {
       };
     }
 
-    void updateTotal(int value) {
+    void updateTotal(double value) {
       ref.read(totalPriceProvider.notifier).state += value;
     }
 
@@ -78,7 +78,7 @@ class DisplayedTicket extends ConsumerWidget {
                       onPressed: () {
                         if (quantity > 0) {
                           updateQuantity(quantity - 1);
-                          updateTotal(0 - item.price.toInt());
+                          updateTotal(0 - item.price);
                         }
                       },
                     ),
@@ -96,7 +96,7 @@ class DisplayedTicket extends ConsumerWidget {
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         updateQuantity(quantity + 1);
-                        updateTotal(item.price.toInt());
+                        updateTotal(item.price);
                       },
                     ),
                   ]),

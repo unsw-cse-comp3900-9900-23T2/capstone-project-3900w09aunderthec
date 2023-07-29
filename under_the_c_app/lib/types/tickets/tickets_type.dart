@@ -2,7 +2,7 @@ class Tickets {
   final int ticketId;
   final int eventIdRef;
   final String name;
-  final double price;
+  double price;
 
   Tickets({
     required this.ticketId,
