@@ -123,6 +123,7 @@ class _CommentState extends ConsumerState<Comment> {
           children: [
             ...comments
                 .map((CommentT comment) => Padding(
+                      key: ValueKey(comment.id),
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: CommentCard(
                         comment: comment,

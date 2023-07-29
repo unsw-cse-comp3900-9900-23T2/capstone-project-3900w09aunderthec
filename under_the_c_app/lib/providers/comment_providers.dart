@@ -44,6 +44,10 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
       if (c.id == commentId) {
         return CommentT(
             content: newComment.content,
+            eventId: newComment.eventId,
+            nLikes: newComment.nLikes,
+            nDislikes: newComment.nDislikes,
+            createdTime: newComment.createdTime,
             id: newComment.id,
             uid: newComment.uid,
             replyToId: newComment.replyToId,
