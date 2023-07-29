@@ -59,61 +59,56 @@ class ViewBookingPage extends ConsumerWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: Column(children: [
-                      Text(
-                        "Booking Id: ${booking.id}",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      BookingCard(
-                        bookingInfo: booking,
-                        imageUrl: "images/events/money-event.jpg",
-                        noTicket: "4",
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('??'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Cancel booking and refund
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Bookings Confirmation'),
-                                    content: const Text(
-                                        'Are you sure you want to cancel all bookings?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pop(); // Close the alert
-                                          context.go(AppRoutes.viewBooking(
-                                              sessionVariables.uid.toString()));
-                                        },
-                                        child: const Text('No'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pop(); // Close the alert
-                                          // TO-DO call cancelAll api request
-                                        },
-                                        child: const Text('Yes'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: const Text('Cancel Booking'),
-                          ),
-                        ],
-                      ),
-                    ]),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Booking Id: ${booking.id}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        BookingCard(
+                          bookingInfo: booking,
+                          imageUrl: "images/events/money-event.jpg",
+                          noTicket: "4",
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Cancel booking and refund
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Bookings Confirmation'),
+                                  content: const Text(
+                                      'Are you sure you want to cancel all bookings?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Close the alert
+                                      },
+                                      child: const Text('No'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // TO-DO call cancelAll api request
+                                        ref
+                                            .read(bookingProvider.notifier)
+                                            .removeBooking(
+                                                booking.id.toString());
+                                        Navigator.of(context)
+                                            .pop(); // Close the alert
+                                      },
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Text('Cancel Booking'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

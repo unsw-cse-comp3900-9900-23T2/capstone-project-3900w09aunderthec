@@ -69,7 +69,6 @@ Future<Event> getEventDetails(String id) async {
     final response = await http.get(url, headers: APIRoutes.headers);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      print(data);
       return BackendDataSingleEventToEvent(data);
     } else {
       throw HttpException('HTTP error: ${response.statusCode}');

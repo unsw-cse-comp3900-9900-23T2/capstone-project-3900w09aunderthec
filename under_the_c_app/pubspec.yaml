@@ -71,6 +71,7 @@ flutter:
     - images/
     - images/events/
     - images/tickets/
+    - images/profile/
     - images/users/
     # - images/new-event.jpg
     # - images/events/money-event.jpg

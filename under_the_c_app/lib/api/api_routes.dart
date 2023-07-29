@@ -30,4 +30,5 @@ class APIRoutes {
   static const String deleteTickets = '/Ticket/DeleteTickets';
   static const String bookTickets = 'api/Booking/MakeBooking';
   static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
+  static const String cancelBooking = 'api/Booking/CancelBookings';
 }
