@@ -36,12 +36,14 @@ class CommentCardState extends ConsumerState<CommentCard> {
         .then((val) {
       setState(() {
         likeSelected = val;
+        // if (likeSelected) {
+        //   nLikes = widget.comment.nLikes! + 1;
+        // } else {
+        //   nLikes = widget.comment.nLikes!;
+        // }
+
         // set nlikes in the UI
-        if (likeSelected) {
-          nLikes = widget.comment.nLikes! + 1;
-        } else {
-          nLikes = widget.comment.nLikes!;
-        }
+        nLikes = widget.comment.nLikes!;
       });
     });
 
@@ -52,11 +54,14 @@ class CommentCardState extends ConsumerState<CommentCard> {
         .then((val) {
       setState(() {
         dislikeSelected = val;
-        if (dislikeSelected) {
-          nDislikes = widget.comment.nDislikes! + 1;
-        } else {
-          nDislikes = widget.comment.nDislikes!;
-        }
+        // if (dislikeSelected) {
+        //   nDislikes = widget.comment.nDislikes! + 1;
+        // } else {
+        //   nDislikes = widget.comment.nDislikes!;
+        // }
+
+        // set nDislikes in the UI
+        nDislikes = widget.comment.nDislikes!;
       });
     });
   }
@@ -205,9 +210,8 @@ class CommentCardState extends ConsumerState<CommentCard> {
                               icon: Icon(dislikeSelected
                                   ? Icons.thumb_down
                                   : Icons.thumb_down_alt_outlined),
-                              color: dislikeSelected
-                                  ? Colors.blue
-                                  : Colors.grey,
+                              color:
+                                  dislikeSelected ? Colors.blue : Colors.grey,
                             ),
                             Text(nDislikes.toString(),
                                 style: const TextStyle(color: Colors.grey))
