@@ -283,7 +283,7 @@ namespace EventManagementAPI.Migrations
 
                     b.HasIndex("toEventeventId");
 
-                    b.ToTable("Tickes");
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("EventManagementAPI.Models.User", b =>
