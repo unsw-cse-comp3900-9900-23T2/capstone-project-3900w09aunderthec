@@ -21,7 +21,7 @@ final totalPriceProvider = StateProvider<double>((ref) {
   return 0;
 });
 
-class BookTicket extends ConsumerWidget {
+class BookTicket extends ConsumerStatefulWidget {
   final String eventId;
   final String eventTitle;
   final String eventVenue;
@@ -33,8 +33,22 @@ class BookTicket extends ConsumerWidget {
       required this.eventVenue});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tickets = ref.watch(ticketsProvider(eventId));
+  _BookTicket createState() => _BookTicket();
+}
+
+class _BookTicket extends ConsumerState<BookTicket> {
+  @override
+  void initState() {
+    super.initState();
+    // fetch updated comments when just going to the page
+    ref
+        .read(ticketsProvider(widget.eventId).notifier)
+        .fetchTickets(widget.eventId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tickets = ref.watch(ticketsProvider(widget.eventId));
     var totalPrice = ref.watch(totalPriceProvider);
     final selectedTickets = ref.watch(selectedTicketsProvider);
 
@@ -57,8 +71,8 @@ class BookTicket extends ConsumerWidget {
             Icons.arrow_back,
             color: Color.fromARGB(255, 33, 8, 83),
           ),
-          onPressed: () =>
-              context.go(AppRoutes.eventDetails(eventId), extra: "Details"),
+          onPressed: () => context.go(AppRoutes.eventDetails(widget.eventId),
+              extra: "Details"),
         ),
       ),
       // extendBody: true,
@@ -76,7 +90,7 @@ class BookTicket extends ConsumerWidget {
                   children: [
                     Align(
                       child: Text(
-                        eventTitle,
+                        widget.eventTitle,
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 20.0,
@@ -85,7 +99,7 @@ class BookTicket extends ConsumerWidget {
                       ),
                     ),
                     Align(
-                      child: Text(eventVenue),
+                      child: Text(widget.eventVenue),
                     ),
                     const SizedBox(height: 20.0),
                     const Text(
@@ -139,7 +153,8 @@ class BookTicket extends ConsumerWidget {
                     );
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
-                      context.go(AppRoutes.ticketConfirmation(eventTitle));
+                      context
+                          .go(AppRoutes.ticketConfirmation(widget.eventTitle));
                       purchaseTickets(selectedTickets);
                       resetTicketState();
                     }
