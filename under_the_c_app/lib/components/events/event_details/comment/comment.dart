@@ -132,9 +132,8 @@ class _CommentState extends ConsumerState<Comment> {
                 .toList()
           ],
         ),
-
         // make sure there's enough space when there's no comment
-        _commentFocusNode.hasFocus ? SizedBox(height: 180) : Container()
+        _commentFocusNode.hasFocus ? const SizedBox(height: 180) : Container()
       ],
     );
   }
