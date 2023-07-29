@@ -20,6 +20,9 @@ class _CommentState extends ConsumerState<Comment> {
   void initState() {
     super.initState();
     _commentFocusNode.addListener(_handleFocusChange);
+
+    // fetch updated comments when just going to the page
+    ref.read(commentsProvider(widget.eventId).notifier).fetchComments();
   }
 
   @override
