@@ -16,6 +16,7 @@ import 'package:under_the_c_app/pages/main/profile.dart';
 import 'package:under_the_c_app/pages/main/auth/register.dart';
 import 'package:under_the_c_app/pages/main/auth/reset.dart';
 import '../../components/booking/view_booking/view_booking.dart';
+import '../../components/events/event_notification.dart';
 import '../../components/ticket/create_ticket.dart';
 import '../../components/events/modify_event.dart';
 import '../../pages/main/auth/login/login_page.dart';
@@ -117,6 +118,21 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                 child: EventPage(isHost: sessionVariables.sessionIsHost),
               );
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.eventDetails(':id'),
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['id'].toString();
+              return MaterialPage(child: EventDetailsPage(eventId: eventId));
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.notification(':eventId'),
+            pageBuilder: (context, state) {
+              final eventId = state.pathParameters['eventId'].toString();
+              return MaterialPage(
+                  child: EventNotificationPage(eventId: eventId));
             },
           ),
           GoRoute(
