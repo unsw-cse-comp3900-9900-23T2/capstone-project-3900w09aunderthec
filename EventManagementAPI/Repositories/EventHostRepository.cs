@@ -47,7 +47,7 @@ namespace EventManagementAPI.Repositories
         public List<Customer> GetBuyers(int eventId)
         {
             var buyers = _dbContext.BookingTickets
-                .Join(_dbContext.Tickes,
+                .Join(_dbContext.Tickets,
                     bt => bt.ticketId,
                     t => t.ticketId,
                     (bt, t) => new

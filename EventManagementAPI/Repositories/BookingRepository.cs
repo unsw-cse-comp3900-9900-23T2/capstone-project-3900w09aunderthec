@@ -26,7 +26,7 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="BadHttpRequestException"></exception>
         public async Task<int?> GetNumberOfTicketsInStock(int ticketId)
         {
-            var ticket = await _dbContext.Tickes.FindAsync(ticketId);
+            var ticket = await _dbContext.Tickets.FindAsync(ticketId);
             return ticket == null ? throw new BadHttpRequestException("Ticket type does not exist") : ticket.stock;
         }
 
@@ -60,7 +60,7 @@ namespace EventManagementAPI.Repositories
                 string ticketIdString = ticketPair.Key;
                 int ticketId = int.Parse(ticketIdString);
                 int numberOfTickets = ticketPair.Value;
-                var ticket = await _dbContext.Tickes.FindAsync(ticketId) ?? throw new KeyNotFoundException("One of the ticket types does not exist, booking not made.");
+                var ticket = await _dbContext.Tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("One of the ticket types does not exist, booking not made.");
                 if (ticket.stock - numberOfTickets < 0)
                 {
                     throw new BadHttpRequestException(String.Format("Not enough stock to purchase {0} {1} tickets, only {3} remain. Booking not made", numberOfTickets, ticket.name, ticket.stock));
@@ -140,7 +140,7 @@ namespace EventManagementAPI.Repositories
                 string ticketIdString = ticketPair.Key;
                 int ticketId = int.Parse(ticketIdString);
                 int numberOfTickets = ticketPair.Value;
-                var ticket = await _dbContext.Tickes.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
+                var ticket = await _dbContext.Tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
 
                 var newBookingTicket = new BookingTicket
                 {
@@ -173,7 +173,7 @@ namespace EventManagementAPI.Repositories
         {
 
             var bookings = _dbContext.BookingTickets
-                .Join(_dbContext.Tickes,
+                .Join(_dbContext.Tickets,
                     bt => bt.ticketId,
                     t => t.ticketId,
                     (bt,t) => new
@@ -228,7 +228,7 @@ namespace EventManagementAPI.Repositories
 
             foreach (BookingTicket bookingTicket in bookingTickets)
             {
-                var ticket = await _dbContext.Tickes.FindAsync(bookingTicket.ticketId) ?? throw new KeyNotFoundException("ticket does not exist");
+                var ticket = await _dbContext.Tickets.FindAsync(bookingTicket.ticketId) ?? throw new KeyNotFoundException("ticket does not exist");
 
                 ticket.stock += bookingTicket.numberOfTickets;
 
@@ -263,7 +263,7 @@ namespace EventManagementAPI.Repositories
             var bookingTickets = await _dbContext.BookingTickets.Where(bt => bt.bookingId == bookingId).ToListAsync();
             if (bookingTickets.Count == 0) throw new KeyNotFoundException("no relevant booking tickets found");
 
-            var ticket = await _dbContext.Tickes.FindAsync(bookingTickets[0].ticketId) ?? throw new KeyNotFoundException("ticket not found");
+            var ticket = await _dbContext.Tickets.FindAsync(bookingTickets[0].ticketId) ?? throw new KeyNotFoundException("ticket not found");
             var e = await _dbContext.Events.FindAsync(ticket.eventIdRef) ?? throw new KeyNotFoundException("event not found");
 
             var timeDifference = e.eventTime - DateTime.Now;

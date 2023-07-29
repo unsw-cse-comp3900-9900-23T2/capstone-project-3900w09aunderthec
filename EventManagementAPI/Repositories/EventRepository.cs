@@ -158,7 +158,7 @@ namespace EventManagementAPI.Repositories
                     // is can be public or private
                     // optional to show past events
                     query = _dbContext.BookingTickets
-                        .Join(_dbContext.Tickes,
+                        .Join(_dbContext.Tickets,
                             bt => bt.ticketId,
                             t => t.ticketId,
                             (bt, t) => new

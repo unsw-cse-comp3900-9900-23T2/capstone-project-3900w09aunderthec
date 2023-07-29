@@ -8,7 +8,7 @@ namespace EventManagementAPI.Context
         public DbSet<Event> Events { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Hoster> Hosts { get; set; }
-        public DbSet<Ticket> Tickes { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
