@@ -24,12 +24,12 @@ Future<List<CommentT>> getAllComments(String eventId,
 
       // add all pinned comments
       final List<CommentT> events = jsonPinnedCommentsList
-          .map((json) => backendDataSingleCommentToComment(json))
+          .map((json) => backendDataSinglePinnedCommentToComment(json))
           .toList();
 
       // add all other comments
       events.addAll(jsonCommentsList
-          .map((json) => backendDataSingleCommentToComment(json)));
+          .map((json) => backendDataSingleUnpinnedCommentToComment(json)));
 
       return events;
     } else {
@@ -64,7 +64,7 @@ Future<CommentT> createComment(String eventId,
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return backendDataSingleCommentToComment(data);
+      return backendDataSingleUnpinnedCommentToComment(data);
     } else {
       throw Exception(response.body);
     }
@@ -170,5 +170,32 @@ Future<bool> isDislikeCommentAPI(String uid, String commentId) async {
     throw Exception('comment.dart.isDislikeComment: Http Exception error $e');
   } catch (e) {
     throw Exception('comment.dart.isDislikeComment: Unknown error $e');
+  }
+}
+
+Future<CommentT> pinCommentAPI(String commentId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.pinComment);
+  try {
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "commentId": commentId,
+        },
+      ),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(response.body);
+    } else {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return backendDataSingleCommentToComment(data);
+    }
+  } on SocketException catch (e) {
+    throw Exception('comment.dart.pinComment: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('comment.dart.pinComment: Http Exception error $e');
+  } catch (e) {
+    throw Exception('comment.dart.pinComment: Unknown error $e');
   }
 }

@@ -40,6 +40,8 @@ class APIRoutes {
   static const String getCustomerById = 'api/Customer';
   static const String isLikeComment = 'api/Comment/isLikeComment';
   static const String isDislikeComment = 'api/Comment/isDislikeComment';
+  static const String pinComment = 'api/Comment/PinComment';
+
 
   static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
 }
