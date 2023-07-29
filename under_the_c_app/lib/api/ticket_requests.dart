@@ -5,8 +5,8 @@ import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/types/tickets/tickets_type.dart';
 
 Future<List<Tickets>> getTickets(String eventId) async {
-  final requestUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getTickets, {'eventId': eventId});
+  final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTickets,
+      {'eventId': eventId, 'customerId': sessionVariables.uid.toString()});
 
   try {
     final response = await http.get(

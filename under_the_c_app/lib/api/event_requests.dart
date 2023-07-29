@@ -35,8 +35,8 @@ Future<List<Event>> getAllEvents() async {
 
 Future<List<Event>> getUserEvents(String uid,
     {bool? includePastEvents = false}) async {
-  final registerUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {'uid': uid, "showPreviousEvents": includePastEvents.toString()});
+  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents,
+      {'uid': uid, "showPreviousEvents": includePastEvents.toString()});
   try {
     final response = await http.get(
       registerUrl,
@@ -163,6 +163,35 @@ Future<void> cancelEvent(Event eventInfo) async {
         },
       ),
     );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.cancelEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.cancelEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.cancelEvent: Unknown error $e');
+  }
+}
+
+Future<void> sendNotification(
+    Map<String, dynamic> notificationData, int eventId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.emailNotification);
+
+  Map<String, dynamic> jsonBody = {
+    'eventId': eventId,
+    'subject': notificationData['subject'],
+    'body': notificationData['body']
+  };
+
+  try {
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(jsonBody),
+    );
+
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw Exception(response.body);
     }
