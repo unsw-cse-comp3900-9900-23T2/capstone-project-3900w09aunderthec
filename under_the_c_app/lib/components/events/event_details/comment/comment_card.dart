@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/user_request.dart';
+import 'package:under_the_c_app/components/events/event_details/comment/pin.dart';
 import 'package:under_the_c_app/providers/comment_providers.dart';
+import 'package:under_the_c_app/providers/user_providers.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/users/customer_type.dart';
@@ -21,13 +23,13 @@ class CommentCardState extends ConsumerState<CommentCard> {
   bool dislikeSelected = false;
   bool commentSelected = false;
   Future<Customer>? customerFuture;
+  final isHost = sessionVariables.sessionIsHost;
+  final uid = sessionVariables.uid;
 
   @override
   initState() {
     super.initState();
     customerFuture = fetchCustomerData();
-
-    final uid = sessionVariables.uid;
 
     // fetch if it's liked from the db and update in the UI
     ref
@@ -132,6 +134,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final originalHostUid = ref.watch(hostUidProvider.notifier).state;
     return FutureBuilder<Customer>(
         future: customerFuture,
         builder: (BuildContext context, AsyncSnapshot<Customer> snapshot) {
@@ -151,26 +154,37 @@ class CommentCardState extends ConsumerState<CommentCard> {
                   children: [
                     // for profile image, name and date of publishing
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const CircleAvatar(
-                          backgroundImage: AssetImage("images/users/guy.jpg"),
-                          radius: 25,
-                        ),
-                        const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            Text(customer.userName),
-                            const SizedBox(height: 4),
-                            const Text(
-                              "March 24, 15:14",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  letterSpacing: 0.4),
-                            )
+                            const CircleAvatar(
+                              backgroundImage:
+                                  AssetImage("images/users/guy.jpg"),
+                              radius: 25,
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(customer.userName),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  "March 24, 15:14",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                      letterSpacing: 0.4),
+                                )
+                              ],
+                            ),
                           ],
                         ),
+                        Pin(
+                          isOriginalHost: uid.toString() == originalHostUid,
+                          isPinned: widget.comment.isPinned,
+                          commentId: widget.comment.id!,
+                        )
                       ],
                     ),
                     const SizedBox(height: 15),

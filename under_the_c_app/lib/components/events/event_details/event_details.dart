@@ -7,8 +7,10 @@ import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/user_providers.dart';
 
 import '../../../types/events/event_type.dart';
 
@@ -25,6 +27,14 @@ class EventDetailsPage extends ConsumerWidget {
 
     return event.when(
         data: (event) {
+          // when the widget finished building
+          Future(() {
+            // record the event hoster uid for the comment pin
+            ref.read(hostUidProvider.notifier).state = event.hostuid;
+
+            // record the comment id for pin
+            ref.read(eventIdProvider.notifier).state = event.eventId!;
+          });
           return Scaffold(
             extendBodyBehindAppBar: true,
             resizeToAvoidBottomInset: false,

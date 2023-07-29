@@ -18,7 +18,7 @@ enum EventFilterType {
 }
 
 /* For Event Sort */
-enum EventSortType { none, recency, popularity, price }
+enum EventSortType { none, recency, popularity, price, pinned }
 
 /* Fetching events */
 class EventsProvider extends StateNotifier<List<Event>> {
@@ -115,7 +115,6 @@ class EventsProvider extends StateNotifier<List<Event>> {
             },
           );
         break;
-
       default:
         break;
     }

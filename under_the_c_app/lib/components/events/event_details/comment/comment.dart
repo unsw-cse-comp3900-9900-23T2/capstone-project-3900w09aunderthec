@@ -124,7 +124,9 @@ class _CommentState extends ConsumerState<Comment> {
             ...comments
                 .map((CommentT comment) => Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
-                      child: CommentCard(comment: comment),
+                      child: CommentCard(
+                        comment: comment,
+                      ),
                     ))
                 .toList()
           ],

@@ -19,6 +19,21 @@ import 'package:under_the_c_app/types/events/comment_type.dart';
 // }
 
 //   return CommentT(
+
+CommentT backendDataSingleCommentToComment(data) {
+  return CommentT(
+    id: data['id'].toString(),
+    isPinned: data['isPinned'],
+    eventId: data['eventId'].toString(),
+    content: data['comment'],
+    uid: data['customerId'].toString(),
+    replyToId: data['replyToComment'].toString(),
+    nLikes: data['likes'],
+    nDislikes: data['dislikes'],
+    createdTime: DateTime.parse(data['createdTime']),
+  );
+}
+
 CommentT backendDataSinglePinnedCommentToComment(data) {
   return CommentT(
     id: data['id'].toString(),
@@ -32,6 +47,7 @@ CommentT backendDataSinglePinnedCommentToComment(data) {
     createdTime: DateTime.parse(data['createdTime']),
   );
 }
+
 CommentT backendDataSingleUnpinnedCommentToComment(data) {
   return CommentT(
     id: data['id'].toString(),

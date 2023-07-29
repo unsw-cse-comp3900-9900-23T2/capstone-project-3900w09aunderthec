@@ -17,6 +17,43 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
     state = [...state, newComment];
   }
 
+  void sortCommentByPin() {
+    final List<CommentT> sortedPinnedComment = state.toList()
+      ..sort(
+        (a, b) {
+          // Note: The comparison function returns a negative number if 'a' should be before 'b' etc.
+          // when b should be in the front
+          if (b.isPinned && !a.isPinned) {
+            return 1;
+          }
+          // when b should be in the front
+          else if (!b.isPinned && a.isPinned) {
+            return -1;
+          } else {
+            return 0;
+          }
+        },
+      );
+    state = sortedPinnedComment;
+    // return sortedPinnedComment;
+  }
+
+  Future<void> pinComment(commentId) async {
+    final CommentT newComment = await pinCommentAPI(commentId);
+    state = state.map((c) {
+      if (c.id == commentId) {
+        return CommentT(
+            content: newComment.content,
+            id: newComment.id,
+            uid: newComment.uid,
+            replyToId: newComment.replyToId,
+            isPinned: newComment.isPinned);
+      } else {
+        return c;
+      }
+    }).toList();
+  }
+
   Future<void> fetchComments() async {
     state = await getAllComments(eventId);
   }
@@ -29,6 +66,8 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
     await dislikeCommentAPI(commentId); // call the function from your API file
   }
 }
+
+final eventIdProvider = StateProvider((ref) => "");
 
 final commentsProvider =
     StateNotifierProvider.family<CommentsProvider, List<CommentT>, String>(
