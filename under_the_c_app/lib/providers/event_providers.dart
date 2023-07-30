@@ -75,7 +75,8 @@ class EventsProvider extends StateNotifier<List<Event>> {
     }
     state = _allEvents
         .where((event) =>
-            event.title.toLowerCase().startsWith(query.toLowerCase()))
+            event.title.toLowerCase().startsWith(query.toLowerCase()) ||
+            event.tags![0].toLowerCase().startsWith(query.toLowerCase()))
         .toList();
   }
 
