@@ -19,10 +19,10 @@ class CommentCard extends ConsumerStatefulWidget {
 
 class CommentCardState extends ConsumerState<CommentCard> {
   bool likeSelected = false;
+  bool replyExpanded = false;
   int nLikes = 0;
   int nDislikes = 0;
   bool dislikeSelected = false;
-  bool commentSelected = false;
   Future<Customer>? customerFuture;
   final isHost = sessionVariables.sessionIsHost;
   final uid = sessionVariables.uid;
@@ -39,14 +39,8 @@ class CommentCardState extends ConsumerState<CommentCard> {
         .then((val) {
       setState(() {
         likeSelected = val;
-        // if (likeSelected) {
-        //   nLikes = widget.comment.nLikes! + 1;
-        // } else {
-        //   nLikes = widget.comment.nLikes!;
-        // }
-
         // set nlikes in the UI
-        nLikes = widget.comment.nLikes!;
+        nLikes = widget.comment.nLikes;
       });
     });
 
@@ -57,14 +51,8 @@ class CommentCardState extends ConsumerState<CommentCard> {
         .then((val) {
       setState(() {
         dislikeSelected = val;
-        // if (dislikeSelected) {
-        //   nDislikes = widget.comment.nDislikes! + 1;
-        // } else {
-        //   nDislikes = widget.comment.nDislikes!;
-        // }
-
         // set nDislikes in the UI
-        nDislikes = widget.comment.nDislikes!;
+        nDislikes = widget.comment.nDislikes;
       });
     });
   }
@@ -129,7 +117,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
 
   void toggleComment() {
     setState(() {
-      commentSelected = !commentSelected;
+      replyExpanded = !replyExpanded;
     });
   }
 
@@ -170,7 +158,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
                               children: [
                                 Text(
                                   customer.userName,
-                                  style: TextStyle(fontSize: 17),
+                                  style: const TextStyle(fontSize: 17),
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
@@ -240,10 +228,10 @@ class CommentCardState extends ConsumerState<CommentCard> {
                           children: [
                             IconButton(
                                 onPressed: () => {toggleComment()},
-                                icon: Icon(commentSelected
+                                icon: Icon(replyExpanded
                                     ? Icons.comment
                                     : Icons.comment_outlined),
-                                color: commentSelected
+                                color: replyExpanded
                                     ? const Color.fromARGB(255, 149, 37, 176)
                                     : Colors.grey),
                             // Text("$nComment", style: TextStyle(color: Colors.grey))
@@ -251,7 +239,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
                         )
                       ],
                     ),
-                    Reply()
+                    replyExpanded ? Reply() : Container()
                   ],
                 ),
               ),
