@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/ticket/date_helpers.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 
 import '../../api/ticket_requests.dart';
@@ -20,6 +21,22 @@ class CreateTicket extends ConsumerStatefulWidget {
 }
 
 class _CreateTicket extends ConsumerState<CreateTicket> {
+  // prolly dont even need this, can just set straight away
+  DateTime? chosenDate;
+  TimeOfDay? dayTime;
+
+  void saveSelectedTime(TimeOfDay? time) {
+    setState(() {
+      dayTime = time;
+    });
+  }
+
+  void saveSelectedDate(DateTime? date) {
+    setState(() {
+      chosenDate = date;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ticketData = ref.watch(newTicketProvider);
@@ -73,9 +90,25 @@ class _CreateTicket extends ConsumerState<CreateTicket> {
                   saveDate: saveSelectedDate,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                child: TimePicker(
+                  themeMode: ThemeMode.dark,
+                  useMaterial3: true,
+                  getTime: saveSelectedTime,
+                ),
+              ),
               ElevatedButton(
                 onPressed: () {
-                  createTickets(ticketData, eventId);
+                  String time =
+                      "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
+
+                  ref.read(newTicketProvider.notifier).state = {
+                    ...ticketData,
+                    'availableTime': time,
+                  };
+
+                  createTickets(ticketData, widget.eventId);
                   context.go(AppRoutes.events);
                 },
                 child: const Text('Create Ticket'),
