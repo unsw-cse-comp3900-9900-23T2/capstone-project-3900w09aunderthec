@@ -6,9 +6,10 @@ import '../../../../providers/comment_providers.dart';
 class Reply extends ConsumerWidget {
   final String commentId;
   final String eventId;
-  TextEditingController textReplyController = TextEditingController();
+  final TextEditingController textReplyController = TextEditingController();
 
-  Reply({Key? key, required this.commentId, required this.eventId}) : super(key: key);
+  Reply({Key? key, required this.commentId, required this.eventId})
+      : super(key: key);
   final replyDefaultController =
       TextEditingController(text: "Write something here");
 
@@ -130,10 +131,13 @@ class Reply extends ConsumerWidget {
                             // height: 25,
                             width: 20,
                             child: IconButton(
-                                onPressed: () {
-                                  ref
+                                onPressed: () async{
+                                  await ref
                                       .read(replyProvider(commentId).notifier)
                                       .reply(eventId, textReplyController.text);
+
+                                  // clean the TextField
+                                  textReplyController.clear();
                                 },
                                 icon: const Icon(
                                   Icons.send,

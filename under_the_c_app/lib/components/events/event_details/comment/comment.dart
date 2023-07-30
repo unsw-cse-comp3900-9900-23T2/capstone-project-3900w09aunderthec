@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/comment_requests.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment_card.dart';
 import 'package:under_the_c_app/providers/comment_providers.dart';
+import 'package:under_the_c_app/providers/user_providers.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
 class Comment extends ConsumerStatefulWidget {
@@ -38,6 +39,7 @@ class _CommentState extends ConsumerState<Comment> {
   @override
   Widget build(BuildContext context) {
     final comments = ref.watch(commentsProvider(widget.eventId));
+    final user = ref.watch(userProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -67,7 +69,10 @@ class _CommentState extends ConsumerState<Comment> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Ersad Basbag"),
+                      Text(
+                        user?.userName ?? "Me",
+                        style: TextStyle(fontSize: 18),
+                      ),
                       SizedBox(height: 4),
                       Row(
                         children: [
