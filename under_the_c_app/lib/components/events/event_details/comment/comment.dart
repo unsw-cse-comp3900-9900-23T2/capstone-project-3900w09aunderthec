@@ -40,21 +40,7 @@ class _CommentState extends ConsumerState<Comment> {
   Widget build(BuildContext context) {
     final comments = ref.watch(commentsProvider(widget.eventId));
     final user = ref.watch(userProvider);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // title
-        const Text(
-          "Comments",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(221, 5, 5, 5),
-          ),
-        ),
-        const SizedBox(height: 15),
-        // "What do you want to talk about" section
-        Column(
+    var column = Column(
           children: [
             Row(
               children: [
@@ -96,7 +82,6 @@ class _CommentState extends ConsumerState<Comment> {
                 ),
               ],
             ),
-            // my comment section
             TextField(
               controller: commentController,
               focusNode: _commentFocusNode,
@@ -122,35 +107,37 @@ class _CommentState extends ConsumerState<Comment> {
                 child: const Text("Submit"),
               )
           ],
+        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // title
+        const Text(
+          "Comments",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(221, 5, 5, 5),
+          ),
         ),
-        // applying lazy load
-        ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: comments.length,
-            itemBuilder: (context, index) {
-              final comment = comments[index];
-              return Padding(
-                key: ValueKey(comment.id),
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: CommentCard(
-                  comment: comment,
-                ),
-              );
-            }),
-        // Column(
-        //   children: [
-        //     ...comments
-        //         .map((CommentT comment) => Padding(
-        //               key: ValueKey(comment.id),
-        //               padding: const EdgeInsets.only(bottom: 10.0),
-        //               child: CommentCard(
-        //                 comment: comment,
-        //               ),
-        //             ))
-        //         .toList()
-        //   ],
-        // ),
+        const SizedBox(height: 15),
+        // "What do you want to talk about" section
+        column,
+        Text("Hello"),
+        // applying lazy load for comments
+        Column(
+          children: [
+            ...comments
+                .map((CommentT comment) => Padding(
+                      key: ValueKey(comment.id),
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: CommentCard(
+                        comment: comment,
+                      ),
+                    ))
+                .toList()
+          ],
+        ),
         // make sure there's enough space when there's no comment
         _commentFocusNode.hasFocus ? const SizedBox(height: 180) : Container()
       ],
