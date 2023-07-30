@@ -4,7 +4,7 @@ import '../../types/tickets/tickets_type.dart';
 import 'book_ticket.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 
-class DisplayedTicket extends ConsumerStatefulWidget {
+class DisplayedTicket extends ConsumerWidget {
   final Tickets item;
   double originalPrice = 0.0;
   double discountedPrice = 0.0;
@@ -29,11 +29,6 @@ class DisplayedTicket extends ConsumerStatefulWidget {
     discountedPrice = item.price * discount;
   }
 
-  @override
-  _DisplayedTicket createState() => _DisplayedTicket();
-}
-
-class _DisplayedTicket extends ConsumerState<DisplayedTicket> {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quantity = ref.watch(selectedTicketsProvider)[item.ticketId] ?? 0;
