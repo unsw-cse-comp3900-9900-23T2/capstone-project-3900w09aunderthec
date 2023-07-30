@@ -7,8 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/ticket/ticket_payment.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/ticket_providers.dart';
+import 'package:under_the_c_app/types/bookings/booking_type.dart';
 import '../../api/ticket_requests.dart';
+import '../../providers/booking_providers.dart';
 import 'display_ticket.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 
 const priceTextStyle = TextStyle(
   color: Colors.black,
@@ -157,6 +160,14 @@ class _BookTicket extends ConsumerState<BookTicket> {
                     );
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
+                      ref.read(bookingProvider.notifier).addBooking(
+                            TicketBooking(
+                              eventId: widget.eventId,
+                              totalPrice: totalPrice,
+                              selectedTickets: selectedTickets,
+                            ),
+                          );
+                      // context.go(AppRoutes.ticketConfirmation(eventTitle));
                       context
                           .go(AppRoutes.ticketConfirmation(widget.eventTitle));
                       purchaseTickets(selectedTickets);
