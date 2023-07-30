@@ -5,8 +5,8 @@ import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/types/tickets/tickets_type.dart';
 
 Future<List<Tickets>> getTickets(String eventId) async {
-  final requestUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getTickets, {'eventId': eventId});
+  final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTickets,
+      {'eventId': eventId, 'customerId': sessionVariables.uid.toString()});
 
   try {
     final response = await http.get(
@@ -16,7 +16,25 @@ Future<List<Tickets>> getTickets(String eventId) async {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
-      return jsonList.map((json) => Tickets.fromJson(json)).toList();
+      var listOfTickets =
+          jsonList.map((json) => Tickets.fromJson(json)).toList();
+
+      // set the price of tickets based on VIP Level
+      double discount = 1;
+      final vipLevel = sessionVariables.vipLevel;
+      if (vipLevel >= 10 && vipLevel < 15) {
+        discount = 0.95;
+      } else if (vipLevel >= 15 && vipLevel < 20) {
+        discount = 0.9;
+      } else if (vipLevel >= 20) {
+        discount = 0.85;
+      }
+
+      for (int i = 0; i < listOfTickets.length; i++) {
+        listOfTickets[i].price = listOfTickets[i].price * discount;
+      }
+
+      return listOfTickets;
     } else {
       throw Exception('GetTickets API ERROR: ${response.statusCode}');
     }
@@ -78,7 +96,7 @@ void purchaseTickets(Map<int, int> selectedTickets) async {
     'bookingTickets': selectedTickets.map(
       (key, value) => MapEntry(key.toString(), value),
     ),
-    'paymentMethod': 0
+    'paymentMethod': 1
   };
 
   try {

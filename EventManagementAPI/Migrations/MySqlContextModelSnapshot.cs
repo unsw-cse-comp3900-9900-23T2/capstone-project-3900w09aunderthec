@@ -224,6 +224,26 @@ namespace EventManagementAPI.Migrations
                     b.ToTable("EventsSaved");
                 });
 
+            modelBuilder.Entity("EventManagementAPI.Models.Similarity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("fromEventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("toEventId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("value")
+                        .HasColumnType("double");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Similarities");
+                });
+
             modelBuilder.Entity("EventManagementAPI.Models.Subscription", b =>
                 {
                     b.Property<int>("subscriptionId")

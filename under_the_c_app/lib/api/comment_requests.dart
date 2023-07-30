@@ -172,3 +172,30 @@ Future<bool> isDislikeCommentAPI(String uid, String commentId) async {
     throw Exception('comment.dart.isDislikeComment: Unknown error $e');
   }
 }
+
+Future<CommentT> pinCommentAPI(String commentId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.pinComment);
+  try {
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode(
+        {
+          "commentId": commentId,
+        },
+      ),
+    );
+    if (response.statusCode != 200) {
+      throw Exception(response.body);
+    } else {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return backendDataSingleCommentToComment(data);
+    }
+  } on SocketException catch (e) {
+    throw Exception('comment.dart.pinComment: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('comment.dart.pinComment: Http Exception error $e');
+  } catch (e) {
+    throw Exception('comment.dart.pinComment: Unknown error $e');
+  }
+}

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:under_the_c_app/components/events/event_create/tags.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment.dart';
 import 'package:under_the_c_app/components/events/event_details/price.dart';
+import 'package:under_the_c_app/components/events/event_title.dart';
+import 'package:under_the_c_app/components/events/slim_button.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
-import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/user_providers.dart';
 
 import '../../../types/events/event_type.dart';
 
@@ -25,6 +27,14 @@ class EventDetailsPage extends ConsumerWidget {
 
     return event.when(
         data: (event) {
+          // when the widget finished building
+          Future(() {
+            // record the event hoster uid for the comment pin
+            ref.read(hostUidProvider.notifier).state = event.hostuid;
+
+            // record the comment id for pin
+            ref.read(eventIdProvider.notifier).state = event.eventId!;
+          });
           return Scaffold(
             extendBodyBehindAppBar: true,
             resizeToAvoidBottomInset: false,
@@ -63,13 +73,7 @@ class EventDetailsPage extends ConsumerWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      event.title,
-                                      style: const TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.6),
-                                    ),
+                                    EventTitle(title: event.title),
                                     Row(
                                       children: [
                                         IconButton(
@@ -154,7 +158,17 @@ class EventDetailsPage extends ConsumerWidget {
                                   '${getFirstThreeLettersWeekday(event.time)} ${getMonthName(event.time)} ${getDay(event.time)} ${getYear(event.time)} at ${getTime(event.time)}',
                                   style: const TextStyle(
                                       fontSize: 12, letterSpacing: 0.2),
-                                )
+                                ),
+                                const SizedBox(height: 10),
+                                if (sessionVariables.sessionIsHost &&
+                                    sessionVariables.navLocation == 0)
+                                  SlimButton(
+                                    text: "Send Notification",
+                                    onPressed: () {
+                                      context
+                                          .go(AppRoutes.notification(eventId));
+                                    },
+                                  )
                               ],
                             ),
                           ),
@@ -162,7 +176,7 @@ class EventDetailsPage extends ConsumerWidget {
                         // white space
                         const Divider(
                           color: Color.fromARGB(221, 147, 147, 147),
-                          height: 20,
+                          height: 10,
                           thickness: 1,
                         ),
                         // Event detail section

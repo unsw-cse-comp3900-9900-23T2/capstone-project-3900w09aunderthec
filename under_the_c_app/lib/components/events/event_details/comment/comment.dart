@@ -123,15 +123,17 @@ class _CommentState extends ConsumerState<Comment> {
           children: [
             ...comments
                 .map((CommentT comment) => Padding(
+                      key: ValueKey(comment.id),
                       padding: const EdgeInsets.only(bottom: 10.0),
-                      child: CommentCard(comment: comment),
+                      child: CommentCard(
+                        comment: comment,
+                      ),
                     ))
                 .toList()
           ],
         ),
-
         // make sure there's enough space when there's no comment
-        _commentFocusNode.hasFocus ? SizedBox(height: 180) : Container()
+        _commentFocusNode.hasFocus ? const SizedBox(height: 180) : Container()
       ],
     );
   }

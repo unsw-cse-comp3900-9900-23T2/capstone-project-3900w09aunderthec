@@ -408,3 +408,7 @@ ASALocalRun/
 
 # MySql related
 EventManagementAPI/Migrations
+
+# Word Embeddings too large for git
+EventManagementAPI/PythonScripts/T50KeyedVectors
+EventManagementAPI/PythonScripts/T50KeyedVectors.vectors.npy

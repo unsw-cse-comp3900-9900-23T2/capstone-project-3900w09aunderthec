@@ -4,8 +4,8 @@ class CommentT {
   final String uid;
   final String eventId;
   final String replyToId;
-  final int? nLikes;
-  final int? nDislikes;
+  final int nLikes;
+  final int nDislikes;
   final DateTime? createdTime;
   final bool isPinned;
 
@@ -16,12 +16,12 @@ class CommentT {
     required this.uid,
     required this.replyToId,
     required this.isPinned,
-    int? nLikes,
-    int? nDislikes,
+    required this.nLikes,
+    required this.nDislikes,
     DateTime? createdTime,
   })  : eventId = eventId ?? "",
-        nLikes = nLikes ?? 0,
-        nDislikes = nDislikes ?? 0,
+        // nLikes = nLikes ?? 0,
+        // nDislikes = nDislikes ?? 0,
         createdTime = createdTime ?? DateTime.now();
 }
 
