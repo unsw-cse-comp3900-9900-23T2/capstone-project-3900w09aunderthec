@@ -64,60 +64,62 @@ class Reply extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 12, fontWeight: FontWeight.w500),
                       ),
-                      const SizedBox(height: 5),
-                      SizedBox(
-                        width: 0.5 * screenWidth,
-                        height: 25,
-                        child: const TextField(
-                          cursorHeight: 14,
-                          style: TextStyle(color: Colors.black, fontSize: 12),
-                          decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0)),
-                              borderSide: BorderSide(color: Colors.grey),
+
+                      /* 
+                      The SizedBox widget is used here to limit the width of the TextField.
+                      Without a SizedBox or similar, the TextField will try to expand and take up as much space as its parent will allow.
+                      By using SizedBox, we're giving the TextField a defined width (and height) so it only takes up that much space.
+
+                      Notice here the Column allows the children to have as much as the width they want, if we don't set a limit on the width
+                      of textfield, it will cause overflow.
+                      */
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 0.5 * screenWidth,
+                            // height: 25,
+                            child: const TextField(
+                              maxLines: null,
+                              cursorHeight: 14,
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 12),
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(20.0, 20.0, 10.0, 0),
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(13.0)),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(13.0)),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(13.0)),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                hintText: "Write something here",
+                                hintStyle: TextStyle(
+                                    color: Colors.grey, fontSize: 12),
+                              ),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0)),
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0)),
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            hintText: "Write something here",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 12),
-                            // filled: true,
                           ),
-                        ),
+                          // const SizedBox(height: 6),
+                          Container(
+                            // height: 25,
+                            width: 20,
+                            child: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.send,
+                                  color: Colors.purple,
+                                )),
+                          ),
+                        ],
                       ),
-                      // TextField()
-                      // TextField(
-                      //   decoration: InputDecoration(
-                      //     border: const OutlineInputBorder(
-                      //       borderRadius:
-                      //           BorderRadius.all(Radius.circular(30.0)),
-                      //       borderSide: BorderSide(color: Colors.black),
-                      //     ),
-                      //     enabledBorder: OutlineInputBorder(
-                      //       borderRadius:
-                      //           BorderRadius.all(Radius.circular(30.0)),
-                      //       borderSide: BorderSide(color: Colors.black),
-                      //     ),
-                      //     focusedBorder: OutlineInputBorder(
-                      //       borderRadius:
-                      //           BorderRadius.all(Radius.circular(30.0)),
-                      //       borderSide: BorderSide(color: Colors.black),
-                      //     ),
-                      //     filled: true,
-                      //     fillColor: Colors.grey[200],
-                      //   ),
-                      // )
                     ],
                   ),
                 ],

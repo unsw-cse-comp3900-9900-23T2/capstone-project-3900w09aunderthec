@@ -76,6 +76,19 @@ final commentsProvider =
     StateNotifierProvider.family<CommentsProvider, List<CommentT>, String>(
         (ref, eventId) => CommentsProvider(eventId));
 
+/* fetch replies */
+class ReplyProviderNotifier extends StateNotifier {
+  final String commentId;
+  ReplyProviderNotifier({required this.commentId}) : super([]);
+
+  /* fetch all replies given a comment Id */
+  Future<void> fetchAllReplies() {
+    state = getAllComments()
+  }
+}
+
+final replyProvider = StateNotifierProvider((ref) => ReplyProviderNotifier());
+
 /* Handle if it's liked providers */
 final isLikeProvider =
     StateNotifierProvider<LikeNotifier, bool>((ref) => LikeNotifier());
