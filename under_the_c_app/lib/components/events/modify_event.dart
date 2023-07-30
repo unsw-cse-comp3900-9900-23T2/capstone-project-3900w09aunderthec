@@ -89,7 +89,8 @@ class MyCustomForm extends ConsumerWidget {
   }
 
   Future<List<String>> _fetchDroppedItems() async {
-    List<String> droppedItems = await getTags(title, description, venue);
+    // List<String> droppedItems = await getTags(title, description, venue);
+    List<String> droppedItems = await getTags("string", "string", "string");
     return droppedItems;
   }
 
@@ -107,7 +108,7 @@ class MyCustomForm extends ConsumerWidget {
           description = event.description;
           isDirectRefunds = event.isDirectRefunds!;
           privateEvent = event.isPrivate!;
-          tags = "music";
+          tags = event.tags![0];
           // List<String>? tags = event.tags;
 
           return Form(
@@ -250,6 +251,7 @@ class MyCustomForm extends ConsumerWidget {
                         TimeOfDay.fromDateTime(DateTime.parse(event.time)),
                   ),
                 ),
+
                 // Privacy Button
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -265,12 +267,35 @@ class MyCustomForm extends ConsumerWidget {
                       onSelectionChanged: (handleSelectionChanged) {
                         privateEvent = handleSelectionChanged[0];
                       },
-                      // selectedEventTypes: previousSelectedEventTypes,
                       selectedEventTypes: [
                         event.isPrivate ?? true,
                         !(event.isPrivate ?? false),
                       ],
+                      boolList: eventTypes,
                     )),
+
+                // Refund Button
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Text(
+                    "Refund Policy",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: ToggleButton(
+                      onSelectionChanged: (handleSelectionChanged) {
+                        isDirectRefunds = handleSelectionChanged[0];
+                      },
+                      selectedEventTypes: [
+                        event.isDirectRefunds ?? true,
+                        !(event.isDirectRefunds ?? false),
+                      ],
+                      boolList: refundType,
+                    )),
+
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                   child: Text(
@@ -359,15 +384,22 @@ const List<Widget> eventTypes = <Widget>[
   Text('Public'),
 ];
 
+const List<Widget> refundType = <Widget>[
+  Text('Credit Refund'),
+  Text('No Refund'),
+];
+
 class ToggleButton extends StatefulWidget {
   final Function(List<bool>) onSelectionChanged;
-  ToggleButton(
+  final List<Widget> boolList;
+  const ToggleButton(
       {Key? key,
       required this.onSelectionChanged,
-      required this.selectedEventTypes})
+      required this.selectedEventTypes,
+      required this.boolList})
       : super(key: key);
 
-  List<bool> selectedEventTypes;
+  final List<bool> selectedEventTypes;
 
   @override
   State<ToggleButton> createState() => _ToggleButtonState();
@@ -403,7 +435,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                 minWidth: 80.0,
               ),
               isSelected: widget.selectedEventTypes,
-              children: eventTypes,
+              children: widget.boolList,
             ),
           ],
         ),

@@ -16,7 +16,10 @@ Future<List<Tickets>> getTickets(String eventId) async {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
-      return jsonList.map((json) => Tickets.fromJson(json)).toList();
+      var listOfTickets =
+          jsonList.map((json) => Tickets.fromJson(json)).toList();
+
+      return listOfTickets;
     } else {
       throw Exception('GetTickets API ERROR: ${response.statusCode}');
     }
@@ -78,7 +81,7 @@ void purchaseTickets(Map<int, int> selectedTickets) async {
     'bookingTickets': selectedTickets.map(
       (key, value) => MapEntry(key.toString(), value),
     ),
-    'paymentMethod': 0
+    'paymentMethod': 1
   };
 
   try {

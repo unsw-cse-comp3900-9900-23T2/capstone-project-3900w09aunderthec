@@ -30,7 +30,7 @@ class EventsProvider extends StateNotifier<List<Event>> {
         super([]) {
     fetchEvents();
   }
-  
+
   Future<void> addEvent(Event event) async {
     // do http calls to create events
     Event createdEvent = await createEvent(event);
@@ -75,7 +75,8 @@ class EventsProvider extends StateNotifier<List<Event>> {
     }
     state = _allEvents
         .where((event) =>
-            event.title.toLowerCase().startsWith(query.toLowerCase()))
+            event.title.toLowerCase().startsWith(query.toLowerCase()) ||
+            event.tags![0].toLowerCase().startsWith(query.toLowerCase()))
         .toList();
   }
 
@@ -144,7 +145,7 @@ class EventsByUserProvider extends StateNotifier<List<Event>> {
     fetchEvents(uid);
   }
 
-  Future<void> fetchEvents(String uid, {bool? includePastEvents = true} ) async {
+  Future<void> fetchEvents(String uid, {bool? includePastEvents = true}) async {
     // here fetch events including past events
     state = await getUserEvents(uid, includePastEvents: includePastEvents);
   }
