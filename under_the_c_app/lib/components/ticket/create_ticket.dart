@@ -7,7 +7,7 @@ import '../../api/ticket_requests.dart';
 
 final newTicketProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
-class CreateTicket extends ConsumerWidget {
+class CreateTicket extends ConsumerStatefulWidget {
   final String eventId;
 
   const CreateTicket({
@@ -16,7 +16,12 @@ class CreateTicket extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _CreateTicket createState() => _CreateTicket();
+}
+
+class _CreateTicket extends ConsumerState<CreateTicket> {
+  @override
+  Widget build(BuildContext context) {
     final ticketData = ref.watch(newTicketProvider);
 
     return Scaffold(
@@ -61,6 +66,13 @@ class CreateTicket extends ConsumerWidget {
                 },
               ),
               const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                child: DatePicker(
+                  restorationId: 'main',
+                  saveDate: saveSelectedDate,
+                ),
+              ),
               ElevatedButton(
                 onPressed: () {
                   createTickets(ticketData, eventId);
