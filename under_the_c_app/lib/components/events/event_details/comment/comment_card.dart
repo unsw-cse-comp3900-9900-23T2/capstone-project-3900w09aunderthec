@@ -240,7 +240,10 @@ class CommentCardState extends ConsumerState<CommentCard> {
                       ],
                     ),
                     replyExpanded
-                        ? Reply(commentId: widget.comment.id!)
+                        ? Reply(
+                            commentId: widget.comment.id!,
+                            eventId: widget.comment.eventId,
+                          )
                         : Container()
                   ],
                 ),

@@ -51,7 +51,7 @@ class _CommentState extends ConsumerState<Comment> {
           ),
         ),
         const SizedBox(height: 15),
-        // "What do you want to talk about" seciton
+        // "What do you want to talk about" section
         Column(
           children: [
             Row(

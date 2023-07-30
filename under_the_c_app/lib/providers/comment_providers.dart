@@ -58,7 +58,7 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
   }
 
   Future<void> fetchComments() async {
-    state = await getAllComments(eventId: eventId);
+    state = await getAllComments(eventId);
   }
 
   Future<void> likeComment(String commentId) async {
@@ -84,7 +84,7 @@ class ReplyProviderNotifier extends StateNotifier<List<CommentT>> {
 
   /* fetch all replies given a comment Id */
   Future<void> fetchAllReplies() async {
-    state = await getAllComments(commentId: commentId);
+    state = await getRepliesAPI(commentId);
   }
 
   /* Post a reply */

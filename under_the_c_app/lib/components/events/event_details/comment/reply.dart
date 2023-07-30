@@ -5,7 +5,10 @@ import '../../../../providers/comment_providers.dart';
 
 class Reply extends ConsumerWidget {
   final String commentId;
-  Reply({Key? key, required this.commentId}) : super(key: key);
+  final String eventId;
+  TextEditingController textReplyController = TextEditingController();
+
+  Reply({Key? key, required this.commentId, required this.eventId}) : super(key: key);
   final replyDefaultController =
       TextEditingController(text: "Write something here");
 
@@ -92,12 +95,13 @@ class Reply extends ConsumerWidget {
                           SizedBox(
                             width: 0.5 * screenWidth,
                             // height: 25,
-                            child: const TextField(
+                            child: TextField(
                               maxLines: null,
+                              controller: textReplyController,
                               cursorHeight: 14,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 12),
-                              decoration: InputDecoration(
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 12),
+                              decoration: const InputDecoration(
                                 contentPadding:
                                     EdgeInsets.fromLTRB(20.0, 20.0, 10.0, 0),
                                 border: OutlineInputBorder(
@@ -126,7 +130,11 @@ class Reply extends ConsumerWidget {
                             // height: 25,
                             width: 20,
                             child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  ref
+                                      .read(replyProvider(commentId).notifier)
+                                      .reply(eventId, textReplyController.text);
+                                },
                                 icon: const Icon(
                                   Icons.send,
                                   color: Colors.purple,
