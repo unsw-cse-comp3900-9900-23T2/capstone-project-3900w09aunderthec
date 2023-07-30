@@ -19,21 +19,6 @@ Future<List<Tickets>> getTickets(String eventId) async {
       var listOfTickets =
           jsonList.map((json) => Tickets.fromJson(json)).toList();
 
-      // set the price of tickets based on VIP Level
-      double discount = 1;
-      final vipLevel = sessionVariables.vipLevel;
-      if (vipLevel >= 10 && vipLevel < 15) {
-        discount = 0.95;
-      } else if (vipLevel >= 15 && vipLevel < 20) {
-        discount = 0.9;
-      } else if (vipLevel >= 20) {
-        discount = 0.85;
-      }
-
-      for (int i = 0; i < listOfTickets.length; i++) {
-        listOfTickets[i].price = listOfTickets[i].price * discount;
-      }
-
       return listOfTickets;
     } else {
       throw Exception('GetTickets API ERROR: ${response.statusCode}');

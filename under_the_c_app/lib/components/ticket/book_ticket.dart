@@ -44,6 +44,9 @@ class _BookTicket extends ConsumerState<BookTicket> {
     ref
         .read(ticketsProvider(widget.eventId).notifier)
         .fetchTickets(widget.eventId);
+    Future.microtask(() {
+      ref.read(totalPriceProvider.notifier).state = 0;
+    });
   }
 
   @override
