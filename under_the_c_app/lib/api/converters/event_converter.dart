@@ -12,6 +12,7 @@ List<Event> BackendDataEventListToEvent(data) {
         imageUrl: 'images/events/money-event.jpg',
         time: event.time.toString(),
         venue: event.venue,
+        tags: [event.tags],
         // TODO: [PLHV-198] EventCreate: We need set up price in the backend, can't always have price = 0.
         price: 0,
         description: event.description,

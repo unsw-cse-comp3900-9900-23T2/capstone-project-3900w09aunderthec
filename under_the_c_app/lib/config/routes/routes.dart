@@ -21,6 +21,7 @@ class AppRoutes {
   static const String host = '/host';
   static const String hostAnalytics = '/host/analytics';
   static const String hostProfile = '/host/profile';
+  static String notification(String eventId) => '/event/notification/$eventId';
 
   // for customer
   static const String customer = '/customer';

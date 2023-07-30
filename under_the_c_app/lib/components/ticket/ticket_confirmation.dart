@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/config/routes/routes.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 
 class TicketConfirmation extends StatelessWidget {
   final String eventName;
@@ -103,7 +105,8 @@ class TicketConfirmation extends StatelessWidget {
                         horizontal: 16.0, vertical: 8.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go('/home');
+                        context.go(AppRoutes.viewBooking(
+                            sessionVariables.uid.toString()));
                       },
                       child: const Text("View Ticket"),
                     ),

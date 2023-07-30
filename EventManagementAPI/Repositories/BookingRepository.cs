@@ -3,6 +3,7 @@ using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using EventManagementAPI.DTOs;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace EventManagementAPI.Repositories
 {
@@ -15,44 +16,123 @@ namespace EventManagementAPI.Repositories
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Get the stock of a specific ticket
+        /// </summary>
+        /// <param name="ticketId"></param>
+        /// <returns>
+        /// An integer indicates the stock
+        /// </returns>
+        /// <exception cref="BadHttpRequestException"></exception>
         public async Task<int?> GetNumberOfTicketsInStock(int ticketId)
         {
-            var ticket = await _dbContext.tickets.FindAsync(ticketId);
-            if (ticket == null)
-            {
-                throw new BadHttpRequestException("Ticket type does not exist");
-            }
-
-            return ticket.stock;
+            var ticket = await _dbContext.Tickets.FindAsync(ticketId);
+            return ticket == null ? throw new BadHttpRequestException("Ticket type does not exist") : ticket.stock;
         }
 
-        public async Task<double?> GetCreditMoney(int customerId, int hosterId)
+        /// <summary>
+        /// Make a customer booking
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="bookingTickets"></param>
+        /// <param name="paymentMethod"></param>
+        /// <returns>
+        /// A BookingCreationDto that contains the booking and payment information
+        /// </returns>
+        /// <exception cref="BadHttpRequestException"></exception>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<BookingCreationDto> MakeBooking(int customerId, Dictionary<string, int> bookingTickets, int paymentMethod)
         {
-            var creditMoney = await _dbContext.creditMoney.FirstOrDefaultAsync(c => c.customerId == customerId && c.hosterId == hosterId);
-
-            if (creditMoney == null)
+            if (customerId <= 0 || bookingTickets == null || bookingTickets.Count == 0 || paymentMethod <= 0)
             {
-                throw new BadHttpRequestException("Customer has no credits with this Host");
+                throw new BadHttpRequestException("Invalid input data");
             }
 
-            return creditMoney.creditAmount;
-        }
-
-        public async Task<Booking?> MakeBooking(int customerId, Dictionary<string, int> bookingTickets, int paymentMethod)
-        {
-            var customer = await _dbContext.customers.FindAsync(customerId);
-            if (customer == null)
-            {
-                throw new BadHttpRequestException("Customer does not exist");
-            }
-
+            var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
             var booking = new Booking
             {
                 customerId = customerId,
                 toCustomer = customer,
                 paymentMethod = paymentMethod,
             };
+            foreach (KeyValuePair<string, int> ticketPair in bookingTickets)
+            {
+                string ticketIdString = ticketPair.Key;
+                int ticketId = int.Parse(ticketIdString);
+                int numberOfTickets = ticketPair.Value;
+                var ticket = await _dbContext.Tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("One of the ticket types does not exist, booking not made.");
+                if (ticket.stock - numberOfTickets < 0)
+                {
+                    throw new BadHttpRequestException(String.Format("Not enough stock to purchase {0} {1} tickets, only {3} remain. Booking not made", numberOfTickets, ticket.name, ticket.stock));
+                }
+            }
 
+            double totalPrice = await CalculateTotalPrice(bookingTickets, booking);
+            var vipLevel = customer.vipLevel;
+            // every 10 vip levels can get 1% off
+            // maximum 15% off
+            // minimum 0
+            var discountPercentage = Math.Clamp((vipLevel / 10) * 0.01, 0, 0.15);
+
+            // use loyalty points to get discount
+            // one point equals one cent
+            var discount = Math.Round(totalPrice * discountPercentage, 2);
+
+            var totalPriceToPay = totalPrice - discount;
+            var totalPricePayed = totalPriceToPay;
+
+            booking.loyaltyPointsEarned = Convert.ToInt32(totalPriceToPay * 10);
+
+            // customer gains loyalty points
+            customer.loyaltyPoints += booking.loyaltyPointsEarned;
+            customer.vipLevel = customer.loyaltyPoints / 1000;
+
+            // use credit money for payment
+            double creditMoneyUsed;
+            if (totalPriceToPay > customer.creditMoney)
+            {
+                creditMoneyUsed = customer.creditMoney;
+                customer.creditMoney = 0;
+                totalPricePayed -= customer.creditMoney;
+            } else
+            {
+                creditMoneyUsed = totalPriceToPay;
+                customer.creditMoney -= creditMoneyUsed;
+                totalPricePayed = 0;
+            }
+
+            booking.creditMoneyUsed = creditMoneyUsed;
+            booking.totalPricePayed = totalPricePayed;
+
+            _dbContext.Bookings.Add(booking);
+            _dbContext.Customers.Update(customer);
+            await _dbContext.SaveChangesAsync();
+
+            var bookingCreation = new BookingCreationDto {
+                booking = booking,
+                creditMoneyUsed = creditMoneyUsed,
+                totalPrice = totalPriceToPay,
+                totalPricePayed = totalPricePayed,
+                discountPercentage = discountPercentage,
+                discountGet = discount,
+                newLoyaltyPoints = customer.loyaltyPoints,
+                newVipLevel = customer.vipLevel,
+            };
+
+            return bookingCreation;
+        }
+
+        /// <summary>
+        /// Get the total price that the customer should pay
+        /// </summary>
+        /// <param name="bookingTickets"></param>
+        /// <param name="booking"></param>
+        /// <returns>
+        /// A double value that indicates the amount of money that the customer should pay
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        private async Task<double> CalculateTotalPrice(Dictionary<string, int> bookingTickets, Booking booking)
+        {
             var totalPrice = 0.0;
 
             foreach (KeyValuePair<string, int> ticketPair in bookingTickets)
@@ -60,24 +140,7 @@ namespace EventManagementAPI.Repositories
                 string ticketIdString = ticketPair.Key;
                 int ticketId = int.Parse(ticketIdString);
                 int numberOfTickets = ticketPair.Value;
-                var ticket = await _dbContext.tickets.FindAsync(ticketId);
-                if (ticket == null)
-                {
-                    throw new BadHttpRequestException("One of the ticket types does not exist, booking not made.");
-                }
-
-                if (ticket.stock - numberOfTickets < 0)
-                {
-                    throw new BadHttpRequestException(String.Format("Not enough stock to purchase {0} {1} tickets, only {3} remain. Booking not made", numberOfTickets, ticket.name, ticket.stock));
-                }
-            }
-
-            foreach (KeyValuePair<string, int> ticketPair in bookingTickets)
-            {
-                string ticketIdString = ticketPair.Key;
-                int ticketId = int.Parse(ticketIdString);
-                int numberOfTickets = ticketPair.Value;
-                var ticket = await _dbContext.tickets.FindAsync(ticketId);
+                var ticket = await _dbContext.Tickets.FindAsync(ticketId) ?? throw new KeyNotFoundException("ticket not found");
 
                 var newBookingTicket = new BookingTicket
                 {
@@ -88,7 +151,7 @@ namespace EventManagementAPI.Repositories
                     numberOfTickets = numberOfTickets,
                 };
 
-                _dbContext.bookingTickets.Add(newBookingTicket);
+                _dbContext.BookingTickets.Add(newBookingTicket);
 
                 var subTotal = ticket.price * numberOfTickets;
                 totalPrice += subTotal;
@@ -96,22 +159,21 @@ namespace EventManagementAPI.Repositories
                 ticket.stock -= numberOfTickets;
             }
 
-            booking.gainedCredits = Convert.ToInt32(totalPrice) * 10;
-
-            // customer gains loyalty points
-            customer.loyaltyPoints += booking.gainedCredits;
-
-            _dbContext.bookings.Add(booking);
-             await _dbContext.SaveChangesAsync();
-
-            return booking;
+            return totalPrice;
         }
 
+        /// <summary>
+        /// Get a list of customer bookings
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns>
+        /// A list of BookingResultDTo which includes booking and event details
+        /// </returns>
         public async Task<List<BookingResultDTO>> GetBookings(int customerId)
         {
 
-            var bookings = _dbContext.bookingTickets
-                .Join(_dbContext.tickets,
+            var bookings = _dbContext.BookingTickets
+                .Join(_dbContext.Tickets,
                     bt => bt.ticketId,
                     t => t.ticketId,
                     (bt,t) => new
@@ -123,101 +185,88 @@ namespace EventManagementAPI.Repositories
                 .Select(c => new BookingResultDTO
                 {
                     booking = c.booking,
-                    eventName = c.toEvent.title
+                    eventName = c.toEvent
                 })
                 .ToListAsync();
 
             return await bookings;
         }
 
+        /// <summary>
+        /// Get the details of a booking
+        /// </summary>
+        /// <param name="bookingId"></param>
+        /// <returns>
+        /// A booking object
+        /// </returns>
         public async Task<Booking?> GetBookingById(int bookingId)
         {
-            var b = await _dbContext.bookings
+            var b = await _dbContext.Bookings
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             return b;
         }
 
+        /// <summary>
+        /// Cancel customer booking
+        /// </summary>
+        /// <param name="bookingId"></param>
+        /// <returns>
+        /// The Booking that the customer cancelled
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Booking?> RemoveBooking(int bookingId)
         {
-            var booking = await _dbContext.bookings.FindAsync(bookingId);
+            var booking = await _dbContext.Bookings.FindAsync(bookingId) ?? throw new KeyNotFoundException("Booking does not exist");
+            var customer = await _dbContext.Customers.FindAsync(booking.customerId) ?? throw new KeyNotFoundException("customer not found");
+            customer.loyaltyPoints -= booking.loyaltyPointsEarned;
+            customer.vipLevel = customer.loyaltyPoints / 1000;
 
-            if (booking == null)
-            {
-                throw new BadHttpRequestException("Booking does not exist");
-            }
+            var bookingTickets = await _dbContext.BookingTickets.Where(t => t.bookingId == bookingId).ToListAsync();
 
-            var customer = await _dbContext.customers.FindAsync(booking.customerId);
-            customer.loyaltyPoints -= booking.gainedCredits;
-
-            var bookingTickets = await _dbContext.bookingTickets.Where(t => t.bookingId == bookingId).ToListAsync();
-
-            var e = bookingTickets[0].ticket.toEvent;
-            if (e == null)
-            {
-                throw new BadHttpRequestException("The relevant event has been deleted. This should not be possible! - Deleting an event should auto refund and delete relevant bookings");
-            }
-
-            var totalPrice = 0.0;            
+            var e = bookingTickets[0].ticket.toEvent ?? throw new KeyNotFoundException("The relevant event has been deleted. This should not be possible! - Deleting an event should auto refund and delete relevant bookings");        
 
             foreach (BookingTicket bookingTicket in bookingTickets)
             {
-                var ticket = bookingTicket.ticket;
+                var ticket = await _dbContext.Tickets.FindAsync(bookingTicket.ticketId) ?? throw new KeyNotFoundException("ticket does not exist");
 
                 ticket.stock += bookingTicket.numberOfTickets;
 
-                totalPrice += (ticket.price * bookingTicket.numberOfTickets);
-
-                _dbContext.bookingTickets.Remove(bookingTicket);
+                _dbContext.BookingTickets.Remove(bookingTicket);
             }
 
-            var hoster = await _dbContext.hosts.FindAsync(e.hosterFK);
-
-            if (!e.isDirectRefunds && (e.eventTime - DateTime.Now < new TimeSpan(7, 0, 0 ,0)))
+            if (e.isDirectRefunds)
             {
-                var creditMoney = new CreditMoney
-                {
-                    customerId = booking.customerId,
-                    toCustomer = customer,
-                    hosterId = e.hosterFK,
-                    toHoster = hoster,
-                    creditAmount = totalPrice,
-                };
-
-                _dbContext.creditMoney.Add(creditMoney);
+                customer.creditMoney += booking.creditMoneyUsed;
+                // do something and refund money
             } else
             {
-                // do something to refund
+                customer.creditMoney += booking.totalPricePayed;
             }
 
-            _dbContext.bookings.Remove(booking);
+            _dbContext.Bookings.Remove(booking);
             await _dbContext.SaveChangesAsync();
 
             return booking;
         }
 
-        public async Task<TimeSpan?> GetTimeDifference(Booking booking)
+        /// <summary>
+        /// Get the time span between the current time and the event time
+        /// </summary>
+        /// <param name="booking"></param>
+        /// <returns>
+        /// A TimeSpan object
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public async Task<TimeSpan?> GetTimeDifference(int bookingId)
         {
-            var bookingTickets = await _dbContext.bookingTickets.Where(bt => bt.bookingId == booking.Id).ToListAsync();
-            if (bookingTickets.Count == 0)
-            {
-                return null;
-            }
+            var bookingTickets = await _dbContext.BookingTickets.Where(bt => bt.bookingId == bookingId).ToListAsync();
+            if (bookingTickets.Count == 0) throw new KeyNotFoundException("no relevant booking tickets found");
 
-            var ticket = await _dbContext.tickets.FindAsync(bookingTickets[0].ticketId);
-            if (ticket == null)
-            {
-                return null;
-            }
-
-            var e = await _dbContext.events.FindAsync(ticket.eventIdRef);
-            if (e == null)
-            {
-                return null;
-            }
+            var ticket = await _dbContext.Tickets.FindAsync(bookingTickets[0].ticketId) ?? throw new KeyNotFoundException("ticket not found");
+            var e = await _dbContext.Events.FindAsync(ticket.eventIdRef) ?? throw new KeyNotFoundException("event not found");
 
             var timeDifference = e.eventTime - DateTime.Now;
-
             return timeDifference;
         }
     }

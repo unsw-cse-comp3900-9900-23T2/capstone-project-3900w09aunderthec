@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/layout/navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
-import 'package:under_the_c_app/main.dart';
 
 class BaseLayout extends ConsumerWidget {
   final Widget body;

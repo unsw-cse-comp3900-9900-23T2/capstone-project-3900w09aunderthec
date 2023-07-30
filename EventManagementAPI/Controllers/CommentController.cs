@@ -19,44 +19,16 @@ namespace EventManagementAPI.Controllers
         public string comment { get; set; }
     }
 
-    // public class GetCommentRequestBody
-    // {
-    //     public int commentId { get; set; }
-    // }
-
     public class LikeDislikeCommentRequestBody
     {
         public int customerId { get; set; }
         public int commentId { get; set; }
     }
 
-    // public class UndoLikeCommentRequestBody
-    // {
-    //     public int commentLikeId { get; set; }
-    // }
-
-    // public class UndoDislikedCommentRequestBody
-    // {
-    //     public int commentDislikeId { get; set; }
-    // }
-
-    // public class RetrieveCommentBody
-    // {
-    //     public int commentId { get; set; }
-    // }
-
-    // public class ReplyRequestBody
-    // {
-    //     public int commenterId { get; set; }
-    //     public int replierId { get; set; }
-    //     public int commentId { get; set; }
-    //     public string reply { get; set; }
-    // }
-
-    // public class RetrieveReplyRequestBody
-    // {
-    //     public int replyId { get; set; }
-    // }
+    public class PinCommentRequestBody
+    {
+        public int commentId { get; set; }
+    }
 
     [ApiController]
     [Route("api/[controller]")]
@@ -70,25 +42,49 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpGet("ListComments")]
-        public async Task<IActionResult> ListComments([FromQuery] int? eventId, [FromQuery] string? sortby, [FromQuery] int? inReplyToComment)
+        public async Task<IActionResult> ListComments([FromQuery] int? eventId, [FromQuery] string? sortby, [FromQuery] int? replyToComment)
         {
-            var eventComments = await _commentRepository.GetAllComments(sortby, eventId, inReplyToComment);
-            return Ok(eventComments);
+            try
+            {
+                var eventComments = await _commentRepository.GetComments(sortby, eventId, replyToComment);
+                return Ok(eventComments);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpGet("GetComment/{id}")]
         public async Task<IActionResult> GetCommentDetails(int id)
         {
-            var comment = await _commentRepository.GetCommentById(id);
-
-            if (comment == null)
+            try
             {
-                return NotFound();
+                var comment = await _commentRepository.GetCommentById(id);
+                return Ok(comment);
             }
-
-            return Ok(comment);
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
-        
+
         [HttpPost("PostComment")]
         public async Task<IActionResult> CreateEventComment([FromBody] CreateCommentsRequestBody requestBody)
         {
@@ -97,9 +93,71 @@ namespace EventManagementAPI.Controllers
             var commentId = requestBody.commentId;
             var eventId = requestBody.eventId;
 
+            try
+            {
+                var eventComment = await _commentRepository.CreateComment(commenterId, eventId, commentId, comment);
+                return Ok(eventComment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
-            var eventComment = await _commentRepository.CreateComment(commenterId, eventId, commentId, comment);
-            return Ok(eventComment);
+        [HttpGet("isLikeComment")]
+        public async Task<IActionResult> isLikeComment([FromQuery] int uid, [FromQuery] int commentId)
+        {
+            try
+            {
+                var likeComment = await _commentRepository.isLikeComment(uid, commentId);
+                return Ok(likeComment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("isDislikeComment")]
+        public async Task<IActionResult> isDislikeComment([FromQuery] int uid, [FromQuery] int commentId)
+        {
+            try
+            {
+                var likeComment = await _commentRepository.isDislikeComment(uid, commentId);
+                return Ok(likeComment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPost("ToggleLikeComment")]
@@ -108,81 +166,72 @@ namespace EventManagementAPI.Controllers
             var commentId = requestBody.commentId;
             var customerId = requestBody.customerId;
 
-            var likeComment = await _commentRepository.ToggleLikeComment(commentId, customerId);
-            return Ok(likeComment);
+            try
+            {
+                var likeComment = await _commentRepository.ToggleLikeComment(customerId, commentId);
+                return Ok(likeComment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
-    //     [HttpDelete("DecrementLikeComment")]
-    //     public async Task<IActionResult> DecrementLikeComment([FromBody] UndoLikeCommentRequestBody requestBody)
-    //     {
-    //         var commentLikeId = requestBody.commentLikeId;
-
-    //         var undoLikeComment = await _commentRepository.UndoLikedComment(commentLikeId);
-    //         return Ok(undoLikeComment);
-    //    }
-
-       [HttpPost("ToggleDislikeComment")]
-       public async Task<IActionResult> ToggleDislikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
-       {
+        [HttpPost("ToggleDislikeComment")]
+        public async Task<IActionResult> ToggleDislikeComment([FromBody] LikeDislikeCommentRequestBody requestBody)
+        {
             var commentId = requestBody.commentId;
             var customerId = requestBody.customerId;
 
-            var dislikeComment = await _commentRepository.ToggleDislikeComment(commentId, customerId);
-            return Ok(dislikeComment);
+            try
+            {
+                var dislikeComment = await _commentRepository.ToggleDislikeComment(customerId, commentId);
+                return Ok(dislikeComment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
-        // [HttpDelete("DecrementDislikeComment")]
-        // public async Task<IActionResult> DecrementDislikeComment([FromBody] UndoDislikedCommentRequestBody requestBody)
-        // {
-        //     var commentDislikeId = requestBody.commentDislikeId;
+        [HttpPost("PinComment")]
+        public async Task<IActionResult> PinComment([FromBody] PinCommentRequestBody requestBody)
+        {
+            var commentId = requestBody.commentId;
 
-        //     var undoDislikeComment = await _commentRepository.UndoDislikeComment(commentDislikeId);
-        //     return Ok(undoDislikeComment);
-        // }
-
-        // [HttpGet("GetComment")]
-        // public async Task<IActionResult> RetrieveComment([FromQuery] int commentId)
-        // {
-        //     var retrieveCommentResult = await _commentRepository.RetrieveComment(commentId);
-
-        //     if (retrieveCommentResult == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return Ok(retrieveCommentResult);
-        // }
-
-        // [HttpPost("Reply")]
-        // public async Task<IActionResult> Reply([FromBody] ReplyRequestBody requestBody)
-        // {
-        //     var commenterId = requestBody.commenterId;
-        //     var replierId = requestBody.replierId;
-        //     var commentId = requestBody.commentId;
-        //     var reply = requestBody.reply;
-
-        //     var newReply = await _commentRepository.Reply(commenterId, replierId, commentId, reply);
-        //     if (newReply == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return Ok(newReply.id);
-        // }
-
-        // [HttpDelete("RetrieveReply")]
-        // public async Task<IActionResult> RetrieveReply([FromBody] RetrieveReplyRequestBody requestBody)
-        // {
-        //     var replyId = requestBody.replyId;
-
-        //     var retrieveReplyResult = await _commentRepository.RetrieveReply(replyId);
-        //     if (retrieveReplyResult == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return Ok(retrieveReplyResult);
-        // }
-
+            try
+            {
+                var comment = await _commentRepository.PinComment(commentId);
+                return Ok(comment);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

@@ -104,17 +104,15 @@ namespace EventManagementAPI.Controllers
             var customerId = requestBody.customerId;
             var hosterId = requestBody.hosterId;
 
-            var subscibeResult = await _customerRepository.SubscribeHoster(customerId, hosterId);
-            return Ok(subscibeResult);
-        }
-
-        [HttpPost("UndoSubscribe")]
-        public async Task<IActionResult> UndoSubscribeHoster([FromBody] UndoSubscribeHosterRequestBody requestBody)
-        {
-            var subscriptionId = requestBody.subscriptionId;
-
-            var undoSubscribeResult = await _customerRepository.UndoSubscribeHoster(subscriptionId);
-            return Ok(undoSubscribeResult);
+            try
+            {
+                var subscibeResult = await _customerRepository.SubscribeHoster(customerId, hosterId);
+                return Ok(subscibeResult);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost("SaveEvent")]
@@ -123,17 +121,15 @@ namespace EventManagementAPI.Controllers
             var customerId = requestBody.customerId;
             var eventId = requestBody.eventId;
 
-            var saveEvent = await _customerRepository.SaveEvent(customerId, eventId);
-            return Ok(saveEvent);
-        }
-
-        [HttpPost("UndoSaveEvent")]
-        public async Task<IActionResult> UndoSaveEvent([FromBody] UndoSaveEventRequestBody requestBody)
-        {
-            var saveEventId = requestBody.saveEventId;
-
-            var undoSubscribeResult = await _customerRepository.UndoSaveEvent(saveEventId);
-            return Ok(undoSubscribeResult);
+            try
+            {
+                var saveEvent = await _customerRepository.SaveEvent(customerId, eventId);
+                return Ok(saveEvent);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
     }
 }

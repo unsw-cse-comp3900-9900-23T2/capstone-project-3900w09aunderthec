@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/booking_requests.dart';
+import '../api/event_requests.dart';
 import '../types/bookings/booking_type.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+
+import '../types/events/event_type.dart';
 
 class BookingProvider extends StateNotifier<List<Booking>> {
   List<Booking> _allBooking;
@@ -13,12 +16,21 @@ class BookingProvider extends StateNotifier<List<Booking>> {
   }
 
   Future<void> addBooking(TicketBooking booking) async {
+    Event details = await getEventDetails(booking.eventId);
+    int noTicket = 0;
+
+    booking.selectedTickets.forEach((key, value) {
+      noTicket += value;
+    });
+
     Booking newBooking = Booking(
         eventId: booking.eventId,
-        eventName: "1",
-        eventTag: "1",
-        eventVenue: "1",
-        eventTime: "1");
+        ticketNo: noTicket.toString(),
+        totalCost: booking.totalPrice.toString(),
+        eventName: details.title,
+        eventTag: details.tags![0],
+        eventVenue: details.venue,
+        eventTime: details.time);
 
     state = [...state, newBooking];
     _allBooking = [..._allBooking, newBooking];

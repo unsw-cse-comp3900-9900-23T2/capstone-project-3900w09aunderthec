@@ -22,6 +22,7 @@ class APIRoutes {
   static const String getTags = '/EventCreation/GetTags';
   static const String modifyEvent = '/EventCreation/ModifyEvent';
   static const String cancelEvent = '/EventCreation/CancelEvent';
+  static const String emailNotification = '/EventCreation/EmailNotification';
 
   // ============================TICKET ROUTES==================================
   static const String getTicket = '/Ticket/ShowTicketDetails';
@@ -29,6 +30,19 @@ class APIRoutes {
   static const String createTickets = '/Ticket/CreateTickets';
   static const String deleteTickets = '/Ticket/DeleteTickets';
   static const String bookTickets = 'api/Booking/MakeBooking';
+
+  // ============================COMMENT ROUTES==================================
+  static const String getComments = 'api/Comment/ListComments';
+  static const String getCommentById = 'api/Comment/GetComment';
+  static const String createComment = 'api/Comment/PostComment';
+  static const String likeComment = 'api/Comment/ToggleLikeComment';
+  static const String dislikeComment = 'api/Comment/ToggleDislikeComment';
+  static const String getCustomerById = 'api/Customer';
+  static const String isLikeComment = 'api/Comment/isLikeComment';
+  static const String isDislikeComment = 'api/Comment/isDislikeComment';
+  static const String pinComment = 'api/Comment/PinComment';
+
+
   static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
   static const String cancelBooking = 'api/Booking/CancelBookings';
 }

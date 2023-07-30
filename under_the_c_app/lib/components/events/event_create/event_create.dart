@@ -288,7 +288,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                       }
                     },
                   )
-                : SizedBox(),
+                : const SizedBox(),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -309,7 +309,6 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               child: ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate() &&
-                      tags != '' &&
                       chosenDate != null &&
                       dayTime != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -323,7 +322,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
-                    ref.read(eventsProvider.notifier).addEvent(
+                    await ref.read(eventsProvider.notifier).addEvent(
                           Event(
                             hostuid: sessionVariables.uid.toString(),
                             title: title,

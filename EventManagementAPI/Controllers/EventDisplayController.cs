@@ -21,9 +21,9 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ListEvents")]
-        public async Task<IActionResult> ListEvents([FromQuery] int? uid, string? sortby, string? tags)
+        public async Task<IActionResult> ListEvents([FromQuery] int? uid, string? sortby, string? tags, bool showPreviousEvents)
         {
-            var events = await _eventDisplayRepository.GetAllEvents(uid, sortby, tags);
+            var events = await _eventDisplayRepository.GetAllEvents(uid, sortby, tags, showPreviousEvents);
             return Ok(events);
         }
 

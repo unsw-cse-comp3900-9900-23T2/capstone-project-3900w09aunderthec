@@ -18,7 +18,7 @@ enum EventFilterType {
 }
 
 /* For Event Sort */
-enum EventSortType { none, recency, popularity, price }
+enum EventSortType { none, recency, popularity, price, pinned }
 
 /* Fetching events */
 class EventsProvider extends StateNotifier<List<Event>> {
@@ -116,7 +116,6 @@ class EventsProvider extends StateNotifier<List<Event>> {
             },
           );
         break;
-
       default:
         break;
     }
@@ -146,8 +145,9 @@ class EventsByUserProvider extends StateNotifier<List<Event>> {
     fetchEvents(uid);
   }
 
-  Future<void> fetchEvents(String uid) async {
-    state = await getUserEvents(uid);
+  Future<void> fetchEvents(String uid, {bool? includePastEvents = true}) async {
+    // here fetch events including past events
+    state = await getUserEvents(uid, includePastEvents: includePastEvents);
   }
 }
 

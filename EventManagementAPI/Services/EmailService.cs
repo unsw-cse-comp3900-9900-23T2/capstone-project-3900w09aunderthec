@@ -17,10 +17,10 @@ namespace EventManagementAPI.Services
             _smtpClient = smtpClient;
             _smtpClient.EnableSsl = true;
             _smtpClient.UseDefaultCredentials = false;
-            _smtpHost = configuration["Smtp:Host"]; // Replace "Smtp:Host" with the actual configuration key for SMTP host
-            _smtpPort = Convert.ToInt32(configuration["Smtp:Port"]); // Replace "Smtp:Port" with the actual configuration key for SMTP port
-            _smtpUsername = configuration["Smtp:Username"]; // Replace "Smtp:Username" with the actual configuration key for SMTP username
-            _smtpPassword = configuration["Smtp:Password"]; // Replace "Smtp:Password" with the actual configuration key for SMTP password
+            _smtpHost = configuration["Smtp:Host"];
+            _smtpPort = Convert.ToInt32(configuration["Smtp:Port"]);
+            _smtpUsername = configuration["Smtp:Username"];
+            _smtpPassword = configuration["Smtp:Password"];
         }
 
         public void SendEmail(string from, string to, string subject, string body)

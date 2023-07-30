@@ -6,6 +6,9 @@ using EventManagementAPI.Models;
 using EventManagementAPI.DTOs;
 using EventManagementAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using EventManagementAPI.Services;
+using System.Text;
+using System.Net.Mail;
 
 namespace EventManagementAPI.Controllers{
 
@@ -14,6 +17,7 @@ namespace EventManagementAPI.Controllers{
         public String description { get; set; }
         public String venue { get; set; }
     };
+
     public class CreateEventRequestBody {
         public int uid { get; set; }
         public string title { get; set; }
@@ -23,13 +27,12 @@ namespace EventManagementAPI.Controllers{
         public bool isDirectRefunds { get; set; }
         public bool isPrivateEvent { get; set; }
         public String tags { get; set; }
-        // public List<Ticket> tickets;
     };
+
     public class ModifyEventRequestBody {
         public int eventId { get; set; }
         public string? title { get; set; }
         public DateTime? eventTime { get; set; }
-        public DateTime? createdTime { get; set; }
         public string? venue { get; set; }
         public string? description { get; set; }
         public bool? isDirectRefunds { get; set; }
@@ -42,26 +45,30 @@ namespace EventManagementAPI.Controllers{
         public int eventId { get; set; }
     }
 
+    public class EmailNotificationRequestBody
+    {
+        public int eventId { get; set; }
+        public string subject { get; set; }
+        public string body { get; set; }
+    }
+
     [ApiController]
     [Route("[controller]")]
     public class EventCreationController : ControllerBase
     {
-
         private readonly IEventRepository _eventRepository;
+        private readonly IEventHostRepository _eventHostRepository;
+        private readonly EmailService _emailService;
 
-        public EventCreationController(IEventRepository eventRepository)
+        public EventCreationController(IEventRepository eventRepository, IEventHostRepository eventHostRepository, EmailService emailService)
         {
             _eventRepository = eventRepository;
+            _eventHostRepository = eventHostRepository;
+            _emailService = emailService;
         }
 
         [HttpGet("GetTags")]
         public async Task<IActionResult> GetTags([FromQuery] string title, string description, string venue) {
-
-            // Format string to make api call with
-            // make api call
-            // parse recommended tags from api response string
-            // return recommended tags
-
             string descriptorString = "Title: " + title + "\nDescription: " +
                                       description + "\nVenue: " + venue;
 
@@ -86,7 +93,7 @@ namespace EventManagementAPI.Controllers{
             // string authHeader = HttpContext.Request.Headers["Authorization"];
             // Line above should be used to gather authentication key when it is implemented
 
-            Event newEvent = new Event
+            var newEvent = new Event
             {
                 hosterFK = RequestBody.uid,
                 title = RequestBody.title,
@@ -120,12 +127,12 @@ namespace EventManagementAPI.Controllers{
                 return NotFound("That event does not exist");
             }
 
-            EventModificationDTO mod = new EventModificationDTO
+            var mod = new EventModificationDTO
             {
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
                 eventTime = RequestBody.eventTime,
-                createdTime = RequestBody.createdTime,
+                createdTime = e.createdTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 isDirectRefunds = RequestBody.isDirectRefunds,
@@ -154,7 +161,38 @@ namespace EventManagementAPI.Controllers{
                 return NotFound();
             }
 
+            var hosterId = e.hosterFK;
+            var hoster = _eventHostRepository.GetHosterById(hosterId);
+
             return Ok(e);
+        }
+
+        [HttpPost("EmailNotification")]
+        public IActionResult EmailNotification([FromBody] EmailNotificationRequestBody requestBody)
+        {
+            var eventId = requestBody.eventId;
+            var subject = requestBody.subject;
+            var body = requestBody.body;
+
+            var buyers = _eventHostRepository.GetBuyers(eventId);
+
+            var fromAddress = "underthecsharp@outlook.com";
+            var emailBody = new StringBuilder()
+                .AppendLine("Dear Customer, ")
+                .AppendLine("")
+                .AppendLine(body)
+                .AppendLine("")
+                .AppendLine("Kind Regards,")
+                .AppendLine("Under the C")
+                .ToString();
+
+            foreach (Customer buyer in buyers)
+            {
+                var toAddress = buyer.email;
+                _emailService.SendEmail(fromAddress, toAddress, subject, emailBody);
+            }
+
+            return Ok();
         }
     }
 }

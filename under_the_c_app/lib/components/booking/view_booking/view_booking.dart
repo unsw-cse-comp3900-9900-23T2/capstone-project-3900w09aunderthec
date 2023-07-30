@@ -53,9 +53,8 @@ class ViewBookingPage extends ConsumerWidget {
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: GestureDetector(
                   onTap: () {
-                    // Go to event, Need event id
-                    // context.go(AppRoutes.eventDetails(event.eventId!), extra: 'Details');
-                    context.go(AppRoutes.eventDetails("1"), extra: 'Details');
+                    context.go(AppRoutes.eventDetails(booking.eventId),
+                        extra: 'Details');
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8),
@@ -68,7 +67,7 @@ class ViewBookingPage extends ConsumerWidget {
                         BookingCard(
                           bookingInfo: booking,
                           imageUrl: "images/events/money-event.jpg",
-                          noTicket: "4",
+                          noTicket: booking.ticketNo,
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -131,8 +130,14 @@ class BookingCard extends StatelessWidget {
     required this.imageUrl,
     required this.noTicket,
   }) : super(key: key);
+
+  String formatTime(int time) {
+    return time.toString().padLeft(2, '0');
+  }
+
   @override
   Widget build(BuildContext context) {
+    DateTime eventDate = DateTime.parse(bookingInfo.eventTime);
     return Card(
         color: const Color.fromARGB(255, 241, 241, 241),
         child:
@@ -152,11 +157,15 @@ class BookingCard extends StatelessWidget {
                   Column(
                     children: [
                       Text(
-                        "Event Name: ${bookingInfo.eventName}",
+                        "${bookingInfo.eventName}",
+                        // "Event Name: ${bookingInfo.eventName}",
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      Text("Event Time: ${bookingInfo.eventTime}"),
+                      Text(
+                          "${eventDate.year}-${formatTime(eventDate.month)}-${formatTime(eventDate.day)}"),
+                      // "Event Time: ${eventDate.year}-${formatTime(eventDate.month)}-${formatTime(eventDate.day)}"),
+                      // Text("Event Time: ${bookingInfo.eventTime}"),
                     ],
                   ),
                 ],
@@ -175,7 +184,7 @@ class BookingCard extends StatelessWidget {
                               eventTag: bookingInfo.eventTag.toString(),
                               eventVenue: bookingInfo.eventVenue,
                               eventTime: bookingInfo.eventTime,
-                              eventCost: "{Cost}",
+                              eventCost: bookingInfo.totalCost,
                               bookingNo: bookingInfo.id.toString(),
                             ),
                           ));
@@ -256,6 +265,12 @@ class TicketInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     String imageUrl = 'images/tickets/bc.png';
     // String imageUrl = 'images/tickets/bar-code.png';
+    DateTime eventDate = DateTime.parse(eventTime);
+    TimeOfDay dayTime = TimeOfDay.fromDateTime(eventDate);
+
+    String formatTime(int time) {
+      return time.toString().padLeft(2, '0');
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,8 +312,11 @@ class TicketInfo extends StatelessWidget {
               ticketDetailsWidget('Venue', eventVenue, '', ''),
               Padding(
                 padding: const EdgeInsets.only(top: 12.0, right: 52.0),
-                child:
-                    ticketDetailsWidget('Date', eventTime, 'Time', eventTime),
+                child: ticketDetailsWidget(
+                    'Date',
+                    "${eventDate.year}-${formatTime(eventDate.month)}-${formatTime(eventDate.day)}",
+                    'Time',
+                    "${formatTime(dayTime.hour)}:${formatTime(dayTime.minute)}"),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 12.0, right: 25),

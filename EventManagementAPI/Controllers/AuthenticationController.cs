@@ -26,7 +26,7 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpPost("RegisterUser")]
-        public IActionResult RegisterUser([FromBody] RegisterUserRequestBody RequestBody)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequestBody RequestBody)
         {
 
             if (!_authenticationRepository.validateEmailRegex(RequestBody.email))
@@ -39,7 +39,7 @@ namespace EventManagementAPI.Controllers
                 return BadRequest("That email is already in use.");
             }
 
-            _authenticationRepository.createUser(RequestBody.username, RequestBody.email, RequestBody.isHost);
+            await _authenticationRepository.createUser(RequestBody.username, RequestBody.email, RequestBody.isHost);
 
             return Ok();
         }

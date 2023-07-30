@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/ticket/ticket_payment.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/providers/ticket_providers.dart';
 import 'package:under_the_c_app/types/bookings/booking_type.dart';
@@ -19,11 +20,11 @@ const priceTextStyle = TextStyle(
 );
 
 final selectedTicketsProvider = StateProvider<Map<int, int>>((ref) => {});
-final totalPriceProvider = StateProvider<int>((ref) {
+final totalPriceProvider = StateProvider<double>((ref) {
   return 0;
 });
 
-class BookTicket extends ConsumerWidget {
+class BookTicket extends ConsumerStatefulWidget {
   final String eventId;
   final String eventTitle;
   final String eventVenue;
@@ -35,8 +36,26 @@ class BookTicket extends ConsumerWidget {
       required this.eventVenue});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tickets = ref.watch(ticketsProvider(eventId));
+  _BookTicket createState() => _BookTicket();
+}
+
+class _BookTicket extends ConsumerState<BookTicket> {
+  @override
+  void initState() {
+    super.initState();
+    // fetch updated comments when just going to the page
+    ref
+        .read(ticketsProvider(widget.eventId).notifier)
+        .fetchTickets(widget.eventId);
+    Future.microtask(() {
+      ref.read(totalPriceProvider.notifier).state = 0;
+      ref.read(selectedTicketsProvider.notifier).state = {};
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tickets = ref.watch(ticketsProvider(widget.eventId));
     var totalPrice = ref.watch(totalPriceProvider);
     final selectedTickets = ref.watch(selectedTicketsProvider);
 
@@ -59,8 +78,8 @@ class BookTicket extends ConsumerWidget {
             Icons.arrow_back,
             color: Color.fromARGB(255, 33, 8, 83),
           ),
-          onPressed: () =>
-              context.go(AppRoutes.eventDetails(eventId), extra: "Details"),
+          onPressed: () => context.go(AppRoutes.eventDetails(widget.eventId),
+              extra: "Details"),
         ),
       ),
       // extendBody: true,
@@ -78,7 +97,7 @@ class BookTicket extends ConsumerWidget {
                   children: [
                     Align(
                       child: Text(
-                        eventTitle,
+                        widget.eventTitle,
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 20.0,
@@ -87,7 +106,7 @@ class BookTicket extends ConsumerWidget {
                       ),
                     ),
                     Align(
-                      child: Text(eventVenue),
+                      child: Text(widget.eventVenue),
                     ),
                     const SizedBox(height: 20.0),
                     const Text(
@@ -134,17 +153,23 @@ class BookTicket extends ConsumerWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) => PaymentDialog(),
+                    );
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
                       ref.read(bookingProvider.notifier).addBooking(
                             TicketBooking(
-                              eventId: eventId,
+                              eventId: widget.eventId,
                               totalPrice: totalPrice,
                               selectedTickets: selectedTickets,
                             ),
                           );
-                      context.go(AppRoutes.ticketConfirmation(eventTitle));
+                      // context.go(AppRoutes.ticketConfirmation(eventTitle));
+                      context
+                          .go(AppRoutes.ticketConfirmation(widget.eventTitle));
                       purchaseTickets(selectedTickets);
                       resetTicketState();
                     }

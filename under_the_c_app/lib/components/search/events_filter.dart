@@ -21,7 +21,6 @@ class EventsFilterState extends ConsumerState<EventsFilter> {
     generateFilterList();
   }
 
-  @override
   void toggleSortTag(int index) {
     setState(() {
       selectedSortTagIndex = selectedSortTagIndex == index ? null : index;

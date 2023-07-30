@@ -1,5 +1,7 @@
 class Booking {
-  final int? id;
+  final String id;
+  final String ticketNo;
+  final String totalCost;
   final String eventId;
   final String eventName;
   final String eventTag;
@@ -7,29 +9,37 @@ class Booking {
   final String eventTime;
 
   Booking({
-    int? id,
+    String? id,
+    required this.ticketNo,
+    required this.totalCost,
     required this.eventId,
     required this.eventName,
     required this.eventTag,
     required this.eventVenue,
     required this.eventTime,
-  }) : id = id ?? 0;
+  }) : id = id ?? "";
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
-      id: json['booking']['id'],
-      eventName: json['eventName'],
-      eventId: json['eventName'],
-      eventTag: json['eventName'],
-      eventVenue: json['eventName'],
-      eventTime: json['eventName'],
+      id: json['booking']['id'].toString(),
+      ticketNo: (json['booking']['totalPricePayed'] +
+              json['booking']['creditMoneyUsed'])
+          .toString(),
+      totalCost: (json['booking']['totalPricePayed']).toString(),
+      // ticketNo: "1",
+      // totalCost: "1",
+      eventName: json['eventName']['title'],
+      eventId: json['eventName']['eventId'].toString(),
+      eventTag: json['eventName']['tags'],
+      eventVenue: json['eventName']['venue'],
+      eventTime: json['eventName']['eventTime'],
     );
   }
 }
 
 class TicketBooking {
   final String eventId;
-  final int totalPrice;
+  final double totalPrice;
   final Map<int, int> selectedTickets;
 
   TicketBooking({
