@@ -35,24 +35,31 @@ class EventDetailsPage extends ConsumerWidget {
             // record the comment id for pin
             ref.read(eventIdProvider.notifier).state = event.eventId!;
           });
-          return Scaffold(
-            extendBodyBehindAppBar: true,
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              title: null,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => context.go(AppRoutes.home),
+          return GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus!.unfocus();
+              }
+            },
+            child: Scaffold(
+              extendBodyBehindAppBar: true,
+              resizeToAvoidBottomInset: false,
+              appBar: AppBar(
+                title: null,
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => context.go(AppRoutes.home),
+                ),
               ),
-            ),
-            body: Stack(
-              children: [
-                ListView(
-                  padding: const EdgeInsets.only(top: 0),
-                  children: [
-                    Column(
+              body: Stack(
+                children: [
+                  // using SingleChildScrollView to support the later nested ListView for lazy loading
+                  SingleChildScrollView(
+                    child: Column(
                       children: [
                         Image.asset(
                           event.imageUrl,
@@ -217,47 +224,48 @@ class EventDetailsPage extends ConsumerWidget {
                           child: Column(
                             children: [
                               Comment(eventId: event.eventId),
-                              const SizedBox(height: 125)
+                              const SizedBox(height: 250)
                             ],
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    // viewInsets.bottom gives that height of the area of the screen not covered by the system UI, here it's
-                    // due to the keyboard being visible
-                    height:
-                        MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 120,
-                    padding: const EdgeInsets.all(30),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (sessionVariables.sessionIsHost &&
-                            sessionVariables.navLocation == 0) {
-                          context.go(AppRoutes.ticketCreate(event.eventId!));
-                        } else if (!sessionVariables.sessionIsHost) {
-                          context.go(AppRoutes.eventBook(
-                              event.eventId!, event.title, event.venue));
-                        }
-                      },
-                      style: TextButton.styleFrom(
-                        minimumSize: const Size(150, 0),
-                        padding: const EdgeInsets.all(20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      // viewInsets.bottom gives that height of the area of the screen not covered by the system UI, here it's
+                      // due to the keyboard being visible
+                      height: MediaQuery.of(context).viewInsets.bottom > 0
+                          ? 0
+                          : 120,
+                      padding: const EdgeInsets.all(30),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (sessionVariables.sessionIsHost &&
+                              sessionVariables.navLocation == 0) {
+                            context.go(AppRoutes.ticketCreate(event.eventId!));
+                          } else if (!sessionVariables.sessionIsHost) {
+                            context.go(AppRoutes.eventBook(
+                                event.eventId!, event.title, event.venue));
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(150, 0),
+                          padding: const EdgeInsets.all(20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
                         ),
+                        child: Text(sessionVariables.sessionIsHost &&
+                                sessionVariables.navLocation == 0
+                            ? "Create Tickets"
+                            : "Buy Ticket"),
                       ),
-                      child: Text(sessionVariables.sessionIsHost &&
-                              sessionVariables.navLocation == 0
-                          ? "Create Tickets"
-                          : "Buy Ticket"),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

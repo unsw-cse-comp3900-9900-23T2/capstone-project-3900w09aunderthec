@@ -34,7 +34,23 @@ namespace EventManagementAPI.Repositories
             if (eventId is null && replyToComment is null)
             { throw new BadHttpRequestException("At least one of eventId, inReplyToComment must be specified"); }
 
-            IQueryable<Comment> query = _dbContext.Comments.Where(c => c.commentId == replyToComment && c.eventId == eventId) ?? throw new DbUpdateException("Event or comment to reply to does not exist");
+            IQueryable<Comment> query = _dbContext.Comments.AsQueryable();
+            // fetch all comments based on the event given
+            if (replyToComment != null)
+            {
+                query = _dbContext.Comments.Where(c => c.commentId == replyToComment);
+            }
+
+            else if (eventId != null)
+            {
+                query = _dbContext.Comments.Where(c => c.eventId == eventId);
+            }
+
+            if (query == null)
+            {
+                throw new DbUpdateException("Event or comment to reply to does not exist");
+            }
+
 
             switch (sortBy)
             {
@@ -90,8 +106,10 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Comment?> CreateComment(int uid, int eventId, int? commentId, string comment)
         {
+            // get the comment if the commentId is provided
             var replyToComment = commentId.HasValue ? await GetCommentById(commentId.Value) : null;
-
+            
+            // when the commentId is not provided and we try to find comment based on Id, throw error 
             if (commentId.HasValue && replyToComment == null)
             {
                 throw new KeyNotFoundException("reply to comment does not exist");

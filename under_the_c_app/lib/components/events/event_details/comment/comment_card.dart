@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/user_request.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/pin.dart';
+import 'package:under_the_c_app/components/events/event_details/comment/reply.dart';
 import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/providers/user_providers.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
@@ -18,10 +19,10 @@ class CommentCard extends ConsumerStatefulWidget {
 
 class CommentCardState extends ConsumerState<CommentCard> {
   bool likeSelected = false;
+  bool replyExpanded = false;
   int nLikes = 0;
   int nDislikes = 0;
   bool dislikeSelected = false;
-  bool commentSelected = false;
   Future<Customer>? customerFuture;
   final isHost = sessionVariables.sessionIsHost;
   final uid = sessionVariables.uid;
@@ -38,14 +39,8 @@ class CommentCardState extends ConsumerState<CommentCard> {
         .then((val) {
       setState(() {
         likeSelected = val;
-        // if (likeSelected) {
-        //   nLikes = widget.comment.nLikes! + 1;
-        // } else {
-        //   nLikes = widget.comment.nLikes!;
-        // }
-
         // set nlikes in the UI
-        nLikes = widget.comment.nLikes!;
+        nLikes = widget.comment.nLikes;
       });
     });
 
@@ -56,14 +51,8 @@ class CommentCardState extends ConsumerState<CommentCard> {
         .then((val) {
       setState(() {
         dislikeSelected = val;
-        // if (dislikeSelected) {
-        //   nDislikes = widget.comment.nDislikes! + 1;
-        // } else {
-        //   nDislikes = widget.comment.nDislikes!;
-        // }
-
         // set nDislikes in the UI
-        nDislikes = widget.comment.nDislikes!;
+        nDislikes = widget.comment.nDislikes;
       });
     });
   }
@@ -128,7 +117,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
 
   void toggleComment() {
     setState(() {
-      commentSelected = !commentSelected;
+      replyExpanded = !replyExpanded;
     });
   }
 
@@ -167,7 +156,10 @@ class CommentCardState extends ConsumerState<CommentCard> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(customer.userName),
+                                Text(
+                                  customer.userName,
+                                  style: const TextStyle(fontSize: 17),
+                                ),
                                 const SizedBox(height: 4),
                                 const Text(
                                   "March 24, 15:14",
@@ -236,17 +228,23 @@ class CommentCardState extends ConsumerState<CommentCard> {
                           children: [
                             IconButton(
                                 onPressed: () => {toggleComment()},
-                                icon: Icon(commentSelected
+                                icon: Icon(replyExpanded
                                     ? Icons.comment
                                     : Icons.comment_outlined),
-                                color: commentSelected
+                                color: replyExpanded
                                     ? const Color.fromARGB(255, 149, 37, 176)
                                     : Colors.grey),
                             // Text("$nComment", style: TextStyle(color: Colors.grey))
                           ],
                         )
                       ],
-                    )
+                    ),
+                    replyExpanded
+                        ? Reply(
+                            commentId: widget.comment.id!,
+                            eventId: widget.comment.eventId,
+                          )
+                        : Container()
                   ],
                 ),
               ),
