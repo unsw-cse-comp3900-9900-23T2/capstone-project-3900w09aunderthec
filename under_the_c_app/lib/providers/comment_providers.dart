@@ -58,7 +58,7 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
   }
 
   Future<void> fetchComments() async {
-    state = await getAllComments(eventId);
+    state = await getAllComments(eventId: eventId);
   }
 
   Future<void> likeComment(String commentId) async {
@@ -71,23 +71,26 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 }
 
 final eventIdProvider = StateProvider((ref) => "");
-
 final commentsProvider =
     StateNotifierProvider.family<CommentsProvider, List<CommentT>, String>(
         (ref, eventId) => CommentsProvider(eventId));
 
 /* fetch replies */
-class ReplyProviderNotifier extends StateNotifier {
+class ReplyProviderNotifier extends StateNotifier<List<CommentT>> {
   final String commentId;
-  ReplyProviderNotifier({required this.commentId}) : super([]);
+  ReplyProviderNotifier({required this.commentId}) : super([]) {
+    fetchAllReplies();
+  }
 
   /* fetch all replies given a comment Id */
-  Future<void> fetchAllReplies() {
-    state = getAllComments()
+  Future<void> fetchAllReplies() async {
+    state = await getAllComments(commentId: commentId);
   }
 }
 
-final replyProvider = StateNotifierProvider((ref) => ReplyProviderNotifier());
+final replyProvider =
+    StateNotifierProvider.family<ReplyProviderNotifier, List<CommentT>, String>(
+        (ref, commentId) => ReplyProviderNotifier(commentId: commentId));
 
 /* Handle if it's liked providers */
 final isLikeProvider =

@@ -239,7 +239,9 @@ class CommentCardState extends ConsumerState<CommentCard> {
                         )
                       ],
                     ),
-                    replyExpanded ? Reply() : Container()
+                    replyExpanded
+                        ? Reply(commentId: widget.comment.id!)
+                        : Container()
                   ],
                 ),
               ),

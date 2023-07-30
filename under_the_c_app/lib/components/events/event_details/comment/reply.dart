@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Reply extends StatelessWidget {
-  Reply({Key? key}) : super(key: key);
+import '../../../../providers/comment_providers.dart';
+
+class Reply extends ConsumerWidget {
+  final String commentId;
+  Reply({Key? key, required this.commentId}) : super(key: key);
   final replyDefaultController =
       TextEditingController(text: "Write something here");
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // fetch replies
+    final replies = ref.watch(replyProvider(commentId));
+
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
@@ -16,34 +23,38 @@ class Reply extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15.0, top: 10, bottom: 5),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const CircleAvatar(
-                    backgroundImage: AssetImage("images/users/guy.jpg"),
-                    radius: 16,
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Text(customer.userName),
-                      const Text(
-                        "Abraham",
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 4),
-                      SizedBox(
-                        width: screenWidth * 0.5,
-                        child: const Text(
-                          "This is the best content every of the reply laolll",
-                          style: TextStyle(fontSize: 12),
+              // Others replies
+              ...replies.map((reply) {
+                return Row(
+                  children: [
+                    const CircleAvatar(
+                      backgroundImage: AssetImage("images/users/guy.jpg"),
+                      radius: 16,
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Text(customer.userName),
+                        const Text(
+                          "Abraham",
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w500),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                        const SizedBox(height: 4),
+                        SizedBox(
+                          width: screenWidth * 0.5,
+                          child: Text(
+                            reply.content,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }).toList(), // convert the iterable to a list
+
               // write your reply
               const SizedBox(height: 17),
 
@@ -81,8 +92,8 @@ class Reply extends StatelessWidget {
                             child: const TextField(
                               maxLines: null,
                               cursorHeight: 14,
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 12),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 12),
                               decoration: InputDecoration(
                                 contentPadding:
                                     EdgeInsets.fromLTRB(20.0, 20.0, 10.0, 0),
@@ -102,8 +113,8 @@ class Reply extends StatelessWidget {
                                   borderSide: BorderSide(color: Colors.grey),
                                 ),
                                 hintText: "Write something here",
-                                hintStyle: TextStyle(
-                                    color: Colors.grey, fontSize: 12),
+                                hintStyle:
+                                    TextStyle(color: Colors.grey, fontSize: 12),
                               ),
                             ),
                           ),
