@@ -35,7 +35,6 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
         },
       );
     state = sortedPinnedComment;
-    // return sortedPinnedComment;
   }
 
   Future<void> pinComment(commentId) async {

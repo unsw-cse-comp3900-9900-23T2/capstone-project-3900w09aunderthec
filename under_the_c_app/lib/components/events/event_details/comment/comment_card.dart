@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/user_request.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/pin.dart';
+import 'package:under_the_c_app/components/events/event_details/comment/reply.dart';
 import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/providers/user_providers.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
@@ -167,7 +168,10 @@ class CommentCardState extends ConsumerState<CommentCard> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(customer.userName),
+                                Text(
+                                  customer.userName,
+                                  style: TextStyle(fontSize: 17),
+                                ),
                                 const SizedBox(height: 4),
                                 const Text(
                                   "March 24, 15:14",
@@ -246,7 +250,8 @@ class CommentCardState extends ConsumerState<CommentCard> {
                           ],
                         )
                       ],
-                    )
+                    ),
+                    Reply()
                   ],
                 ),
               ),

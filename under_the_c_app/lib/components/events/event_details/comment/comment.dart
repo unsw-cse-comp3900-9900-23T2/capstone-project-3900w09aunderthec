@@ -20,7 +20,6 @@ class _CommentState extends ConsumerState<Comment> {
   void initState() {
     super.initState();
     _commentFocusNode.addListener(_handleFocusChange);
-
     // fetch updated comments when just going to the page
     ref.read(commentsProvider(widget.eventId).notifier).fetchComments();
   }
@@ -119,19 +118,34 @@ class _CommentState extends ConsumerState<Comment> {
               )
           ],
         ),
-        Column(
-          children: [
-            ...comments
-                .map((CommentT comment) => Padding(
-                      key: ValueKey(comment.id),
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: CommentCard(
-                        comment: comment,
-                      ),
-                    ))
-                .toList()
-          ],
-        ),
+        // applying lazy load
+        ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: comments.length,
+            itemBuilder: (context, index) {
+              final comment = comments[index];
+              return Padding(
+                key: ValueKey(comment.id),
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: CommentCard(
+                  comment: comment,
+                ),
+              );
+            }),
+        // Column(
+        //   children: [
+        //     ...comments
+        //         .map((CommentT comment) => Padding(
+        //               key: ValueKey(comment.id),
+        //               padding: const EdgeInsets.only(bottom: 10.0),
+        //               child: CommentCard(
+        //                 comment: comment,
+        //               ),
+        //             ))
+        //         .toList()
+        //   ],
+        // ),
         // make sure there's enough space when there's no comment
         _commentFocusNode.hasFocus ? const SizedBox(height: 180) : Container()
       ],
