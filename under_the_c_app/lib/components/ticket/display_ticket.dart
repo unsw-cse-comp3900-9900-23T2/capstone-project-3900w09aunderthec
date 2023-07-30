@@ -2,14 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../types/tickets/tickets_type.dart';
 import 'book_ticket.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 
 class DisplayedTicket extends ConsumerWidget {
   final Tickets item;
+  double originalPrice = 0.0;
+  double discountedPrice = 0.0;
 
   DisplayedTicket({
     Key? key,
     required this.item,
-  }) : super(key: key);
+  }) : super(key: key) {
+    originalPrice = item.price;
+
+    // set the price of tickets based on VIP Level
+    double discount = 1;
+    final vipLevel = sessionVariables.vipLevel;
+    if (vipLevel >= 10 && vipLevel < 15) {
+      discount = 0.95;
+    } else if (vipLevel >= 15 && vipLevel < 20) {
+      discount = 0.9;
+    } else if (vipLevel >= 20) {
+      discount = 0.85;
+    }
+
+    discountedPrice = item.price * discount;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,13 +62,40 @@ class DisplayedTicket extends ConsumerWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  "\$ ${(item.price).toString()}",
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    if (discountedPrice < originalPrice) ...{
+                      Text(
+                        "\$ ${(discountedPrice).toString()}",
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "\$ ${(originalPrice).toString()}",
+                        style: const TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          decorationThickness: 2,
+                          color: Colors.black,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    } else
+                      Text(
+                        "\$ ${(originalPrice).toString()}",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -78,7 +123,11 @@ class DisplayedTicket extends ConsumerWidget {
                       onPressed: () {
                         if (quantity > 0) {
                           updateQuantity(quantity - 1);
-                          updateTotal(0 - item.price);
+                          if (discountedPrice < originalPrice) {
+                            updateTotal(0 - discountedPrice);
+                          } else {
+                            updateTotal(0 - originalPrice);
+                          }
                         }
                       },
                     ),
@@ -96,7 +145,11 @@ class DisplayedTicket extends ConsumerWidget {
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         updateQuantity(quantity + 1);
-                        updateTotal(item.price);
+                        if (discountedPrice < originalPrice) {
+                          updateTotal(discountedPrice);
+                        } else {
+                          updateTotal(originalPrice);
+                        }
                       },
                     ),
                   ]),
