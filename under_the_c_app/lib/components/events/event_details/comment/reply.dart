@@ -25,39 +25,42 @@ class Reply extends ConsumerWidget {
             children: [
               // Others replies
               ...replies.map((reply) {
-                return Row(
+                return Column(
                   children: [
-                    const CircleAvatar(
-                      backgroundImage: AssetImage("images/users/guy.jpg"),
-                      radius: 16,
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        // Text(customer.userName),
-                        const Text(
-                          "Abraham",
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
+                        const CircleAvatar(
+                          backgroundImage: AssetImage("images/users/guy.jpg"),
+                          radius: 16,
                         ),
-                        const SizedBox(height: 4),
-                        SizedBox(
-                          width: screenWidth * 0.5,
-                          child: Text(
-                            reply.content,
-                            style: const TextStyle(fontSize: 12),
-                          ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Text(customer.userName),
+                            const Text(
+                              "Abraham",
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 4),
+                            SizedBox(
+                              width: screenWidth * 0.5,
+                              child: Text(
+                                reply.content,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                    const SizedBox(height: 15),
                   ],
                 );
               }).toList(), // convert the iterable to a list
 
               // write your reply
-              const SizedBox(height: 17),
-
               Row(
                 children: [
                   const CircleAvatar(

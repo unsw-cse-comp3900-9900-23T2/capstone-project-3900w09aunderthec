@@ -86,6 +86,13 @@ class ReplyProviderNotifier extends StateNotifier<List<CommentT>> {
   Future<void> fetchAllReplies() async {
     state = await getAllComments(commentId: commentId);
   }
+
+  /* Post a reply */
+  Future<void> reply(String eventId, String comment) async {
+    final newReply =
+        await createComment(eventId, commentId: commentId, comment: comment);
+    state = [...state, newReply];
+  }
 }
 
 final replyProvider =

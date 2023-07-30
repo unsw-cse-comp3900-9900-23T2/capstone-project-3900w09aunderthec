@@ -106,8 +106,10 @@ namespace EventManagementAPI.Repositories
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<Comment?> CreateComment(int uid, int eventId, int? commentId, string comment)
         {
+            // get the comment if the commentId is provided
             var replyToComment = commentId.HasValue ? await GetCommentById(commentId.Value) : null;
-
+            
+            // when the commentId is not provided and we try to find comment based on Id, throw error 
             if (commentId.HasValue && replyToComment == null)
             {
                 throw new KeyNotFoundException("reply to comment does not exist");
