@@ -20,14 +20,19 @@ class Booking {
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
+    // int totalTickets = 0;
+    // for (var ticketType in json['tickets']) {
+    //   int noTickets = ticketType['numberOfTickets'];
+    //   totalTickets += noTickets;
+    // }
+
+    print(json);
+
     return Booking(
       id: json['booking']['id'].toString(),
-      ticketNo: (json['booking']['totalPricePayed'] +
-              json['booking']['creditMoneyUsed'])
-          .toString(),
+      ticketNo: json['booking']['id'].toString(),
+      // ticketNo: totalTickets.toString(),
       totalCost: (json['booking']['totalPricePayed']).toString(),
-      // ticketNo: "1",
-      // totalCost: "1",
       eventName: json['eventName']['title'],
       eventId: json['eventName']['eventId'].toString(),
       eventTag: json['eventName']['tags'],
@@ -55,20 +60,22 @@ class UserBooking {
   final String bookingId;
   final int loyaltyPoints;
   final int vipLevel;
-  bool refundable = false;
 
   UserBooking({
     required this.bookingId,
     required this.loyaltyPoints,
     required this.vipLevel,
-    required this.refundable,
   });
+}
 
-  // factory UserBooking.fromJson(Map<String, dynamic> json) {
-  //   return UserBooking(
-  //     bookingId: json['booking']['id'].toString(),
-  //     loyaltyPoints: json['newLoyaltyPoints'],
-  //     vipLevel: json['newVipLevel'],
-  //   );
-  // }
+class BookingDetails {
+  final String bookingId;
+  final int ticketNo;
+  final double totalCost;
+
+  BookingDetails({
+    required this.bookingId,
+    required this.ticketNo,
+    required this.totalCost,
+  });
 }

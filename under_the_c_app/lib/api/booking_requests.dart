@@ -18,7 +18,9 @@ Future<List<Booking>> getBookings(String uid) async {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
-      return jsonList.map((json) => Booking.fromJson(json)).toList();
+      // print(jsonList);
+      // return jsonList.map((json) => Booking.fromJson(json)).toList();
+      return getAllBackendBooking(jsonList);
     } else {
       throw Exception('GetBookings API ERROR: ${response.statusCode}');
     }
@@ -27,7 +29,28 @@ Future<List<Booking>> getBookings(String uid) async {
   }
 }
 
-Future<UserBooking> cancelBooking(int bookingId) async {
+Future<BookingDetails> getBookingDetails(String bookingId) async {
+  final requestUrl = Uri.https(APIRoutes.BASE_URL,
+      APIRoutes.getBookingDetail(bookingId), {'bookingId': bookingId});
+
+  try {
+    final response = await http.get(
+      requestUrl,
+      headers: APIRoutes.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonList = jsonDecode(response.body);
+      return getBackendBookingDetails(jsonList);
+    } else {
+      throw Exception('GetBookingDetails API ERROR: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception(e);
+  }
+}
+
+Future<UserBooking?> cancelBooking(int bookingId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.cancelBooking);
 
   try {
@@ -41,15 +64,14 @@ Future<UserBooking> cancelBooking(int bookingId) async {
       ),
     );
 
-    if (response.statusCode == 200 || response.statusCode == 400) {
+    if (response.statusCode == 200) {
+      // 200 Success
       Map<String, dynamic> jsonList = jsonDecode(response.body);
       UserBooking isRefundable = removeBackendBooking(jsonList);
-      // 200 Success
-      // 400 Cancellation requests must be made at least 7 days prior to the event.
-      if (response.statusCode == 200) {
-        isRefundable.refundable = true;
-      }
       return isRefundable;
+    } else if (response.statusCode == 400) {
+      // 400 Cancellation requests must be made at least 7 days prior to the event.
+      return null;
     } else {
       // 404 no relevant booking tickets found
       // Can't do just throw exception, need to warn customers that tickets are non-refundable if it fails

@@ -78,19 +78,33 @@ class ViewBookingPage extends ConsumerWidget {
                               ElevatedButton(
                                 onPressed: () {
                                   showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            // backgroundColor: Colors.black,
-                                            content: EventTickets(
-                                              eventName: booking.eventName,
-                                              eventTag:
-                                                  booking.eventTag.toString(),
-                                              eventVenue: booking.eventVenue,
-                                              eventTime: booking.eventTime,
-                                              eventCost: booking.totalCost,
-                                              bookingNo: booking.id.toString(),
-                                            ),
-                                          ));
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return EventTickets(
+                                        eventName: booking.eventName,
+                                        eventTag: booking.eventTag.toString(),
+                                        eventVenue: booking.eventVenue,
+                                        eventTime: booking.eventTime,
+                                        eventCost: booking.totalCost,
+                                        bookingNo: booking.id.toString(),
+                                      );
+                                    },
+                                  );
+
+                                  // showDialog(
+                                  //     context: context,
+                                  //     builder: (context) => AlertDialog(
+                                  //           // backgroundColor: Colors.black,
+                                  //           content: EventTickets(
+                                  //             eventName: booking.eventName,
+                                  //             eventTag:
+                                  //                 booking.eventTag.toString(),
+                                  //             eventVenue: booking.eventVenue,
+                                  //             eventTime: booking.eventTime,
+                                  //             eventCost: booking.totalCost,
+                                  //             bookingNo: booking.id.toString(),
+                                  //           ),
+                                  //         ));
                                 },
                                 child: const Text('View Tickets'),
                               ),
@@ -114,15 +128,39 @@ class ViewBookingPage extends ConsumerWidget {
                                             child: const Text('No'),
                                           ),
                                           TextButton(
-                                            onPressed: () {
+                                            onPressed: () async {
                                               // TO-DO call cancelAll api request
-                                              ref
+                                              final successCancel = await ref
                                                   .read(
                                                       bookingProvider.notifier)
                                                   .removeBooking(
                                                       booking.id.toString());
                                               Navigator.of(context)
                                                   .pop(); // Close the alert
+
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    successCancel
+                                                        ? const AlertDialog(
+                                                            title: Text(
+                                                              "Cancellation of booking successfully",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                          )
+                                                        : const AlertDialog(
+                                                            title: Text(
+                                                              "Cancellation of booking failed",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                            content: Text(
+                                                                "Cancellation requests must be made at least 7 days prior to the event."),
+                                                          ),
+                                              );
                                             },
                                             child: const Text('Yes'),
                                           ),
@@ -260,8 +298,10 @@ class EventTickets extends StatelessWidget {
     return Center(
       child: TicketWidget(
         color: const Color.fromARGB(255, 226, 235, 240),
-        width: 350,
-        height: 500,
+        // width: 350,
+        // height: 500,
+        width: MediaQuery.of(context).size.width * 0.7,
+        height: MediaQuery.of(context).size.width * 1.3,
         isCornerRounded: true,
         padding: const EdgeInsets.all(20),
         child: TicketInfo(
@@ -358,6 +398,7 @@ class TicketInfo extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.only(top: 80.0, left: 30.0, right: 30.0),
           child: SizedBox(

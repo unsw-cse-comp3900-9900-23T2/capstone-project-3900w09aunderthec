@@ -21,8 +21,25 @@ class _ProfilePageState extends State<ProfilePage> {
     'images/profile/Vip_level_3.png',
     'images/profile/Vip_level_4.png'
   ];
-  int index = 0;
   final levelBarKey = GlobalKey<LevelBarState>();
+
+  int frameUpgrade() {
+    int index = 0;
+    switch (sessionVariables.vipLevel) {
+      case >= 20:
+        index = 3;
+        break;
+      case >= 15:
+        index = 2;
+        break;
+      case >= 10:
+        index = 1;
+        break;
+      default:
+        index = 0;
+    }
+    return index;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
             clipBehavior: Clip.none,
             children: [
               Image.asset(
-                vip_level[index],
+                vip_level[frameUpgrade()],
                 width: MediaQuery.of(context).size.width * 0.7,
                 height: MediaQuery.of(context).size.width * 0.5,
                 fit: BoxFit.cover,
@@ -120,12 +137,6 @@ class LevelBar extends StatefulWidget {
 
 class LevelBarState extends State<LevelBar> {
   double progressValue = 0.0;
-
-  void updateProgress(double newValue) {
-    setState(() {
-      progressValue = newValue;
-    });
-  }
 
   @override
   void initState() {

@@ -44,5 +44,7 @@ class APIRoutes {
 
   // ============================BOOKING ROUTES==================================
   static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
+  static String getBookingDetail(String bookingId) =>
+      'api/Booking/GetBookingDetails/$bookingId';
   static const String cancelBooking = 'api/Booking/CancelBooking';
 }

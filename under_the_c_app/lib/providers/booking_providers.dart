@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/booking_requests.dart';
 import '../api/event_requests.dart';
@@ -37,10 +38,10 @@ class BookingProvider extends StateNotifier<List<Booking>> {
     _allBooking = [..._allBooking, newBooking];
   }
 
-  Future<void> removeBooking(String bookingId) async {
-    UserBooking refundable = await cancelBooking(int.parse(bookingId));
+  Future<bool> removeBooking(String bookingId) async {
+    UserBooking? refundable = await cancelBooking(int.parse(bookingId));
 
-    if (refundable != Null) {
+    if (refundable != null) {
       // Only lose points if event host refuses refund
       sessionVariables.loyaltyPoints = refundable.loyaltyPoints;
       sessionVariables.vipLevel = refundable.vipLevel;
@@ -48,7 +49,9 @@ class BookingProvider extends StateNotifier<List<Booking>> {
         for (final b in state)
           if (b.id.toString() != bookingId) b,
       ];
+      return true;
     }
+    return false;
   }
 
   Future<void> fetchBookings(uid) async {
