@@ -38,12 +38,31 @@ class BookTicket extends ConsumerStatefulWidget {
   void showLoadingScreen(BuildContext context) {
     showGeneralDialog(
       context: context,
+      barrierColor: Colors.white,
       barrierDismissible:
           false, // Prevents users from closing the dialog by tapping outside
       barrierLabel: "Loading", // Label for the barrier
       pageBuilder: (BuildContext context, Animation<double> animation,
           Animation<double> secondaryAnimation) {
-        return const LoadingScreen();
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Material(
+                child: Text(
+                  "Processing payment",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.width * 0.1,
+              ),
+              const CircularProgressIndicator(),
+            ]);
       },
     );
   }
@@ -216,22 +235,4 @@ Container _buildDivider() {
     decoration: BoxDecoration(
         color: Colors.grey, borderRadius: BorderRadius.circular(5.0)),
   );
-}
-
-class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({super.key});
-
-  @override
-  State<LoadingScreen> createState() => _LoadingScreenState();
-}
-
-class _LoadingScreenState extends State<LoadingScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-        child: Column(children: [
-      Text("Processing payment"),
-      CircularProgressIndicator()
-    ]));
-  }
 }
