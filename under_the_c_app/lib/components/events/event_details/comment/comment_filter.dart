@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/providers/comment_providers.dart';
 
-class SortItem {
+class SortFilterItem {
   final String name;
   final int index;
-  final Function sortFunction;
-  SortItem(
-      {required this.name, required this.index, required this.sortFunction});
+  final Function sortFilterFunction;
+  SortFilterItem(
+      {required this.name,
+      required this.index,
+      required this.sortFilterFunction});
 }
+
+enum SearchType { isFilter, isSort }
 
 class CommentFilter extends ConsumerStatefulWidget {
   final String eventId;
@@ -22,8 +26,9 @@ class CommentFilter extends ConsumerStatefulWidget {
 class _CommentFilterState extends ConsumerState<CommentFilter> {
   bool sortEnabled = false;
   bool filterEnabled = false;
-  int selectedSortIndex = 0; //default as 0
-  late List<SortItem> sortList = [];
+  int selectedSortFilterIndex = 0; //default as 0
+  late List<SortFilterItem> sortList = [];
+  late List<SortFilterItem> filterList = [];
 
   @override
   void initState() {
@@ -34,18 +39,32 @@ class _CommentFilterState extends ConsumerState<CommentFilter> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     sortList = [
-      SortItem(
+      SortFilterItem(
           name: "Popularity",
           index: 1,
-          sortFunction: () => ref
+          sortFilterFunction: () => ref
               .read(commentsProvider(widget.eventId).notifier)
               .sort(CommentSortQuery.popularity)),
-      SortItem(
+      SortFilterItem(
           name: "Unpopularity",
           index: 2,
-          sortFunction: () => ref
+          sortFilterFunction: () => ref
               .read(commentsProvider(widget.eventId).notifier)
               .sort(CommentSortQuery.unpopularity))
+    ];
+    filterList = [
+      SortFilterItem(
+          name: "Pinned",
+          index: 3,
+          sortFilterFunction: () => ref
+              .read(commentsProvider(widget.eventId).notifier)
+              .filter(CommentFilterQuery.pinned)),
+      SortFilterItem(
+          name: "Unpinned",
+          index: 4,
+          sortFilterFunction: () => ref
+              .read(commentsProvider(widget.eventId).notifier)
+              .filter(CommentFilterQuery.unpinned))
     ];
   }
 
@@ -63,26 +82,27 @@ class _CommentFilterState extends ConsumerState<CommentFilter> {
     });
   }
 
-  Widget buttonLayout(SortItem item) {
+  Widget buttonLayout(SortFilterItem item ) {
     return ElevatedButton(
       onPressed: () => {
         setState(() {
           // unselect
-          if (selectedSortIndex == item.index) {
-            selectedSortIndex = 0;
+          if (selectedSortFilterIndex == item.index) {
+            selectedSortFilterIndex = 0;
             // undo sort
-            ref.read(commentsProvider(widget.eventId).notifier).unsort();
+            ref.read(commentsProvider(widget.eventId).notifier).undoSortFilter();
+            // undo filter
           }
           // select
           else {
-            selectedSortIndex = item.index;
+            selectedSortFilterIndex = item.index;
             // call sort
-            item.sortFunction();
+            item.sortFilterFunction();
           }
         })
       },
       style: ButtonStyle(
-        backgroundColor: item.index == selectedSortIndex
+        backgroundColor: item.index == selectedSortFilterIndex
             ? MaterialStateProperty.all<Color>(Color.fromARGB(255, 2, 171, 44))
             : MaterialStateProperty.all<Color>(Colors.purple),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -116,7 +136,16 @@ class _CommentFilterState extends ConsumerState<CommentFilter> {
   }
 
   Widget filter() {
-    return const Text("Filter");
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Wrap(
+        spacing: 10,
+        alignment: WrapAlignment.start,
+        children: [
+          ...filterList.map((item) => buttonLayout(item)).toList(),
+        ],
+      ),
+    );
   }
 
   @override

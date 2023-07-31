@@ -4,6 +4,8 @@ import 'package:under_the_c_app/types/events/comment_type.dart';
 
 enum CommentSortQuery { popularity, unpopularity }
 
+enum CommentFilterQuery { pinned, unpinned }
+
 class CommentsProvider extends StateNotifier<List<CommentT>> {
   String eventId;
   List<CommentT> originalUnsortedList = [];
@@ -71,7 +73,22 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
     }
   }
 
-  void unsort() {
+  void filter(CommentFilterQuery query) {
+    // undo the filter first
+    undoSortFilter();
+    switch (query) {
+      case CommentFilterQuery.pinned:
+        state = state.where((element) => element.isPinned == true).toList();
+
+      case CommentFilterQuery.unpinned:
+        state = state.where((element) => element.isPinned == false).toList();
+
+      default:
+        break;
+    }
+  }
+
+  void undoSortFilter() {
     state = originalUnsortedList;
   }
 
