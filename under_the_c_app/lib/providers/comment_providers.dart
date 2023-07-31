@@ -2,8 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/comment_requests.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
+enum CommentSortQuery { popularity, unpopularity }
+
 class CommentsProvider extends StateNotifier<List<CommentT>> {
   String eventId;
+  List<CommentT> originalUnsortedList = [];
 
   // final bool isHost;
   CommentsProvider(this.eventId) : super([]) {
@@ -37,6 +40,32 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
     state = sortedPinnedComment;
   }
 
+  void sort(CommentSortQuery query) {
+    switch (query) {
+      case CommentSortQuery.popularity:
+        state = List.from(state)
+          ..sort((a, b) {
+            // sort in descending order
+            if (a.nLikes < b.nLikes) {
+              return 1;
+            } else if (a.nLikes > b.nLikes) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
+
+      case CommentSortQuery.unpopularity:
+        break;
+      default:
+        break;
+    }
+  }
+
+  void unsort() {
+    state = originalUnsortedList;
+  }
+
   Future<void> pinComment(commentId) async {
     final CommentT newComment = await pinCommentAPI(commentId);
     state = state.map((c) {
@@ -59,6 +88,7 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 
   Future<void> fetchComments() async {
     state = await getAllComments(eventId);
+    originalUnsortedList = state;
   }
 
   Future<void> likeComment(String commentId) async {

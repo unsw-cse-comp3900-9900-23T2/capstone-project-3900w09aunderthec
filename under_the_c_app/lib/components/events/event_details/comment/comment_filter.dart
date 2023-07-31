@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:under_the_c_app/providers/comment_providers.dart';
 
 class SortItem {
   final String name;
   final int index;
-  // final Function function;
-  SortItem({required this.name, required this.index});
+  final Function sortFunction;
+  SortItem(
+      {required this.name, required this.index, required this.sortFunction});
 }
 
 class CommentFilter extends ConsumerStatefulWidget {
-  const CommentFilter({Key? key}) : super(key: key);
+  final String eventId;
+  const CommentFilter({Key? key, required this.eventId}) : super(key: key);
 
   @override
   _CommentFilterState createState() => _CommentFilterState();
@@ -20,14 +23,30 @@ class _CommentFilterState extends ConsumerState<CommentFilter> {
   bool sortEnabled = false;
   bool filterEnabled = false;
   int selectedSortIndex = 0; //default as 0
-  List<SortItem> sortList = [
-    SortItem(name: "Popularity", index: 1),
-    SortItem(name: "Unpopularity", index: 2)
-  ];
+  late List<SortItem> sortList = [];
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    sortList = [
+      SortItem(
+          name: "Popularity",
+          index: 1,
+          sortFunction: () => ref
+              .read(commentsProvider(widget.eventId).notifier)
+              .sort(CommentSortQuery.popularity)),
+      SortItem(
+          name: "Unpopularity",
+          index: 2,
+          sortFunction: () => ref
+              .read(commentsProvider(widget.eventId).notifier)
+              .sort(CommentSortQuery.unpopularity))
+    ];
   }
 
   void toggleSort() {
@@ -51,10 +70,14 @@ class _CommentFilterState extends ConsumerState<CommentFilter> {
           // unselect
           if (selectedSortIndex == item.index) {
             selectedSortIndex = 0;
+            // undo sort
+            ref.read(commentsProvider(widget.eventId).notifier).unsort();
           }
           // select
           else {
             selectedSortIndex = item.index;
+            // call sort
+            item.sortFunction();
           }
         })
       },

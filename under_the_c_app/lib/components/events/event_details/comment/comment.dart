@@ -59,9 +59,9 @@ class _CommentState extends ConsumerState<Comment> {
                 children: [
                   Text(
                     user?.userName ?? "Me",
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
                       Icon(
@@ -69,7 +69,7 @@ class _CommentState extends ConsumerState<Comment> {
                         size: 17,
                         color: Colors.grey[600],
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
                         "Public",
                         style: TextStyle(
@@ -124,9 +124,9 @@ class _CommentState extends ConsumerState<Comment> {
         const SizedBox(height: 15),
         // "What do you want to talk about" section
         column,
-        SizedBox(height: 90),
+        const SizedBox(height: 90),
         //  a list of comments section
-        CommentFilter(),
+        CommentFilter(eventId: widget.eventId),
         Column(
           children: [
             ...comments
