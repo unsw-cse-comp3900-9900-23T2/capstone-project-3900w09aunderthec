@@ -37,6 +37,7 @@ Future<void> createTickets(
     'name': ticketData['name'],
     'eventId': int.parse(eventId),
     'stock': int.parse(ticketData['amount']),
+    'availableTime': ticketData['availableTime']
   };
 
   try {

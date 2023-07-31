@@ -51,7 +51,7 @@ class _CreateTicket extends ConsumerState<CreateTicket> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 15),
               _buildFormRow(
                 title: 'Ticket Name',
                 hintText: 'Enter ticket type',
@@ -82,7 +82,11 @@ class _CreateTicket extends ConsumerState<CreateTicket> {
                   };
                 },
               ),
-              const SizedBox(height: 16),
+              const Text(
+                "Select Time for Release",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                 child: DatePicker(
@@ -98,18 +102,41 @@ class _CreateTicket extends ConsumerState<CreateTicket> {
                   getTime: saveSelectedTime,
                 ),
               ),
+              const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {
-                  String time =
-                      "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
+                  if (chosenDate != null && dayTime != null) {
+                    String time =
+                        "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
 
-                  ref.read(newTicketProvider.notifier).state = {
-                    ...ticketData,
-                    'availableTime': time,
-                  };
+                    ref.read(newTicketProvider.notifier).state = {
+                      ...ref.read(newTicketProvider.notifier).state,
+                      'availableTime': time,
+                    };
 
-                  createTickets(ticketData, widget.eventId);
-                  context.go(AppRoutes.events);
+                    createTickets(ref.read(newTicketProvider.notifier).state,
+                        widget.eventId);
+                    context.go(AppRoutes.events);
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Field Error'),
+                          content: const Text(
+                              'Please fill in all fields including date time!'),
+                          actions: <Widget>[
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: const Text('Create Ticket'),
               ),
