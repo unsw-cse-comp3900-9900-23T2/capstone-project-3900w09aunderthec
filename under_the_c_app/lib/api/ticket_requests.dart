@@ -76,7 +76,7 @@ Future<void> deleteTickets(int ticketId) async {
   }
 }
 
-Future<UserBooking> purchaseTickets(Map<int, int> selectedTickets) async {
+Future<UserBooking?> purchaseTickets(Map<int, int> selectedTickets) async {
   final bookTicketUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.bookTickets);
 
   Map<String, dynamic> jsonBody = {
@@ -101,6 +101,8 @@ Future<UserBooking> purchaseTickets(Map<int, int> selectedTickets) async {
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonList = jsonDecode(response.body);
       return addBackendBooking(jsonList);
+    } else if (response.statusCode == 500) {
+      return null;
     } else {
       throw Exception('API Error: $response');
     }

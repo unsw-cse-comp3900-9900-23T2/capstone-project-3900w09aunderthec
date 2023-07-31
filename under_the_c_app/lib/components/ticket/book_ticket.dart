@@ -204,25 +204,33 @@ class _BookTicket extends ConsumerState<BookTicket> {
                       // Show loading screen
                       widget.showLoadingScreen(context);
                       // Get booking id and user's loyalty points and vip level
-                      UserBooking userBooking =
+                      UserBooking? userBooking =
                           await purchaseTickets(selectedTickets);
-                      sessionVariables.loyaltyPoints =
-                          userBooking.loyaltyPoints;
-                      sessionVariables.vipLevel = userBooking.vipLevel;
-                      // Notify view booking of a new booking
-                      await ref.read(bookingProvider.notifier).addBooking(
-                            TicketBooking(
-                              bookingId: userBooking.bookingId,
-                              eventId: widget.eventId,
-                              totalPrice: totalPrice,
-                              selectedTickets: selectedTickets,
-                            ),
-                          );
-                      // Remove loading screen
-                      Navigator.of(context, rootNavigator: true).pop();
-                      resetTicketState();
-                      context
-                          .go(AppRoutes.ticketConfirmation(widget.eventTitle));
+                      if (userBooking != null) {
+                        sessionVariables.loyaltyPoints =
+                            userBooking.loyaltyPoints;
+                        sessionVariables.vipLevel = userBooking.vipLevel;
+                        // Notify view booking of a new booking
+                        await ref.read(bookingProvider.notifier).addBooking(
+                              TicketBooking(
+                                bookingId: userBooking.bookingId,
+                                eventId: widget.eventId,
+                                totalPrice: totalPrice,
+                                selectedTickets: selectedTickets,
+                              ),
+                            );
+                        // Remove loading screen
+                        Navigator.of(context, rootNavigator: true).pop();
+                        resetTicketState();
+                        context.go(
+                            AppRoutes.ticketConfirmation(widget.eventTitle));
+                      } else {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        showDialog(
+                            context: context,
+                            builder: (context) => const AlertDialog(
+                                content: Text("Not enough tickets in stock")));
+                      }
                     }
                   },
                   child: const Text("Purchase"),
