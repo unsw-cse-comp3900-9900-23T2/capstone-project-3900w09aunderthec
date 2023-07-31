@@ -242,6 +242,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("hosteruid")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("subscriptionTime")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("subscriptionId");
 
                     b.HasIndex("customeruid");
