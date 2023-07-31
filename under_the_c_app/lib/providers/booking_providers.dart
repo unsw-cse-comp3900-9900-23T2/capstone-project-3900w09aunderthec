@@ -38,8 +38,12 @@ class BookingProvider extends StateNotifier<List<Booking>> {
   }
 
   Future<void> removeBooking(String bookingId) async {
-    bool refundable = await cancelBooking(int.parse(bookingId));
-    if (refundable) {
+    UserBooking refundable = await cancelBooking(int.parse(bookingId));
+
+    if (refundable != Null) {
+      // Only lose points if event host refuses refund
+      sessionVariables.loyaltyPoints = refundable.loyaltyPoints;
+      sessionVariables.vipLevel = refundable.vipLevel;
       state = [
         for (final b in state)
           if (b.id.toString() != bookingId) b,

@@ -4,6 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/api/api_routes.dart';
 import 'package:under_the_c_app/types/tickets/tickets_type.dart';
 
+import '../types/bookings/booking_type.dart';
+import 'converters/booking_converter.dart';
+
 Future<List<Tickets>> getTickets(String eventId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTickets,
       {'eventId': eventId, 'customerId': sessionVariables.uid.toString()});
@@ -73,7 +76,7 @@ Future<void> deleteTickets(int ticketId) async {
   }
 }
 
-Future<String> purchaseTickets(Map<int, int> selectedTickets) async {
+Future<UserBooking> purchaseTickets(Map<int, int> selectedTickets) async {
   final bookTicketUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.bookTickets);
 
   Map<String, dynamic> jsonBody = {
@@ -97,7 +100,7 @@ Future<String> purchaseTickets(Map<int, int> selectedTickets) async {
     // handle http response
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonList = jsonDecode(response.body);
-      return jsonList['booking']['id'].toString();
+      return addBackendBooking(jsonList);
     } else {
       throw Exception('API Error: $response');
     }

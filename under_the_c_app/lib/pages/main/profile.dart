@@ -6,7 +6,6 @@ import 'package:under_the_c_app/config/session_variables.dart';
 
 class ProfilePage extends StatefulWidget {
   final String imageUrl = ''; // replace with the actual URL
-  final int loyalPoints = 0;
 
   const ProfilePage({Key? key})
       : super(key: key); // replace with the actual points
@@ -23,26 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
     'images/profile/Vip_level_4.png'
   ];
   int index = 0;
-  int loyalPoints = 0;
   final levelBarKey = GlobalKey<LevelBarState>();
-
-  void incrementLevel() {
-    setState(() {
-      index = (index + 1) % vip_level.length;
-    });
-  }
-
-  void increasePoints() {
-    setState(() {
-      loyalPoints += 15;
-      if (loyalPoints >= 100) {
-        loyalPoints -= 100;
-        incrementLevel();
-      }
-    });
-    double newProgress = loyalPoints / 100;
-    levelBarKey.currentState?.updateProgress(newProgress);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,12 +56,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          ElevatedButton(
-              onPressed: () {
-                // incrementLevel();
-                increasePoints();
-              },
-              child: Text("Level up")),
           const SizedBox(height: 20),
           Container(
             height: MediaQuery.of(context).size.width * 0.1,
@@ -91,7 +65,8 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Image.asset('images/profile/vip.png'),
                 Text(
-                  'VIP ${index + 1}',
+                  'VIP ${sessionVariables.vipLevel}',
+                  // 'VIP ${index + 1}',
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -102,14 +77,16 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Loyal Points: ${loyalPoints}',
+            'Loyal Points: ${sessionVariables.loyaltyPoints}',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 20),
-          LevelBar(key: levelBarKey, progress: widget.loyalPoints),
+          LevelBar(
+              key: levelBarKey,
+              progress: (sessionVariables.loyaltyPoints % 1000)),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
@@ -153,7 +130,7 @@ class LevelBarState extends State<LevelBar> {
   @override
   void initState() {
     super.initState();
-    progressValue = widget.progress.toDouble();
+    progressValue = widget.progress.toDouble() / 10;
   }
 
   @override
@@ -168,9 +145,9 @@ class LevelBarState extends State<LevelBar> {
                 minHeight: MediaQuery.of(context).size.width * 0.05,
                 backgroundColor: Colors.cyanAccent,
                 valueColor: const AlwaysStoppedAnimation<Color>(Colors.red),
-                value: progressValue,
+                value: progressValue / 100,
               ),
-              Text('${(progressValue * 100).round()}%'),
+              Text('${(progressValue).round()}%'),
             ],
           )),
     );

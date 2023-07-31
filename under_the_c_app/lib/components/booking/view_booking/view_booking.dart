@@ -195,10 +195,17 @@ class BookingCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        bookingInfo.eventName,
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: Text(
+                          bookingInfo.eventName,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                          // Deal with text overflow
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                        ),
                       ),
                       Text(
                         "${formatTime(eventDate.day)}-${formatTime(eventDate.month)}-${eventDate.year}",
@@ -207,6 +214,9 @@ class BookingCard extends StatelessWidget {
                     ],
                   ),
                 ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.width * 0.03,
               ),
               Text("$noTicket Tickets"),
             ],

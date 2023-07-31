@@ -50,3 +50,25 @@ class TicketBooking {
     required this.selectedTickets,
   });
 }
+
+class UserBooking {
+  final String bookingId;
+  final int loyaltyPoints;
+  final int vipLevel;
+  bool refundable = false;
+
+  UserBooking({
+    required this.bookingId,
+    required this.loyaltyPoints,
+    required this.vipLevel,
+    required this.refundable,
+  });
+
+  // factory UserBooking.fromJson(Map<String, dynamic> json) {
+  //   return UserBooking(
+  //     bookingId: json['booking']['id'].toString(),
+  //     loyaltyPoints: json['newLoyaltyPoints'],
+  //     vipLevel: json['newVipLevel'],
+  //   );
+  // }
+}

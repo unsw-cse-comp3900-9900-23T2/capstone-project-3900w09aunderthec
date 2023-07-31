@@ -42,6 +42,7 @@ class APIRoutes {
   static const String isDislikeComment = 'api/Comment/isDislikeComment';
   static const String pinComment = 'api/Comment/PinComment';
 
+  // ============================BOOKING ROUTES==================================
   static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
   static const String cancelBooking = 'api/Booking/CancelBooking';
 }

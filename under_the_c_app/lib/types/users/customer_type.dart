@@ -4,8 +4,13 @@ class Customer {
   final int customerId;
   final String userName;
   final List<Subscription> subscriptions;
-  final int loyaltyPoints = 0;
-  final int vipLevel = 0;
+  final int loyaltyPoints;
+  final int vipLevel;
 
-  Customer({required this.customerId, required this.subscriptions, required this.userName});
+  Customer(
+      {required this.customerId,
+      required this.subscriptions,
+      required this.userName,
+      required this.loyaltyPoints,
+      required this.vipLevel});
 }

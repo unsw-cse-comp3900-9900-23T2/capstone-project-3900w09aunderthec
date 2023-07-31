@@ -24,9 +24,10 @@ Future<Customer> getCustomerById(String customerId) async {
       if (dataList.isNotEmpty) {
         // Get the first object from the list
         final Map<String, dynamic> data = dataList[0];
-        return BackendDataSingleCustomerToCustomer(data);
+        return backendDataSingleCustomerToCustomer(data);
       } else {
-        throw Exception('customer.dart.getEvents: No data returned from server');
+        throw Exception(
+            'customer.dart.getEvents: No data returned from server');
       }
     } else {
       throw Exception(
@@ -40,10 +41,3 @@ Future<Customer> getCustomerById(String customerId) async {
     throw Exception('Customer.dart.getCustomers: Unknown error $e');
   }
 }
-
-
-
-
-
-
-
