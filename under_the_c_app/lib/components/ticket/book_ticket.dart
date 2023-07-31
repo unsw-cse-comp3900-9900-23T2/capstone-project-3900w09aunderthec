@@ -35,6 +35,38 @@ class BookTicket extends ConsumerStatefulWidget {
       required this.eventTitle,
       required this.eventVenue});
 
+  void showLoadingScreen(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierColor: Colors.white,
+      barrierDismissible:
+          false, // Prevents users from closing the dialog by tapping outside
+      barrierLabel: "Loading", // Label for the barrier
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Material(
+                child: Text(
+                  "Processing payment",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.width * 0.1,
+              ),
+              const CircularProgressIndicator(),
+            ]);
+      },
+    );
+  }
+
   @override
   _BookTicket createState() => _BookTicket();
 }
@@ -50,6 +82,13 @@ class _BookTicket extends ConsumerState<BookTicket> {
     Future.microtask(() {
       ref.read(totalPriceProvider.notifier).state = 0;
       ref.read(selectedTicketsProvider.notifier).state = {};
+    });
+  }
+
+  bool isLoading = false;
+  void loading() {
+    setState(() {
+      isLoading = !isLoading;
     });
   }
 
@@ -160,18 +199,22 @@ class _BookTicket extends ConsumerState<BookTicket> {
                     );
                     cleanMap();
                     if (selectedTickets.isNotEmpty) {
-                      ref.read(bookingProvider.notifier).addBooking(
+                      // context.go(AppRoutes.ticketConfirmation(eventTitle));
+                      // Show loading screen
+                      widget.showLoadingScreen(context);
+                      String bookingNo = await purchaseTickets(selectedTickets);
+                      await ref.read(bookingProvider.notifier).addBooking(
                             TicketBooking(
+                              bookingId: bookingNo,
                               eventId: widget.eventId,
                               totalPrice: totalPrice,
                               selectedTickets: selectedTickets,
                             ),
                           );
-                      // context.go(AppRoutes.ticketConfirmation(eventTitle));
+                      Navigator.of(context, rootNavigator: true).pop();
+                      resetTicketState();
                       context
                           .go(AppRoutes.ticketConfirmation(widget.eventTitle));
-                      purchaseTickets(selectedTickets);
-                      resetTicketState();
                     }
                   },
                   child: const Text("Purchase"),
