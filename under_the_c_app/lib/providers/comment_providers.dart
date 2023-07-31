@@ -56,7 +56,16 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
           });
 
       case CommentSortQuery.unpopularity:
-        break;
+        state = List.from(state)
+          ..sort((a, b) {
+            if (a.nDislikes < b.nDislikes) {
+              return 1;
+            } else if (a.nDislikes > b.nDislikes) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
       default:
         break;
     }
