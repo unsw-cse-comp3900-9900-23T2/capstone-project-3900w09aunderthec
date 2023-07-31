@@ -49,12 +49,27 @@ namespace EventManagementAPI.Repositories
             }
 
             var customer = await _dbContext.Customers.FindAsync(customerId) ?? throw new KeyNotFoundException("Customer does not exist");
-            var booking = new Booking
+            var eventShow = await _dbContext.Events.FindAsync(
+                _dbContext.Tickets.Find(Convert.ToInt32(bookingTickets.FirstOrDefault().Key)).eventIdRef
+            );
+            if (eventShow == null)
             {
-                customerId = customerId,
-                toCustomer = customer,
-                paymentMethod = paymentMethod,
-            };
+                throw new KeyNotFoundException("event not found");
+            }
+            var booking = await _dbContext.Bookings
+                .FirstOrDefaultAsync(b => _dbContext.BookingTickets
+                    .Any(bt => _dbContext.Tickets
+                        .Any(t => t.ticketId == bt.ticketId && t.eventIdRef == eventShow.eventId)
+                    && bt.bookingId == b.Id));
+            if (booking == null)
+            {
+                booking = new Booking
+                {
+                    customerId = customerId,
+                    toCustomer = customer,
+                    paymentMethod = paymentMethod,
+                };
+            }
             foreach (KeyValuePair<string, int> ticketPair in bookingTickets)
             {
                 string ticketIdString = ticketPair.Key;
@@ -81,10 +96,11 @@ namespace EventManagementAPI.Repositories
             var totalPriceToPay = totalPrice - discount;
             var totalPricePayed = totalPriceToPay;
 
-            booking.loyaltyPointsEarned = Convert.ToInt32(totalPriceToPay * 10);
+            var loyaltyPointsEarned = Convert.ToInt32(totalPriceToPay * 10);
+            booking.loyaltyPointsEarned +=  loyaltyPointsEarned;
 
             // customer gains loyalty points
-            customer.loyaltyPoints += booking.loyaltyPointsEarned;
+            customer.loyaltyPoints += loyaltyPointsEarned;
             customer.vipLevel = customer.loyaltyPoints / 1000;
 
             // use credit money for payment
@@ -101,8 +117,8 @@ namespace EventManagementAPI.Repositories
                 totalPricePayed = 0;
             }
 
-            booking.creditMoneyUsed = creditMoneyUsed;
-            booking.totalPricePayed = totalPricePayed;
+            booking.creditMoneyUsed += creditMoneyUsed;
+            booking.totalPricePayed += totalPricePayed;
 
             _dbContext.Bookings.Add(booking);
             _dbContext.Customers.Update(customer);
@@ -197,12 +213,25 @@ namespace EventManagementAPI.Repositories
         /// </summary>
         /// <param name="bookingId"></param>
         /// <returns>
-        /// A booking object
+        /// A booking object and a list of ticket objects
         /// </returns>
         public async Task<BookingGettingById?> GetBookingById(int bookingId)
         {
-            var tickets = await _dbContext.Tickets
-                .Where(ticket => _dbContext.BookingTickets.Any(bt => bt.ticketId == ticket.ticketId && bt.bookingId == bookingId))
+            var tickets = await _dbContext.BookingTickets
+                .Join(_dbContext.Tickets,
+                    bt => bt.ticketId,
+                    t => t.ticketId,
+                    (bt, t) => new
+                    {
+                        bt,
+                        ticket = t,
+                    })
+                .Where(c => c.bt.booking.Id == bookingId)
+                .Select(c => new TicketInfoDto
+                {
+                    ticket = c.ticket,
+                    numberOfTickets = c.bt.numberOfTickets,
+                })
                 .ToListAsync();
             var b = await _dbContext.Bookings
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
