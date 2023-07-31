@@ -60,51 +60,82 @@ class ViewBookingPage extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Column(
                       children: [
-                        Text(
-                          "Booking Id: ${booking.id}",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        // Text(
+                        //   "Booking Id: ${booking.id}",
+                        //   style: const TextStyle(fontWeight: FontWeight.bold),
+                        // ),
                         BookingCard(
                           bookingInfo: booking,
                           imageUrl: "images/events/money-event.jpg",
                           noTicket: booking.ticketNo,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Cancel booking and refund
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Bookings Confirmation'),
-                                  content: const Text(
-                                      'Are you sure you want to cancel all bookings?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // Close the alert
-                                      },
-                                      child: const Text('No'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        // TO-DO call cancelAll api request
-                                        ref
-                                            .read(bookingProvider.notifier)
-                                            .removeBooking(
-                                                booking.id.toString());
-                                        Navigator.of(context)
-                                            .pop(); // Close the alert
-                                      },
-                                      child: const Text('Yes'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: const Text('Cancel Booking'),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.01,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            // backgroundColor: Colors.black,
+                                            content: EventTickets(
+                                              eventName: booking.eventName,
+                                              eventTag:
+                                                  booking.eventTag.toString(),
+                                              eventVenue: booking.eventVenue,
+                                              eventTime: booking.eventTime,
+                                              eventCost: booking.totalCost,
+                                              bookingNo: booking.id.toString(),
+                                            ),
+                                          ));
+                                },
+                                child: const Text('View Tickets'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Cancel booking and refund
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title:
+                                            const Text('Bookings Confirmation'),
+                                        content: const Text(
+                                            'Are you sure you want to cancel all bookings?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the alert
+                                            },
+                                            child: const Text('No'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // TO-DO call cancelAll api request
+                                              ref
+                                                  .read(
+                                                      bookingProvider.notifier)
+                                                  .removeBooking(
+                                                      booking.id.toString());
+                                              Navigator.of(context)
+                                                  .pop(); // Close the alert
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Text('Cancel Booking'),
+                              ),
+                            ]),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.01,
                         ),
                       ],
                     ),
@@ -139,6 +170,8 @@ class BookingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime eventDate = DateTime.parse(bookingInfo.eventTime);
     return Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         color: const Color.fromARGB(255, 241, 241, 241),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -148,54 +181,43 @@ class BookingCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Icon(
-                      Icons.confirmation_num_outlined,
-                      size: MediaQuery.of(context).size.width * 0.1,
-                    ),
+                      padding: const EdgeInsets.all(5),
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: Icon(
+                          Icons.confirmation_num_outlined,
+                          size: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                      )),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.01,
                   ),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${bookingInfo.eventName}",
-                        // "Event Name: ${bookingInfo.eventName}",
+                        bookingInfo.eventName,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                          "${eventDate.year}-${formatTime(eventDate.month)}-${formatTime(eventDate.day)}"),
-                      // "Event Time: ${eventDate.year}-${formatTime(eventDate.month)}-${formatTime(eventDate.day)}"),
-                      // Text("Event Time: ${bookingInfo.eventTime}"),
+                        "${formatTime(eventDate.day)}-${formatTime(eventDate.month)}-${eventDate.year}",
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ],
                   ),
                 ],
               ),
               Text("$noTicket Tickets"),
-              ElevatedButton(
-                onPressed: () {
-                  // Go to my tickets
-                  // context.go(AppRoutes.home);
-                  showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            backgroundColor: Colors.black,
-                            content: EventTickets(
-                              eventName: bookingInfo.eventName,
-                              eventTag: bookingInfo.eventTag.toString(),
-                              eventVenue: bookingInfo.eventVenue,
-                              eventTime: bookingInfo.eventTime,
-                              eventCost: bookingInfo.totalCost,
-                              bookingNo: bookingInfo.id.toString(),
-                            ),
-                          ));
-                },
-                child: const Text('View Tickets'),
-              ),
             ],
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.4,
             child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ),
               child: Image.asset(
                 imageUrl,
                 fit: BoxFit.cover,
@@ -321,7 +343,7 @@ class TicketInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 12.0, right: 25),
                 child: ticketDetailsWidget(
-                    'Cost', eventCost, 'Order No', bookingNo),
+                    'Cost', '\$$eventCost', 'Order No', bookingNo),
               ),
             ],
           ),

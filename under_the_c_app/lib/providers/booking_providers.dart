@@ -24,6 +24,7 @@ class BookingProvider extends StateNotifier<List<Booking>> {
     });
 
     Booking newBooking = Booking(
+        id: booking.bookingId,
         eventId: booking.eventId,
         ticketNo: noTicket.toString(),
         totalCost: booking.totalPrice.toString(),
@@ -37,7 +38,7 @@ class BookingProvider extends StateNotifier<List<Booking>> {
   }
 
   Future<void> removeBooking(String bookingId) async {
-    bool refundable = await cancelBooking(bookingId);
+    bool refundable = await cancelBooking(int.parse(bookingId));
     if (refundable) {
       state = [
         for (final b in state)
