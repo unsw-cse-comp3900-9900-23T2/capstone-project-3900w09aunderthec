@@ -2,6 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+class SortItem {
+  final String name;
+  final int index;
+  // final Function function;
+  SortItem({required this.name, required this.index});
+}
+
 class CommentFilter extends ConsumerStatefulWidget {
   const CommentFilter({Key? key}) : super(key: key);
 
@@ -12,6 +19,11 @@ class CommentFilter extends ConsumerStatefulWidget {
 class _CommentFilterState extends ConsumerState<CommentFilter> {
   bool sortEnabled = false;
   bool filterEnabled = false;
+  int selectedSortIndex = 0; //default as 0
+  List<SortItem> sortList = [
+    SortItem(name: "Popularity", index: 1),
+    SortItem(name: "Unpopularity", index: 2)
+  ];
 
   @override
   void initState() {
@@ -32,10 +44,24 @@ class _CommentFilterState extends ConsumerState<CommentFilter> {
     });
   }
 
-  Widget buttonLayout(String content) {
+  Widget buttonLayout(SortItem item) {
     return ElevatedButton(
-      onPressed: () => {},
+      onPressed: () => {
+        setState(() {
+          // unselect
+          if (selectedSortIndex == item.index) {
+            selectedSortIndex = 0;
+          }
+          // select
+          else {
+            selectedSortIndex = item.index;
+          }
+        })
+      },
       style: ButtonStyle(
+        backgroundColor: item.index == selectedSortIndex
+            ? MaterialStateProperty.all<Color>(Color.fromARGB(255, 2, 171, 44))
+            : MaterialStateProperty.all<Color>(Colors.purple),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(35.0),
@@ -43,17 +69,17 @@ class _CommentFilterState extends ConsumerState<CommentFilter> {
         ),
       ),
       child: Text(
-        content,
+        item.name,
         style: const TextStyle(fontSize: 13),
       ),
     );
   }
 
+  /*
+   * Sort
+   */
+
   Widget sort() {
-    final sortList = [
-      "Popularity",
-      "Unpopularity",
-    ];
     return Align(
       alignment: Alignment.topLeft,
       child: Wrap(
