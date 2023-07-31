@@ -2,8 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/comment_requests.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
+enum CommentSortQuery { popularity, unpopularity }
+
+enum CommentFilterQuery { pinned, unpinned }
+
 class CommentsProvider extends StateNotifier<List<CommentT>> {
   String eventId;
+  List<CommentT> originalUnsortedList = [];
 
   // final bool isHost;
   CommentsProvider(this.eventId) : super([]) {
@@ -14,7 +19,19 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
     CommentT newComment =
         await createComment(eventId, commentId: commentId, comment: comment);
 
-    state = [...state, newComment];
+    bool insertedNewestReply = false;
+    // insert the new reply after the pinned comments and before all comments
+    state = state.map((e) {
+      if (e.isPinned) {
+        return e;
+      } else {
+        if (insertedNewestReply == false) {
+          insertedNewestReply = true;
+          return newComment;
+        }
+        return e;
+      }
+    }).toList();
   }
 
   void sortCommentByPin() {
@@ -35,6 +52,56 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
         },
       );
     state = sortedPinnedComment;
+  }
+
+  void sort(CommentSortQuery query) {
+    switch (query) {
+      case CommentSortQuery.popularity:
+        state = List.from(state)
+          ..sort((a, b) {
+            // sort in descending order
+            if (a.nLikes < b.nLikes) {
+              return 1;
+            } else if (a.nLikes > b.nLikes) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
+
+      case CommentSortQuery.unpopularity:
+        state = List.from(state)
+          ..sort((a, b) {
+            if (a.nDislikes < b.nDislikes) {
+              return 1;
+            } else if (a.nDislikes > b.nDislikes) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
+      default:
+        break;
+    }
+  }
+
+  void filter(CommentFilterQuery query) {
+    // undo the filter first
+    undoSortFilter();
+    switch (query) {
+      case CommentFilterQuery.pinned:
+        state = state.where((element) => element.isPinned == true).toList();
+
+      case CommentFilterQuery.unpinned:
+        state = state.where((element) => element.isPinned == false).toList();
+
+      default:
+        break;
+    }
+  }
+
+  void undoSortFilter() {
+    state = originalUnsortedList;
   }
 
   Future<void> pinComment(commentId) async {
@@ -59,6 +126,7 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 
   Future<void> fetchComments() async {
     state = await getAllComments(eventId);
+    originalUnsortedList = state;
   }
 
   Future<void> likeComment(String commentId) async {
@@ -91,6 +159,7 @@ class ReplyProviderNotifier extends StateNotifier<List<CommentT>> {
   Future<void> reply(String eventId, String comment) async {
     final newReply =
         await createComment(eventId, commentId: commentId, comment: comment);
+
     state = [...state, newReply];
   }
 }

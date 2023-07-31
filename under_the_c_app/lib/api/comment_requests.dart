@@ -6,7 +6,8 @@ import 'package:under_the_c_app/api/converters/comment_converter.dart';
 import 'package:http/http.dart' as http;
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
-Future<List<CommentT>> getAllComments(String eventId, {String? sortby}) async {
+Future<List<CommentT>> getAllComments(String eventId,
+    {String? sortby = 'soonest'}) async {
   final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getComments,
       {"eventId": eventId, "sortby": sortby});
   try {
