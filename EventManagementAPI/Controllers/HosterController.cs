@@ -26,3 +26,4 @@ namespace EventManagementAPI.Controllers
         }
     }
 }
+
