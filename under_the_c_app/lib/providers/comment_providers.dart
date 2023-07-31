@@ -19,7 +19,19 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
     CommentT newComment =
         await createComment(eventId, commentId: commentId, comment: comment);
 
-    state = [...state, newComment];
+    bool insertedNewestReply = false;
+    // insert the new reply after the pinned comments and before all comments
+    state = state.map((e) {
+      if (e.isPinned) {
+        return e;
+      } else {
+        if (insertedNewestReply == false) {
+          insertedNewestReply = true;
+          return newComment;
+        }
+        return e;
+      }
+    }).toList();
   }
 
   void sortCommentByPin() {
@@ -147,6 +159,7 @@ class ReplyProviderNotifier extends StateNotifier<List<CommentT>> {
   Future<void> reply(String eventId, String comment) async {
     final newReply =
         await createComment(eventId, commentId: commentId, comment: comment);
+
     state = [...state, newReply];
   }
 }
