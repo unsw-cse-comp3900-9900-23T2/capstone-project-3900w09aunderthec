@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/api/user_request.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment.dart';
 import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/events/event_title.dart';
@@ -175,7 +176,35 @@ class EventDetailsPage extends ConsumerWidget {
                                       context
                                           .go(AppRoutes.notification(eventId));
                                     },
-                                  )
+                                  ),
+                                if (!sessionVariables.sessionIsHost)
+                                  SlimButton(
+                                    text: "Subscribe",
+                                    onPressed: () {
+                                      // perform api request
+                                      subscribeHost(int.parse(event.hostuid));
+
+                                      // notify user of subscription on the frontend
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Subscribed!'),
+                                            content: Text(
+                                                'You have just subscribed to Host: ${event.hostuid} Click on the subscribe button again to unsubscribe'),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('OK'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                               ],
                             ),
                           ),
