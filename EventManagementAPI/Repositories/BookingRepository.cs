@@ -199,12 +199,21 @@ namespace EventManagementAPI.Repositories
         /// <returns>
         /// A booking object
         /// </returns>
-        public async Task<Booking?> GetBookingById(int bookingId)
+        public async Task<BookingGettingById?> GetBookingById(int bookingId)
         {
+            var tickets = await _dbContext.Tickets
+                .Where(ticket => _dbContext.BookingTickets.Any(bt => bt.ticketId == ticket.ticketId && bt.bookingId == bookingId))
+                .ToListAsync();
             var b = await _dbContext.Bookings
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
-            return b;
+            var bookingGettingById = new BookingGettingById
+            {
+                booking = b,
+                tickets = tickets,
+            };
+
+            return bookingGettingById;
         }
 
         /// <summary>

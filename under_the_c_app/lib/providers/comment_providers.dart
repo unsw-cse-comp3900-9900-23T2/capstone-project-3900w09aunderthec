@@ -35,7 +35,6 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
         },
       );
     state = sortedPinnedComment;
-    // return sortedPinnedComment;
   }
 
   Future<void> pinComment(commentId) async {
@@ -72,10 +71,33 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
 }
 
 final eventIdProvider = StateProvider((ref) => "");
-
 final commentsProvider =
     StateNotifierProvider.family<CommentsProvider, List<CommentT>, String>(
         (ref, eventId) => CommentsProvider(eventId));
+
+/* fetch replies */
+class ReplyProviderNotifier extends StateNotifier<List<CommentT>> {
+  final String commentId;
+  ReplyProviderNotifier({required this.commentId}) : super([]) {
+    fetchAllReplies();
+  }
+
+  /* fetch all replies given a comment Id */
+  Future<void> fetchAllReplies() async {
+    state = await getRepliesAPI(commentId);
+  }
+
+  /* Post a reply */
+  Future<void> reply(String eventId, String comment) async {
+    final newReply =
+        await createComment(eventId, commentId: commentId, comment: comment);
+    state = [...state, newReply];
+  }
+}
+
+final replyProvider =
+    StateNotifierProvider.family<ReplyProviderNotifier, List<CommentT>, String>(
+        (ref, commentId) => ReplyProviderNotifier(commentId: commentId));
 
 /* Handle if it's liked providers */
 final isLikeProvider =

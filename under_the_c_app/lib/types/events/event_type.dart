@@ -36,7 +36,7 @@ class Event {
         eventId = eventId ?? "",
         isDirectRefunds = isDirectRefunds ?? false,
         isPrivate = isPrivate ?? false,
-        tags = [];
+        tags = tags ?? ["Other"];
 }
 
 const List<Widget> eventTypes = <Widget>[

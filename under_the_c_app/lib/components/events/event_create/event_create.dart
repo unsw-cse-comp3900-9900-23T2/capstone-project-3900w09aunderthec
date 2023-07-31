@@ -235,16 +235,31 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            child: ToggleButton(
-              onSelectionChanged: (handleSelectionChanged) {
-                isPrivateEvent = handleSelectionChanged[0];
-              },
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: ToggleButton(
+                onSelectionChanged: (handleSelectionChanged) {
+                  isPrivateEvent = handleSelectionChanged[0];
+                },
+                boolList: eventTypes,
+              )),
+
+          // Refund Button
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: Text(
+              "Refund Policy",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: ToggleButton(
+                onSelectionChanged: (handleSelectionChanged) {
+                  isPrivateEvent = handleSelectionChanged[0];
+                },
+                boolList: refundType,
+              )),
 
-          // FormFields(
-          //     fieldName: "Refund Policy", hint: ""),
           // Event Tags
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -273,7 +288,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                       }
                     },
                   )
-                : SizedBox(),
+                : const SizedBox(),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -302,6 +317,9 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
 
                     _formKey.currentState!.save();
 
+                    List<String> tagsList = [];
+                    tagsList.add(tags);
+
                     time =
                         "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
                     await ref.read(eventsProvider.notifier).addEvent(
@@ -313,7 +331,8 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                             description: description,
                             isDirectRefunds: isDirectRefunds,
                             isPrivate: isPrivateEvent,
-                            tags: [tags],
+                            tags: tagsList,
+                            // tags: [tags],
                             price: 0,
                           ),
                         );
@@ -345,9 +364,16 @@ const List<Widget> eventTypes = <Widget>[
   Text('Public'),
 ];
 
+const List<Widget> refundType = <Widget>[
+  Text('Credit Refund'),
+  Text('No Refund'),
+];
+
 class ToggleButton extends StatefulWidget {
   final Function(List<bool>) onSelectionChanged;
-  const ToggleButton({Key? key, required this.onSelectionChanged})
+  final List<Widget> boolList;
+  const ToggleButton(
+      {Key? key, required this.onSelectionChanged, required this.boolList})
       : super(key: key);
 
   @override
@@ -386,7 +412,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                 minWidth: 80.0,
               ),
               isSelected: _selectedEventTypes,
-              children: eventTypes,
+              children: widget.boolList,
             ),
           ],
         ),
