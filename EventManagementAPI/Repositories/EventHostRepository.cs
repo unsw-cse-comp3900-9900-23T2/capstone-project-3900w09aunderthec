@@ -62,5 +62,31 @@ namespace EventManagementAPI.Repositories
 
             return buyers;
         }
+
+        /// <summary>
+        /// Get all hoster subscribers
+        /// </summary>
+        /// <param name="hosterId"></param>
+        /// <returns>
+        /// A list of customer objects who subscribed the hoster
+        /// </returns>
+        public async Task<List<Customer>> GetSubscribers(int hosterId)
+        {
+            var subscribers = await _dbContext.Subscriptions
+                .Join(_dbContext.Customers,
+                    s => s.customerIdRef,
+                    c => c.uid,
+                    (s, c) => new
+                    {
+                        s,
+                        c,
+                    })
+                .Where(sub => sub.s.hosterIdRef == hosterId)
+                .Select(sub => sub.c)
+                .Distinct()
+                .ToListAsync();
+
+            return subscribers;
+        }
     }
 }
