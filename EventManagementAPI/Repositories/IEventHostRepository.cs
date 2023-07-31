@@ -9,6 +9,6 @@ namespace EventManagementAPI.Repositories
         Task<List<Hoster>> GetAllEventHosts();
         public Task<Hoster?> GetHosterById(int hosterId);
         public List<Customer> GetBuyers(int eventId);
-        public Task<List<Customer>> GetSubscribers(int hosterId);
+        public Task<List<Customer>> GetSubscribers(int hosterId, DateTime time);
     }
 }

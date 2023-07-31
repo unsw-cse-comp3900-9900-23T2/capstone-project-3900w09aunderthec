@@ -2,6 +2,7 @@
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace EventManagementAPI.Repositories
 {
@@ -70,9 +71,9 @@ namespace EventManagementAPI.Repositories
         /// <returns>
         /// A list of customer objects who subscribed the hoster
         /// </returns>
-        public async Task<List<Customer>> GetSubscribers(int hosterId)
+        public async Task<List<Customer>> GetSubscribers(int hosterId, DateTime time)
         {
-            var subscribers = await _dbContext.Subscriptions
+            var subscribers =await _dbContext.Subscriptions
                 .Join(_dbContext.Customers,
                     s => s.customerIdRef,
                     c => c.uid,
@@ -81,7 +82,7 @@ namespace EventManagementAPI.Repositories
                         s,
                         c,
                     })
-                .Where(sub => sub.s.hosterIdRef == hosterId)
+                .Where(sub => sub.s.hosterIdRef == hosterId && sub.s.subscriptionTime <= time)
                 .Select(sub => sub.c)
                 .Distinct()
                 .ToListAsync();

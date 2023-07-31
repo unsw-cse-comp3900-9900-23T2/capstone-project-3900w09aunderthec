@@ -18,9 +18,13 @@ namespace EventManagementAPI.Controllers
         }
 
         [HttpGet("GetSubscribers")]
-        public async Task<IActionResult> GetSubscribers([FromQuery] int hosterId)
+        public async Task<IActionResult> GetSubscribers([FromQuery] int hosterId, DateTime? time)
         {
-            var subscribers = await _eventHostRepository.GetSubscribers(hosterId);
+            if (!time.HasValue)
+            {
+                time = DateTime.Now;
+            }
+            var subscribers = await _eventHostRepository.GetSubscribers(hosterId, time.Value);
 
             return Ok(subscribers);
         }
