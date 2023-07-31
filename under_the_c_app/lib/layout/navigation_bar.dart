@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 
 class NavigationBarCustom extends ConsumerStatefulWidget {
   final bool isHost;
@@ -38,6 +39,7 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
             sessionVariables.navLocation = 0;
             break;
           case 1:
+            ref.read(eventsProvider.notifier).fetchEvents();
             context.go(AppRoutes.home, extra: 'Home');
             sessionVariables.navLocation = 1;
             break;

@@ -143,21 +143,8 @@ namespace EventManagementAPI.Repositories
         public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags, bool showPreviousEvents, int? eventId)
         {
             IQueryable<Event> query;
-            
-            if (eventId.HasValue)
-            {
-                if (!await _dbContext.Events.AnyAsync(e => e.eventId == eventId))
-                {throw new KeyNotFoundException("eventId does not relate to an existing event");}
 
-                query = _dbContext.Events.Where(e => e.eventId != eventId)
-                    .OrderByDescending(
-                        e => _dbContext.Similarities                        
-                            .Where(s => s.fromEventId == e.eventId && s.toEventId == eventId)
-                            .Select(s => s.value)
-                    );
-            }
-
-            if (uid.HasValue)
+            if (uid.HasValue && sortby != "recommended")
             {
                 if (await _dbContext.Hosts.AnyAsync(h => h.uid == uid))
                 {
@@ -236,13 +223,14 @@ namespace EventManagementAPI.Repositories
                         if (!eventId.HasValue) {throw new KeyNotFoundException("eventId not provided for similarity sorting");}
                         if (!await _dbContext.Events.AnyAsync(e => e.eventId == eventId))
                         {throw new KeyNotFoundException("eventId does not relate to an existing event");}
-
+                        
                         query = query.Where(e => e.eventId != eventId);
 
                         query = query.OrderByDescending(
                             e => _dbContext.Similarities                        
                                 .Where(s => s.fromEventId == e.eventId && s.toEventId == eventId)
                                 .Select(s => s.value)
+                                .First()
                         );
                             
                         break;

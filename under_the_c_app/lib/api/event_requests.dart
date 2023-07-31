@@ -6,9 +6,10 @@ import 'package:under_the_c_app/api/converters/event_converter.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-Future<List<Event>> getAllEvents() async {
+Future<List<Event>> getAllEvents({bool? includePastEvents = false, String? uid, String? eventId, String? sortBy}) async {
   // TODO: [PLHV-203] Event_request.dart: Need to pass variables to getHostEvent, getEvents.
-  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents);
+  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents,
+  {'uid': uid, "showPreviousEvents": includePastEvents.toString(), 'eventId' : eventId, 'sortBy' : sortBy});
   try {
     final response = await http.get(
       registerUrl,
@@ -33,33 +34,33 @@ Future<List<Event>> getAllEvents() async {
   }
 }
 
-Future<List<Event>> getUserEvents(String uid,
-    {bool? includePastEvents = false}) async {
-  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents,
-      {'uid': uid, "showPreviousEvents": includePastEvents.toString()});
-  try {
-    final response = await http.get(
-      registerUrl,
-      headers: APIRoutes.headers,
-    );
+// Future<List<Event>> getUserEvents(String uid,
+//     {bool? includePastEvents = false}) async {
+//   final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents,
+//       {'uid': uid, "showPreviousEvents": includePastEvents.toString()});
+//   try {
+//     final response = await http.get(
+//       registerUrl,
+//       headers: APIRoutes.headers,
+//     );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(response.body);
-      final List<BackendEventData> events =
-          jsonList.map((json) => BackendEventData.fromJson(json)).toList();
-      return BackendDataEventListToEvent(events);
-    } else {
-      throw Exception(
-          'event.dart.getEvents: Server returned status code ${response.statusCode}');
-    }
-  } on SocketException catch (e) {
-    throw Exception('event.dart.getUserEvents: Network error $e');
-  } on HttpException catch (e) {
-    throw Exception('event.dart.getUserEvents: Http Exception error $e');
-  } catch (e) {
-    throw Exception('event.dart.getUserEvents: Unknown error $e');
-  }
-}
+//     if (response.statusCode == 200) {
+//       final List<dynamic> jsonList = jsonDecode(response.body);
+//       final List<BackendEventData> events =
+//           jsonList.map((json) => BackendEventData.fromJson(json)).toList();
+//       return BackendDataEventListToEvent(events);
+//     } else {
+//       throw Exception(
+//           'event.dart.getEvents: Server returned status code ${response.statusCode}');
+//     }
+//   } on SocketException catch (e) {
+//     throw Exception('event.dart.getUserEvents: Network error $e');
+//   } on HttpException catch (e) {
+//     throw Exception('event.dart.getUserEvents: Http Exception error $e');
+//   } catch (e) {
+//     throw Exception('event.dart.getUserEvents: Unknown error $e');
+//   }
+// }
 
 Future<Event> getEventDetails(String id) async {
   final url =

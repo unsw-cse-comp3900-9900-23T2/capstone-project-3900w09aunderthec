@@ -81,9 +81,9 @@ class EventDetailsPage extends ConsumerWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     EventTitle(title: event.title),
-                                    Row(
+                                    sessionVariables.uid.toString() == event.hostuid ? Row(
                                       children: [
-                                        IconButton(
+                                         IconButton(
                                             onPressed: () {
                                               context.go(AppRoutes.eventModify(
                                                   event.eventId!));
@@ -150,11 +150,11 @@ class EventDetailsPage extends ConsumerWidget {
                                               ),
                                             );
                                           },
-                                          icon: const Icon(Icons.delete),
-                                        ),
+                                          icon: const Icon(Icons.delete)),
                                       ],
                                     )
-                                  ],
+                                    : Container(),
+                                  ],                                  
                                 ),
                                 const SizedBox(height: 8),
                                 PriceTag(
@@ -233,36 +233,66 @@ class EventDetailsPage extends ConsumerWidget {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: Container(
-                      // viewInsets.bottom gives that height of the area of the screen not covered by the system UI, here it's
-                      // due to the keyboard being visible
-                      height: MediaQuery.of(context).viewInsets.bottom > 0
-                          ? 0
-                          : 120,
-                      padding: const EdgeInsets.all(30),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (sessionVariables.sessionIsHost &&
-                              sessionVariables.navLocation == 0) {
-                            context.go(AppRoutes.ticketCreate(event.eventId!));
-                          } else if (!sessionVariables.sessionIsHost) {
-                            context.go(AppRoutes.eventBook(
-                                event.eventId!, event.title, event.venue));
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          minimumSize: const Size(150, 0),
-                          padding: const EdgeInsets.all(20),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+                    child: Row(
+                      children: [
+                        Container(
+                          // viewInsets.bottom gives that height of the area of the screen not covered by the system UI, here it's
+                          // due to the keyboard being visible
+                          height: MediaQuery.of(context).viewInsets.bottom > 0
+                              ? 0
+                              : 120,
+                          padding: const EdgeInsets.all(30),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (sessionVariables.sessionIsHost &&
+                                  sessionVariables.navLocation == 0) {
+                                context.go(AppRoutes.ticketCreate(event.eventId!));
+                              } else if (!sessionVariables.sessionIsHost) {
+                                context.go(AppRoutes.eventBook(
+                                    event.eventId!, event.title, event.venue));
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              minimumSize: const Size(135, 0),
+                              padding: const EdgeInsets.all(20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                            ),
+                            child: Text(sessionVariables.sessionIsHost &&
+                                    sessionVariables.navLocation == 0
+                                ? "Create Tickets"
+                                : "Buy Ticket"),
                           ),
                         ),
-                        child: Text(sessionVariables.sessionIsHost &&
-                                sessionVariables.navLocation == 0
-                            ? "Create Tickets"
-                            : "Buy Ticket"),
-                      ),
-                    ),
+                        Container(
+                          // viewInsets.bottom gives that height of the area of the screen not covered by the system UI, here it's
+                          // due to the keyboard being visible
+                          height: MediaQuery.of(context).viewInsets.bottom > 0
+                              ? 0
+                              : 120,
+                          padding: const EdgeInsets.all(30),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ref
+                                .read(eventsProvider
+                                    .notifier)
+                                .fetchEvents(eventId: eventId);
+
+                              context
+                                  .go(AppRoutes.home);
+                            },
+                            style: TextButton.styleFrom(
+                              minimumSize: const Size(130, 0),
+                              padding: const EdgeInsets.all(20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                            ),
+                            child: const Text('Similar Events'),
+                          ),
+                        ),
+                    ])
                   ),
                 ],
               ),
