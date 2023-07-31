@@ -95,17 +95,20 @@ class _CommentState extends ConsumerState<Comment> {
           ),
         ),
         if (_commentFocusNode.hasFocus)
-          ElevatedButton(
-            onPressed: () {
-              ref
-                  .read(commentsProvider(widget.eventId).notifier)
-                  .addComment(comment: commentController.text);
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: ElevatedButton(
+              onPressed: () {
+                ref
+                    .read(commentsProvider(widget.eventId).notifier)
+                    .addComment(comment: commentController.text);
 
-              // clear the text field and unfocus the text field to hide keyboard
-              commentController.clear();
-              _commentFocusNode.unfocus();
-            },
-            child: const Text("Submit"),
+                // clear the text field and unfocus the text field to hide keyboard
+                commentController.clear();
+                _commentFocusNode.unfocus();
+              },
+              child: const Text("Submit"),
+            ),
           )
       ],
     );
@@ -124,7 +127,7 @@ class _CommentState extends ConsumerState<Comment> {
         const SizedBox(height: 15),
         // "What do you want to talk about" section
         column,
-        const SizedBox(height: 90),
+        const SizedBox(height: 30),
         //  a list of comments section
         CommentFilter(eventId: widget.eventId),
         Column(
