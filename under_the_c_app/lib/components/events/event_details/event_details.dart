@@ -224,7 +224,7 @@ class EventDetailsPage extends ConsumerWidget {
                           child: Column(
                             children: [
                               Comment(eventId: event.eventId),
-                              const SizedBox(height: 250)
+                              const SizedBox(height: 250),
                             ],
                           ),
                         ),

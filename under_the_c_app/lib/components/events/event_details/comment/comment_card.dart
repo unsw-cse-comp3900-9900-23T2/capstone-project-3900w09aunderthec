@@ -9,6 +9,8 @@ import 'package:under_the_c_app/types/events/comment_type.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/users/customer_type.dart';
 
+import '../../../../functions/time/time_converter.dart';
+
 class CommentCard extends ConsumerStatefulWidget {
   final CommentT comment;
   const CommentCard({required this.comment, super.key});
@@ -161,9 +163,9 @@ class CommentCardState extends ConsumerState<CommentCard> {
                                   style: const TextStyle(fontSize: 17),
                                 ),
                                 const SizedBox(height: 4),
-                                const Text(
-                                  "March 24, 15:14",
-                                  style: TextStyle(
+                                Text(
+                                  '${getMonthName(widget.comment.createdTime.toString())} ${getDay(widget.comment.createdTime.toString())}, ${getTime(widget.comment.createdTime.toString())}',
+                                  style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,
                                       letterSpacing: 0.4),

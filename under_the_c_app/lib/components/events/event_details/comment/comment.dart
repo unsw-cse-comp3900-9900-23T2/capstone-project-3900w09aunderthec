@@ -6,6 +6,8 @@ import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/providers/user_providers.dart';
 import 'package:under_the_c_app/types/events/comment_type.dart';
 
+import 'comment_filter.dart';
+
 class Comment extends ConsumerStatefulWidget {
   final eventId;
   const Comment({required this.eventId, Key? key}) : super(key: key);
@@ -40,6 +42,76 @@ class _CommentState extends ConsumerState<Comment> {
   Widget build(BuildContext context) {
     final comments = ref.watch(commentsProvider(widget.eventId));
     final user = ref.watch(userProvider);
+    var column = Column(
+      children: [
+        Row(
+          children: [
+            // for profile picture
+            const CircleAvatar(
+              backgroundImage: AssetImage('images/users/guy.jpg'),
+              radius: 25,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              // for the "name" and "public"
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user?.userName ?? "Me",
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.public,
+                        size: 17,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        "Public",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                            letterSpacing: 0.5),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+        TextField(
+          controller: commentController,
+          focusNode: _commentFocusNode,
+          maxLines: null,
+          decoration: const InputDecoration(
+            hintText: 'What do you want to talk about?',
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 3),
+          ),
+        ),
+        if (_commentFocusNode.hasFocus)
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: ElevatedButton(
+              onPressed: () {
+                ref
+                    .read(commentsProvider(widget.eventId).notifier)
+                    .addComment(comment: commentController.text);
+
+                // clear the text field and unfocus the text field to hide keyboard
+                commentController.clear();
+                _commentFocusNode.unfocus();
+              },
+              child: const Text("Submit"),
+            ),
+          )
+      ],
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -54,103 +126,23 @@ class _CommentState extends ConsumerState<Comment> {
         ),
         const SizedBox(height: 15),
         // "What do you want to talk about" section
+        column,
+        const SizedBox(height: 30),
+        //  a list of comments section
+        CommentFilter(eventId: widget.eventId),
         Column(
           children: [
-            Row(
-              children: [
-                // for profile picture
-                const CircleAvatar(
-                  backgroundImage: AssetImage('images/users/guy.jpg'),
-                  radius: 25,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  // for the "name" and "public"
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user?.userName ?? "Me",
-                        style: TextStyle(fontSize: 18),
+            ...comments
+                .map((CommentT comment) => Padding(
+                      key: ValueKey(comment.id),
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: CommentCard(
+                        comment: comment,
                       ),
-                      SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.public,
-                            size: 17,
-                            color: Colors.grey[600],
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            "Public",
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                                letterSpacing: 0.5),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            // my comment section
-            TextField(
-              controller: commentController,
-              focusNode: _commentFocusNode,
-              maxLines: null,
-              decoration: const InputDecoration(
-                hintText: 'What do you want to talk about?',
-                border: InputBorder.none,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 15, horizontal: 3),
-              ),
-            ),
-            if (_commentFocusNode.hasFocus)
-              ElevatedButton(
-                onPressed: () {
-                  ref
-                      .read(commentsProvider(widget.eventId).notifier)
-                      .addComment(comment: commentController.text);
-
-                  // clear the text field and unfocus the text field to hide keyboard
-                  commentController.clear();
-                  _commentFocusNode.unfocus();
-                },
-                child: const Text("Submit"),
-              )
+                    ))
+                .toList()
           ],
         ),
-        // applying lazy load
-        ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: comments.length,
-            itemBuilder: (context, index) {
-              final comment = comments[index];
-              return Padding(
-                key: ValueKey(comment.id),
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: CommentCard(
-                  comment: comment,
-                ),
-              );
-            }),
-        // Column(
-        //   children: [
-        //     ...comments
-        //         .map((CommentT comment) => Padding(
-        //               key: ValueKey(comment.id),
-        //               padding: const EdgeInsets.only(bottom: 10.0),
-        //               child: CommentCard(
-        //                 comment: comment,
-        //               ),
-        //             ))
-        //         .toList()
-        //   ],
-        // ),
         // make sure there's enough space when there's no comment
         _commentFocusNode.hasFocus ? const SizedBox(height: 180) : Container()
       ],

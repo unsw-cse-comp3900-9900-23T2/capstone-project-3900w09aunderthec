@@ -58,6 +58,6 @@ CommentT backendDataSingleUnpinnedCommentToComment(data) {
     replyToId: data['commentId'].toString(),
     nLikes: data['likes'],
     nDislikes: data['dislikes'],
-    createdTime: DateTime.parse(data['createdTime']),
+    createdTime: DateTime.parse(data['createdTime']).toLocal(),
   );
 }
