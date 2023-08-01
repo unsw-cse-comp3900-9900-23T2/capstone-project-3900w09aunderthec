@@ -184,5 +184,32 @@ namespace EventManagementAPI.Repositories
 
             return percentageBeaten;
         }
+
+        public async Task<List<int>> GetEventsYearlyDistribution(int hosterId)
+        {
+            var currentDate = DateTime.Now;
+            var startDate = new DateTime(currentDate.Year, 1, 1);
+            var endDate = new DateTime(currentDate.Year, 12, 31, 23, 59, 59);
+
+            var eventsByMonth = await _dbContext.Events
+                .Where(e => e.hosterFK == hosterId && e.eventTime >= startDate && e.eventTime <= endDate)
+                .GroupBy(e => e.eventTime.Month)
+                .OrderBy(group => group.Key)
+                .Select(group => new
+                {
+                    month = group.Key,
+                    count = group.Count(),
+                })
+                .ToListAsync();
+
+            var eventCountsArray = new List<int>();
+            for (int month = 1; month <= 12; month++)
+            {
+                int count = eventsByMonth.FirstOrDefault(e => e.month == month)?.count ?? 0;
+                eventCountsArray.Add(count);
+            }
+
+            return eventCountsArray;
+        }
     }
 }

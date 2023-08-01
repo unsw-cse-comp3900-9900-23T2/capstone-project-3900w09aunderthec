@@ -51,6 +51,14 @@ namespace EventManagementAPI.Controllers
 
             return Ok(percentage);
         }
+
+        [HttpGet("GetEventsYearlyDistribution")]
+        public async Task<IActionResult> GetEventsYearlyDistribution([FromQuery] int hosterId)
+        {
+            var events = await _eventHostRepository.GetEventsYearlyDistribution(hosterId);
+
+            return Ok(events);
+        }
     }
 }
 
