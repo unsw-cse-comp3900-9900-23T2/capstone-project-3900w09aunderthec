@@ -6,7 +6,7 @@ List<Event> BackendDataEventListToEvent(data) {
   for (var event in data) {
     events.add(
       Event(
-        hostuid: event.hosterFK.toString(),
+        hostuid: event.hosterId.toString(),
         title: event.title,
         eventId: event.eventId.toString(),
         imageUrl: 'images/events/money-event.jpg',
@@ -14,8 +14,7 @@ List<Event> BackendDataEventListToEvent(data) {
         venue: event.venue,
         rating: event.rating,
         tags: [event.tags],
-        // TODO: [PLHV-198] EventCreate: We need set up price in the backend, can't always have price = 0.
-        price: 0,
+        price: event.price,
         description: event.description,
       ),
     );
@@ -35,7 +34,6 @@ Event BackendDataSingleEventToEvent(data) {
     isDirectRefunds: data['isDirectRefunds'],
     isPrivate: data['isPrivateEvent'],
     tags: [data['tags'].toString()],
-    // TODO: [PLHV-198] EventCreate: We need set up price in the backend, can't always have price = 0.
     price: 0,
     description: data['description'],
   );

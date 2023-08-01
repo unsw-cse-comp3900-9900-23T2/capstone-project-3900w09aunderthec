@@ -46,7 +46,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/',
         pageBuilder: (context, state) {
-          // TODO: [PLHV-204] App_router.dart: When the user login, it doesn't get stored to the db
           return const MaterialPage(child: LoginPage());
         },
       ),
@@ -78,7 +77,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               isHost: sessionVariables.sessionIsHost);
         },
 
-        // TODO: [PLHV-201] Reset page needs to be different, we need to provide going back button and potential nav bar
         routes: <RouteBase>[
           GoRoute(
             path: AppRoutes.reset,

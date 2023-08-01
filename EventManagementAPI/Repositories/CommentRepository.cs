@@ -126,7 +126,7 @@ namespace EventManagementAPI.Repositories
             if (user == null)
             {
                 user ??= await _dbContext.Hosts.FindAsync(uid) ?? throw new KeyNotFoundException("no relevant user found");
-                if (user.uid != e.hosterFK) throw new UnauthorizedAccessException("only this event hosters can reply");
+                if (user.uid != e.hosterId) throw new UnauthorizedAccessException("only this event hosters can reply");
             }
 
             var newComment = new Comment

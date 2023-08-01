@@ -26,7 +26,7 @@ class EventsFilterState extends ConsumerState<EventsFilter> {
       selectedSortTagIndex = selectedSortTagIndex == index ? null : index;
       sortTagSelected = !sortTagSelected;
 
-      // for recency, popularity and price only
+      // for soonness, popularity and price only
       for (var i = 0; i < 3; i++) {
         filterList[i] = FilterItem(
             name: filterList[i].name,
@@ -40,9 +40,9 @@ class EventsFilterState extends ConsumerState<EventsFilter> {
   void generateFilterList() {
     filterList = [
       FilterItem(
-        name: 'Recency',
+        name: 'Soonness',
         icon: const Icon(Icons.timelapse_outlined),
-        value: EventSortType.recency,
+        value: EventSortType.soonness,
         selected: sortTagSelected,
       ),
       FilterItem(
@@ -56,61 +56,7 @@ class EventsFilterState extends ConsumerState<EventsFilter> {
         icon: const Icon(Icons.currency_yuan),
         value: EventSortType.price,
         selected: sortTagSelected,
-      ),
-      FilterItem(
-        name: 'Arts',
-        icon: const Icon(Icons.draw),
-        value: EventFilterType.arts,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Business',
-        icon: const Icon(Icons.business),
-        value: EventFilterType.business,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Comedy',
-        icon: const Icon(Icons.theater_comedy),
-        value: EventFilterType.comedy,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Food & Drink',
-        icon: const Icon(Icons.food_bank),
-        value: EventFilterType.foodDrink,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Fashion',
-        icon: const Icon(Icons.girl),
-        value: EventFilterType.fashion,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Music',
-        icon: const Icon(Icons.music_note),
-        value: EventFilterType.music,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Sport',
-        icon: const Icon(Icons.sports),
-        value: EventFilterType.sport,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Science',
-        icon: const Icon(Icons.science),
-        value: EventFilterType.science,
-        selected: false,
-      ),
-      FilterItem(
-        name: 'Others',
-        icon: const Icon(Icons.collections),
-        value: EventFilterType.others,
-        selected: false,
-      ),
+      )
     ];
   }
 
@@ -125,7 +71,7 @@ class EventsFilterState extends ConsumerState<EventsFilter> {
           padding: const EdgeInsets.only(right: 6.0),
           child: ElevatedButton(
             onPressed: () {
-              // for the sorting tags "recency, popularity, price"
+              // for the sorting tags "soonness, popularity, price"
               if (index <= 2) {
                 // when not selected, and then click, it causes sort
                 if (!filterItem.selected) {

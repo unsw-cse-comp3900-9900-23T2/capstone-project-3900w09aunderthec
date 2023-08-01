@@ -146,5 +146,13 @@ namespace EventManagementAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("IsEventSaved")]
+        public async Task<IActionResult> IsEventSaved([FromQuery] int customerId, int eventId)
+        {
+            var isEventSaved = await _customerRepository.isSaved(customerId, eventId);
+
+            return Ok(isEventSaved);
+        }
     }
 }
