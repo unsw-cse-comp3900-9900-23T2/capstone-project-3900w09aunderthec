@@ -8,6 +8,8 @@ import '../../../providers/booking_providers.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:ticket_widget/ticket_widget.dart';
 
+import '../../../providers/ticket_providers.dart';
+
 class ViewBookingPage extends ConsumerWidget {
   const ViewBookingPage({
     Key? key,
@@ -15,8 +17,8 @@ class ViewBookingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final myBookings =
-        ref.watch(bookingsProvider(sessionVariables.uid.toString()));
+    final String uid = sessionVariables.uid.toString();
+    final myBookings = ref.watch(bookingsProvider(uid));
 
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -205,6 +207,14 @@ class ViewBookingPage extends ConsumerWidget {
                                                                 "Cancellation requests must be made at least 7 days prior to the event."),
                                                           ),
                                               );
+                                              successCancel
+                                                  ? ref
+                                                      .read(ticketsProvider(
+                                                              booking.eventId)
+                                                          .notifier)
+                                                      .fetchTickets(
+                                                          booking.eventId)
+                                                  : null;
                                             },
                                             child: const Text('Yes'),
                                           ),

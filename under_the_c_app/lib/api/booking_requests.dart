@@ -18,8 +18,6 @@ Future<List<Booking>> getBookings(String uid) async {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
-      // print(jsonList);
-      // return jsonList.map((json) => Booking.fromJson(json)).toList();
       return getAllBackendBooking(jsonList);
     } else {
       throw Exception('GetBookings API ERROR: ${response.statusCode}');
