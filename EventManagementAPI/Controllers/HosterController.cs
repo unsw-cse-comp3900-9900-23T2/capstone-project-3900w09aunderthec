@@ -28,6 +28,19 @@ namespace EventManagementAPI.Controllers
 
             return Ok(subscribers);
         }
+
+        [HttpGet("GetTicketsSold")]
+        public async Task<IActionResult> GetTicketsSold([FromQuery] int hosterId, DateTime? time)
+        {
+            if (!time.HasValue)
+            {
+                time = DateTime.Now;
+            }
+
+            var ticketsSold = await _eventHostRepository.GetTicketsSold(hosterId, time.Value);
+
+            return Ok(ticketsSold);
+        }
     }
 }
 
