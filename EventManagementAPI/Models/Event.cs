@@ -10,12 +10,12 @@ namespace EventManagementAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int eventId { get; set; }
-        [ForeignKey("hosterFK")]
+        [ForeignKey("hosterId")]
         [Required]
         [JsonIgnore]
         public Hoster host { get; set; }
         [Required]
-        public int hosterFK { get; set; }
+        public int hosterId { get; set; }
         public String title { get; set; }
         public String venue { get; set; }
         public DateTime eventTime { get; set; }

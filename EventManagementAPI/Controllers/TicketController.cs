@@ -67,7 +67,6 @@ namespace EventManagementAPI.Controllers{
                 name = RequestBody.name,
                 price = RequestBody.price,
                 eventIdRef = RequestBody.eventId,
-                toEvent = existingEvent,
                 stock = RequestBody.stock,
                 availableTime = RequestBody.availableTime,
             };

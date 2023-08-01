@@ -95,7 +95,7 @@ namespace EventManagementAPI.Controllers{
 
             var newEvent = new Event
             {
-                hosterFK = RequestBody.uid,
+                hosterId = RequestBody.uid,
                 title = RequestBody.title,
                 eventTime = RequestBody.eventTime,
                 venue = RequestBody.venue,
@@ -121,8 +121,8 @@ namespace EventManagementAPI.Controllers{
         [HttpPut("ModifyEvent")]
         public async Task<IActionResult> ModifyEvent([FromBody] ModifyEventRequestBody RequestBody)
         {
-            var e = await _eventRepository.GetEventById(RequestBody.eventId);
-            if (e == null)
+            var eventDetails = await _eventRepository.GetEventById(RequestBody.eventId);
+            if (eventDetails == null)
             {
                 return NotFound("That event does not exist");
             }
@@ -132,7 +132,7 @@ namespace EventManagementAPI.Controllers{
                 eventId = RequestBody.eventId,
                 title = RequestBody.title,
                 eventTime = RequestBody.eventTime,
-                createdTime = e.createdTime,
+                createdTime = eventDetails.createdTime,
                 venue = RequestBody.venue,
                 description = RequestBody.description,
                 isDirectRefunds = RequestBody.isDirectRefunds,
@@ -161,7 +161,7 @@ namespace EventManagementAPI.Controllers{
                 return NotFound();
             }
 
-            var hosterId = e.hosterFK;
+            var hosterId = e.hosterId;
             var hoster = _eventHostRepository.GetHosterById(hosterId);
 
             return Ok(e);

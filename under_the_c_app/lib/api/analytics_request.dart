@@ -119,6 +119,9 @@ Future<double> getPercentageBeatenBy(String uid, String rankedBy) async {
     );
 
     if (response.statusCode == 200) {
+      if (response.body == "\"NaN\"") {
+        return 0.0;
+      }
       final double data = double.parse(response.body);
       return data;
     } else {

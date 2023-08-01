@@ -46,7 +46,7 @@ const List<Widget> eventTypes = <Widget>[
 
 class BackendEventData {
   final int eventId;
-  final int hosterFK;
+  final int hosterId;
   final String title;
   final DateTime time;
   final String venue;
@@ -55,10 +55,11 @@ class BackendEventData {
   final bool isPrivateEvent;
   final double? rating;
   final String tags;
+  final double price;
 
   BackendEventData({
     required this.eventId,
-    required this.hosterFK,
+    required this.hosterId,
     required this.title,
     required this.time,
     required this.venue,
@@ -67,16 +68,17 @@ class BackendEventData {
     required this.isPrivateEvent,
     required this.rating,
     required this.tags,
+    required this.price
   });
   @override
   String toString() {
-    return 'AllEvents(eventId: $eventId, hosterFK: $hosterFK, title: $title, time: $time, venue: $venue, description: $description, isDirectRefunds: $isDirectRefunds, isPrivateEvent: $isPrivateEvent, rating: $rating, tags: $tags)';
+    return 'AllEvents(eventId: $eventId, hosterId: $hosterId, title: $title, time: $time, venue: $venue, description: $description, isDirectRefunds: $isDirectRefunds, isPrivateEvent: $isPrivateEvent, rating: $rating, tags: $tags)';
   }
 
   factory BackendEventData.fromJson(Map<String, dynamic> json) {
     return BackendEventData(
       eventId: json['eventId'],
-      hosterFK: json['hosterId'],
+      hosterId: json['hosterId'],
       title: json['title'],
       time: DateTime.parse(json['eventTime']),
       venue: json['venue'],
@@ -85,6 +87,7 @@ class BackendEventData {
       isPrivateEvent: json['isPrivateEvent'],
       rating: json['rating'],
       tags: json['tags'],
+      price: json['cheapestPrice']
     );
   }
 }
