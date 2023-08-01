@@ -41,6 +41,16 @@ namespace EventManagementAPI.Controllers
 
             return Ok(ticketsSold);
         }
+
+        [HttpGet("GetPercentageBeaten")]
+        public async Task<IActionResult> GetPercentageBeaten([FromQuery] int hosterId, string? rankBy)
+        {
+            rankBy ??= "subscribers";
+
+            var percentage = await _eventHostRepository.GetPercentageBeaten(hosterId, rankBy);
+
+            return Ok(percentage);
+        }
     }
 }
 
