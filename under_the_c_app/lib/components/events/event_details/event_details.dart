@@ -313,13 +313,13 @@ class EventDetailsPage extends ConsumerWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           if (sessionVariables.sessionIsHost &&
-                              sessionVariables.navLocation == 0) {
+                              sessionVariables.navLocation == 1) {
                             context.go(AppRoutes.ticketCreate(event.eventId!));
                           } else if (!sessionVariables.sessionIsHost) {
                             context.go(AppRoutes.eventBook(
                                 event.eventId!, event.title, event.venue));
                           } else if (sessionVariables.sessionIsHost &&
-                              sessionVariables.navLocation == 1) {
+                              sessionVariables.navLocation == 2) {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -348,7 +348,7 @@ class EventDetailsPage extends ConsumerWidget {
                           ),
                         ),
                         child: Text(sessionVariables.sessionIsHost &&
-                                sessionVariables.navLocation == 0
+                                sessionVariables.navLocation == 1
                             ? "Create Tickets"
                             : "Buy Ticket"),
                       ),
