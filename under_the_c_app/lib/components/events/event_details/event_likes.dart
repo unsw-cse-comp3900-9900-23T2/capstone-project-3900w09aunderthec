@@ -27,25 +27,41 @@ class _EventLikesState extends ConsumerState<EventLikes> {
     getInitialValues();
   }
 
+  // void didUpdateWidget(EventLikes oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (oldWidget.eventId != widget.eventId) {
+  //     setState(() {
+  //       if (isLike) {
+  //         nLikes += 1;
+  //       } else {
+  //         nLikes -= 1;
+  //       }
+  //     });
+  //   }
+  // }
+
   Future<void> getInitialValues() async {
-    isLike =
+    bool isLiked =
         await isEventLikedAPI(sessionVariables.uid.toString(), widget.eventId);
-    setState(() {}); // Call setState to rebuild the widget with new values.
+    final event = await getEventDetails(widget.eventId);
+
+    setState(() {
+      isLike = isLiked;
+      nLikes = event.rating!;
+    });
   }
 
-  void toggleIsLike() async {
-    setState(() {
-      isLike = !isLike;
-      if (isLike) {
-        nLikes += 1;
-      } else {
-        nLikes -= 1;
-      }
-    });
+  Future<void> toggleIsLike() async {
+    bool updatedLikeStatus = !isLike;
 
-    //update in the backend
+    // Update in the backend first.
     await toggleLikeEventAPI(sessionVariables.uid.toString(), widget.eventId);
 
+    // Then update the UI.
+    setState(() {
+      isLike = updatedLikeStatus;
+      nLikes += updatedLikeStatus ? 1 : -1;
+    });
   }
 
   @override
