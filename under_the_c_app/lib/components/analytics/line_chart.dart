@@ -6,10 +6,10 @@ import 'package:under_the_c_app/config/session_variables.dart';
 import '../../providers/analytics_providers.dart';
 import 'line_titles.dart';
 
-Widget lineChartLayout(List<List<int>> data, double maxYAxisVal) {
+Widget lineChartLayout(List<List<int>> data, {double maxYAxisVal = 10.0}) {
   // background color for the area below the line
   final List<Color> gradientColors = [
-    Color.fromARGB(255, 1, 205, 79),
+    Color.fromARGB(255, 112, 255, 41),
     Color.fromARGB(255, 174, 210, 188),
   ];
 
@@ -46,7 +46,7 @@ Widget lineChartLayout(List<List<int>> data, double maxYAxisVal) {
         LineChartBarData(
           spots: dataInfo,
           isCurved: false,
-          color: const Color.fromARGB(255, 16, 202, 72),
+          color: Color.fromARGB(255, 30, 215, 86),
           barWidth: 3,
           // hide dots
           dotData: const FlDotData(show: false),
@@ -67,20 +67,36 @@ class LineChartWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final uid = sessionVariables.uid;
-    AsyncValue<List<int>> futureHostedEventsData =
+    final futureHostedEventsData =
         ref.watch(eventsYearlyDistributionProvider(uid.toString()));
-    return futureHostedEventsData.when(
-        data: (data) {
-          int maxVal = 0;
-          final lineGraphData = data.asMap().entries.map((e) {
-            if (e.value > maxVal) {
-              maxVal = e.value;
-            }
-            return [e.key, e.value];
-          }).toList();
-          return lineChartLayout(lineGraphData, maxVal.toDouble());
-        },
-        error: (err, stack) => Text("Error: $err"),
-        loading: () => lineChartLayout([], 10));
+
+    // when the data is not fetched yet, we display a default line graph with the max height of 10
+    if (futureHostedEventsData.isEmpty) {
+      // Display other widget while data is not loaded
+      return lineChartLayout([], maxYAxisVal: 10.0);
+    }
+
+    int maxVal = 0;
+    final lineGraphData = futureHostedEventsData.asMap().entries.map((e) {
+      if (e.value > maxVal) {
+        maxVal = e.value;
+      }
+      return [e.key, e.value];
+    }).toList();
+    return lineChartLayout(lineGraphData, maxYAxisVal: maxVal.toDouble());
+    // return futureHostedEventsData.when(
+    //   data: (data) {
+    //     int maxVal = 0;
+    //     final lineGraphData = data.asMap().entries.map((e) {
+    //       if (e.value > maxVal) {
+    //         maxVal = e.value;
+    //       }
+    //       return [e.key, e.value];
+    //     }).toList();
+    //     return lineChartLayout(lineGraphData, maxVal.toDouble());
+    //   },
+    //   error: (err, stack) => Text("Error: $err"),
+    //   loading: () => lineChartLayout([], 10),
+    // );
   }
 }

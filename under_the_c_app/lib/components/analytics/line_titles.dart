@@ -80,6 +80,13 @@ class LineTitles {
         topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
+          axisNameSize: 18,
+          axisNameWidget: Text(
+            "Hosted Events",
+            style: TextStyle(
+                color: Color.fromARGB(255, 0, 204, 88),
+                fontWeight: FontWeight.bold),
+          ),
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 15,
@@ -88,6 +95,13 @@ class LineTitles {
           ),
         ),
         bottomTitles: AxisTitles(
+          axisNameSize: 18,
+          axisNameWidget: Text(
+            "Time",
+            style: TextStyle(
+                color: Color.fromARGB(255, 0, 204, 88),
+                fontWeight: FontWeight.bold),
+          ),
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,

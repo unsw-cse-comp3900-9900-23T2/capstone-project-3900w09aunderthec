@@ -19,7 +19,7 @@ class AnalyticsPage extends StatelessWidget {
             // for the line graph card
             Card(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(25, 25, 15, 15),
+                padding: const EdgeInsets.fromLTRB(12, 25, 18, 15),
                 child: Container(
                   height: 240,
                   child: LineChartWidget(),
