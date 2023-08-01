@@ -64,8 +64,11 @@ class EventsProvider extends StateNotifier<List<Event>> {
     if (eventId != null) {
       state = await getAllEvents(sortBy: "similarity", eventId: eventId);
     } else if (sessionVariables.sessionIsHost == false) {
-      state = await getAllEvents(uid: sessionVariables.uid.toString(), sortBy: "recommended");
-    } else {state = await getAllEvents();}
+      state = await getAllEvents(
+          uid: sessionVariables.uid.toString(), sortBy: "recommended");
+    } else {
+      state = await getAllEvents();
+    }
     setEvents(state);
   }
 
@@ -106,8 +109,8 @@ class EventsProvider extends StateNotifier<List<Event>> {
         final List<Event> sortedEvents = List.from(_allEvents)
           ..sort(
             (a, b) {
-              double aRating = a.rating ?? -10.0;
-              double bRating = b.rating ?? -10.0;
+              int aRating = a.rating ?? -10;
+              int bRating = b.rating ?? -10;
               return aRating.compareTo(bRating);
             },
           );

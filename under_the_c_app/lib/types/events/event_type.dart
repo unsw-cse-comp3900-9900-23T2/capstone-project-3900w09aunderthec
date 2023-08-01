@@ -10,7 +10,7 @@ class Event {
   final String imageUrl;
   final String description;
   final bool? isDirectRefunds;
-  final double? rating;
+  final int? rating;
   final List<String>? tags;
   // final Address address;
   final String venue;
@@ -25,7 +25,7 @@ class Event {
       required this.venue,
       String? description,
       bool? isDirectRefunds,
-      this.rating,
+      int? this.rating,
       bool? isPrivate,
       List<String>? tags,
       required this.price,
@@ -53,7 +53,7 @@ class BackendEventData {
   final String description;
   final bool isDirectRefunds;
   final bool isPrivateEvent;
-  final double? rating;
+  final int? rating;
   final String tags;
 
   BackendEventData({
@@ -83,7 +83,7 @@ class BackendEventData {
       description: json['description'],
       isDirectRefunds: json['isDirectRefunds'],
       isPrivateEvent: json['isPrivateEvent'],
-      rating: json['rating'],
+      rating: json['rating'].toInt(),
       tags: json['tags'],
     );
   }
