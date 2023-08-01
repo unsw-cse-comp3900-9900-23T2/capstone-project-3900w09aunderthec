@@ -185,6 +185,13 @@ namespace EventManagementAPI.Repositories
             return percentageBeaten;
         }
 
+        /// <summary>
+        /// Get a list of events hosted this year
+        /// </summary>
+        /// <param name="hosterId"></param>
+        /// <returns>
+        /// An array represents the number of events hosted in the month order this year
+        /// </returns>
         public async Task<List<int>> GetEventsYearlyDistribution(int hosterId)
         {
             var currentDate = DateTime.Now;
@@ -210,6 +217,13 @@ namespace EventManagementAPI.Repositories
             }
 
             return eventCountsArray;
+        }
+
+        public int GetNumberOfHostedEvents(int hosterId)
+        {
+            var numberOfHostedEvents = _dbContext.Events.Where(e => e.hosterFK == hosterId).Count();
+
+            return numberOfHostedEvents;
         }
     }
 }

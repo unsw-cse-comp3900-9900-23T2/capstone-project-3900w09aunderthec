@@ -14,5 +14,6 @@ namespace EventManagementAPI.Repositories
         public Task<List<TicketSoldDto>> GetTicketsSold(int hosterId, DateTime time);
         public Task<double> GetPercentageBeaten(int hosterId, string rankBy);
         public Task<List<int>> GetEventsYearlyDistribution(int hosterId);
+        public int GetNumberOfHostedEvents(int hosterId);
     }
 }
