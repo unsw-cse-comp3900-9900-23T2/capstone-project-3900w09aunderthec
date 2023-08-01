@@ -45,7 +45,10 @@ class APIRoutes {
   // ===========================CUSTOMER ROUTES=================================
   static const String subscribe = 'api/Customer/Subscribe';
 
+  // ============================BOOKING ROUTES==================================
   static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
+  static String getBookingDetail(String bookingId) =>
+      'api/Booking/GetBookingDetails/$bookingId';
   static const String cancelBooking = 'api/Booking/CancelBooking';
 
   // ===========================Analytics ROUTES=================================
