@@ -274,7 +274,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               child: ToggleButton(
                 onSelectionChanged: (handleSelectionChanged) {
-                  isPrivateEvent = handleSelectionChanged[0];
+                  isDirectRefunds = handleSelectionChanged[0];
                 },
                 boolList: refundType,
               )),

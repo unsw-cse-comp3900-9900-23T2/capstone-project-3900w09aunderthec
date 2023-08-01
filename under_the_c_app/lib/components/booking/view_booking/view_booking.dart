@@ -205,7 +205,7 @@ class ViewBookingPage extends ConsumerWidget {
                                                                       .center,
                                                             ),
                                                             content: Text(
-                                                                "Cancellation requests must be made at least 7 days prior to the event."),
+                                                                "Cancellation requests must be made at least 7 days prior to the event or event is non refundable."),
                                                           ),
                                               );
                                               successCancel
