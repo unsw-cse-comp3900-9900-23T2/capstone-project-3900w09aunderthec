@@ -23,6 +23,7 @@ class APIRoutes {
   static const String modifyEvent = '/EventCreation/ModifyEvent';
   static const String cancelEvent = '/EventCreation/CancelEvent';
   static const String emailNotification = '/EventCreation/EmailNotification';
+  static const String toggleLikeEvent = '/api/customer/SaveEvent';
 
   // ============================TICKET ROUTES==================================
   static const String getTicket = '/Ticket/ShowTicketDetails';

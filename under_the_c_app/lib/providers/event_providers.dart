@@ -165,3 +165,20 @@ final eventsByUserProvider =
     return EventsByUserProvider(uid);
   },
 );
+
+// rating providers
+// class RatingNotifier extends StateNotifier<int> {
+//   final uid = sessionVariables.uid;
+//   final String eventId;
+//   RatingNotifier(this.eventId) : super(0) {
+//     fetchRating();
+//   }
+
+//   Future<void> toggleLikeEventAPI() async {
+//     state = await (uid, eventId);
+//   }
+// }
+
+// final ratingProvider =
+//     StateNotifierProvider.family<RatingNotifier, int, String>(
+//         (ref, eventId) => RatingNotifier());

@@ -6,10 +6,18 @@ import 'package:under_the_c_app/api/converters/event_converter.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
-Future<List<Event>> getAllEvents({bool? includePastEvents = false, String? uid, String? eventId, String? sortBy}) async {
+Future<List<Event>> getAllEvents(
+    {bool? includePastEvents = false,
+    String? uid,
+    String? eventId,
+    String? sortBy}) async {
   // TODO: [PLHV-203] Event_request.dart: Need to pass variables to getHostEvent, getEvents.
-  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents,
-  {'uid': uid, "showPreviousEvents": includePastEvents.toString(), 'eventId' : eventId, 'sortBy' : sortBy});
+  final registerUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getEvents, {
+    'uid': uid,
+    "showPreviousEvents": includePastEvents.toString(),
+    'eventId': eventId,
+    'sortBy': sortBy
+  });
   try {
     final response = await http.get(
       registerUrl,
@@ -203,5 +211,25 @@ Future<void> sendNotification(
     throw Exception('event.dart.cancelEvent: Http Exception error $e');
   } catch (e) {
     throw Exception('event.dart.cancelEvent: Unknown error $e');
+  }
+}
+
+Future<void> toggleLikeEventAPI(String customerId, String eventId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.toggleLikeEvent);
+  try {
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode({"customerId": customerId, "eventId": eventId}),
+    );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.toggleLikeEventAPI: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.toggleLikeEventAPI: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.toggleLikeEventAPI: Unknown error $e');
   }
 }

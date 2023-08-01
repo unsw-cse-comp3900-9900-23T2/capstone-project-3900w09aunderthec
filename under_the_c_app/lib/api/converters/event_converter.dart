@@ -31,7 +31,7 @@ Event BackendDataSingleEventToEvent(data) {
     imageUrl: 'images/events/money-event.jpg',
     time: data['eventTime'].toString(),
     venue: data['venue'],
-    rating: data['numberOfRatings'],
+    rating: data['numberSaved'],
     isDirectRefunds: data['isDirectRefunds'],
     isPrivate: data['isPrivateEvent'],
     tags: [data['tags'].toString()],

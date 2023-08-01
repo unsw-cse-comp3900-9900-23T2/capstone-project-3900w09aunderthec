@@ -1,10 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
+
+import '../../../api/event_requests.dart';
+import '../../../providers/event_providers.dart';
 
 class EventLikes extends ConsumerStatefulWidget {
   int countLikes = 0;
-  EventLikes({Key? key, required this.countLikes}) : super(key: key);
+  String eventId;
+  EventLikes({Key? key, required this.countLikes, required this.eventId})
+      : super(key: key);
 
   @override
   _EventLikesState createState() => _EventLikesState();
@@ -20,7 +26,7 @@ class _EventLikesState extends ConsumerState<EventLikes> {
     nLikes = widget.countLikes;
   }
 
-  void toggleIsLike() {
+  void toggleIsLike() async {
     setState(() {
       isLike = !isLike;
       if (isLike) {
@@ -29,6 +35,14 @@ class _EventLikesState extends ConsumerState<EventLikes> {
         nLikes -= 1;
       }
     });
+
+    await toggleLikeEventAPI(sessionVariables.uid.toString(), widget.eventId);
+
+    // ref
+    //     .read(eventsByUserProvider(widget.eventId).notifier)
+    //     .fetchEvents(sessionVariables.uid.toString());
+      
+    // ref.read(eventsProvider())
   }
 
   @override
