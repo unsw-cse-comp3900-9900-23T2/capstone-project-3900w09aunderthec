@@ -9,6 +9,7 @@ import 'package:under_the_c_app/components/events/slim_button.dart';
 import 'package:under_the_c_app/components/functions/time/time_converter.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/analytics_providers.dart';
 import 'package:under_the_c_app/providers/comment_providers.dart';
 import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/providers/user_providers.dart';
@@ -82,80 +83,90 @@ class EventDetailsPage extends ConsumerWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     EventTitle(title: event.title),
-                                    sessionVariables.uid.toString() == event.hostuid ? Row(
-                                      children: [
-                                         IconButton(
-                                            onPressed: () {
-                                              context.go(AppRoutes.eventModify(
-                                                  event.eventId!));
-                                            },
-                                            icon: const Icon(Icons.edit)),
-                                        IconButton(
-                                          onPressed: () {
-                                            showDialog<String>(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                title:
-                                                    const Text('Delete Event'),
-                                                content:
-                                                    const Text('Are you sure?'),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            context, 'Cancel'),
-                                                    child: const Text('Cancel'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      ref
-                                                          .read(eventsProvider
-                                                              .notifier)
-                                                          .removeEvent(
-                                                            Event(
-                                                              hostuid:
+                                    sessionVariables.uid.toString() ==
+                                            event.hostuid
+                                        ? Row(
+                                            children: [
+                                              IconButton(
+                                                  onPressed: () {
+                                                    context.go(
+                                                        AppRoutes.eventModify(
+                                                            event.eventId!));
+                                                  },
+                                                  icon: const Icon(Icons.edit)),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    showDialog<String>(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          AlertDialog(
+                                                        title: const Text(
+                                                            'Delete Event'),
+                                                        content: const Text(
+                                                            'Are you sure?'),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'Cancel'),
+                                                            child: const Text(
+                                                                'Cancel'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              ref
+                                                                  .read(eventsProvider
+                                                                      .notifier)
+                                                                  .removeEvent(
+                                                                    Event(
+                                                                      hostuid: sessionVariables
+                                                                          .uid
+                                                                          .toString(),
+                                                                      eventId: event
+                                                                          .eventId,
+                                                                      title: event
+                                                                          .title,
+                                                                      venue: event
+                                                                          .venue,
+                                                                      time: event
+                                                                          .time,
+                                                                      price: 0,
+                                                                    ),
+                                                                  );
+                                                              final uid =
                                                                   sessionVariables
                                                                       .uid
-                                                                      .toString(),
-                                                              eventId:
-                                                                  event.eventId,
-                                                              title:
-                                                                  event.title,
-                                                              venue:
-                                                                  event.venue,
-                                                              time: event.time,
-                                                              price: 0,
-                                                            ),
-                                                          );
-                                                      final uid =
-                                                          sessionVariables.uid
-                                                              .toString();
-                                                      ref
-                                                          .read(eventsProvider
-                                                              .notifier)
-                                                          .fetchEvents;
-                                                      ref
-                                                          .read(
-                                                              eventsByUserProvider(
-                                                                      uid)
-                                                                  .notifier)
-                                                          .fetchEvents(uid);
+                                                                      .toString();
+                                                              ref
+                                                                  .read(eventsProvider
+                                                                      .notifier)
+                                                                  .fetchEvents;
+                                                              ref
+                                                                  .read(eventsByUserProvider(
+                                                                          uid)
+                                                                      .notifier)
+                                                                  .fetchEvents(
+                                                                      uid);
 
-                                                      context
-                                                          .go(AppRoutes.home);
-                                                    },
-                                                    child: const Text('OK'),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                          icon: const Icon(Icons.delete)),
-                                      ],
-                                    )
-                                    : Container(),
-                                  ],                                  
+                                                              context.go(
+                                                                  AppRoutes
+                                                                      .home);
+                                                            },
+                                                            child: const Text(
+                                                                'OK'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                  icon:
+                                                      const Icon(Icons.delete)),
+                                            ],
+                                          )
+                                        : Container(),
+                                  ],
                                 ),
                                 const SizedBox(height: 8),
                                 PriceTag(
@@ -183,6 +194,12 @@ class EventDetailsPage extends ConsumerWidget {
                                     onPressed: () {
                                       // perform api request
                                       subscribeHost(int.parse(event.hostuid));
+
+                                      // update for the analytics page
+                                      ref.read(subscribersProvider(
+                                          sessionVariables.uid.toString()).notifier).fetch();
+                                      ref.read(percentageBeatenBySubscribersProvider(
+                                          sessionVariables.uid.toString()).notifier).fetch();
 
                                       // notify user of subscription on the frontend
                                       showDialog(
@@ -248,17 +265,21 @@ class EventDetailsPage extends ConsumerWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: OutlinedButton(
                               onPressed: () {
-                                ref.read(eventsProvider.notifier).fetchEvents(eventId: eventId);
+                                ref
+                                    .read(eventsProvider.notifier)
+                                    .fetchEvents(eventId: eventId);
                                 context.go(AppRoutes.home);
                               },
                               style: OutlinedButton.styleFrom(
                                 minimumSize: const Size(130, 0),
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 15),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18),
                                 ),
