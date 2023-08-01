@@ -54,7 +54,7 @@ class BookingProvider extends StateNotifier<List<Booking>> {
     return false;
   }
 
-  Future<void> fetchBookings(uid) async {
+  Future<void> fetchBookings(String uid) async {
     state = await getBookings(uid);
     setBookings(state);
   }
@@ -74,7 +74,7 @@ final bookingProvider =
 final bookingsProvider =
     StateNotifierProvider.family<BookingProvider, List<Booking>, String>(
         (ref, uid) {
-  final bookingProviderStateNotifier = ref.read(bookingProvider.notifier);
-  return bookingProviderStateNotifier;
-  // return BookingProvider(uid);
+  // final bookingProviderStateNotifier = ref.read(bookingProvider.notifier);
+  // return bookingProviderStateNotifier;
+  return BookingProvider(uid);
 });
