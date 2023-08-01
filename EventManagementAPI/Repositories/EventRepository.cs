@@ -360,7 +360,11 @@ namespace EventManagementAPI.Repositories
                 createdTime = e.createdTime,
                 tags = e.tags,
                 numberSaved = e.numberSaved,
-                cheapestPrice = _dbContext.Tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price),
+                cheapestPrice = _dbContext.Tickets
+                    .Where(t => t.eventIdRef == e.eventId)
+                    .Select(t => t.price)
+                    .DefaultIfEmpty()
+                    .Min(),
             };
 
             return eventDetails;
