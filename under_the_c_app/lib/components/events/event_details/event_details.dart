@@ -311,6 +311,7 @@ class EventDetailsPage extends ConsumerWidget {
                           : 120,
                       padding: const EdgeInsets.all(30),
                       child: ElevatedButton(
+                        // TODO: [PLHV-256] event_details.dart: Navigation based on user type. we don't have the If/else statements below and we create two separate widget, one for host, the another for customer
                         onPressed: () {
                           if (sessionVariables.sessionIsHost &&
                               sessionVariables.navLocation == 1) {
@@ -320,6 +321,7 @@ class EventDetailsPage extends ConsumerWidget {
                                 event.eventId!, event.title, event.venue));
                           } else if (sessionVariables.sessionIsHost &&
                               sessionVariables.navLocation == 2) {
+                            // displaying the tickets unavailable alert
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
