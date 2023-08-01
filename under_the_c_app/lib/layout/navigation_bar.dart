@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 
 class NavigationBarCustom extends ConsumerStatefulWidget {
   final bool isHost;
@@ -19,12 +20,27 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
   @override
   void initState() {
     super.initState();
-    homePageIndex = 1;
+
+    if (widget.isHost) {
+      homePageIndex = 2;
+    } else {
+      homePageIndex = 1;
+    }
     currentPageIdx = homePageIndex;
   }
 
   @override
   Widget build(BuildContext context) {
+    List<NavigationDestination> destinations = [];
+    if (widget.isHost == true) {
+      destinations.add(const NavigationDestination(
+          icon: Icon(Icons.analytics), label: "Analytics"));
+    }
+    destinations.addAll([
+      const NavigationDestination(icon: Icon(Icons.event), label: "Events"),
+      const NavigationDestination(icon: Icon(Icons.home), label: "My Home"),
+      const NavigationDestination(icon: Icon(Icons.person), label: "Profile"),
+    ]);
     return NavigationBar(
       onDestinationSelected: (int index) {
         setState(() {
@@ -32,30 +48,43 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
         });
         switch (index) {
           case 0:
-            widget.isHost
-                ? context.go(AppRoutes.events, extra: 'Events')
-                : context.go(AppRoutes.events, extra: 'Events');
+            // analytics page for host, events page for the customers
+            if (widget.isHost == true) {
+              context.go(AppRoutes.analytics, extra: 'Analytics');
+            } else {
+              context.go(AppRoutes.events, extra: 'Events');
+            }
             sessionVariables.navLocation = 0;
             break;
           case 1:
-            context.go(AppRoutes.home, extra: 'Home');
+            // events page for host, home page for the customers
+            if (widget.isHost == true) {
+              context.go(AppRoutes.events, extra: 'Events');
+            } else {
+              context.go(AppRoutes.home, extra: 'Home');
+            }
             sessionVariables.navLocation = 1;
             break;
           case 2:
-            context.go(AppRoutes.profile, extra: 'Profile');
+            if (widget.isHost == true) {
+              context.go(AppRoutes.home, extra: 'Home');
+            } else {
+              context.go(AppRoutes.profile, extra: 'Profile');
+            }
             sessionVariables.navLocation = 2;
             break;
+
+          case 3:
+            if (widget.isHost == true) {
+              context.go(AppRoutes.profile, extra: 'Profile');
+            }
+
           default:
             break;
         }
       },
       selectedIndex: currentPageIdx,
-      destinations: const <Widget>[
-        // NavigationDestination(icon: Icon(Icons.analytics), label: "Analytics"),
-        NavigationDestination(icon: Icon(Icons.event), label: "Events"),
-        NavigationDestination(icon: Icon(Icons.home), label: "My Home"),
-        NavigationDestination(icon: Icon(Icons.person), label: "Profile"),
-      ],
+      destinations: destinations,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/api/user_request.dart';
 import 'package:under_the_c_app/components/events/event_details/comment/comment.dart';
 import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/components/events/event_title.dart';
@@ -81,9 +82,9 @@ class EventDetailsPage extends ConsumerWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     EventTitle(title: event.title),
-                                    Row(
+                                    sessionVariables.uid.toString() == event.hostuid ? Row(
                                       children: [
-                                        IconButton(
+                                         IconButton(
                                             onPressed: () {
                                               context.go(AppRoutes.eventModify(
                                                   event.eventId!));
@@ -150,11 +151,11 @@ class EventDetailsPage extends ConsumerWidget {
                                               ),
                                             );
                                           },
-                                          icon: const Icon(Icons.delete),
-                                        ),
+                                          icon: const Icon(Icons.delete)),
                                       ],
                                     )
-                                  ],
+                                    : Container(),
+                                  ],                                  
                                 ),
                                 const SizedBox(height: 8),
                                 PriceTag(
@@ -175,7 +176,35 @@ class EventDetailsPage extends ConsumerWidget {
                                       context
                                           .go(AppRoutes.notification(eventId));
                                     },
-                                  )
+                                  ),
+                                if (!sessionVariables.sessionIsHost)
+                                  SlimButton(
+                                    text: "Subscribe",
+                                    onPressed: () {
+                                      // perform api request
+                                      subscribeHost(int.parse(event.hostuid));
+
+                                      // notify user of subscription on the frontend
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Subscribed!'),
+                                            content: Text(
+                                                'You have just subscribed to Host: ${event.hostuid} Click on the subscribe button again to unsubscribe'),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('OK'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                               ],
                             ),
                           ),
@@ -214,8 +243,28 @@ class EventDetailsPage extends ConsumerWidget {
                                     wordSpacing: 0.5,
                                     height: 1.2),
                               ),
-                              const SizedBox(height: 100)
+                              const SizedBox(height: 50)
                             ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                ref.read(eventsProvider.notifier).fetchEvents(eventId: eventId);
+                                context.go(AppRoutes.home);
+                              },
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size(130, 0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                              child: const Text('Similar Events'),
+                            ),
                           ),
                         ),
                         // comment section

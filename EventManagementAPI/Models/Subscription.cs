@@ -17,5 +17,6 @@ namespace EventManagementAPI.Models
         [ForeignKey("Customer")]
         public int customerIdRef { get; set; }
         public Customer customer { get; set; }
+        public DateTime subscriptionTime { get; set; } = DateTime.Now;
     }
 }
