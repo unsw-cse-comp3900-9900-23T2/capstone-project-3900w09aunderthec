@@ -59,6 +59,14 @@ namespace EventManagementAPI.Controllers
 
             return Ok(events);
         }
+
+        [HttpGet("GetNumberOfEventsHosted")]
+        public IActionResult GetNumberOfEventsHosted([FromQuery] int hosterId)
+        {
+            var numberOfEventsHosted = _eventHostRepository.GetNumberOfHostedEvents(hosterId);
+
+            return Ok(numberOfEventsHosted);
+        }
     }
 }
 
