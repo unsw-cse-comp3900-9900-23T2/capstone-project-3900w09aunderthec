@@ -297,6 +297,26 @@ class EventDetailsPage extends ConsumerWidget {
                           } else if (!sessionVariables.sessionIsHost) {
                             context.go(AppRoutes.eventBook(
                                 event.eventId!, event.title, event.venue));
+                          } else if (sessionVariables.sessionIsHost &&
+                              sessionVariables.navLocation == 1) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Unavailable!'),
+                                  content: const Text(
+                                      'Hosts cannot purchase tickets for events'),
+                                  actions: <Widget>[
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
                         },
                         style: TextButton.styleFrom(
