@@ -203,8 +203,18 @@ namespace EventManagementAPI.Repositories
                     case "recommended":
                         if (!await _dbContext.Customers.AnyAsync(c => c.uid == uid)) break;
 
-                        query = query.OrderByDescending(e => e.rating.GetValueOrDefault() // Prioritise highly-rated events
-                            + _dbContext.BookingTickets // Prioritise events with higher similarity to the customer's prior events 
+                        query = query.OrderByDescending(e =>
+                            // Prioritise highly-rated events
+                            e.rating.GetValueOrDefault()/5 
+
+                            // Prioritise events from hosts with high community rating
+                            + _dbContext.Events
+                            .Where(e => e.hosterId == e.hosterId)
+                            .Select(e => e.rating)
+                            .Average()/5
+
+                            // Prioritise events with high similarity to the customer's prior events 
+                            + _dbContext.BookingTickets 
                             .Where(bt => bt.booking.customerId == uid) 
                             .Join(_dbContext.Tickets,
                                 bt => bt.ticketId,
@@ -350,7 +360,11 @@ namespace EventManagementAPI.Repositories
                 createdTime = e.createdTime,
                 tags = e.tags,
                 numberSaved = e.numberSaved,
-                cheapestPrice = _dbContext.Tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price),
+                cheapestPrice = _dbContext.Tickets
+                    .Where(t => t.eventIdRef == e.eventId)
+                    .Select(t => t.price)
+                    .DefaultIfEmpty()
+                    .Min(),
             };
 
             return eventDetails;
