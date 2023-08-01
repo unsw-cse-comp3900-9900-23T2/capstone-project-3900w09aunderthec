@@ -50,6 +50,7 @@ Event BackendDataSingleEventToEventIncludePrice(data) {
     isDirectRefunds: data['isDirectRefunds'],
     isPrivate: data['isPrivateEvent'],
     tags: [data['tags'].toString()],
+    rating: data['numberSaved'],
     price: data['cheapestPrice'],
     description: data['description'],
   );
