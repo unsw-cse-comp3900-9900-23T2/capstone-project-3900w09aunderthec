@@ -145,6 +145,15 @@ namespace EventManagementAPI.Repositories
             return eventSaved;
         }
 
+        /// <summary>
+        /// Rate an event from 1 to 5
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <param name="rating"></param>
+        /// <returns>
+        /// the updated event rating
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<double> RateEvent(int eventId, int rating)
         {
             var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == eventId) ?? throw new KeyNotFoundException("event not found");
@@ -160,6 +169,26 @@ namespace EventManagementAPI.Repositories
             await _dbContext.SaveChangesAsync();
 
             return e.rating.Value;
+        }
+
+        /// <summary>
+        /// Check if the event is saved by the customer
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// A boolean value represents whether the event is saved by the user
+        /// </returns>
+        public async Task<bool> isSaved(int customerId, int eventId)
+        {
+            var eventSaved = await _dbContext.EventsSaved.FirstOrDefaultAsync(es => es.customerId == customerId && es.eventId == eventId);
+
+            if (eventSaved != null)
+            {
+                return true;
+            } else { 
+                return false; 
+            }
         }
     }
 }

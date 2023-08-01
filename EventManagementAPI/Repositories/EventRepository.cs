@@ -339,7 +339,7 @@ namespace EventManagementAPI.Repositories
             var eventDetails = new EventDetailsDto
             {
                 eventId = e.eventId,
-                hosterFK = e.hosterFK,
+                hosterFK = e.hosterId,
                 title = e.title,
                 venue = e.venue,
                 eventTime = e.eventTime,
