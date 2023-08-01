@@ -91,6 +91,26 @@ Future<Event> getEventDetails(String id) async {
   }
 }
 
+Future<bool> isEventLikedAPI(String customerId, String eventId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.isEventSaved,
+      {"customerId": customerId, "eventId": eventId});
+
+  try {
+    final response = await http.get(url, headers: APIRoutes.headers);
+    if (response.statusCode == 200) {
+      return response.body == "true" ? true : false;
+    } else {
+      throw HttpException('HTTP error: ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.getEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.getEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.getEvent: Unknown error $e');
+  }
+}
+
 Future<Event> createEvent(Event eventInfo) async {
   final uid = sessionVariables.uid;
   final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.createEvent);

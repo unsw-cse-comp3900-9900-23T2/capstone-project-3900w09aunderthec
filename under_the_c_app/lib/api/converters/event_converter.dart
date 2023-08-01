@@ -25,7 +25,7 @@ List<Event> BackendDataEventListToEvent(data) {
 Event BackendDataSingleEventToEvent(data) {
   return Event(
     title: data['title'],
-    hostuid: data['hosterFK'].toString(),
+    hostuid: data['hosterId'].toString(),
     eventId: data['eventId'].toString(),
     imageUrl: 'images/events/money-event.jpg',
     time: data['eventTime'].toString(),

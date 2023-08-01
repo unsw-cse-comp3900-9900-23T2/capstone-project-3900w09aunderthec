@@ -24,6 +24,13 @@ class _EventLikesState extends ConsumerState<EventLikes> {
   void initState() {
     super.initState();
     nLikes = widget.countLikes;
+    getInitialValues();
+  }
+
+  Future<void> getInitialValues() async {
+    isLike =
+        await isEventLikedAPI(sessionVariables.uid.toString(), widget.eventId);
+    setState(() {}); // Call setState to rebuild the widget with new values.
   }
 
   void toggleIsLike() async {
@@ -36,13 +43,9 @@ class _EventLikesState extends ConsumerState<EventLikes> {
       }
     });
 
+    //update in the backend
     await toggleLikeEventAPI(sessionVariables.uid.toString(), widget.eventId);
 
-    // ref
-    //     .read(eventsByUserProvider(widget.eventId).notifier)
-    //     .fetchEvents(sessionVariables.uid.toString());
-      
-    // ref.read(eventsProvider())
   }
 
   @override
