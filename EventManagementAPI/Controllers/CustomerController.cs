@@ -131,5 +131,20 @@ namespace EventManagementAPI.Controllers
                 return NotFound(e.Message);
             }
         }
+
+        [HttpPost("RateEvent")]
+        public async Task<IActionResult> RateEvent([FromQuery] int eventId, int rating)
+        {
+            try
+            {
+                var updatedRating = await _customerRepository.RateEvent(eventId, rating);
+
+                return Ok(updatedRating);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
