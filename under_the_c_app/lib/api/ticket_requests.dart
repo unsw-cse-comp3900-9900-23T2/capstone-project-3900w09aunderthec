@@ -31,6 +31,27 @@ Future<List<Tickets>> getTickets(String eventId) async {
   }
 }
 
+Future<Tickets> getTicketDetails(String ticketId) async {
+  final requestUrl = Uri.https(
+      APIRoutes.BASE_URL, APIRoutes.getTicket, {'ticketId': ticketId});
+
+  try {
+    final response = await http.get(
+      requestUrl,
+      headers: APIRoutes.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonList = jsonDecode(response.body);
+      return Tickets.fromJson(jsonList);
+    } else {
+      throw Exception('GetTicketDetails API ERROR: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception(e);
+  }
+}
+
 Future<void> createTickets(
     Map<String, dynamic> ticketData, String eventId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.createTickets);

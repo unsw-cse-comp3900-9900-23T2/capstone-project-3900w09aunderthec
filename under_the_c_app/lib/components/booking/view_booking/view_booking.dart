@@ -20,6 +20,19 @@ class ViewBookingPage extends ConsumerWidget {
     final String uid = sessionVariables.uid.toString();
     final myBookings = ref.watch(bookingsProvider(uid));
 
+    List<IndividualDetails> individualTicketList(Booking booking) {
+      List<IndividualDetails> returnedList = [];
+      booking.ticketDetails.forEach(
+        (key, value) {
+          for (int x = 0; x < value["numberOfTickets"]; x++) {
+            returnedList
+                .add(IndividualDetails(name: key, price: value["price"]));
+          }
+        },
+      );
+      return returnedList;
+    }
+
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
       alignment: Alignment.center,
@@ -82,73 +95,60 @@ class ViewBookingPage extends ConsumerWidget {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return EventTickets(
-                                        eventName: booking.eventName,
-                                        eventTag: booking.eventTag.toString(),
-                                        eventVenue: booking.eventVenue,
-                                        eventTime: booking.eventTime,
-                                        eventCost: booking.totalCost,
-                                        bookingNo: booking.id.toString(),
+                                      // return EventTickets(
+                                      //   eventName: booking.eventName,
+                                      //   eventTag: booking.eventTag.toString(),
+                                      //   eventVenue: booking.eventVenue,
+                                      //   eventTime: booking.eventTime,
+                                      //   eventCost: booking.totalCost,
+                                      //   bookingNo: booking.id.toString(),
+                                      // );
+                                      return AlertDialog(
+                                        backgroundColor: Colors.transparent,
+                                        content: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.7,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                1.3,
+                                            // Create a list with all tickets
+                                            child: ListView.builder(
+                                                shrinkWrap: true,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: individualTicketList(
+                                                        booking)
+                                                    .length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  List<IndividualDetails>
+                                                      details =
+                                                      individualTicketList(
+                                                          booking);
+
+                                                  return EventTickets(
+                                                    eventName:
+                                                        booking.eventName,
+                                                    eventTag: booking.eventTag
+                                                        .toString(),
+                                                    eventVenue:
+                                                        booking.eventVenue,
+                                                    eventTime:
+                                                        booking.eventTime,
+                                                    eventCost:
+                                                        booking.totalCost,
+                                                    bookingNo:
+                                                        booking.id.toString(),
+                                                    price: details[index].price,
+                                                    ticketName:
+                                                        details[index].name,
+                                                  );
+                                                })),
                                       );
-                                      // return Container(
-                                      //   width:
-                                      //       MediaQuery.of(context).size.width *
-                                      //           0.7,
-                                      //   height:
-                                      //       MediaQuery.of(context).size.width *
-                                      //           1.3,
-                                      //   child: ListView.builder(
-                                      //     scrollDirection: Axis.horizontal,
-                                      //     itemCount: 10,
-                                      //     itemBuilder: (BuildContext context,
-                                      //             int index) =>
-                                      //         Card(
-                                      //       child: EventTickets(
-                                      //         eventName: booking.eventName,
-                                      //         eventTag:
-                                      //             booking.eventTag.toString(),
-                                      //         eventVenue: booking.eventVenue,
-                                      //         eventTime: booking.eventTime,
-                                      //         eventCost: booking.totalCost,
-                                      //         bookingNo: booking.id.toString(),
-                                      //       ),
-                                      //     ),
-                                      //   ),
-                                      // );
-                                      // return Expanded(
-                                      //   child: ListView.builder(
-                                      //       shrinkWrap: true,
-                                      //       scrollDirection: Axis.horizontal,
-                                      //       itemCount: 1,
-                                      //       itemBuilder: (BuildContext context,
-                                      //               int index) =>
-                                      //           Container(
-                                      //             width: MediaQuery.of(context)
-                                      //                     .size
-                                      //                     .width *
-                                      //                 0.7,
-                                      //             height: MediaQuery.of(context)
-                                      //                     .size
-                                      //                     .width *
-                                      //                 1.3,
-                                      //             child: Card(
-                                      //               child: EventTickets(
-                                      //                 eventName:
-                                      //                     booking.eventName,
-                                      //                 eventTag: booking.eventTag
-                                      //                     .toString(),
-                                      //                 eventVenue:
-                                      //                     booking.eventVenue,
-                                      //                 eventTime:
-                                      //                     booking.eventTime,
-                                      //                 eventCost:
-                                      //                     booking.totalCost,
-                                      //                 bookingNo:
-                                      //                     booking.id.toString(),
-                                      //               ),
-                                      //             ),
-                                      //           )),
-                                      // );
                                     },
                                   );
                                 },
@@ -331,21 +331,25 @@ class BookingCard extends StatelessWidget {
 }
 
 class EventTickets extends StatelessWidget {
-  const EventTickets(
-      {Key? key,
-      required this.eventName,
-      required this.eventTag,
-      required this.eventVenue,
-      required this.eventTime,
-      required this.eventCost,
-      required this.bookingNo})
-      : super(key: key);
+  const EventTickets({
+    Key? key,
+    required this.eventName,
+    required this.eventTag,
+    required this.eventVenue,
+    required this.eventTime,
+    required this.eventCost,
+    required this.bookingNo,
+    required this.ticketName,
+    required this.price,
+  }) : super(key: key);
   final String eventName;
   final String eventTag;
   final String eventVenue;
   final String eventTime;
   final String eventCost;
   final String bookingNo;
+  final String ticketName;
+  final double price;
 
   @override
   Widget build(BuildContext context) {
@@ -359,12 +363,15 @@ class EventTickets extends StatelessWidget {
         isCornerRounded: true,
         padding: const EdgeInsets.all(20),
         child: TicketInfo(
-            eventName: eventName,
-            eventTag: eventTag,
-            eventVenue: eventVenue,
-            eventTime: eventTime,
-            eventCost: eventCost,
-            bookingNo: bookingNo),
+          eventName: eventName,
+          eventTag: eventTag,
+          eventVenue: eventVenue,
+          eventTime: eventTime,
+          eventCost: eventCost,
+          bookingNo: bookingNo,
+          ticketName: ticketName,
+          price: price,
+        ),
       ),
     );
   }
@@ -379,6 +386,8 @@ class TicketInfo extends StatelessWidget {
     required this.eventTime,
     required this.eventCost,
     required this.bookingNo,
+    required this.ticketName,
+    required this.price,
   }) : super(key: key);
   final String eventName;
   final String eventTag;
@@ -386,6 +395,8 @@ class TicketInfo extends StatelessWidget {
   final String eventTime;
   final String eventCost;
   final String bookingNo;
+  final String ticketName;
+  final double price;
 
   @override
   Widget build(BuildContext context) {
@@ -435,6 +446,7 @@ class TicketInfo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ticketDetailsWidget('Ticket Type', ticketName, '', ''),
               ticketDetailsWidget('Venue', eventVenue, '', ''),
               Padding(
                 padding: const EdgeInsets.only(top: 12.0, right: 52.0),
@@ -447,12 +459,16 @@ class TicketInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 12.0, right: 25),
                 child: ticketDetailsWidget(
-                    'Cost', '\$$eventCost', 'Order No', bookingNo),
+                    // 'Cost', '\$$eventCost', 'Order No', bookingNo),
+                    'Cost',
+                    '\$$price',
+                    'Order No',
+                    bookingNo),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.only(top: 80.0, left: 30.0, right: 30.0),
           child: SizedBox(
@@ -464,7 +480,7 @@ class TicketInfo extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 10),
       ],
     );
   }
