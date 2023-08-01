@@ -6,15 +6,11 @@ class EventTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 250,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Text(
-          title,
-          style: const TextStyle(
-              fontSize: 30, fontWeight: FontWeight.bold, letterSpacing: 0.6),
-        ),
+    return Expanded(
+      child: Text(
+        title,
+        style: const TextStyle(
+            fontSize: 30, fontWeight: FontWeight.bold, letterSpacing: 0.6),
       ),
     );
   }

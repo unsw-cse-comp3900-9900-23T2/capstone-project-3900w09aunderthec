@@ -181,6 +181,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<bool>("isPrivateEvent")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("numberOfRatings")
+                        .HasColumnType("int");
+
                     b.Property<int>("numberSaved")
                         .HasColumnType("int");
 
@@ -194,6 +197,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<string>("title")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("totalRatingMarks")
+                        .HasColumnType("int");
 
                     b.Property<string>("venue")
                         .IsRequired()

@@ -14,7 +14,7 @@ class AnalyticsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final uid = sessionVariables.uid.toString();
     final percentageBeatenByEvents =
-        ref.watch(percentageBeatenBySubscribersProvider(uid));
+        ref.watch(percentageBeatenByEventsProvider(uid));
     final percentageBeatenBySubscribers =
         ref.watch(percentageBeatenBySubscribersProvider(uid));
     return SingleChildScrollView(

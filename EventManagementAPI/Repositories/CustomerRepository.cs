@@ -144,5 +144,22 @@ namespace EventManagementAPI.Repositories
             await _dbContext.SaveChangesAsync();
             return eventSaved;
         }
+
+        public async Task<double> RateEvent(int eventId, int rating)
+        {
+            var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == eventId) ?? throw new KeyNotFoundException("event not found");
+
+            var totalMarks = e.totalRatingMarks + rating;
+            var numberOfRatings = e.numberOfRatings + 1;
+
+            e.totalRatingMarks = totalMarks;
+            e.numberOfRatings = numberOfRatings;
+            e.rating = Convert.ToDouble(totalMarks) / numberOfRatings;
+
+            _dbContext.Events.Update(e);
+            await _dbContext.SaveChangesAsync();
+
+            return e.rating.Value;
+        }
     }
 }
