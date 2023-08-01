@@ -53,9 +53,11 @@ class EventDetailsPage extends ConsumerWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0.0,
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => context.go(AppRoutes.home),
-                ),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () {
+                      context.go(AppRoutes.home);
+                      sessionVariables.navLocation = 1;
+                    }),
               ),
               body: Stack(
                 children: [
@@ -196,10 +198,19 @@ class EventDetailsPage extends ConsumerWidget {
                                       subscribeHost(int.parse(event.hostuid));
 
                                       // update for the analytics page
-                                      ref.read(subscribersProvider(
-                                          sessionVariables.uid.toString()).notifier).fetch();
-                                      ref.read(percentageBeatenBySubscribersProvider(
-                                          sessionVariables.uid.toString()).notifier).fetch();
+                                      ref
+                                          .read(subscribersProvider(
+                                                  sessionVariables.uid
+                                                      .toString())
+                                              .notifier)
+                                          .fetch();
+                                      ref
+                                          .read(
+                                              percentageBeatenBySubscribersProvider(
+                                                      sessionVariables.uid
+                                                          .toString())
+                                                  .notifier)
+                                          .fetch();
 
                                       // notify user of subscription on the frontend
                                       showDialog(
@@ -313,13 +324,13 @@ class EventDetailsPage extends ConsumerWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           if (sessionVariables.sessionIsHost &&
-                              sessionVariables.navLocation == 1) {
+                              sessionVariables.navLocation == 0) {
                             context.go(AppRoutes.ticketCreate(event.eventId!));
                           } else if (!sessionVariables.sessionIsHost) {
                             context.go(AppRoutes.eventBook(
                                 event.eventId!, event.title, event.venue));
                           } else if (sessionVariables.sessionIsHost &&
-                              sessionVariables.navLocation == 2) {
+                              sessionVariables.navLocation == 1) {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -348,7 +359,7 @@ class EventDetailsPage extends ConsumerWidget {
                           ),
                         ),
                         child: Text(sessionVariables.sessionIsHost &&
-                                sessionVariables.navLocation == 1
+                                sessionVariables.navLocation == 0
                             ? "Create Tickets"
                             : "Buy Ticket"),
                       ),
