@@ -15,5 +15,6 @@ namespace EventManagementAPI.DTOs
         public string tags { get; set; }
         public int numberSaved { get; set; }
         public double cheapestPrice { get; set; }
+        public double rating { get; set; }
     }
 }
