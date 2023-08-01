@@ -14,7 +14,7 @@ class SummaryCards extends StatelessWidget {
           "Summary",
           style: TextStyle(
               fontSize: 25,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w600,
               color: Color.fromARGB(255, 42, 23, 120)),
         ),
         const SizedBox(height: 10),

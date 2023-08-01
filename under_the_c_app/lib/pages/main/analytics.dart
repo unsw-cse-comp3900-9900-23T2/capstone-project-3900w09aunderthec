@@ -14,8 +14,9 @@ class AnalyticsPage extends StatelessWidget {
         child: Column(
           children: [
             SummaryCards(),
+            SizedBox(height: 35),
             Container(
-              height: 200,
+              height: 260,
               child: LineChartWidget(),
             ),
           ],

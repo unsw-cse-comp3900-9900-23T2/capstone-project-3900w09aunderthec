@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'line_titles.dart';
 
 class LineChartWidget extends StatelessWidget {
+  // background color for the area below the line
   final List<Color> gradientColors = [
-    Color.fromARGB(255, 174, 210, 188),
     Color.fromARGB(255, 1, 205, 79),
+    Color.fromARGB(255, 174, 210, 188),
   ];
   LineChartWidget({Key? key}) : super(key: key);
   @override
@@ -21,16 +22,18 @@ class LineChartWidget extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
+          drawHorizontalLine: false,
           getDrawingHorizontalLine: (value) {
             return FlLine(
                 color: Color.fromARGB(255, 8, 117, 194), strokeWidth: 1);
           },
         ),
         borderData: FlBorderData(
-          // only displaying the bottom border
           border: const Border(
+            // only displaying the bottom and left borders
             bottom:
-                BorderSide(color: Color.fromARGB(255, 8, 117, 194), width: 1),
+                BorderSide(color: Color.fromARGB(255, 1, 185, 102), width: 1),
+            left: BorderSide(color: Color.fromARGB(255, 1, 185, 102), width: 1),
           ),
         ),
         lineBarsData: [
@@ -52,8 +55,8 @@ class LineChartWidget extends StatelessWidget {
             belowBarData: BarAreaData(
               show: true,
               gradient: LinearGradient(
-                  colors:
-                      gradientColors.map((e) => e.withOpacity(0.8)).toList()),
+                colors: gradientColors.map((e) => e.withOpacity(0.8)).toList(),
+              ),
             ),
           )
         ],

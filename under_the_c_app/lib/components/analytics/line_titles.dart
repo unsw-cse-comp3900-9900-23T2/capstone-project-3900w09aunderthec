@@ -3,20 +3,32 @@ import 'package:flutter/material.dart';
 
 Widget bottomTitleWidgets(double value, TitleMeta meta) {
   const style = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 13,
-  );
+      fontWeight: FontWeight.bold,
+      fontSize: 13,
+      color: Color.fromARGB(255, 22, 192, 0));
   Widget text;
   switch (value.toInt()) {
+    // case 1:
+    //   text = const Text('JAN', style: style);
+    //   break;
     case 3:
       text = const Text('MAR', style: style);
       break;
+    // case 4:
+    //   text = const Text('APR', style: style);
+    //   break;
     case 6:
       text = const Text('JUN', style: style);
       break;
+    // case 7:
+    //   text = const Text('JUL', style: style);
+    //   break;
     case 9:
       text = const Text('SEP', style: style);
       break;
+    // case 10:
+    //   text = const Text('OCT', style: style);
+    //   break;
     case 12:
       text = const Text('DEC', style: style);
       break;
@@ -32,7 +44,10 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
 }
 
 Widget leftTitleWidgets(double value, TitleMeta meta) {
-  const style = TextStyle(fontWeight: FontWeight.bold, fontSize: 13);
+  const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 13,
+      color: Color.fromARGB(255, 0, 204, 88));
   String text;
   switch (value.toInt()) {
     case 1:
