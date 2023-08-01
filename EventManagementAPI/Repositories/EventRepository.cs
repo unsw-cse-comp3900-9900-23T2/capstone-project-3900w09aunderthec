@@ -208,13 +208,13 @@ namespace EventManagementAPI.Repositories
 
                         query = query.OrderByDescending(e =>
                             // Prioritise highly-rated events
-                            e.rating.GetValueOrDefault()/5 
+                            e.rating.GetValueOrDefault()
 
                             // Prioritise events from hosts with high community rating
                             + _dbContext.Events
                             .Where(e => e.hosterId == e.hosterId)
                             .Select(e => e.rating)
-                            .Average()/5
+                            .Average()
 
                             // Prioritise events with high similarity to the customer's prior events 
                             + _dbContext.BookingTickets 
