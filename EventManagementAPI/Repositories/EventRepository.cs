@@ -194,6 +194,9 @@ namespace EventManagementAPI.Repositories
                     case "most_saved":
                         query = query.OrderByDescending(e => e.numberSaved);
                         break;
+                    case "highest_rated":
+                        query = query.OrderByDescending(e => e.rating);
+                        break;
                     case "price_high_to_low":
                         query = query.OrderByDescending(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
                         break;
