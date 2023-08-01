@@ -109,11 +109,9 @@ Future<int> getSubscribers(String uid) async {
   }
 }
 
-enum RankedBy { subscribers, events }
-
-Future<double> getPercentageBeatenBy(String uid, RankedBy rankedBy) async {
+Future<double> getPercentageBeatenBy(String uid, String rankedBy) async {
   final registerUrl = Uri.https(APIRoutes.BASE_URL,
-      APIRoutes.getPercentageBeaten, {"hosterId": uid, "rankBy": rankedBy.toString()});
+      APIRoutes.getPercentageBeaten, {"hosterId": uid, "rankBy": rankedBy});
   try {
     final response = await http.get(
       registerUrl,

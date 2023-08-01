@@ -88,7 +88,7 @@ class GetBeatenByPercentageEventsNotifier extends StateNotifier<double> {
   }
 
   Future<void> fetch() async {
-    state = await getPercentageBeatenBy(uid, RankedBy.events);
+    state = await getPercentageBeatenBy(uid, "events");
   }
 }
 
@@ -107,7 +107,7 @@ class GetBeatenByPercentageSubscribersNotifier extends StateNotifier<double> {
   }
 
   Future<void> fetch() async {
-    state = await getPercentageBeatenBy(uid, RankedBy.subscribers);
+    state = await getPercentageBeatenBy(uid, "subscribers");
   }
 }
 
