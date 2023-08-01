@@ -18,7 +18,7 @@ Widget lineChartLayout(List<List<int>> data, {double maxYAxisVal = 10.0}) {
   ];
 
   return LineChart(
-    duration: Duration(milliseconds: 700),
+    duration: const Duration(milliseconds: 700),
     curve: Curves.linear,
     LineChartData(
       minX: 0,
@@ -46,7 +46,7 @@ Widget lineChartLayout(List<List<int>> data, {double maxYAxisVal = 10.0}) {
         LineChartBarData(
           spots: dataInfo,
           isCurved: false,
-          color: Color.fromARGB(255, 30, 215, 86),
+          color: const Color.fromARGB(255, 30, 215, 86),
           barWidth: 3,
           // hide dots
           dotData: const FlDotData(show: false),
@@ -84,19 +84,5 @@ class LineChartWidget extends ConsumerWidget {
       return [e.key, e.value];
     }).toList();
     return lineChartLayout(lineGraphData, maxYAxisVal: maxVal.toDouble());
-    // return futureHostedEventsData.when(
-    //   data: (data) {
-    //     int maxVal = 0;
-    //     final lineGraphData = data.asMap().entries.map((e) {
-    //       if (e.value > maxVal) {
-    //         maxVal = e.value;
-    //       }
-    //       return [e.key, e.value];
-    //     }).toList();
-    //     return lineChartLayout(lineGraphData, maxVal.toDouble());
-    //   },
-    //   error: (err, stack) => Text("Error: $err"),
-    //   loading: () => lineChartLayout([], 10),
-    // );
   }
 }

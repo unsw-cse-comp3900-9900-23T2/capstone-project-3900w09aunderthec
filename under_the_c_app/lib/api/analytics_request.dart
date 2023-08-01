@@ -5,8 +5,8 @@ import 'api_routes.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<int>> getEventsYearlyDistributionAPI(String uid) async {
-  final registerUrl =
-      Uri.https(APIRoutes.BASE_URL, APIRoutes.getEventsYearlyDistribution, {"hosterId":uid});
+  final registerUrl = Uri.https(APIRoutes.BASE_URL,
+      APIRoutes.getEventsYearlyDistribution, {"hosterId": uid});
   try {
     final response = await http.get(
       registerUrl,
@@ -30,5 +30,108 @@ Future<List<int>> getEventsYearlyDistributionAPI(String uid) async {
   } catch (e) {
     throw Exception(
         'analytics.dart.getEventsYearlyDistributionAPI: Unknown error $e');
+  }
+}
+
+Future<int> getNumberOfEventsHosted(String uid) async {
+  final registerUrl = Uri.https(
+      APIRoutes.BASE_URL, APIRoutes.getNumberEventsHosted, {"hosterId": uid});
+  try {
+    final response = await http.get(
+      registerUrl,
+      headers: APIRoutes.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final int data = int.parse(response.body);
+      return data;
+    } else {
+      throw Exception(
+          'analytics.dart.getEventsYearlyDistributionAPI: Server returned status code ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('analytics.dart.getNumberOfEventsHosted: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception(
+        'analytics.dart.getNumberOfEventsHosted: Http Exception error $e');
+  } catch (e) {
+    throw Exception('analytics.dart.getNumberOfEventsHosted: Unknown error $e');
+  }
+}
+
+Future<int> getTicketsSold(String uid) async {
+  final registerUrl = Uri.https(
+      APIRoutes.BASE_URL, APIRoutes.getNumberTicketsSold, {"hosterId": uid});
+  try {
+    final response = await http.get(
+      registerUrl,
+      headers: APIRoutes.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data.length;
+    } else {
+      throw Exception(
+          'analytics.dart.getTicketsSold: Server returned status code ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('analytics.dart.getTicketsSold: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('analytics.dart.getTicketsSold: Http Exception error $e');
+  } catch (e) {
+    throw Exception('analytics.dart.getTicketsSold: Unknown error $e');
+  }
+}
+
+Future<int> getSubscribers(String uid) async {
+  final registerUrl = Uri.https(
+      APIRoutes.BASE_URL, APIRoutes.getNumberSubscribers, {"hosterId": uid});
+  try {
+    final response = await http.get(
+      registerUrl,
+      headers: APIRoutes.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data.length;
+    } else {
+      throw Exception(
+          'analytics.dart.getSubscribers: Server returned status code ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('analytics.dart.getSubscribers: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('analytics.dart.getSubscribers: Http Exception error $e');
+  } catch (e) {
+    throw Exception('analytics.dart.getSubscribers: Unknown error $e');
+  }
+}
+
+enum RankedBy { subscribers, events }
+
+Future<double> getPercentageBeatenBy(String uid, RankedBy rankedBy) async {
+  final registerUrl = Uri.https(APIRoutes.BASE_URL,
+      APIRoutes.getPercentageBeaten, {"hosterId": uid, "rankBy": rankedBy.toString()});
+  try {
+    final response = await http.get(
+      registerUrl,
+      headers: APIRoutes.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final double data = double.parse(response.body);
+      return data;
+    } else {
+      throw Exception(
+          'analytics.dart.getSubscribers: Server returned status code ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('analytics.dart.getSubscribers: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('analytics.dart.getSubscribers: Http Exception error $e');
+  } catch (e) {
+    throw Exception('analytics.dart.getSubscribers: Unknown error $e');
   }
 }

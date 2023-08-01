@@ -347,6 +347,10 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                     await ref
                         .read(eventsYearlyDistributionProvider(uid).notifier)
                         .fetchDistribution();
+                    await ref.read(eventsHostedNotifier(uid).notifier).fetch();
+                    await ref
+                        .read(percentageBeatenByEventsProvider(uid).notifier)
+                        .fetch();
 
                     // prevent accessing context after it get disposed due to the async nature
                     if (context.mounted) {

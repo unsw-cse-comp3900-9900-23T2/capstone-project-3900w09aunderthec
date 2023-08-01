@@ -1,12 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/components/analytics/summary_card.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 
-class SummaryCards extends StatelessWidget {
+import '../../providers/analytics_providers.dart';
+
+class SummaryCards extends ConsumerWidget {
   const SummaryCards({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final uid = sessionVariables.uid.toString();
+    final nEventsHosted = ref.watch(eventsHostedNotifier(uid));
+    final nTicketsSold = ref.watch(ticketsSoldProvider(uid));
+    final nSubscribers = ref.watch(subscribersProvider(uid));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,16 +30,16 @@ class SummaryCards extends StatelessWidget {
           height: 100,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            children: const [
+            children:  [
               SummaryCard(
-                  val: 25,
+                  val: nTicketsSold,
                   type: "Tickets Sold",
                   color: Color.fromARGB(255, 96, 98, 255)),
               SizedBox(
                 width: 15,
               ),
               SummaryCard(
-                val: 10,
+                val: nSubscribers,
                 type: "Subscribers",
                 color: Color.fromARGB(255, 255, 119, 41),
               ),
@@ -39,7 +47,7 @@ class SummaryCards extends StatelessWidget {
                 width: 15,
               ),
               SummaryCard(
-                val: 10,
+                val: nEventsHosted,
                 type: "Events Hosted",
                 color: Color.fromARGB(255, 255, 41, 209),
               ),
