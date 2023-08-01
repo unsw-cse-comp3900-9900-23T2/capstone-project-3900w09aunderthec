@@ -14,5 +14,6 @@ namespace EventManagementAPI.Repositories
         public Task<Subscription> SubscribeHoster(int customerId, int hosterId);
         public Task<EventSaved> SaveEvent(int customerId, int eventId);
         public Task<double> RateEvent(int eventId, int rating);
+        public Task<bool> isSaved(int customerId, int eventId);
     }
 }
