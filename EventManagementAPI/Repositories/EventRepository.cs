@@ -269,6 +269,7 @@ namespace EventManagementAPI.Repositories
                     tags = e.tags,
                     numberSaved = e.numberSaved,
                     cheapestPrice = cheapestPrice,
+                    rating = e.rating ?? 0.0,
                 };
 
                 eventList.Add(eventDto);
