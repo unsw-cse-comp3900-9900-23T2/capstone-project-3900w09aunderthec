@@ -110,7 +110,7 @@ class EventsProvider extends StateNotifier<List<Event>> {
             (a, b) {
               int aRating = a.rating ?? -10;
               int bRating = b.rating ?? -10;
-              return aRating.compareTo(bRating);
+              return bRating.compareTo(aRating);
             },
           );
         state = sortedEvents;

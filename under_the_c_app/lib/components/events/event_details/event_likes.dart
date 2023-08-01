@@ -62,6 +62,9 @@ class _EventLikesState extends ConsumerState<EventLikes> {
       isLike = updatedLikeStatus;
       nLikes += updatedLikeStatus ? 1 : -1;
     });
+
+    // trigger the rebuild for the event lists for the future popularity
+    ref.read(eventsProvider.notifier).fetchEvents();
   }
 
   @override

@@ -85,7 +85,7 @@ class BackendEventData {
       description: json['description'],
       isDirectRefunds: json['isDirectRefunds'],
       isPrivateEvent: json['isPrivateEvent'],
-      rating: json['rating'].toInt(),
+      rating: json['numberSaved'].toInt(),
       tags: json['tags'],
       price: json['cheapestPrice']
     );
