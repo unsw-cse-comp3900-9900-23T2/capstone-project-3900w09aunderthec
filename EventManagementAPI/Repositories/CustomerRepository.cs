@@ -124,6 +124,9 @@ namespace EventManagementAPI.Repositories
 
             var eventSaved = await _dbContext.EventsSaved.FirstOrDefaultAsync(es => es.customerId == customerId && es.eventId == eventId);
 
+            var numCustomersInExistence = await _dbContext.Customers.CountAsync();
+            var numberLikes = 0.0;
+
             if (eventSaved == null)
             {
                 var newEventSaved = new EventSaved
@@ -133,13 +136,17 @@ namespace EventManagementAPI.Repositories
                     eventId = eventId,
                     eventShow = e,
                 };
-                e.numberSaved++;
+                e.numberSaved++;   
                 _dbContext.Add(newEventSaved);
+                numberLikes = await _dbContext.EventsSaved.Where(es => es.eventId == eventId).CountAsync() + 1;
+                e.rating = Convert.ToDouble(numberLikes) / numCustomersInExistence;
                 await _dbContext.SaveChangesAsync();
                 return newEventSaved;
             }
 
             e.numberSaved--;
+            numberLikes = await _dbContext.EventsSaved.Where(es => es.eventId == eventId).CountAsync();
+            e.rating = Convert.ToDouble(numberLikes) / numCustomersInExistence;
             _dbContext.Remove(eventSaved);
             await _dbContext.SaveChangesAsync();
             return eventSaved;
