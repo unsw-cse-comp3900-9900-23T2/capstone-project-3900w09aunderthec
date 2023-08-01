@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/ticket/date_helpers.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 
 import '../../api/ticket_requests.dart';
 
 final newTicketProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
-class CreateTicket extends ConsumerWidget {
+class CreateTicket extends ConsumerStatefulWidget {
   final String eventId;
 
   const CreateTicket({
@@ -16,7 +17,28 @@ class CreateTicket extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _CreateTicket createState() => _CreateTicket();
+}
+
+class _CreateTicket extends ConsumerState<CreateTicket> {
+  // prolly dont even need this, can just set straight away
+  DateTime? chosenDate;
+  TimeOfDay? dayTime;
+
+  void saveSelectedTime(TimeOfDay? time) {
+    setState(() {
+      dayTime = time;
+    });
+  }
+
+  void saveSelectedDate(DateTime? date) {
+    setState(() {
+      chosenDate = date;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final ticketData = ref.watch(newTicketProvider);
 
     return Scaffold(
@@ -29,7 +51,7 @@ class CreateTicket extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 15),
               _buildFormRow(
                 title: 'Ticket Name',
                 hintText: 'Enter ticket type',
@@ -60,11 +82,61 @@ class CreateTicket extends ConsumerWidget {
                   };
                 },
               ),
-              const SizedBox(height: 16),
+              const Text(
+                "Select Time for Release",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                child: DatePicker(
+                  restorationId: 'main',
+                  saveDate: saveSelectedDate,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                child: TimePicker(
+                  themeMode: ThemeMode.dark,
+                  useMaterial3: true,
+                  getTime: saveSelectedTime,
+                ),
+              ),
+              const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {
-                  createTickets(ticketData, eventId);
-                  context.go(AppRoutes.events);
+                  if (chosenDate != null && dayTime != null) {
+                    String time =
+                        "${chosenDate!.year}-${formatTime(chosenDate!.month)}-${formatTime(chosenDate!.day)}T${formatTime(dayTime!.hour)}:${formatTime(dayTime!.minute)}:00.226Z";
+
+                    ref.read(newTicketProvider.notifier).state = {
+                      ...ref.read(newTicketProvider.notifier).state,
+                      'availableTime': time,
+                    };
+
+                    createTickets(ref.read(newTicketProvider.notifier).state,
+                        widget.eventId);
+                    context.go(AppRoutes.events);
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Field Error'),
+                          content: const Text(
+                              'Please fill in all fields including date time!'),
+                          actions: <Widget>[
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: const Text('Create Ticket'),
               ),

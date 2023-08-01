@@ -10,6 +10,8 @@ import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/types/address_type.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
+import '../../../providers/analytics_providers.dart';
+
 class EventCreate extends StatelessWidget {
   const EventCreate({super.key});
 
@@ -369,6 +371,15 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                     await ref
                         .read(eventsByUserProvider(uid).notifier)
                         .fetchEvents(uid);
+
+                    // update the analytics page
+                    await ref
+                        .read(eventsYearlyDistributionProvider(uid).notifier)
+                        .fetchDistribution();
+                    await ref.read(eventsHostedNotifier(uid).notifier).fetch();
+                    await ref
+                        .read(percentageBeatenByEventsProvider(uid).notifier)
+                        .fetch();
 
                     // prevent accessing context after it get disposed due to the async nature
                     if (context.mounted) {

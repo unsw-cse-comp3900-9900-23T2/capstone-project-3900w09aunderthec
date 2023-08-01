@@ -23,7 +23,7 @@ namespace EventManagementAPI.Services
             _smtpPassword = configuration["Smtp:Password"];
         }
 
-        public void SendEmail(string from, string to, string subject, string body)
+        public async Task SendEmail(string from, string to, string subject, string body)
         {
             using (MailMessage mailMessage = new MailMessage())
             {
@@ -38,7 +38,7 @@ namespace EventManagementAPI.Services
                 _smtpClient.UseDefaultCredentials = false;
                 _smtpClient.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
 
-                _smtpClient.Send(mailMessage);
+                await _smtpClient.SendMailAsync(mailMessage);
             }
         }
     }

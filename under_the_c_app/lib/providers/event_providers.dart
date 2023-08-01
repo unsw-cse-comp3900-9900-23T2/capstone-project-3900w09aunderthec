@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:under_the_c_app/api/event_requests.dart';
+import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/events/event_type.dart';
 
 /* For Event Filter */
@@ -59,8 +60,12 @@ class EventsProvider extends StateNotifier<List<Event>> {
     // }
   }
 
-  Future<void> fetchEvents() async {
-    state = await getAllEvents();
+  Future<void> fetchEvents({String? eventId}) async {
+    if (eventId != null) {
+      state = await getAllEvents(sortBy: "similarity", eventId: eventId);
+    } else if (sessionVariables.sessionIsHost == false) {
+      state = await getAllEvents(uid: sessionVariables.uid.toString(), sortBy: "recommended");
+    } else {state = await getAllEvents();}
     setEvents(state);
   }
 
@@ -147,7 +152,7 @@ class EventsByUserProvider extends StateNotifier<List<Event>> {
 
   Future<void> fetchEvents(String uid, {bool? includePastEvents = true}) async {
     // here fetch events including past events
-    state = await getUserEvents(uid, includePastEvents: includePastEvents);
+    state = await getAllEvents(uid: uid, includePastEvents: includePastEvents);
   }
 }
 

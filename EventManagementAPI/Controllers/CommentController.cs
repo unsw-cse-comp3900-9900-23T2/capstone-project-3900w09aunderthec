@@ -6,11 +6,6 @@ using Newtonsoft.Json;
 
 namespace EventManagementAPI.Controllers
 {
-    public class GetCommentsRequestBody
-    {
-        public String sortby { get; set; }
-    };
-
     public class CreateCommentsRequestBody
     {
         public int commenterId { get; set; }
