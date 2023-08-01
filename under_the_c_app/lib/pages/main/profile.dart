@@ -48,73 +48,76 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // const CircleAvatar(
-          //   backgroundImage: AssetImage('images/users/guy.jpg'),
-          //   radius: 70,
-          // ),
-          // const SizedBox(height: 20),
-          Stack(
-            alignment: AlignmentDirectional.center,
-            clipBehavior: Clip.none,
-            children: [
-              Image.asset(
-                vip_level[frameUpgrade()],
-                width: MediaQuery.of(context).size.width * 0.7,
-                height: MediaQuery.of(context).size.width * 0.5,
-                fit: BoxFit.cover,
-              ),
-              Positioned(
-                top: MediaQuery.of(context).size.width * 0.078,
-                left: MediaQuery.of(context).size.width * 0.167,
-                child: CircleAvatar(
-                  backgroundImage: const AssetImage('images/users/guy.jpg'),
-                  radius: MediaQuery.of(context).size.width * 0.188,
+          sessionVariables.sessionIsHost
+              ? const CircleAvatar(
+                  backgroundImage: AssetImage('images/users/guy.jpg'),
+                  radius: 70,
+                )
+              : Stack(
+                  alignment: AlignmentDirectional.center,
+                  clipBehavior: Clip.none,
+                  children: [
+                    Image.asset(
+                      vip_level[frameUpgrade()],
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: MediaQuery.of(context).size.width * 0.5,
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.width * 0.078,
+                      left: MediaQuery.of(context).size.width * 0.167,
+                      child: CircleAvatar(
+                        backgroundImage:
+                            const AssetImage('images/users/guy.jpg'),
+                        radius: MediaQuery.of(context).size.width * 0.188,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Container(
-            height: MediaQuery.of(context).size.width * 0.1,
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('images/profile/vip.png'),
-                Text(
-                  'VIP ${sessionVariables.vipLevel}',
-                  // 'VIP ${index + 1}',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Loyal Points: ${sessionVariables.loyaltyPoints}',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
-          LevelBar(
-              key: levelBarKey,
-              progress: (sessionVariables.loyaltyPoints % 1000)),
           const SizedBox(height: 20),
           !sessionVariables.sessionIsHost
-              ? ElevatedButton(
-                  onPressed: () {
-                    context.go(
-                        AppRoutes.viewBooking(sessionVariables.uid.toString()));
-                  },
-                  child: const Text('View Booking'),
-                )
+              ? Column(children: [
+                  Container(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('images/profile/vip.png'),
+                        Text(
+                          'VIP ${sessionVariables.vipLevel}',
+                          // 'VIP ${index + 1}',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Loyalty Points: ${sessionVariables.loyaltyPoints}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  LevelBar(
+                      key: levelBarKey,
+                      progress: (sessionVariables.loyaltyPoints % 1000)),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.go(AppRoutes.viewBooking(
+                          sessionVariables.uid.toString()));
+                    },
+                    child: const Text('View Booking'),
+                  ),
+                  const SizedBox(height: 20),
+                ])
               : Container(),
-          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               context.go('/reset');
