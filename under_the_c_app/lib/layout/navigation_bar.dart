@@ -57,6 +57,7 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
             sessionVariables.navLocation = 0;
             break;
           case 1:
+            ref.read(eventsProvider.notifier).fetchEvents();
             // events page for host, home page for the customers
             if (widget.isHost == true) {
               context.go(AppRoutes.events, extra: 'Events');
