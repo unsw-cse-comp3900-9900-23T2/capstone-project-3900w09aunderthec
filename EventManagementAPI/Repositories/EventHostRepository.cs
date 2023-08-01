@@ -69,6 +69,7 @@ namespace EventManagementAPI.Repositories
         /// Get all hoster subscribers
         /// </summary>
         /// <param name="hosterId"></param>
+        /// <param name="time"></param>
         /// <returns>
         /// A list of customer objects who subscribed the hoster
         /// </returns>
@@ -180,7 +181,12 @@ namespace EventManagementAPI.Repositories
                     break;
             }
 
-            var percentageBeaten = totalHostersBeaten / totalHosters;
+            var percentageBeaten = totalHostersBeaten / (totalHosters - 1);
+
+            if (percentageBeaten == 1)
+            {
+                percentageBeaten = 0.9999;
+            }
 
             return percentageBeaten;
         }
@@ -219,6 +225,13 @@ namespace EventManagementAPI.Repositories
             return eventCountsArray;
         }
 
+        /// <summary>
+        /// Get the number of events hosted by the user
+        /// </summary>
+        /// <param name="hosterId"></param>
+        /// <returns>
+        /// A number indicates the number of events hosted by the user
+        /// </returns>
         public int GetNumberOfHostedEvents(int hosterId)
         {
             var numberOfHostedEvents = _dbContext.Events.Where(e => e.hosterFK == hosterId).Count();
