@@ -37,6 +37,7 @@ Future<void> createTickets(
     'name': ticketData['name'],
     'eventId': int.parse(eventId),
     'stock': int.parse(ticketData['amount']),
+    'availableTime': ticketData['availableTime']
   };
 
   try {
@@ -73,7 +74,7 @@ Future<void> deleteTickets(int ticketId) async {
   }
 }
 
-void purchaseTickets(Map<int, int> selectedTickets) async {
+Future<String> purchaseTickets(Map<int, int> selectedTickets) async {
   final bookTicketUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.bookTickets);
 
   Map<String, dynamic> jsonBody = {
@@ -95,10 +96,14 @@ void purchaseTickets(Map<int, int> selectedTickets) async {
     );
 
     // handle http response
-    if (response.statusCode != 200) {
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonList = jsonDecode(response.body);
+      return jsonList['booking']['id'].toString();
+    } else {
       throw Exception('API Error: $response');
     }
   } catch (e) {
     print('$e');
+    throw Exception(e);
   }
 }

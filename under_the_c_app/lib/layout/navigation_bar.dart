@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 
 class NavigationBarCustom extends ConsumerStatefulWidget {
   final bool isHost;
@@ -19,7 +20,12 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
   @override
   void initState() {
     super.initState();
-    homePageIndex = 1;
+
+    if (widget.isHost) {
+      homePageIndex = 2;
+    } else {
+      homePageIndex = 1;
+    }
     currentPageIdx = homePageIndex;
   }
 

@@ -9,7 +9,7 @@ class Booking {
   final String eventTime;
 
   Booking({
-    String? id,
+    required this.id,
     required this.ticketNo,
     required this.totalCost,
     required this.eventId,
@@ -17,7 +17,7 @@ class Booking {
     required this.eventTag,
     required this.eventVenue,
     required this.eventTime,
-  }) : id = id ?? "";
+  });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
@@ -38,11 +38,13 @@ class Booking {
 }
 
 class TicketBooking {
+  final String bookingId;
   final String eventId;
   final double totalPrice;
   final Map<int, int> selectedTickets;
 
   TicketBooking({
+    required this.bookingId,
     required this.eventId,
     required this.totalPrice,
     required this.selectedTickets,

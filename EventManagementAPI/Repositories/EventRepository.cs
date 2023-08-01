@@ -9,6 +9,9 @@ using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
@@ -132,15 +135,16 @@ namespace EventManagementAPI.Repositories
         /// <param name="sortby"></param>
         /// <param name="tags"></param>
         /// <param name="showPreviousEvents"></param>
+        /// <param name="eventId"></param>
         /// <returns>
         /// A list of EventListingDTO
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags, bool showPreviousEvents)
+        public async Task<List<EventListingDTO>> GetAllEvents(int? uid, string? sortby, string? tags, bool showPreviousEvents, int? eventId)
         {
             IQueryable<Event> query;
 
-            if (uid.HasValue)
+            if (uid.HasValue && sortby != "recommended")
             {
                 if (await _dbContext.Hosts.AnyAsync(h => h.uid == uid))
                 {
@@ -154,19 +158,15 @@ namespace EventManagementAPI.Repositories
                 else if (await _dbContext.Customers.AnyAsync(c => c.uid == uid))
                 {
                     // if uid refers to a customer
-                    // get all events that the customer has made bookings
-                    // is can be public or private
+                    // get all events that the customer has made bookings to
+                    // they can be public or private
                     // optional to show past events
                     query = _dbContext.BookingTickets
+                        .Where(bt => bt.booking.customerId == uid)
                         .Join(_dbContext.Tickets,
                             bt => bt.ticketId,
                             t => t.ticketId,
-                            (bt, t) => new
-                            {
-                                bt.booking,
-                                t.toEvent
-                            })
-                        .Select(c => c.toEvent);
+                            (bt, t) => t.toEvent);
                 }
                 else
                 {
@@ -199,6 +199,40 @@ namespace EventManagementAPI.Repositories
                         break;
                     case "price_low_to_high":
                         query = query.OrderBy(e => e.tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price));
+                        break;
+                    case "recommended":
+                        if (!await _dbContext.Customers.AnyAsync(c => c.uid == uid)) break;
+
+                        query = query.OrderByDescending(e => e.rating.GetValueOrDefault() // Prioritise highly-rated events
+                            + _dbContext.BookingTickets // Prioritise events with higher similarity to the customer's prior events 
+                            .Where(bt => bt.booking.customerId == uid) 
+                            .Join(_dbContext.Tickets,
+                                bt => bt.ticketId,
+                                t => t.ticketId,
+                                (bt, t) => t.eventIdRef)
+                            .Join(_dbContext.Similarities.Where(s => s.toEventId == e.eventId),
+                                i => i,
+                                s => s.fromEventId,
+                                (i, s) => s.value
+                            )
+                            .Average()
+                        );
+                        break;
+                    case "similarity":
+
+                        if (!eventId.HasValue) {throw new KeyNotFoundException("eventId not provided for similarity sorting");}
+                        if (!await _dbContext.Events.AnyAsync(e => e.eventId == eventId))
+                        {throw new KeyNotFoundException("eventId does not relate to an existing event");}
+                        
+                        query = query.Where(e => e.eventId != eventId);
+
+                        query = query.OrderByDescending(
+                            e => _dbContext.Similarities                        
+                                .Where(s => s.fromEventId == e.eventId && s.toEventId == eventId)
+                                .Select(s => s.value)
+                                .First()
+                        );
+                            
                         break;
                     default:
                         break;
@@ -255,8 +289,37 @@ namespace EventManagementAPI.Repositories
                 .AnyAsync(h => h.uid == e.hosterFK)) {
                 throw new KeyNotFoundException("That host does not exist");
             }
-                
+
+            // Saving the event automatically populates the eventId for later use
             _dbContext.Events.Add(e);
+            await _dbContext.SaveChangesAsync();
+            
+            String eventString = Regex.Replace(e.title + ' '
+                                             + e.description + ' '
+                                             + e.venue,"\n"," ");
+
+            foreach (Event otherEvent in await _dbContext.Events
+                .Where(ev => ev.eventId != e.eventId)
+                .ToListAsync())
+            {
+                Double sim = await PythonInterop.EvaluateSimilarity(
+                    eventString,
+                    Regex.Replace(otherEvent.title + ' '
+                                + otherEvent.description + ' '
+                                + otherEvent.venue,"\n"," ")
+                );
+                _dbContext.Similarities.Add(new Similarity{
+                    fromEventId = e.eventId,
+                    toEventId = otherEvent.eventId,
+                    value = sim
+                });
+                _dbContext.Similarities.Add(new Similarity{
+                    fromEventId = otherEvent.eventId,
+                    toEventId = e.eventId,
+                    value = sim
+                });
+            }
+
             await _dbContext.SaveChangesAsync();
         }
 

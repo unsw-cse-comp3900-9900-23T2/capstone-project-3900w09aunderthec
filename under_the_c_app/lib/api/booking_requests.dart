@@ -17,7 +17,6 @@ Future<List<Booking>> getBookings(String uid) async {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
-      print(jsonList);
       return jsonList.map((json) => Booking.fromJson(json)).toList();
     } else {
       throw Exception('GetBookings API ERROR: ${response.statusCode}');
@@ -27,7 +26,7 @@ Future<List<Booking>> getBookings(String uid) async {
   }
 }
 
-Future<bool> cancelBooking(String bookingId) async {
+Future<bool> cancelBooking(int bookingId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.cancelBooking);
 
   try {
@@ -41,10 +40,11 @@ Future<bool> cancelBooking(String bookingId) async {
       ),
     );
 
-    if (response.statusCode == 400) {
-      return false;
+    if (response.statusCode == 200) {
+      return true;
     } else if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception(response.body);
+      return false;
+      // throw Exception(response.body);
     }
   } on SocketException catch (e) {
     throw Exception('view_booking.dart.removeBooking: Network error $e');
@@ -53,5 +53,5 @@ Future<bool> cancelBooking(String bookingId) async {
   } catch (e) {
     throw Exception('view_booking.dart.removeBooking: Unknown error $e');
   }
-  return true;
+  return false;
 }
