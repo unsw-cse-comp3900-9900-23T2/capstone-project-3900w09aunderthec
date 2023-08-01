@@ -47,4 +47,7 @@ class APIRoutes {
 
   static String getBooking(String uid) => 'api/Booking/GetBookings/$uid';
   static const String cancelBooking = 'api/Booking/CancelBooking';
+
+  // ===========================Analytics ROUTES=================================
+  static const String getEventsYearlyDistribution = 'api/Hoster/GetEventsyearlyDistribution';
 }

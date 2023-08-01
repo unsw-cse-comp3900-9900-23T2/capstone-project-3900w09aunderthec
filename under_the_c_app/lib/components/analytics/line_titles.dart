@@ -11,27 +11,27 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
     // case 1:
     //   text = const Text('JAN', style: style);
     //   break;
-    case 3:
+    case 2:
       text = const Text('MAR', style: style);
       break;
     // case 4:
     //   text = const Text('APR', style: style);
     //   break;
-    case 6:
+    case 5:
       text = const Text('JUN', style: style);
       break;
     // case 7:
     //   text = const Text('JUL', style: style);
     //   break;
-    case 9:
+    case 8:
       text = const Text('SEP', style: style);
       break;
     // case 10:
     //   text = const Text('OCT', style: style);
     //   break;
-    // case 12:
-    //   text = const Text('DEC', style: style);
-    //   break;
+    case 11:
+      text = const Text('DEC', style: style);
+      break;
     default:
       text = const Text('', style: style);
       break;
@@ -50,11 +50,20 @@ Widget leftTitleWidgets(double value, TitleMeta meta) {
       color: Color.fromARGB(255, 0, 204, 88));
   String text;
   switch (value.toInt()) {
+    case 0:
+      text = "0";
+      break;
     case 1:
       text = "1";
       break;
+    case 2:
+      text = "2";
+      break;
     case 3:
       text = "3";
+      break;
+    case 4:
+      text = "4";
       break;
     case 5:
       text = "5";
