@@ -25,15 +25,24 @@ class SummaryCards extends StatelessWidget {
             children: const [
               SummaryCard(
                   val: 25,
-                  type: "Events Hosted",
+                  type: "Tickets Sold",
                   color: Color.fromARGB(255, 96, 98, 255)),
               SizedBox(
                 width: 15,
               ),
               SummaryCard(
-                  val: 10,
-                  type: "Subscribers",
-                  color: Color.fromARGB(255, 255, 119, 41)),
+                val: 10,
+                type: "Subscribers",
+                color: Color.fromARGB(255, 255, 119, 41),
+              ),
+              SizedBox(
+                width: 15,
+              ),
+              SummaryCard(
+                val: 10,
+                type: "Events Hosted",
+                color: Color.fromARGB(255, 255, 41, 209),
+              ),
             ],
           ),
         ),

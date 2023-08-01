@@ -34,7 +34,7 @@ class AnalyticsPage extends StatelessWidget {
                   child: EventsRank(
                     percentage: 0.4,
                     color: Color.fromARGB(255, 146, 163, 255),
-                    title: 'Hosted Events',
+                    title: 'Tickets Sold',
                   ),
                 ),
                 SizedBox(width: 10),
