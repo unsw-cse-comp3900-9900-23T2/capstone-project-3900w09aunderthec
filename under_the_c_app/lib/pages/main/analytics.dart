@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../components/analytics/line_chart.dart';
+import '../../components/analytics/summary_cards.dart';
+
 class AnalyticsPage extends StatelessWidget {
   const AnalyticsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.lightBlue,
-        alignment: Alignment.center,
-        child: const Text("Analytics Page"));
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 30, 30, 0),
+        child: Column(
+          children: [
+            SummaryCards(),
+            Container(
+              height: 200,
+              child: LineChartWidget(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,5 +1,5 @@
 class sessionVariables {
-  static bool sessionIsHost = false;
+  static bool sessionIsHost = true;
   static int uid = 2; //for testing purpose
   static String email = "";
   static int vipLevel = 0;
