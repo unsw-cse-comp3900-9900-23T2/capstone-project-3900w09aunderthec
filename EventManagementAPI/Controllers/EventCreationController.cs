@@ -99,6 +99,7 @@ namespace EventManagementAPI.Controllers{
                 title = RequestBody.title,
                 eventTime = RequestBody.eventTime,
                 venue = RequestBody.venue,
+                // cheapestPrice = 0,
                 description = RequestBody.description,
                 isDirectRefunds = RequestBody.isDirectRefunds,
                 isPrivateEvent = RequestBody.isPrivateEvent,

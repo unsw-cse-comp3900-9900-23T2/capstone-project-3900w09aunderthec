@@ -38,3 +38,19 @@ Event BackendDataSingleEventToEvent(data) {
     description: data['description'],
   );
 }
+
+Event BackendDataSingleEventToEventIncludePrice(data) {
+  return Event(
+    title: data['title'],
+    hostuid: data['hosterId'].toString(),
+    eventId: data['eventId'].toString(),
+    imageUrl: 'images/events/money-event.jpg',
+    time: data['eventTime'].toString(),
+    venue: data['venue'],
+    isDirectRefunds: data['isDirectRefunds'],
+    isPrivate: data['isPrivateEvent'],
+    tags: [data['tags'].toString()],
+    price: data['cheapestPrice'],
+    description: data['description'],
+  );
+}

@@ -57,19 +57,18 @@ class BackendEventData {
   final String tags;
   final double price;
 
-  BackendEventData({
-    required this.eventId,
-    required this.hosterId,
-    required this.title,
-    required this.time,
-    required this.venue,
-    required this.description,
-    required this.isDirectRefunds,
-    required this.isPrivateEvent,
-    required this.rating,
-    required this.tags,
-    required this.price
-  });
+  BackendEventData(
+      {required this.eventId,
+      required this.hosterId,
+      required this.title,
+      required this.time,
+      required this.venue,
+      required this.description,
+      required this.isDirectRefunds,
+      required this.isPrivateEvent,
+      required this.rating,
+      required this.tags,
+      required this.price});
   @override
   String toString() {
     return 'AllEvents(eventId: $eventId, hosterId: $hosterId, title: $title, time: $time, venue: $venue, description: $description, isDirectRefunds: $isDirectRefunds, isPrivateEvent: $isPrivateEvent, rating: $rating, tags: $tags)';
@@ -89,5 +88,6 @@ class BackendEventData {
       tags: json['tags'],
       price: json['cheapestPrice']
     );
+
   }
 }
