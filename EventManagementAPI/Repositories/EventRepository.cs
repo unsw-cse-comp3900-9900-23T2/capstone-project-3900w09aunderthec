@@ -153,7 +153,7 @@ namespace EventManagementAPI.Repositories
                     // can't see other events
                     // optional to show past events
                     query = _dbContext.Events.Include(e => e.tickets);
-                    query = query.Where(e => e.hosterFK == uid);
+                    query = query.Where(e => e.hosterId == uid);
                 }
                 else if (await _dbContext.Customers.AnyAsync(c => c.uid == uid))
                 {
@@ -259,7 +259,7 @@ namespace EventManagementAPI.Repositories
                 var eventDto = new EventListingDTO
                 {
                     eventId = e.eventId,
-                    hosterId = e.hosterFK,
+                    hosterId = e.hosterId,
                     title = e.title,
                     description = e.description,
                     venue = e.venue,
@@ -287,7 +287,7 @@ namespace EventManagementAPI.Repositories
         public async Task CreateAnEvent(Event e)
         {
             if (!await _dbContext.Hosts
-                .AnyAsync(h => h.uid == e.hosterFK)) {
+                .AnyAsync(h => h.uid == e.hosterId)) {
                 throw new KeyNotFoundException("That host does not exist");
             }
 
@@ -332,10 +332,28 @@ namespace EventManagementAPI.Repositories
         /// An Event object with details
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<Event> GetEventById(int id)
+        public async Task<EventDetailsDto> GetEventById(int id)
         {
             var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == id) ?? throw new KeyNotFoundException("event does not exist");
-            return e;
+
+            var eventDetails = new EventDetailsDto
+            {
+                eventId = e.eventId,
+                hosterFK = e.hosterFK,
+                title = e.title,
+                venue = e.venue,
+                eventTime = e.eventTime,
+                description = e.description,
+                isDirectRefunds = e.isDirectRefunds,
+                isPrivateEvent = e.isPrivateEvent,
+                rating = e.rating ?? 0.0,
+                createdTime = e.createdTime,
+                tags = e.tags,
+                numberSaved = e.numberSaved,
+                cheapestPrice = _dbContext.Tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price),
+            };
+
+            return eventDetails;
         }
 
         /// <summary>

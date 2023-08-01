@@ -361,7 +361,7 @@ class EventDetailsPage extends ConsumerWidget {
                         child: Text(sessionVariables.sessionIsHost &&
                                 sessionVariables.navLocation == 0
                             ? "Create Tickets"
-                            : "Buy Ticket"),
+                            : "Buy Tickets"),
                       ),
                     ),
                   ),

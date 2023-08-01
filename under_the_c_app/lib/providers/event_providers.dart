@@ -19,7 +19,7 @@ enum EventFilterType {
 }
 
 /* For Event Sort */
-enum EventSortType { none, recency, popularity, price, pinned }
+enum EventSortType { none, soonness, popularity, price, pinned }
 
 /* Fetching events */
 class EventsProvider extends StateNotifier<List<Event>> {
@@ -87,7 +87,7 @@ class EventsProvider extends StateNotifier<List<Event>> {
 
   void sort(EventSortType query) {
     switch (query) {
-      case EventSortType.recency:
+      case EventSortType.soonness:
         // Can't change the current "events", because it will not trigger re-render of the sortedEventsProvider,
         // in order to make it re-render successfully, we need to return a new instance (in this case a new array)
         final List<Event> sortedEvents = List.from(_allEvents)
@@ -99,7 +99,6 @@ class EventsProvider extends StateNotifier<List<Event>> {
               return dateTime1.compareTo(dateTime2);
             },
           );
-
         state = sortedEvents;
         break;
       case EventSortType.popularity:
@@ -111,6 +110,7 @@ class EventsProvider extends StateNotifier<List<Event>> {
               return aRating.compareTo(bRating);
             },
           );
+        state = sortedEvents;
         break;
 
       case EventSortType.price:
@@ -120,6 +120,7 @@ class EventsProvider extends StateNotifier<List<Event>> {
               return a.price.compareTo(b.price);
             },
           );
+        state = sortedEvents;
         break;
       default:
         break;

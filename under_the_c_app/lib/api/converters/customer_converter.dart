@@ -6,13 +6,12 @@ import 'package:under_the_c_app/types/users/customer_type.dart';
 //   for (var customer in data) {
 //     events.add(
 //       Event(
-//         hostuid: event.hosterFK.toString(),
+//         hostuid: event.hosterId.toString(),
 //         title: event.title,
 //         eventId: event.eventId.toString(),
 //         imageUrl: 'images/events/money-event.jpg',
 //         time: event.time.toString(),
 //         venue: event.venue,
-//         // TODO: [PLHV-198] EventCreate: We need set up price in the backend, can't always have price = 0.
 //         price: 0,
 //         description: event.description,
 //       ),

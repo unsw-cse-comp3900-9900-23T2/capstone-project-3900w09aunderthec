@@ -25,6 +25,8 @@ namespace EventManagementAPI.Repositories
         /// </returns>
         public async Task CreateBookingTicket(Ticket t)
         {
+            var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == t.eventIdRef) ?? throw new KeyNotFoundException("event not found");
+            t.toEvent = e;
             _dbContext.Tickets.Add(t);
             await _dbContext.SaveChangesAsync();
         }
