@@ -50,33 +50,37 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
           case 0:
             // analytics page for host, events page for the customers
             if (widget.isHost == true) {
+              sessionVariables.navLocation = 2;
               context.go(AppRoutes.analytics, extra: 'Analytics');
             } else {
+              sessionVariables.navLocation = 0;
               context.go(AppRoutes.events, extra: 'Events');
             }
-            sessionVariables.navLocation = 0;
             break;
           case 1:
             ref.read(eventsProvider.notifier).fetchEvents();
             // events page for host, home page for the customers
             if (widget.isHost == true) {
+              sessionVariables.navLocation = 0;
               context.go(AppRoutes.events, extra: 'Events');
             } else {
+              sessionVariables.navLocation = 1;
               context.go(AppRoutes.home, extra: 'Home');
             }
-            sessionVariables.navLocation = 1;
             break;
           case 2:
             if (widget.isHost == true) {
+              sessionVariables.navLocation = 1;
               context.go(AppRoutes.home, extra: 'Home');
             } else {
+              sessionVariables.navLocation = 2;
               context.go(AppRoutes.profile, extra: 'Profile');
             }
-            sessionVariables.navLocation = 2;
             break;
 
           case 3:
             if (widget.isHost == true) {
+              sessionVariables.navLocation = 2;
               context.go(AppRoutes.profile, extra: 'Profile');
             }
 
