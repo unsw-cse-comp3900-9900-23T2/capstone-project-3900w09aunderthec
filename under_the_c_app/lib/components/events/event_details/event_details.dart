@@ -125,7 +125,7 @@ class EventDetailsPage extends ConsumerWidget {
                                                               venue:
                                                                   event.venue,
                                                               time: event.time,
-                                                              price: 0,
+                                                              price: event.price,
                                                             ),
                                                           );
                                                       final uid =
@@ -309,7 +309,7 @@ class EventDetailsPage extends ConsumerWidget {
                         child: Text(sessionVariables.sessionIsHost &&
                                 sessionVariables.navLocation == 0
                             ? "Create Tickets"
-                            : "Buy Ticket"),
+                            : "Buy Tickets"),
                       ),
                     ),
                   ),

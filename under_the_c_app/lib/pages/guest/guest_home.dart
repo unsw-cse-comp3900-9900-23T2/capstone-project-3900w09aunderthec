@@ -34,7 +34,7 @@ class GuestPage extends ConsumerWidget {
             ),
           ),
           SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
+            delegate: SliverChildBuilderDelegate((context, index) {
             final event = events[index];
             return SizedBox(
                 width: 375,

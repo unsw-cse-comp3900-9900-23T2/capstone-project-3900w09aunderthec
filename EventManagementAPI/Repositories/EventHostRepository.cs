@@ -108,7 +108,7 @@ namespace EventManagementAPI.Repositories
                             on bookingTicket.ticketId equals ticket.ticketId
                           join ev in _dbContext.Events
                             on ticket.eventIdRef equals ev.eventId
-                          where ev.hosterFK == hosterId && bookingTicket.createdTime <= time
+                          where ev.hosterId == hosterId && bookingTicket.createdTime <= time
                           select new TicketSoldDto
                           {
                               ticket = ticket,
@@ -161,7 +161,7 @@ namespace EventManagementAPI.Repositories
                         .GroupJoin(
                             _dbContext.Events,
                             hoster => hoster.uid,
-                            e => e.hosterFK,
+                            e => e.hosterId,
                             (hoster, e) => new
                             {
                                 HosterRef = hoster.uid,
@@ -199,7 +199,7 @@ namespace EventManagementAPI.Repositories
             var endDate = new DateTime(currentDate.Year, 12, 31, 23, 59, 59);
 
             var eventsByMonth = await _dbContext.Events
-                .Where(e => e.hosterFK == hosterId && e.eventTime >= startDate && e.eventTime <= endDate)
+                .Where(e => e.hosterId == hosterId && e.eventTime >= startDate && e.eventTime <= endDate)
                 .GroupBy(e => e.eventTime.Month)
                 .OrderBy(group => group.Key)
                 .Select(group => new
@@ -221,7 +221,7 @@ namespace EventManagementAPI.Repositories
 
         public int GetNumberOfHostedEvents(int hosterId)
         {
-            var numberOfHostedEvents = _dbContext.Events.Where(e => e.hosterFK == hosterId).Count();
+            var numberOfHostedEvents = _dbContext.Events.Where(e => e.hosterId == hosterId).Count();
 
             return numberOfHostedEvents;
         }

@@ -153,7 +153,7 @@ namespace EventManagementAPI.Repositories
                     // can't see other events
                     // optional to show past events
                     query = _dbContext.Events.Include(e => e.tickets);
-                    query = query.Where(e => e.hosterFK == uid);
+                    query = query.Where(e => e.hosterId == uid);
                 }
                 else if (await _dbContext.Customers.AnyAsync(c => c.uid == uid))
                 {
@@ -259,7 +259,7 @@ namespace EventManagementAPI.Repositories
                 var eventDto = new EventListingDTO
                 {
                     eventId = e.eventId,
-                    hosterId = e.hosterFK,
+                    hosterId = e.hosterId,
                     title = e.title,
                     description = e.description,
                     venue = e.venue,
@@ -286,7 +286,7 @@ namespace EventManagementAPI.Repositories
         public async Task CreateAnEvent(Event e)
         {
             if (!await _dbContext.Hosts
-                .AnyAsync(h => h.uid == e.hosterFK)) {
+                .AnyAsync(h => h.uid == e.hosterId)) {
                 throw new KeyNotFoundException("That host does not exist");
             }
 

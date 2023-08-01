@@ -95,7 +95,7 @@ namespace EventManagementAPI.Controllers{
 
             var newEvent = new Event
             {
-                hosterFK = RequestBody.uid,
+                hosterId = RequestBody.uid,
                 title = RequestBody.title,
                 eventTime = RequestBody.eventTime,
                 venue = RequestBody.venue,
@@ -161,7 +161,7 @@ namespace EventManagementAPI.Controllers{
                 return NotFound();
             }
 
-            var hosterId = e.hosterFK;
+            var hosterId = e.hosterId;
             var hoster = _eventHostRepository.GetHosterById(hosterId);
 
             return Ok(e);
