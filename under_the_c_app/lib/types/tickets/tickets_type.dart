@@ -3,12 +3,14 @@ class Tickets {
   final int eventIdRef;
   final String name;
   double price;
+  int stock;
 
   Tickets({
     required this.ticketId,
     required this.eventIdRef,
     required this.name,
     required this.price,
+    required this.stock,
   });
 
   factory Tickets.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class Tickets {
       eventIdRef: json['eventIdRef'],
       name: json['name'],
       price: json['price'].toDouble(),
+      stock: json['stock'],
     );
   }
 }

@@ -66,6 +66,9 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
   bool generateButtonPressed = false;
   List<bool> selectedEventTypes = <bool>[true, false];
   List<String>? droppedItems;
+  String? timePickerError;
+  String? datePickerError;
+  String? tagsError;
 
   void handleSelectionChanged(List<bool> newSelection) {
     setState(() {
@@ -212,6 +215,13 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               saveDate: saveSelectedDate,
             ),
           ),
+          if (datePickerError != null)
+            Center(
+              child: Text(
+                datePickerError!,
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             child: Text(
@@ -227,6 +237,13 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
               getTime: saveSelectedTime,
             ),
           ),
+          if (timePickerError != null)
+            Center(
+              child: Text(
+                timePickerError!,
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
 
           // Privacy Button
           const Padding(
@@ -271,7 +288,7 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             child: generateButtonPressed
                 ? FutureBuilder<List<String>>(
                     future: _fetchDroppedItems(title, venue, description),
@@ -290,20 +307,32 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                       }
                     },
                   )
-                : const SizedBox(),
+                : Container(),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: ElevatedButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
 
-                setState(() {
-                  generateButtonPressed = true;
-                });
-              }
-            },
-            child: const Text('Generate'),
+                  setState(() {
+                    generateButtonPressed = true;
+                  });
+                }
+              },
+              child: const Text('Generate'),
+            ),
           ),
+          if (tagsError != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                tagsError!,
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+
           // Submit Button
           Center(
             child: Padding(
@@ -356,6 +385,41 @@ class MyCustomFormState extends ConsumerState<MyCustomForm> {
                     if (context.mounted) {
                       context.go(AppRoutes.events);
                     }
+                  }
+
+                  // ===============Error Messages===============
+                  // Error message for time picker
+                  if (dayTime == null) {
+                    setState(() {
+                      timePickerError = 'Please select a time';
+                    });
+                  } else {
+                    setState(() {
+                      timePickerError = null;
+                    });
+                  }
+                  // Error message for date picker
+                  if (chosenDate == null) {
+                    setState(() {
+                      datePickerError = 'Please select a date';
+                    });
+                  } else {
+                    setState(() {
+                      datePickerError = null;
+                    });
+                  }
+                  // Error message for date picker
+                  if (!generateButtonPressed) {
+                    setState(() {
+                      tagsError =
+                          'Please fill in event title, location and description';
+                    });
+                  } else if (tags == '') {
+                    tagsError = 'Please select a tag';
+                  } else {
+                    setState(() {
+                      tagsError = null;
+                    });
                   }
                 },
                 child: const Text('Submit'),
