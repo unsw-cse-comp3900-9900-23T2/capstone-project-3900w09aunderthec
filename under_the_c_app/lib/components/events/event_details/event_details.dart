@@ -15,6 +15,7 @@ import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/providers/user_providers.dart';
 
 import '../../../types/events/event_type.dart';
+import 'event_likes.dart';
 
 class EventDetailsPage extends ConsumerWidget {
   final String eventId;
@@ -63,11 +64,16 @@ class EventDetailsPage extends ConsumerWidget {
                   SingleChildScrollView(
                     child: Column(
                       children: [
-                        Image.asset(
-                          event.imageUrl,
-                          fit: BoxFit.cover,
-                          height: 400,
-                          width: MediaQuery.of(context).size.width,
+                        Stack(
+                          children: [
+                            Image.asset(
+                              event.imageUrl,
+                              fit: BoxFit.cover,
+                              height: 400,
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                            Positioned(bottom: 0, right: 0, child: EventLikes())
+                          ],
                         ),
                         // Title, price, date section
                         Padding(
@@ -196,10 +202,19 @@ class EventDetailsPage extends ConsumerWidget {
                                       subscribeHost(int.parse(event.hostuid));
 
                                       // update for the analytics page
-                                      ref.read(subscribersProvider(
-                                          sessionVariables.uid.toString()).notifier).fetch();
-                                      ref.read(percentageBeatenBySubscribersProvider(
-                                          sessionVariables.uid.toString()).notifier).fetch();
+                                      ref
+                                          .read(subscribersProvider(
+                                                  sessionVariables.uid
+                                                      .toString())
+                                              .notifier)
+                                          .fetch();
+                                      ref
+                                          .read(
+                                              percentageBeatenBySubscribersProvider(
+                                                      sessionVariables.uid
+                                                          .toString())
+                                                  .notifier)
+                                          .fetch();
 
                                       // notify user of subscription on the frontend
                                       showDialog(
