@@ -8,11 +8,11 @@ import 'package:under_the_c_app/config/session_variables.dart';
 import '../types/events/event_type.dart';
 
 class BookingProvider extends StateNotifier<List<Booking>> {
-  List<Booking> _allBooking;
+  List<Booking> _allBooking = [];
+  final String uid;
 
-  BookingProvider(uid)
-      : _allBooking = [],
-        super([]) {
+  BookingProvider({required this.uid}) : super([]) {
+    _allBooking = [];
     fetchBookings(uid);
   }
 
@@ -54,7 +54,7 @@ class BookingProvider extends StateNotifier<List<Booking>> {
     return false;
   }
 
-  Future<void> fetchBookings(uid) async {
+  Future<void> fetchBookings(String uid) async {
     state = await getBookings(uid);
     setBookings(state);
   }
@@ -68,13 +68,13 @@ class BookingProvider extends StateNotifier<List<Booking>> {
 final bookingProvider =
     StateNotifierProvider<BookingProvider, List<Booking>>((ref) {
   final uid = sessionVariables.uid.toString();
-  return BookingProvider(uid);
+  return BookingProvider(uid: uid);
 });
 
 final bookingsProvider =
     StateNotifierProvider.family<BookingProvider, List<Booking>, String>(
         (ref, uid) {
-  final bookingProviderStateNotifier = ref.read(bookingProvider.notifier);
-  return bookingProviderStateNotifier;
-  // return BookingProvider(uid);
+  // final bookingProviderStateNotifier = ref.read(bookingProvider.notifier);
+  // return bookingProviderStateNotifier;
+  return BookingProvider(uid: uid);
 });

@@ -15,8 +15,9 @@ class ViewBookingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final myBookings =
-        ref.watch(bookingsProvider(sessionVariables.uid.toString()));
+    final String uid = sessionVariables.uid.toString();
+    print("sessionVariables.uid.toString() = " + uid);
+    final myBookings = ref.watch(bookingsProvider(uid));
 
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
