@@ -15,9 +15,15 @@ class AnalyticsPage extends StatelessWidget {
           children: [
             SummaryCards(),
             SizedBox(height: 35),
-            Container(
-              height: 260,
-              child: LineChartWidget(),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(25, 25, 15, 15),
+                child: Container(
+                  height: 240,
+                  // width: 200,
+                  child: LineChartWidget(),
+                ),
+              ),
             ),
           ],
         ),

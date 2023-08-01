@@ -29,9 +29,9 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
     // case 10:
     //   text = const Text('OCT', style: style);
     //   break;
-    case 12:
-      text = const Text('DEC', style: style);
-      break;
+    // case 12:
+    //   text = const Text('DEC', style: style);
+    //   break;
     default:
       text = const Text('', style: style);
       break;
