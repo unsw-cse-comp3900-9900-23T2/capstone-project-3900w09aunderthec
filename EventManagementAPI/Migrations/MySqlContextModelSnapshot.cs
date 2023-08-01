@@ -59,6 +59,9 @@ namespace EventManagementAPI.Migrations
                     b.Property<int>("bookingId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("numberOfTickets")
                         .HasColumnType("int");
 

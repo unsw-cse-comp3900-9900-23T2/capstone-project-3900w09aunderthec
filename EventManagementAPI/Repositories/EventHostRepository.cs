@@ -1,4 +1,5 @@
 ﻿using EventManagementAPI.Context;
+using EventManagementAPI.DTOs;
 using EventManagementAPI.Models;
 using EventManagementAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -88,6 +89,27 @@ namespace EventManagementAPI.Repositories
                 .ToListAsync();
 
             return subscribers;
+        }
+
+        public async Task<List<TicketSoldDto>> GetTicketsSold(int hosterId, DateTime time)
+        {
+            var query = from booking in _dbContext.Bookings
+                          join bookingTicket in _dbContext.BookingTickets
+                            on booking.Id equals bookingTicket.Id
+                          join ticket in _dbContext.Tickets
+                            on bookingTicket.ticketId equals ticket.ticketId
+                          join ev in _dbContext.Events
+                            on ticket.eventIdRef equals ev.eventId
+                          where ev.hosterFK == hosterId && bookingTicket.createdTime <= time
+                          select new TicketSoldDto
+                          {
+                              ticket = ticket,
+                              soldTime = bookingTicket.createdTime,
+                          };
+
+            var tickets = await query.ToListAsync();
+
+            return tickets;
         }
     }
 }
