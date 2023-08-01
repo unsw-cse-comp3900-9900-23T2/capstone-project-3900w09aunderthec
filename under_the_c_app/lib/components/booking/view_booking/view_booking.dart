@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:under_the_c_app/components/events/event_details/price.dart';
 import 'package:under_the_c_app/types/bookings/booking_type.dart';
 
 import '../../../config/routes/routes.dart';
@@ -310,7 +311,17 @@ class BookingCard extends StatelessWidget {
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.03,
               ),
-              Text("$noTicket Tickets"),
+              Row(
+                children: [
+                  PriceTag(price: double.parse(bookingInfo.totalCost)),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.1,
+                  ),
+                  Text("$noTicket Tickets"),
+                ],
+              ),
+              // PriceTag(price: double.parse(bookingInfo.totalCost)),
+              // Text("$noTicket Tickets"),
             ],
           ),
           SizedBox(
@@ -447,9 +458,10 @@ class TicketInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ticketDetailsWidget('Ticket Type', ticketName, '', ''),
+              const SizedBox(height: 12),
               ticketDetailsWidget('Venue', eventVenue, '', ''),
               Padding(
-                padding: const EdgeInsets.only(top: 12.0, right: 52.0),
+                padding: const EdgeInsets.only(top: 12.0, right: 40.0),
                 child: ticketDetailsWidget(
                     'Date',
                     "${eventDate.year}-${formatTime(eventDate.month)}-${formatTime(eventDate.day)}",
@@ -457,7 +469,7 @@ class TicketInfo extends StatelessWidget {
                     "${formatTime(dayTime.hour)}:${formatTime(dayTime.minute)}"),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 12.0, right: 25),
+                padding: const EdgeInsets.only(top: 12.0, right: 15),
                 child: ticketDetailsWidget(
                     // 'Cost', '\$$eventCost', 'Order No', bookingNo),
                     'Cost',
