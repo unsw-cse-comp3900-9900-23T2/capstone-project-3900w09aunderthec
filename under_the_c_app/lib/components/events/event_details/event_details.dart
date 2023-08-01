@@ -72,7 +72,10 @@ class EventDetailsPage extends ConsumerWidget {
                               height: 400,
                               width: MediaQuery.of(context).size.width,
                             ),
-                            Positioned(bottom: 0, right: 0, child: EventLikes())
+                            Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: EventLikes(countLikes: event.rating!))
                           ],
                         ),
                         // Title, price, date section
