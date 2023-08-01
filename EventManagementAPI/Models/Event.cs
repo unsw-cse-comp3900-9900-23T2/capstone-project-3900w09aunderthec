@@ -23,6 +23,7 @@ namespace EventManagementAPI.Models
         public Boolean isDirectRefunds { get; set; }
         public Boolean isPrivateEvent { get; set; }
         public Double? rating { get; set; }
+
         public int numberOfRatings { get; set; } = 0;
         public int totalRatingMarks { get; set; } = 0;
         public String tags { get; set; }

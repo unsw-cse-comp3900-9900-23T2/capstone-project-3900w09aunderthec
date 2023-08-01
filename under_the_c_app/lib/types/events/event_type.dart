@@ -57,19 +57,18 @@ class BackendEventData {
   final String tags;
   final double price;
 
-  BackendEventData({
-    required this.eventId,
-    required this.hosterId,
-    required this.title,
-    required this.time,
-    required this.venue,
-    required this.description,
-    required this.isDirectRefunds,
-    required this.isPrivateEvent,
-    required this.rating,
-    required this.tags,
-    required this.price
-  });
+  BackendEventData(
+      {required this.eventId,
+      required this.hosterId,
+      required this.title,
+      required this.time,
+      required this.venue,
+      required this.description,
+      required this.isDirectRefunds,
+      required this.isPrivateEvent,
+      required this.rating,
+      required this.tags,
+      required this.price});
   @override
   String toString() {
     return 'AllEvents(eventId: $eventId, hosterId: $hosterId, title: $title, time: $time, venue: $venue, description: $description, isDirectRefunds: $isDirectRefunds, isPrivateEvent: $isPrivateEvent, rating: $rating, tags: $tags)';
@@ -77,17 +76,16 @@ class BackendEventData {
 
   factory BackendEventData.fromJson(Map<String, dynamic> json) {
     return BackendEventData(
-      eventId: json['eventId'],
-      hosterId: json['hosterId'],
-      title: json['title'],
-      time: DateTime.parse(json['eventTime']),
-      venue: json['venue'],
-      description: json['description'],
-      isDirectRefunds: json['isDirectRefunds'],
-      isPrivateEvent: json['isPrivateEvent'],
-      rating: json['rating'],
-      tags: json['tags'],
-      price: json['cheapestPrice']
-    );
+        eventId: json['eventId'],
+        hosterId: json['hosterId'],
+        title: json['title'],
+        time: DateTime.parse(json['eventTime']),
+        venue: json['venue'],
+        description: json['description'],
+        isDirectRefunds: json['isDirectRefunds'],
+        isPrivateEvent: json['isPrivateEvent'],
+        rating: json['rating'],
+        tags: json['tags'],
+        price: json['cheapestPrice']);
   }
 }

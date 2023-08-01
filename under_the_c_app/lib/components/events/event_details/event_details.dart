@@ -134,7 +134,8 @@ class EventDetailsPage extends ConsumerWidget {
                                                                           .venue,
                                                                       time: event
                                                                           .time,
-                                                                      price: 0,
+                                                                      price: event
+                                                                          .price,
                                                                     ),
                                                                   );
                                                               final uid =

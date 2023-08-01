@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/components/ticket/date_helpers.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
+import 'package:under_the_c_app/providers/event_providers.dart';
 
 import '../../api/ticket_requests.dart';
 
@@ -116,6 +117,10 @@ class _CreateTicket extends ConsumerState<CreateTicket> {
 
                     createTickets(ref.read(newTicketProvider.notifier).state,
                         widget.eventId);
+
+                    // update the events so the home page can see the new events with updated price
+                    // ref.read(eventsProvider.notifier).fetchEvents();
+
                     context.go(AppRoutes.events);
                   } else {
                     showDialog(
