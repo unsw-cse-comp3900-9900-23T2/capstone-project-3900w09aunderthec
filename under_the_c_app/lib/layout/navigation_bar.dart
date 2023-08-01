@@ -48,11 +48,15 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
         });
         switch (index) {
           case 0:
+            ref.read(eventsProvider.notifier).fetchEvents();
             // analytics page for host, events page for the customers
             if (widget.isHost == true) {
               sessionVariables.navLocation = 2;
               context.go(AppRoutes.analytics, extra: 'Analytics');
             } else {
+              final uid = sessionVariables.uid.toString();
+              ref.read(eventsByUserProvider(uid).notifier)
+                .fetchEvents(uid);
               sessionVariables.navLocation = 0;
               context.go(AppRoutes.events, extra: 'Events');
             }
@@ -61,6 +65,9 @@ class _NavigationBarCustom extends ConsumerState<NavigationBarCustom> {
             ref.read(eventsProvider.notifier).fetchEvents();
             // events page for host, home page for the customers
             if (widget.isHost == true) {
+              final uid = sessionVariables.uid.toString();
+              ref.read(eventsByUserProvider(uid).notifier)
+                .fetchEvents(uid);
               sessionVariables.navLocation = 0;
               context.go(AppRoutes.events, extra: 'Events');
             } else {
