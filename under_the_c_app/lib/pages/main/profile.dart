@@ -105,19 +105,21 @@ class _ProfilePageState extends State<ProfilePage> {
               key: levelBarKey,
               progress: (sessionVariables.loyaltyPoints % 1000)),
           const SizedBox(height: 20),
+          !sessionVariables.sessionIsHost
+              ? ElevatedButton(
+                  onPressed: () {
+                    context.go(
+                        AppRoutes.viewBooking(sessionVariables.uid.toString()));
+                  },
+                  child: const Text('View Booking'),
+                )
+              : Container(),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               context.go('/reset');
             },
             child: const Text('Reset Password'),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              context
-                  .go(AppRoutes.viewBooking(sessionVariables.uid.toString()));
-            },
-            child: const Text('View Booking'),
           ),
         ],
       ),

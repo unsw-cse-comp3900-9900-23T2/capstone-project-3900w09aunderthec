@@ -15,8 +15,10 @@ class ViewBookingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print(sessionVariables.uid.toString());
     final myBookings =
         ref.watch(bookingsProvider(sessionVariables.uid.toString()));
+    print(sessionVariables.uid.toString());
 
     return Container(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -88,23 +90,67 @@ class ViewBookingPage extends ConsumerWidget {
                                         eventCost: booking.totalCost,
                                         bookingNo: booking.id.toString(),
                                       );
+                                      // return Container(
+                                      //   width:
+                                      //       MediaQuery.of(context).size.width *
+                                      //           0.7,
+                                      //   height:
+                                      //       MediaQuery.of(context).size.width *
+                                      //           1.3,
+                                      //   child: ListView.builder(
+                                      //     scrollDirection: Axis.horizontal,
+                                      //     itemCount: 10,
+                                      //     itemBuilder: (BuildContext context,
+                                      //             int index) =>
+                                      //         Card(
+                                      //       child: EventTickets(
+                                      //         eventName: booking.eventName,
+                                      //         eventTag:
+                                      //             booking.eventTag.toString(),
+                                      //         eventVenue: booking.eventVenue,
+                                      //         eventTime: booking.eventTime,
+                                      //         eventCost: booking.totalCost,
+                                      //         bookingNo: booking.id.toString(),
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // );
+                                      // return Expanded(
+                                      //   child: ListView.builder(
+                                      //       shrinkWrap: true,
+                                      //       scrollDirection: Axis.horizontal,
+                                      //       itemCount: 1,
+                                      //       itemBuilder: (BuildContext context,
+                                      //               int index) =>
+                                      //           Container(
+                                      //             width: MediaQuery.of(context)
+                                      //                     .size
+                                      //                     .width *
+                                      //                 0.7,
+                                      //             height: MediaQuery.of(context)
+                                      //                     .size
+                                      //                     .width *
+                                      //                 1.3,
+                                      //             child: Card(
+                                      //               child: EventTickets(
+                                      //                 eventName:
+                                      //                     booking.eventName,
+                                      //                 eventTag: booking.eventTag
+                                      //                     .toString(),
+                                      //                 eventVenue:
+                                      //                     booking.eventVenue,
+                                      //                 eventTime:
+                                      //                     booking.eventTime,
+                                      //                 eventCost:
+                                      //                     booking.totalCost,
+                                      //                 bookingNo:
+                                      //                     booking.id.toString(),
+                                      //               ),
+                                      //             ),
+                                      //           )),
+                                      // );
                                     },
                                   );
-
-                                  // showDialog(
-                                  //     context: context,
-                                  //     builder: (context) => AlertDialog(
-                                  //           // backgroundColor: Colors.black,
-                                  //           content: EventTickets(
-                                  //             eventName: booking.eventName,
-                                  //             eventTag:
-                                  //                 booking.eventTag.toString(),
-                                  //             eventVenue: booking.eventVenue,
-                                  //             eventTime: booking.eventTime,
-                                  //             eventCost: booking.totalCost,
-                                  //             bookingNo: booking.id.toString(),
-                                  //           ),
-                                  //         ));
                                 },
                                 child: const Text('View Tickets'),
                               ),
