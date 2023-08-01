@@ -97,6 +97,14 @@ class DisplayedTicket extends ConsumerWidget {
                       ),
                   ],
                 ),
+                Text(
+                  "Stock: ${item.stock.toString()}",
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),

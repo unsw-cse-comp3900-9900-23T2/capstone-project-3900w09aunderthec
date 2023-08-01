@@ -20,10 +20,12 @@ import 'package:under_the_c_app/types/users/customer_type.dart';
 //   return events;
 // }
 
-Customer BackendDataSingleCustomerToCustomer(data) {
+Customer backendDataSingleCustomerToCustomer(data) {
   return Customer(
     customerId: data['uid'],
     subscriptions: [],
     userName: data['username'],
+    loyaltyPoints: data['loyaltyPoints'],
+    vipLevel: data['vipLevel'],
   );
 }

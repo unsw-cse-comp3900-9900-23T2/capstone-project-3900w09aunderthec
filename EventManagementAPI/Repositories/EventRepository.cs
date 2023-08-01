@@ -269,6 +269,7 @@ namespace EventManagementAPI.Repositories
                     tags = e.tags,
                     numberSaved = e.numberSaved,
                     cheapestPrice = cheapestPrice,
+                    rating = e.rating ?? 0.0,
                 };
 
                 eventList.Add(eventDto);
@@ -331,10 +332,28 @@ namespace EventManagementAPI.Repositories
         /// An Event object with details
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<Event> GetEventById(int id)
+        public async Task<EventDetailsDto> GetEventById(int id)
         {
             var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == id) ?? throw new KeyNotFoundException("event does not exist");
-            return e;
+
+            var eventDetails = new EventDetailsDto
+            {
+                eventId = e.eventId,
+                hosterFK = e.hosterFK,
+                title = e.title,
+                venue = e.venue,
+                eventTime = e.eventTime,
+                description = e.description,
+                isDirectRefunds = e.isDirectRefunds,
+                isPrivateEvent = e.isPrivateEvent,
+                rating = e.rating ?? 0.0,
+                createdTime = e.createdTime,
+                tags = e.tags,
+                numberSaved = e.numberSaved,
+                cheapestPrice = _dbContext.Tickets.Where(t => t.eventIdRef == e.eventId).Min(t => t.price),
+            };
+
+            return eventDetails;
         }
 
         /// <summary>

@@ -7,6 +7,7 @@ class Booking {
   final String eventTag;
   final String eventVenue;
   final String eventTime;
+  final Map<String, Map<String, dynamic>> ticketDetails;
 
   Booking({
     required this.id,
@@ -17,24 +18,8 @@ class Booking {
     required this.eventTag,
     required this.eventVenue,
     required this.eventTime,
+    required this.ticketDetails,
   });
-
-  factory Booking.fromJson(Map<String, dynamic> json) {
-    return Booking(
-      id: json['booking']['id'].toString(),
-      ticketNo: (json['booking']['totalPricePayed'] +
-              json['booking']['creditMoneyUsed'])
-          .toString(),
-      totalCost: (json['booking']['totalPricePayed']).toString(),
-      // ticketNo: "1",
-      // totalCost: "1",
-      eventName: json['eventName']['title'],
-      eventId: json['eventName']['eventId'].toString(),
-      eventTag: json['eventName']['tags'],
-      eventVenue: json['eventName']['venue'],
-      eventTime: json['eventName']['eventTime'],
-    );
-  }
 }
 
 class TicketBooking {
@@ -48,5 +33,43 @@ class TicketBooking {
     required this.eventId,
     required this.totalPrice,
     required this.selectedTickets,
+  });
+}
+
+class UserBooking {
+  final String bookingId;
+  final int loyaltyPoints;
+  final int vipLevel;
+
+  UserBooking({
+    required this.bookingId,
+    required this.loyaltyPoints,
+    required this.vipLevel,
+  });
+}
+
+class BookingDetails {
+  final String bookingId;
+  final int ticketNo;
+  // final double totalCost;
+  final Map<String, Map<String, dynamic>> individualTickets;
+
+  BookingDetails({
+    required this.bookingId,
+    required this.ticketNo,
+    // required this.totalCost,
+    required this.individualTickets,
+  });
+}
+
+class IndividualDetails {
+  final String name;
+  // final int numberOfTicket;
+  final double price;
+
+  IndividualDetails({
+    required this.name,
+    // required this.numberOfTicket,
+    required this.price,
   });
 }
