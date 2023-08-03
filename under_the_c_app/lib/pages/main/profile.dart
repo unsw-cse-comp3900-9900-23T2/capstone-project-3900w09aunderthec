@@ -15,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // Profile overlay
   List<String> vipLevel = [
     'images/profile/Vip_level_1.png',
     'images/profile/Vip_level_2.png',
@@ -23,6 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   ];
   final levelBarKey = GlobalKey<LevelBarState>();
 
+  // Upgrade the frame when the vip level reaches certain milestones
   int frameUpgrade() {
     int index = 0;
     switch (sessionVariables.vipLevel) {
@@ -48,7 +50,9 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          sessionVariables.sessionIsHost
+          // Profile picture
+          sessionVariables
+                  .sessionIsHost // Check if user is a host, if yes hide user only features
               ? const CircleAvatar(
                   backgroundImage: AssetImage('images/users/guy.jpg'),
                   radius: 70,
@@ -75,6 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
           const SizedBox(height: 20),
+          // Numerical representation of vip level
           !sessionVariables.sessionIsHost
               ? Column(children: [
                   Container(
@@ -96,6 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  // Numerical representation of Loyalty Points
                   Text(
                     'Loyalty Points: ${sessionVariables.loyaltyPoints}',
                     style: const TextStyle(
@@ -104,10 +110,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  // Progress bar to next level of vip
                   LevelBar(
                       key: levelBarKey,
                       progress: (sessionVariables.loyaltyPoints % 1000)),
                   const SizedBox(height: 20),
+                  // Access view booking page
                   ElevatedButton(
                     onPressed: () {
                       context.go(AppRoutes.viewBooking(
@@ -118,6 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 20),
                 ])
               : Container(),
+          // Reset password
           ElevatedButton(
             onPressed: () {
               context.go('/reset');
@@ -130,6 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
+// Progress bar
 class LevelBar extends StatefulWidget {
   const LevelBar({super.key, required this.progress});
   final int progress;

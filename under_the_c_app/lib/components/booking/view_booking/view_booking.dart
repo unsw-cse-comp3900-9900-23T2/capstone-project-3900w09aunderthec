@@ -21,6 +21,8 @@ class ViewBookingPage extends ConsumerWidget {
     final String uid = sessionVariables.uid.toString();
     final myBookings = ref.watch(bookingsProvider(uid));
 
+    // Have a list of tickets with their price
+    // Add the same ticket according to how many tickets have been bought
     List<IndividualDetails> individualTicketList(Booking booking) {
       List<IndividualDetails> returnedList = [];
       booking.ticketDetails.forEach(
@@ -69,6 +71,7 @@ class ViewBookingPage extends ConsumerWidget {
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: GestureDetector(
                   onTap: () {
+                    // Clicking the card takes you to relevant event
                     context.go(AppRoutes.eventDetails(booking.eventId),
                         extra: 'Details');
                   },
@@ -76,10 +79,7 @@ class ViewBookingPage extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Column(
                       children: [
-                        // Text(
-                        //   "Booking Id: ${booking.id}",
-                        //   style: const TextStyle(fontWeight: FontWeight.bold),
-                        // ),
+                        // Card class to visualise booking
                         BookingCard(
                           bookingInfo: booking,
                           imageUrl: "images/events/money-event.jpg",
@@ -91,19 +91,12 @@ class ViewBookingPage extends ConsumerWidget {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
+                              // View tickets
                               ElevatedButton(
                                 onPressed: () {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      // return EventTickets(
-                                      //   eventName: booking.eventName,
-                                      //   eventTag: booking.eventTag.toString(),
-                                      //   eventVenue: booking.eventVenue,
-                                      //   eventTime: booking.eventTime,
-                                      //   eventCost: booking.totalCost,
-                                      //   bookingNo: booking.id.toString(),
-                                      // );
                                       return AlertDialog(
                                         backgroundColor: Colors.transparent,
                                         content: Container(
@@ -130,7 +123,7 @@ class ViewBookingPage extends ConsumerWidget {
                                                       details =
                                                       individualTicketList(
                                                           booking);
-
+                                                  // Class that visualises tickets
                                                   return EventTickets(
                                                     eventName:
                                                         booking.eventName,
@@ -176,7 +169,6 @@ class ViewBookingPage extends ConsumerWidget {
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              // TO-DO call cancelAll api request
                                               final successCancel = await ref
                                                   .read(
                                                       bookingProvider.notifier)
@@ -184,7 +176,7 @@ class ViewBookingPage extends ConsumerWidget {
                                                       booking.id.toString());
                                               Navigator.of(context)
                                                   .pop(); // Close the alert
-
+                                              // Dialogue pop up suggesting success or reasons for failure
                                               showDialog(
                                                 context: context,
                                                 builder: (context) =>
@@ -208,6 +200,7 @@ class ViewBookingPage extends ConsumerWidget {
                                                                 "Cancellation requests must be made at least 7 days prior to the event or event is non refundable."),
                                                           ),
                                               );
+                                              // Refund the tickets
                                               successCancel
                                                   ? ref
                                                       .read(ticketsProvider(
@@ -320,8 +313,6 @@ class BookingCard extends StatelessWidget {
                   Text("$noTicket Tickets"),
                 ],
               ),
-              // PriceTag(price: double.parse(bookingInfo.totalCost)),
-              // Text("$noTicket Tickets"),
             ],
           ),
           SizedBox(
@@ -367,8 +358,6 @@ class EventTickets extends StatelessWidget {
     return Center(
       child: TicketWidget(
         color: const Color.fromARGB(255, 226, 235, 240),
-        // width: 350,
-        // height: 500,
         width: MediaQuery.of(context).size.width * 0.7,
         height: MediaQuery.of(context).size.width * 1.3,
         isCornerRounded: true,
@@ -388,6 +377,7 @@ class EventTickets extends StatelessWidget {
   }
 }
 
+// Visualisation of ticket
 class TicketInfo extends StatelessWidget {
   const TicketInfo({
     Key? key,
@@ -412,7 +402,6 @@ class TicketInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String imageUrl = 'images/tickets/bc.png';
-    // String imageUrl = 'images/tickets/bar-code.png';
     DateTime eventDate = DateTime.parse(eventTime);
     TimeOfDay dayTime = TimeOfDay.fromDateTime(eventDate);
 
@@ -471,11 +460,7 @@ class TicketInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 12.0, right: 15),
                 child: ticketDetailsWidget(
-                    // 'Cost', '\$$eventCost', 'Order No', bookingNo),
-                    'Cost',
-                    '\$$price',
-                    'Order No',
-                    bookingNo),
+                    'Cost', '\$$price', 'Order No', bookingNo),
               ),
             ],
           ),
@@ -497,6 +482,7 @@ class TicketInfo extends StatelessWidget {
   }
 }
 
+// Details for a row in the ticket
 Widget ticketDetailsWidget(String firstTitle, String firstDesc,
     String secondTitle, String secondDesc) {
   return Row(

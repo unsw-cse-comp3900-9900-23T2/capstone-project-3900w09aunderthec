@@ -102,16 +102,21 @@ class EventDetailsPage extends ConsumerWidget {
                                     sessionVariables.uid.toString() ==
                                             event.hostuid
                                         ? Row(
+                                            // Event modification and cancellation
                                             children: [
+                                              // Edit event button
                                               IconButton(
                                                   onPressed: () {
+                                                    // Go to modify event form
                                                     context.go(
                                                         AppRoutes.eventModify(
                                                             event.eventId!));
                                                   },
                                                   icon: const Icon(Icons.edit)),
+                                              // Delete event button
                                               IconButton(
                                                   onPressed: () {
+                                                    // Give warning in case of accidental misclick
                                                     showDialog<String>(
                                                       context: context,
                                                       builder: (BuildContext
@@ -130,6 +135,7 @@ class EventDetailsPage extends ConsumerWidget {
                                                             child: const Text(
                                                                 'Cancel'),
                                                           ),
+                                                          // Remove event if host proceeds
                                                           TextButton(
                                                             onPressed: () {
                                                               ref
