@@ -15,7 +15,6 @@ import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/providers/user_providers.dart';
 
 import '../../../types/events/event_type.dart';
-import 'event_likes.dart';
 
 class EventDetailsPage extends ConsumerWidget {
   final String eventId;
@@ -30,7 +29,6 @@ class EventDetailsPage extends ConsumerWidget {
 
     return event.when(
         data: (event) {
-          // print(event.title);
           // when the widget finished building
           Future(() {
             // record the event hoster uid for the comment pin
@@ -67,24 +65,11 @@ class EventDetailsPage extends ConsumerWidget {
                   SingleChildScrollView(
                     child: Column(
                       children: [
-                        Stack(
-                          children: [
-                            Image.asset(
-                              event.imageUrl,
-                              fit: BoxFit.cover,
-                              height: 400,
-                              width: MediaQuery.of(context).size.width,
-                            ),
-                            sessionVariables.sessionIsHost == false
-                                ? Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: EventLikes(
-                                      countLikes: event.rating!,
-                                      eventId: event.eventId!,
-                                    ))
-                                : Container()
-                          ],
+                        Image.asset(
+                          event.imageUrl,
+                          fit: BoxFit.cover,
+                          height: 400,
+                          width: MediaQuery.of(context).size.width,
                         ),
                         // Title, price, date section
                         Padding(
@@ -149,8 +134,7 @@ class EventDetailsPage extends ConsumerWidget {
                                                                           .venue,
                                                                       time: event
                                                                           .time,
-                                                                      price: event
-                                                                          .price,
+                                                                      price: 0,
                                                                     ),
                                                                   );
                                                               final uid =
