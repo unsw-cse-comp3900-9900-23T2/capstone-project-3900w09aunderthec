@@ -1,3 +1,4 @@
+// Model used for booking data
 class Booking {
   final String id;
   final String ticketNo;
@@ -51,25 +52,21 @@ class UserBooking {
 class BookingDetails {
   final String bookingId;
   final int ticketNo;
-  // final double totalCost;
   final Map<String, Map<String, dynamic>> individualTickets;
 
   BookingDetails({
     required this.bookingId,
     required this.ticketNo,
-    // required this.totalCost,
     required this.individualTickets,
   });
 }
 
 class IndividualDetails {
   final String name;
-  // final int numberOfTicket;
   final double price;
 
   IndividualDetails({
     required this.name,
-    // required this.numberOfTicket,
     required this.price,
   });
 }

@@ -8,6 +8,7 @@ import 'package:under_the_c_app/config/session_variables.dart';
 import 'package:under_the_c_app/types/users/customer_type.dart';
 import 'package:http/http.dart' as http;
 
+// Get customer details by their ID
 Future<Customer> getCustomerById(String customerId) async {
   final registerUrl = Uri.https(
       APIRoutes.BASE_URL, APIRoutes.getCustomerById, {"id": customerId});
@@ -43,6 +44,7 @@ Future<Customer> getCustomerById(String customerId) async {
   }
 }
 
+// Request made by users to subscribe to a host
 Future<void> subscribeHost(int hosterId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.subscribe);
   try {
@@ -62,4 +64,3 @@ Future<void> subscribeHost(int hosterId) async {
     throw Exception(e);
   }
 }
-

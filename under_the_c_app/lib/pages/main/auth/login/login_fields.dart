@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+// Widget for the text capture fields on login page
 class Login_Field extends StatelessWidget {
   final controller;
   final String hintText;

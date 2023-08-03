@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:under_the_c_app/config/routes/routes.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 
+// Order Confirmation Page Widget
 class TicketConfirmation extends StatelessWidget {
   final String eventName;
   const TicketConfirmation({

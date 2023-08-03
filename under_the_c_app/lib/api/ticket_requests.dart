@@ -7,6 +7,7 @@ import 'package:under_the_c_app/types/tickets/tickets_type.dart';
 import '../types/bookings/booking_type.dart';
 import 'converters/booking_converter.dart';
 
+// Gets all tickets for display
 Future<List<Tickets>> getTickets(String eventId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.getTickets,
       {'eventId': eventId, 'customerId': sessionVariables.uid.toString()});
@@ -31,6 +32,7 @@ Future<List<Tickets>> getTickets(String eventId) async {
   }
 }
 
+// Gets details of a single ticketS
 Future<Tickets> getTicketDetails(String ticketId) async {
   final requestUrl = Uri.https(
       APIRoutes.BASE_URL, APIRoutes.getTicket, {'ticketId': ticketId});
@@ -52,6 +54,7 @@ Future<Tickets> getTicketDetails(String ticketId) async {
   }
 }
 
+// Creates a new ticket for an event (for hosts to use)
 Future<void> createTickets(
     Map<String, dynamic> ticketData, String eventId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.createTickets);
@@ -79,6 +82,7 @@ Future<void> createTickets(
   }
 }
 
+// Request made by hosts to delete tickets from event
 Future<void> deleteTickets(int ticketId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.deleteTickets);
   try {
@@ -98,6 +102,7 @@ Future<void> deleteTickets(int ticketId) async {
   }
 }
 
+// Request used by users to purchase their selected tickets
 Future<UserBooking?> purchaseTickets(Map<int, int> selectedTickets) async {
   final bookTicketUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.bookTickets);
 

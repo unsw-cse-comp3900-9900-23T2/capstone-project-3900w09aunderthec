@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/io_client.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 
+// Request made on login to retrieve persistent data from DB
 void initialiseSessionVariables(String email) async {
   HttpClient client = HttpClient();
   client.badCertificateCallback =

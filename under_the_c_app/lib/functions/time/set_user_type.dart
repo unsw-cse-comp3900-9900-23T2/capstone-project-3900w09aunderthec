@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:http/io_client.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
-import 'package:under_the_c_app/main.dart';
 
+//
 void setUserType(String email) async {
   HttpClient client = HttpClient();
   client.badCertificateCallback =

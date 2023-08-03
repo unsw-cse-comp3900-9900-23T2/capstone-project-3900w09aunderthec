@@ -1,6 +1,7 @@
 // Pick time in 12hr format
 import 'package:flutter/material.dart';
 
+// Widget to select time for ticket release
 class TimePicker extends StatefulWidget {
   const TimePicker({
     super.key,
@@ -80,7 +81,7 @@ class _TimePickerState extends State<TimePicker> {
   }
 }
 
-// Pick date
+// Widget to select date for ticket release
 class DatePicker extends StatefulWidget {
   const DatePicker({super.key, this.restorationId, required this.saveDate});
 

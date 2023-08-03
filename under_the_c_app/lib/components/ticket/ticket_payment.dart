@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+// Widget to display payment options
 class PaymentDialog extends StatefulWidget {
+  const PaymentDialog({super.key});
+
   @override
   _PaymentDialogState createState() => _PaymentDialogState();
 }
