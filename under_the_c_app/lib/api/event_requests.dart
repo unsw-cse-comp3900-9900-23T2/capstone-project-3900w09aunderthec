@@ -128,7 +128,6 @@ Future<Event> createEvent(Event eventInfo) async {
           "isDirectRefunds": eventInfo.isDirectRefunds,
           "isPrivateEvent": eventInfo.isPrivate,
           // TODO: [PLHV-200] get_event.dart: So far it only receives tags as sring not list, but we should allow list, go to event_create.dart to modify it
-          // "tags": "tags"
           "tags": eventInfo.tags?[0],
         },
       ),

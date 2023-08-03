@@ -350,8 +350,8 @@ class MyCustomForm extends ConsumerWidget {
                                   description: description,
                                   isDirectRefunds: isDirectRefunds,
                                   isPrivate: privateEvent,
-                                  // tags: [tags],
-                                  price: 0,
+                                  tags: [tags],
+                                  price: event.price,
                                 ),
                               );
                           final uid = sessionVariables.uid.toString();
