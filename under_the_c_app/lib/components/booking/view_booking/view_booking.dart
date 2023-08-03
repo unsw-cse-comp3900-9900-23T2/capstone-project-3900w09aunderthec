@@ -480,9 +480,9 @@ class TicketInfo extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 30),
         Padding(
-          padding: const EdgeInsets.only(top: 80.0, left: 30.0, right: 30.0),
+          padding: const EdgeInsets.only(top: 40.0, left: 30.0, right: 30.0),
           child: SizedBox(
             width: 250.0,
             height: 60.0,
@@ -492,7 +492,6 @@ class TicketInfo extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 10),
       ],
     );
   }

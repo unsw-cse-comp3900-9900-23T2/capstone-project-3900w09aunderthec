@@ -15,7 +15,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  List<String> vip_level = [
+  List<String> vipLevel = [
     'images/profile/Vip_level_1.png',
     'images/profile/Vip_level_2.png',
     'images/profile/Vip_level_3.png',
@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   clipBehavior: Clip.none,
                   children: [
                     Image.asset(
-                      vip_level[frameUpgrade()],
+                      vipLevel[frameUpgrade()],
                       width: MediaQuery.of(context).size.width * 0.7,
                       height: MediaQuery.of(context).size.width * 0.5,
                       fit: BoxFit.cover,
