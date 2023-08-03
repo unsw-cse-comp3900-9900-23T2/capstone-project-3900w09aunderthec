@@ -143,15 +143,7 @@ final eventsProvider = StateNotifierProvider<EventsProvider, List<Event>>(
 
 final eventProvider = FutureProvider.family<Event, String>(
   (ref, id) async {
-    // return await getEventDetails(id);
-    final event = await getEventDetails(id);
-    final modifiedEvent = ref.watch(eventsProvider);
-    for (Event event in modifiedEvent) {
-      if (event.eventId == id) {
-        return event;
-      }
-    }
-    return event;
+    return await getEventDetails(id);
   },
 );
 
