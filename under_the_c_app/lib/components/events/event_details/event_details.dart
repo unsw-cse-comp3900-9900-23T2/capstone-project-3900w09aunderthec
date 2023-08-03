@@ -29,6 +29,7 @@ class EventDetailsPage extends ConsumerWidget {
 
     return event.when(
         data: (event) {
+          // print(event.title);
           // when the widget finished building
           Future(() {
             // record the event hoster uid for the comment pin

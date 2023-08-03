@@ -64,8 +64,11 @@ class EventsProvider extends StateNotifier<List<Event>> {
     if (eventId != null) {
       state = await getAllEvents(sortBy: "similarity", eventId: eventId);
     } else if (sessionVariables.sessionIsHost == false) {
-      state = await getAllEvents(uid: sessionVariables.uid.toString(), sortBy: "recommended");
-    } else {state = await getAllEvents();}
+      state = await getAllEvents(
+          uid: sessionVariables.uid.toString(), sortBy: "recommended");
+    } else {
+      state = await getAllEvents();
+    }
     setEvents(state);
   }
 
@@ -140,7 +143,15 @@ final eventsProvider = StateNotifierProvider<EventsProvider, List<Event>>(
 
 final eventProvider = FutureProvider.family<Event, String>(
   (ref, id) async {
-    return await getEventDetails(id);
+    // return await getEventDetails(id);
+    final event = await getEventDetails(id);
+    final modifiedEvent = ref.watch(eventsProvider);
+    for (Event event in modifiedEvent) {
+      if (event.eventId == id) {
+        return event;
+      }
+    }
+    return event;
   },
 );
 
