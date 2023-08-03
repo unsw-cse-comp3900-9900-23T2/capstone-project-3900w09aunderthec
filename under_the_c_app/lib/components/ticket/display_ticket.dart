@@ -4,6 +4,7 @@ import '../../types/tickets/tickets_type.dart';
 import 'book_ticket.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
 
+// Widget to display a list of tickets for the ticket purchase screen
 class DisplayedTicket extends ConsumerWidget {
   final Tickets item;
   double originalPrice = 0.0;

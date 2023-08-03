@@ -39,6 +39,7 @@ final Map<String, String> pageTitleMap = {
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
 
+  // Central location for all page routes
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
@@ -76,7 +77,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               title: state.extra != null ? state.extra!.toString() : "",
               isHost: sessionVariables.sessionIsHost);
         },
-
         routes: <RouteBase>[
           GoRoute(
             path: AppRoutes.reset,

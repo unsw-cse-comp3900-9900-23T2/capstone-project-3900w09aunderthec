@@ -5,6 +5,7 @@ import 'package:under_the_c_app/api/testingdata/initialise_session_variables.dar
 import 'package:under_the_c_app/pages/main/auth/login/login_button.dart';
 import 'login_fields.dart';
 
+// Login Page Widget
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 

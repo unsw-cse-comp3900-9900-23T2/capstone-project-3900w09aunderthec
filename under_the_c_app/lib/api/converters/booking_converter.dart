@@ -1,6 +1,7 @@
 import '../../types/bookings/booking_type.dart';
 import '../booking_requests.dart';
 
+// Helper functions for converting booking data
 UserBooking addBackendBooking(data) {
   return UserBooking(
     bookingId: data['booking']['id'].toString(),
@@ -58,7 +59,6 @@ BookingDetails getBackendBookingDetails(data) {
   return BookingDetails(
     bookingId: data['booking']['id'].toString(),
     ticketNo: totalTickets,
-    // totalCost: (data['booking']['totalPricePayed']),
     individualTickets: individualTicketDetails,
   );
 }

@@ -1,3 +1,4 @@
+// class used to store frequently used user data
 class sessionVariables {
   static bool sessionIsHost = false;
   static int uid = 1; //for testing purpose
