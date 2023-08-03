@@ -130,9 +130,21 @@ namespace EventManagementAPI.Repositories
         /// <returns>
         /// A double value represents the percentage of hosters beaten
         /// </returns>
-        public async Task<double> GetPercentageBeaten(int hosterId, string rankBy)
+        public async Task<double> GetPercentageBeaten(int? hosterIdNullable, string rankBy)
         {
+            if (hosterIdNullable == null)
+            {
+                return 0;
+            }
+            var hosterId = hosterIdNullable.Value;
             var totalHosters = _dbContext.Hosts.Count();
+            if (totalHosters == 0) {
+                return 0;
+            }
+            if (totalHosters == 1)
+            {
+                return 0.999;
+            }
             var totalHostersBeaten = 0.0;
 
             switch (rankBy)
