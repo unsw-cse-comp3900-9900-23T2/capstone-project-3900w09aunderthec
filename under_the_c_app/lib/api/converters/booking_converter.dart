@@ -2,6 +2,7 @@ import '../../types/bookings/booking_type.dart';
 import '../booking_requests.dart';
 
 // Helper functions for converting booking data
+// Adding loyalty points
 UserBooking addBackendBooking(data) {
   return UserBooking(
     bookingId: data['booking']['id'].toString(),
@@ -10,6 +11,7 @@ UserBooking addBackendBooking(data) {
   );
 }
 
+// Subtracting loyalty points
 UserBooking removeBackendBooking(data) {
   return UserBooking(
     bookingId: data['id'].toString(),
@@ -18,6 +20,7 @@ UserBooking removeBackendBooking(data) {
   );
 }
 
+// All booking information
 Future<List<Booking>> getAllBackendBooking(data) async {
   List<Booking> bookings = [];
   for (var booking in data) {
@@ -42,6 +45,7 @@ Future<List<Booking>> getAllBackendBooking(data) async {
   return bookings;
 }
 
+// Ticket information
 BookingDetails getBackendBookingDetails(data) {
   int totalTickets = 0;
   final Map<String, Map<String, dynamic>> individualTicketDetails = {};

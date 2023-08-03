@@ -6,6 +6,7 @@ import 'package:under_the_c_app/api/api_routes.dart';
 import '../types/bookings/booking_type.dart';
 import 'converters/booking_converter.dart';
 
+// Get all bookings
 Future<List<Booking>> getBookings(String uid) async {
   final requestUrl =
       Uri.https(APIRoutes.BASE_URL, APIRoutes.getBooking(uid), {'uid': uid});
@@ -27,6 +28,7 @@ Future<List<Booking>> getBookings(String uid) async {
   }
 }
 
+// Get detail of specific booking
 Future<BookingDetails> getBookingDetails(String bookingId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL,
       APIRoutes.getBookingDetail(bookingId), {'bookingId': bookingId});
@@ -48,6 +50,7 @@ Future<BookingDetails> getBookingDetails(String bookingId) async {
   }
 }
 
+// Cancel booking
 Future<UserBooking?> cancelBooking(int bookingId) async {
   final requestUrl = Uri.https(APIRoutes.BASE_URL, APIRoutes.cancelBooking);
 
