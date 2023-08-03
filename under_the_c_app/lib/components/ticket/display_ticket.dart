@@ -66,7 +66,7 @@ class DisplayedTicket extends ConsumerWidget {
                   children: [
                     if (discountedPrice < originalPrice) ...{
                       Text(
-                        "\$ ${(discountedPrice).toString()}",
+                        "\$ ${discountedPrice.toStringAsFixed(2)}",
                         style: const TextStyle(
                           color: Colors.green,
                           fontSize: 15.0,

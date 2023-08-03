@@ -182,7 +182,7 @@ class _BookTicket extends ConsumerState<BookTicket> {
                     style: priceTextStyle.copyWith(color: Colors.black),
                   ),
                   const Spacer(),
-                  Text("\$$totalPrice",
+                  Text("\$${totalPrice.toStringAsFixed(2)}",
                       style: priceTextStyle.copyWith(color: Colors.black)),
                   const SizedBox(height: 20.0),
                 ],
