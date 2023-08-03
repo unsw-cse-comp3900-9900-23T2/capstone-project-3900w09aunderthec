@@ -1,3 +1,4 @@
+// class to store all app routes (not api routes)
 class AppRoutes {
   AppRoutes._(); //Prevent this class to be instantalized
 

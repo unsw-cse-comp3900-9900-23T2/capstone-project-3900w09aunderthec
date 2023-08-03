@@ -124,6 +124,9 @@ namespace EventManagementAPI.Repositories
 
             var eventSaved = await _dbContext.EventsSaved.FirstOrDefaultAsync(es => es.customerId == customerId && es.eventId == eventId);
 
+            var numCustomersInExistence = await _dbContext.Customers.CountAsync();
+            var numberLikes = 0.0;
+
             if (eventSaved == null)
             {
                 var newEventSaved = new EventSaved
@@ -133,18 +136,31 @@ namespace EventManagementAPI.Repositories
                     eventId = eventId,
                     eventShow = e,
                 };
-                e.numberSaved++;
+                e.numberSaved++;   
                 _dbContext.Add(newEventSaved);
+                numberLikes = await _dbContext.EventsSaved.Where(es => es.eventId == eventId).CountAsync() + 1;
+                e.rating = Convert.ToDouble(numberLikes) / numCustomersInExistence;
                 await _dbContext.SaveChangesAsync();
                 return newEventSaved;
             }
 
             e.numberSaved--;
+            numberLikes = await _dbContext.EventsSaved.Where(es => es.eventId == eventId).CountAsync();
+            e.rating = Convert.ToDouble(numberLikes) / numCustomersInExistence;
             _dbContext.Remove(eventSaved);
             await _dbContext.SaveChangesAsync();
             return eventSaved;
         }
 
+        /// <summary>
+        /// Rate an event from 1 to 5
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <param name="rating"></param>
+        /// <returns>
+        /// the updated event rating
+        /// </returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<double> RateEvent(int eventId, int rating)
         {
             var e = await _dbContext.Events.FirstOrDefaultAsync(e => e.eventId == eventId) ?? throw new KeyNotFoundException("event not found");
@@ -160,6 +176,26 @@ namespace EventManagementAPI.Repositories
             await _dbContext.SaveChangesAsync();
 
             return e.rating.Value;
+        }
+
+        /// <summary>
+        /// Check if the event is saved by the customer
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="eventId"></param>
+        /// <returns>
+        /// A boolean value represents whether the event is saved by the user
+        /// </returns>
+        public async Task<bool> isSaved(int customerId, int eventId)
+        {
+            var eventSaved = await _dbContext.EventsSaved.FirstOrDefaultAsync(es => es.customerId == customerId && es.eventId == eventId);
+
+            if (eventSaved != null)
+            {
+                return true;
+            } else { 
+                return false; 
+            }
         }
     }
 }

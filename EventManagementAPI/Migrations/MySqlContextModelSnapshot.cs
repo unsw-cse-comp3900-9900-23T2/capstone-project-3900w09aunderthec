@@ -172,7 +172,7 @@ namespace EventManagementAPI.Migrations
                     b.Property<DateTime>("eventTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("hosterFK")
+                    b.Property<int>("hosterId")
                         .HasColumnType("int");
 
                     b.Property<bool>("isDirectRefunds")
@@ -207,7 +207,7 @@ namespace EventManagementAPI.Migrations
 
                     b.HasKey("eventId");
 
-                    b.HasIndex("hosterFK");
+                    b.HasIndex("hosterId");
 
                     b.ToTable("Events");
                 });
@@ -434,7 +434,7 @@ namespace EventManagementAPI.Migrations
                 {
                     b.HasOne("EventManagementAPI.Models.Hoster", "host")
                         .WithMany()
-                        .HasForeignKey("hosterFK")
+                        .HasForeignKey("hosterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

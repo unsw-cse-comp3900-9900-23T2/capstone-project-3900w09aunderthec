@@ -78,7 +78,27 @@ Future<Event> getEventDetails(String id) async {
     final response = await http.get(url, headers: APIRoutes.headers);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return BackendDataSingleEventToEvent(data);
+      return BackendDataSingleEventToEventIncludePrice(data);
+    } else {
+      throw HttpException('HTTP error: ${response.statusCode}');
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.getEvent: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.getEvent: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.getEvent: Unknown error $e');
+  }
+}
+
+Future<bool> isEventLikedAPI(String customerId, String eventId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.isEventSaved,
+      {"customerId": customerId, "eventId": eventId});
+
+  try {
+    final response = await http.get(url, headers: APIRoutes.headers);
+    if (response.statusCode == 200) {
+      return response.body == "true" ? true : false;
     } else {
       throw HttpException('HTTP error: ${response.statusCode}');
     }
@@ -211,5 +231,25 @@ Future<void> sendNotification(
     throw Exception('event.dart.cancelEvent: Http Exception error $e');
   } catch (e) {
     throw Exception('event.dart.cancelEvent: Unknown error $e');
+  }
+}
+
+Future<void> toggleLikeEventAPI(String customerId, String eventId) async {
+  final url = Uri.https(APIRoutes.BASE_URL, APIRoutes.toggleLikeEvent);
+  try {
+    final response = await http.post(
+      url,
+      headers: APIRoutes.headers,
+      body: jsonEncode({"customerId": customerId, "eventId": eventId}),
+    );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(response.body);
+    }
+  } on SocketException catch (e) {
+    throw Exception('event.dart.toggleLikeEventAPI: Network error $e');
+  } on HttpException catch (e) {
+    throw Exception('event.dart.toggleLikeEventAPI: Http Exception error $e');
+  } catch (e) {
+    throw Exception('event.dart.toggleLikeEventAPI: Unknown error $e');
   }
 }

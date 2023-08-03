@@ -5,7 +5,7 @@ namespace EventManagementAPI.DTOs
     public class EventDetailsDto
     {
         public int eventId { get; set; }
-        public int hosterFK { get; set; }
+        public int hosterId { get; set; }
         public string title { get; set; }
         public string venue { get; set; }
         public DateTime eventTime { get; set; }

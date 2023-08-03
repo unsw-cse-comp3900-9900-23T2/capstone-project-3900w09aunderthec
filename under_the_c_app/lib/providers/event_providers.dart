@@ -108,9 +108,9 @@ class EventsProvider extends StateNotifier<List<Event>> {
         final List<Event> sortedEvents = List.from(_allEvents)
           ..sort(
             (a, b) {
-              double aRating = a.rating ?? -10.0;
-              double bRating = b.rating ?? -10.0;
-              return aRating.compareTo(bRating);
+              int aRating = a.rating ?? -10;
+              int bRating = b.rating ?? -10;
+              return bRating.compareTo(aRating);
             },
           );
         state = sortedEvents;
@@ -174,3 +174,20 @@ final eventsByUserProvider =
     return EventsByUserProvider(uid);
   },
 );
+
+// rating providers
+// class RatingNotifier extends StateNotifier<int> {
+//   final uid = sessionVariables.uid;
+//   final String eventId;
+//   RatingNotifier(this.eventId) : super(0) {
+//     fetchRating();
+//   }
+
+//   Future<void> toggleLikeEventAPI() async {
+//     state = await (uid, eventId);
+//   }
+// }
+
+// final ratingProvider =
+//     StateNotifierProvider.family<RatingNotifier, int, String>(
+//         (ref, eventId) => RatingNotifier());

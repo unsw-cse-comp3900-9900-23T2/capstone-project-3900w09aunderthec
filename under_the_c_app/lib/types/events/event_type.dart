@@ -10,7 +10,7 @@ class Event {
   final String imageUrl;
   final String description;
   final bool? isDirectRefunds;
-  final double? rating;
+  final int? rating;
   final List<String>? tags;
   // final Address address;
   final String venue;
@@ -25,7 +25,7 @@ class Event {
       required this.venue,
       String? description,
       bool? isDirectRefunds,
-      this.rating,
+      int? this.rating,
       bool? isPrivate,
       List<String>? tags,
       required this.price,
@@ -53,23 +53,22 @@ class BackendEventData {
   final String description;
   final bool isDirectRefunds;
   final bool isPrivateEvent;
-  final double? rating;
+  final int? rating;
   final String tags;
   final double price;
 
-  BackendEventData({
-    required this.eventId,
-    required this.hosterId,
-    required this.title,
-    required this.time,
-    required this.venue,
-    required this.description,
-    required this.isDirectRefunds,
-    required this.isPrivateEvent,
-    required this.rating,
-    required this.tags,
-    required this.price
-  });
+  BackendEventData(
+      {required this.eventId,
+      required this.hosterId,
+      required this.title,
+      required this.time,
+      required this.venue,
+      required this.description,
+      required this.isDirectRefunds,
+      required this.isPrivateEvent,
+      required this.rating,
+      required this.tags,
+      required this.price});
   @override
   String toString() {
     return 'AllEvents(eventId: $eventId, hosterId: $hosterId, title: $title, time: $time, venue: $venue, description: $description, isDirectRefunds: $isDirectRefunds, isPrivateEvent: $isPrivateEvent, rating: $rating, tags: $tags)';
@@ -85,9 +84,10 @@ class BackendEventData {
       description: json['description'],
       isDirectRefunds: json['isDirectRefunds'],
       isPrivateEvent: json['isPrivateEvent'],
-      rating: json['rating'],
+      rating: json['numberSaved'].toInt(),
       tags: json['tags'],
       price: json['cheapestPrice']
     );
+
   }
 }

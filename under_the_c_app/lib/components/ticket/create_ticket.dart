@@ -8,6 +8,7 @@ import '../../api/ticket_requests.dart';
 
 final newTicketProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
+// Widget for host to create new ticket for their event
 class CreateTicket extends ConsumerStatefulWidget {
   final String eventId;
 
@@ -116,6 +117,7 @@ class _CreateTicket extends ConsumerState<CreateTicket> {
 
                     createTickets(ref.read(newTicketProvider.notifier).state,
                         widget.eventId);
+
                     context.go(AppRoutes.events);
                   } else {
                     showDialog(

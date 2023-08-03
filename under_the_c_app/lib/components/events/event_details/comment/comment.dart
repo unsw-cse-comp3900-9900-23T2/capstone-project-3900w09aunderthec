@@ -98,8 +98,8 @@ class _CommentState extends ConsumerState<Comment> {
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
             child: ElevatedButton(
-              onPressed: () {
-                ref
+              onPressed: () async {
+                await ref
                     .read(commentsProvider(widget.eventId).notifier)
                     .addComment(comment: commentController.text);
 

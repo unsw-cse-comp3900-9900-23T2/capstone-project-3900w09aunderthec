@@ -26,6 +26,7 @@ final totalPriceProvider = StateProvider<double>((ref) {
   return 0;
 });
 
+// Ticket Purchase Screen Widget
 class BookTicket extends ConsumerStatefulWidget {
   final String eventId;
   final String eventTitle;
@@ -37,6 +38,7 @@ class BookTicket extends ConsumerStatefulWidget {
       required this.eventTitle,
       required this.eventVenue});
 
+  // Widget to let users know data is loading
   void showLoadingScreen(BuildContext context) {
     showGeneralDialog(
       context: context,
@@ -73,6 +75,7 @@ class BookTicket extends ConsumerStatefulWidget {
   _BookTicket createState() => _BookTicket();
 }
 
+// Stateful logic
 class _BookTicket extends ConsumerState<BookTicket> {
   @override
   void initState() {
@@ -123,7 +126,6 @@ class _BookTicket extends ConsumerState<BookTicket> {
               extra: "Details"),
         ),
       ),
-      // extendBody: true,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -182,7 +184,7 @@ class _BookTicket extends ConsumerState<BookTicket> {
                     style: priceTextStyle.copyWith(color: Colors.black),
                   ),
                   const Spacer(),
-                  Text("\$$totalPrice",
+                  Text("\$${totalPrice.toStringAsFixed(2)}",
                       style: priceTextStyle.copyWith(color: Colors.black)),
                   const SizedBox(height: 20.0),
                 ],
@@ -244,6 +246,7 @@ class _BookTicket extends ConsumerState<BookTicket> {
   }
 }
 
+// Display helper
 Container _buildDivider() {
   return Container(
     height: 2.0,

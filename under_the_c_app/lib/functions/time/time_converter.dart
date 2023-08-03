@@ -1,6 +1,7 @@
 // High level APIs
 import 'package:intl/intl.dart';
 
+// Helper functions for performing data/time conversions
 String getFirstThreeLettersWeekday(String time) {
   DateTime dateTime = convertToDateTime(time);
   String dayString = days[dateTime.weekday - 1];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Widget for login buttons used on login page
 class LogInButton extends StatelessWidget {
   final Function()? onTap;
   final String text;

@@ -7,6 +7,7 @@ import 'package:under_the_c_app/pages/main/auth/login/login_button.dart';
 import 'package:under_the_c_app/pages/main/auth/login/login_fields.dart';
 import 'package:http/http.dart' as http;
 
+// Registration Page Widget
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
