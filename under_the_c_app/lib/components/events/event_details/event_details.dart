@@ -15,6 +15,7 @@ import 'package:under_the_c_app/providers/event_providers.dart';
 import 'package:under_the_c_app/providers/user_providers.dart';
 
 import '../../../types/events/event_type.dart';
+import 'event_likes.dart';
 
 class EventDetailsPage extends ConsumerWidget {
   final String eventId;
@@ -65,11 +66,24 @@ class EventDetailsPage extends ConsumerWidget {
                   SingleChildScrollView(
                     child: Column(
                       children: [
-                        Image.asset(
-                          event.imageUrl,
-                          fit: BoxFit.cover,
-                          height: 400,
-                          width: MediaQuery.of(context).size.width,
+                        Stack(
+                          children: [
+                            Image.asset(
+                              event.imageUrl,
+                              fit: BoxFit.cover,
+                              height: 400,
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                            sessionVariables.sessionIsHost == false
+                                ? Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: EventLikes(
+                                      countLikes: event.rating!,
+                                      eventId: event.eventId!,
+                                    ))
+                                : Container()
+                          ],
                         ),
                         // Title, price, date section
                         Padding(
@@ -134,7 +148,8 @@ class EventDetailsPage extends ConsumerWidget {
                                                                           .venue,
                                                                       time: event
                                                                           .time,
-                                                                      price: 0,
+                                                                      price: event
+                                                                          .price,
                                                                     ),
                                                                   );
                                                               final uid =

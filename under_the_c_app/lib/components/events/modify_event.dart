@@ -350,7 +350,7 @@ class MyCustomForm extends ConsumerWidget {
                                   description: description,
                                   isDirectRefunds: isDirectRefunds,
                                   isPrivate: privateEvent,
-                                  tags: [tags],
+                                  // tags: [tags],
                                   price: 0,
                                 ),
                               );

@@ -165,7 +165,7 @@ Future<void> modifyEvent(Event eventInfo) async {
           "description": eventInfo.description,
           "isDirectRefunds": eventInfo.isDirectRefunds,
           "isPrivateEvent": eventInfo.isPrivate,
-          "tags": eventInfo.tags![0],
+          "tags": "tags",
         },
       ),
     );
