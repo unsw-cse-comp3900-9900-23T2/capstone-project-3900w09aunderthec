@@ -97,14 +97,20 @@ namespace EventManagementAPI.Controllers
         [HttpGet("GetBookingDetails/{bookingId}")]
         public async Task<IActionResult> ShowBookingDetails(int bookingId)
         {
-            var b = await _bookingRepository.GetBookingById(bookingId);
-
-            if (b == null)
+            try
             {
-                return NotFound();
-            }
+                var b = await _bookingRepository.GetBookingById(bookingId);
 
-            return Ok(b);
+                if (b == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(b);
+            } catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpDelete("CancelBooking")]
