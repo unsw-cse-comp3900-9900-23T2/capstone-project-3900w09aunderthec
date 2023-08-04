@@ -46,47 +46,71 @@ namespace EventManagementAPI.Controllers{
         }
 
         [HttpGet("ShowTickets")]
-        public async Task<IActionResult> ShowTickets([FromQuery] int eventId, int customerId) {
+        public async Task<IActionResult> ShowTickets([FromQuery] int eventId, int customerId) 
+        {
+            try
+            {
+                var tickets = await _ticketRepository.ShowEventTickets(eventId, customerId);
 
-            var tickets = await _ticketRepository.ShowEventTickets(eventId, customerId);
-
-            return Ok(tickets);
+                return Ok(tickets);
+            } catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            } catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPost("CreateTickets")]
-        public async Task<IActionResult> CreateTickets([FromBody] CreateTicketsRequestBody RequestBody) {
-
-            var existingEvent = await _eventRepository.GetEventById(RequestBody.eventId);
-            if (existingEvent == null)
+        public async Task<IActionResult> CreateTickets([FromBody] CreateTicketsRequestBody RequestBody) 
+        {
+            try
             {
-                return NotFound("Event not found");
+                var existingEvent = await _eventRepository.GetEventById(RequestBody.eventId);
+                if (existingEvent == null)
+                {
+                    return NotFound("Event not found");
+                }
+
+                var newTicket = new Ticket
+                {
+                    name = RequestBody.name,
+                    price = RequestBody.price,
+                    eventIdRef = RequestBody.eventId,
+                    stock = RequestBody.stock,
+                    availableTime = RequestBody.availableTime,
+                };
+
+                await _ticketRepository.CreateBookingTicket(newTicket);
+
+                return Ok(newTicket.ticketId);
+            } catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
-
-            var newTicket = new Ticket
-            {
-                name = RequestBody.name,
-                price = RequestBody.price,
-                eventIdRef = RequestBody.eventId,
-                stock = RequestBody.stock,
-                availableTime = RequestBody.availableTime,
-            };
-
-            await _ticketRepository.CreateBookingTicket(newTicket);
-
-            return Ok(newTicket.ticketId);
         }
 
         [HttpGet("ShowTicketDetails")]
         public async Task<IActionResult> ShowTicketDetails([FromQuery] int ticketId)
         {
-            var t = await _ticketRepository.GetTicketById(ticketId);
-
-            if (t == null)
+            try
             {
-                return NotFound();
-            }
+                var t = await _ticketRepository.GetTicketById(ticketId);
 
-            return Ok(t);
+                if (t == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(t);
+            } catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            } catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPut("ModifyTickets")]

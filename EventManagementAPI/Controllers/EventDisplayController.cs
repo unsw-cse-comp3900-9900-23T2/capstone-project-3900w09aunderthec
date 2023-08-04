@@ -23,15 +23,28 @@ namespace EventManagementAPI.Controllers{
         [HttpGet("ListEvents")]
         public async Task<IActionResult> ListEvents([FromQuery] int? uid, string? sortby, string? tags, bool showPreviousEvents, int? eventId)
         {
-            var events = await _eventDisplayRepository.GetAllEvents(uid, sortby, tags, showPreviousEvents, eventId);
-            return Ok(events);
+            try
+            {
+                var events = await _eventDisplayRepository.GetAllEvents(uid, sortby, tags, showPreviousEvents, eventId);
+                return Ok(events);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("ShowEventDetails")]
         public async Task<IActionResult> ShowEventDetails([FromQuery] int eventId) {
 
-            var e = await _eventDisplayRepository.GetEventById(eventId);
-            return Ok(e);
+            try
+            {
+                var e = await _eventDisplayRepository.GetEventById(eventId);
+
+                return Ok(e);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

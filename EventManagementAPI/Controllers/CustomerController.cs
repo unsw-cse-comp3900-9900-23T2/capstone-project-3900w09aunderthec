@@ -57,14 +57,20 @@ namespace EventManagementAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {
-            var customer = await _customerRepository.GetCustomerById(id);
-
-            if (customer == null)
+            try
             {
-                return NotFound();
-            }
+                var customer = await _customerRepository.GetCustomerById(id);
 
-            return Ok(customer);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(customer);
+            } catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }   
         }
 
         [HttpPatch("{id}")]
@@ -150,9 +156,15 @@ namespace EventManagementAPI.Controllers
         [HttpGet("IsEventSaved")]
         public async Task<IActionResult> IsEventSaved([FromQuery] int customerId, int eventId)
         {
-            var isEventSaved = await _customerRepository.isSaved(customerId, eventId);
+            try
+            {
+                var isEventSaved = await _customerRepository.isSaved(customerId, eventId);
 
-            return Ok(isEventSaved);
+                return Ok(isEventSaved);
+            } catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
