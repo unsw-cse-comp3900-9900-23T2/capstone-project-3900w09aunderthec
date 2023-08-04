@@ -25,7 +25,8 @@ class PriceTag extends StatelessWidget {
               size: 16,
             ), // your custom style here
             const SizedBox(width: 6),
-            Text(price.toString(), style: const TextStyle(fontSize: 15.0)),
+            Text(price.toStringAsFixed(2),
+                style: const TextStyle(fontSize: 15.0)),
           ],
         ),
       ),
