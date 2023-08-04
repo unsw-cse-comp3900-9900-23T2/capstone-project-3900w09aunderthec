@@ -1,0 +1,62 @@
+This is Jiapeng Yang's work diary
+
+Week 1
+Week 1 is the time to form a group and decide on the system we are going to implement, 
+what technologies we are going to use in this project and discuss what functionalities we can do,
+especially talked about some novel functionalities.
+I have contributed my ideas on the system, such as what the database schemas should look like and 
+how we can achieve the vip functionalities.
+
+Attended weekly weekend meeting.
+
+Week 2
+Week 2 is the time to setup Jira and started doing the proposal, we have decided eachone's task, I am the backend developer.
+We have also separate the proposal into several parts and assign them to team members.
+
+Attended weekly weekend meeting.
+
+Week 3
+I started working on the database setup and decided to use entity framework.
+Learned C# and use it to to query database, talk to frontend, and handle exceptions.
+
+Attended weekly weekend meeting.
+
+Week 4
+Started working on my task, and improve the design of database.
+I also did pair programming with Redmond and we work together to address some difficult issues.
+
+Attended weekly weekend meeting.
+
+Week5
+I asked the fronted team what format of data they want from the backend,
+so that backend does not send uncessary data and easier for frontend to use them.
+
+Attended weekly weekend meeting.
+
+Week 6
+I kept doing my tasks, finished comment functionalities.
+
+Attended weekly weekend meeting.
+
+Week 7
+Work with frontend team to make sure the endpoints are working.
+
+Attended weekly weekend meeting.
+
+Week 8
+Busy coding time for everyone, I finished most of the backend tasks that I need to do.
+I talked with frontend team to make sure the connections between frontend and backend are working well.
+
+Attended weekly weekend meeting.
+
+Week 9
+Aim to finish my tasks within a week so that the frontend team does not have to wait long for the endpoints,
+and I can also have some free time help the frontend team connecting the backend endpoints.
+
+Attended weekly weekend meeting.
+
+Week 10
+Finished all my tasks and test the APIs to make sure they are working,
+offering helps if other team members have problems.
+
+

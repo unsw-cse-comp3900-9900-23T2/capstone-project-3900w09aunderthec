@@ -11,6 +11,7 @@ import 'package:under_the_c_app/types/bookings/booking_type.dart';
 import 'package:under_the_c_app/types/users/customer_type.dart';
 import '../../api/ticket_requests.dart';
 import '../../api/user_request.dart';
+import '../../providers/analytics_providers.dart';
 import '../../providers/booking_providers.dart';
 import 'display_ticket.dart';
 import 'package:under_the_c_app/config/session_variables.dart';
@@ -221,6 +222,14 @@ class _BookTicket extends ConsumerState<BookTicket> {
                                 selectedTickets: selectedTickets,
                               ),
                             );
+
+                        // change the number of tickets sold
+                        ref
+                            .read(ticketsSoldProvider(
+                                    sessionVariables.uid.toString())
+                                .notifier)
+                            .fetch();
+
                         // Remove loading screen
                         Navigator.of(context, rootNavigator: true).pop();
                         resetTicketState();
