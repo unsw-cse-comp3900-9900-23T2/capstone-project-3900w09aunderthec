@@ -72,7 +72,18 @@ namespace EventManagementAPI.Repositories
             // every 10 vip levels can get 1% off
             // maximum 15% off
             // minimum 0
-            var discountPercentage = Math.Clamp((vipLevel / 10) * 0.01, 0, 0.15);
+            var discountPercentage = 0.0;
+            if (totalPrice >= 10 && totalPrice < 15) {
+                discountPercentage = 0.05;
+            }
+            if (totalPrice >= 15 && totalPrice < 20)
+            {
+                discountPercentage = 0.10;
+            }
+            if (totalPrice >= 20)
+            {
+                discountPercentage = 0.15;
+            }
 
             // use loyalty points to get discount
             // one point equals one cent
