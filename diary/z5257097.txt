@@ -1,0 +1,68 @@
+Hong Ze's work diary
+
+Week 1
+- Met up with new team members for this project and introduced ourselves
+- Analyse all topic ideas and deciding on the project which was Event Management Systems
+- Pitching ideas especially novel ones (Decide to definitely have AI and VIP gamification)
+- Discuss about frameworks for the project, deciding on Flutter for frontend, dotnet for backend and MySQL for databse
+- Decide on weekly meeting time Sunday 3pm
+
+Week 2
+- Attended weekly meeting
+- Talk more about basic functionalities
+- Assign members to roles of Frontend, Backend, Database and AI
+- Redmond is Scrum master and create JIRA board
+- Brainstorm user stories and group them under categories
+- My role in proposal was to proof read and expand on them on the functionalities, totaling 45 user stories. Steve helped in this section as well
+- Start and work on proposal
+
+Week 3
+- Attended weekly meeting
+- Started on frontend development by installing Flutter and reading documentation
+- Set up backend and database as well
+- Drafted event form for event creation. Used Flutter API to do some of the functionalities
+
+Week 4
+- Attended weekly meeting
+- Pair programmed with Redmond to connect the frontend and backend for event create
+- First successful http request between frontend and backend
+- Draft event modification by copying over event create code
+
+Week 5
+- Attended weekly meeting
+- Finished event modification, connecting it with backend
+- Communciated with Redmond, starting on AI functionalities
+- Http request for AI tags
+
+Week 6
+- Attended weekly meeting
+- Fixed http request for AI tags by sending inputted fields
+- Worked on event comments but deleted it since it overlapped with Alan's work
+- Refactor my code by sorting functions in their the appropiate files and folders
+- Started learning Riverpod Statement Management
+
+Week 7
+- Attended weekly meeting
+- Draft view bookings page, copied Home page
+- Created card layout and two dummy buttons which are view tickets and cancel booking
+- Finished view ticket draft
+- Implement Riverpod Statement Management for booking
+
+Week 8
+- Attended weekly meeting
+- Got cancel booking working and did error checking
+- Communicated with Justin to get different outputs from backend since they don't provide enough information
+- Draft profile page with loyalty points, VIP level, profile overlay and progress bar
+
+Week 9
+- Attended weekly meeting
+- Connected booking and tickets where bookings will use Riverpod statement management whenever tickets are purchased
+- Loyalty points and VIP level are connected to backend will change whenever tickets are bought or refunded
+- Implemented more error checking for event create and view booking
+
+Week 10
+- Attended weekly meeting
+- Improved the View Tickets by making it a list of all tickets bought
+- Prepare for presentation demo
+- Finish final report
+- Debug and add comment for project
