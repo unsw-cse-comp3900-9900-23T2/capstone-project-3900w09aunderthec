@@ -126,10 +126,8 @@ class Reply extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          // const SizedBox(height: 6),
                           Container(
-                            // height: 25,
-                            width: 20,
+                            width: 40,
                             child: IconButton(
                                 onPressed: () async{
                                   await ref
