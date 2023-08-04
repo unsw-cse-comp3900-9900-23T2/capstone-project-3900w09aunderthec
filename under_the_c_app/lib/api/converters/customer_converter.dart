@@ -25,7 +25,9 @@ Customer backendDataSingleCustomerToCustomer(data) {
     customerId: data['uid'],
     subscriptions: [],
     userName: data['username'],
-    loyaltyPoints: data['loyaltyPoints'],
-    vipLevel: data['vipLevel'],
+    // loyaltyPoints: data['loyaltyPoints'],
+    // vipLevel: data['vipLevel'],
+    loyaltyPoints: 0,
+    vipLevel: 0
   );
 }

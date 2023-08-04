@@ -12,7 +12,8 @@ class UserStateNotifier extends StateNotifier<Customer?> {
   }
 
   Future<void> fetchUser() async {
-    state = await getCustomerById(sessionVariables.uid.toString());
+    final uid = sessionVariables.uid.toString();
+    state = await getCustomerById(uid);
   }
 }
 

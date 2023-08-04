@@ -34,9 +34,19 @@ namespace EventManagementAPI.Repositories
         /// <returns>
         /// A Customer object
         /// </returns>
-        public async Task<Customer?> GetCustomerById(int customerId)
+        public async Task<User?> GetCustomerById(int customerId)
         {
-            return await _dbContext.Customers.FindAsync(customerId);
+            var customer = await _dbContext.Customers.FindAsync(customerId);
+            var host = await _dbContext.Hosts.FindAsync(customerId);
+
+            if (customer != null)
+            {
+                return customer;
+            }
+            else
+            {
+                return host;
+            }
         }
 
         /// <summary>
@@ -99,11 +109,12 @@ namespace EventManagementAPI.Repositories
                 _dbContext.Subscriptions.Add(newSubscription);
                 await _dbContext.SaveChangesAsync();
                 return newSubscription;
-            } else
+            }
+            else
             {
                 _dbContext.Subscriptions.Remove(subscription);
             }
-            
+
             await _dbContext.SaveChangesAsync();
             return subscription;
         }
@@ -136,7 +147,7 @@ namespace EventManagementAPI.Repositories
                     eventId = eventId,
                     eventShow = e,
                 };
-                e.numberSaved++;   
+                e.numberSaved++;
                 _dbContext.Add(newEventSaved);
                 numberLikes = await _dbContext.EventsSaved.Where(es => es.eventId == eventId).CountAsync() + 1;
                 e.rating = Convert.ToDouble(numberLikes) / numCustomersInExistence;
@@ -193,8 +204,10 @@ namespace EventManagementAPI.Repositories
             if (eventSaved != null)
             {
                 return true;
-            } else { 
-                return false; 
+            }
+            else
+            {
+                return false;
             }
         }
     }

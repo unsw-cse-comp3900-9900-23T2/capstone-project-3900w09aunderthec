@@ -10,8 +10,8 @@ import 'package:http/http.dart' as http;
 
 // Get customer details by their ID
 Future<Customer> getCustomerById(String customerId) async {
-  final registerUrl = Uri.https(
-      APIRoutes.BASE_URL, APIRoutes.getCustomerById, {"id": customerId});
+  final registerUrl =
+      Uri.https(APIRoutes.BASE_URL, '${APIRoutes.getCustomerById}/$customerId');
   try {
     final response = await http.get(
       registerUrl,
@@ -20,17 +20,11 @@ Future<Customer> getCustomerById(String customerId) async {
 
     if (response.statusCode == 200) {
       // Parse the response body into a list
-      final List<dynamic> dataList = jsonDecode(response.body);
+      final Map<String, dynamic> data = jsonDecode(response.body);
 
       // Check if the list is not empty
-      if (dataList.isNotEmpty) {
-        // Get the first object from the list
-        final Map<String, dynamic> data = dataList[0];
-        return backendDataSingleCustomerToCustomer(data);
-      } else {
-        throw Exception(
-            'customer.dart.getEvents: No data returned from server');
-      }
+      final result = backendDataSingleCustomerToCustomer(data);
+      return result;
     } else {
       throw Exception(
           'customer.dart.getEvents: Server returned status code ${response.statusCode}');

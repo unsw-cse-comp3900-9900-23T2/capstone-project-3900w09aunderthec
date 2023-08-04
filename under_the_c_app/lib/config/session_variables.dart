@@ -1,6 +1,6 @@
 // class used to store frequently used user data
 class sessionVariables {
-  static bool sessionIsHost = false;
+  static bool sessionIsHost = true;
   static int uid = 1; //for testing purpose
   static String email = "";
   static int vipLevel = 0;
