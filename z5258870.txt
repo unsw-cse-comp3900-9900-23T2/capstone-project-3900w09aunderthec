@@ -1,0 +1,77 @@
+This is Junji Dong's work diary
+
+Week 1
+We formed our group during the class and began analysing the different topics to choose for our project.
+We ended up deciding to go with the events management system as it seemed the most interesting and we already
+started coming up with ideas for novel functionalities using AI. I pitched ideas for a VIP rewards system for
+our users which could be the basis for one of our novel functionalities. When talking about the tech stack to
+use I mentioned I had backend experience in .NET and could provide some support if we went down that route.
+
+Attended weekly weekend meeting.
+
+Week 2
+During this week we planned out the functionalities we we wanted to implement and asked our tutor for feedback.
+It was during our tutorial that we realised we were lacking functionalities as well as user stories. We took
+this feedback and made changes to our proposal. In Jira I set out to create epics and also create the user
+stories with Hong Zhang. Our team delegated out different sections of the proposal and I contributed writing
+the background and comparables section as well as helping Hong Zhang write up the functionalities.
+
+Attended weekly weekend meeting.
+
+Week 3
+I began working on an API scaffold for the backend developers on my team to provide them the starting ground on
+which they could build the backend system. We finalised our proposal with the feedback from our tutor and I helped
+format the proposal document.
+
+Attended weekly weekend meeting.
+
+Week 4
+The first demo is due soon so I worked on setting up flutter for our frontend devs and documented the set up guide.
+Got the login/logout flow working and integrated firebase with our app. Primarily focused on our user registration
+and authentication flows in the frontend.
+
+Attended weekly weekend meeting.
+
+Week5
+The start of the week was quite busy as I was working on setting up http requests to work on the frontend so that
+we could link up to the backend and retrieve our event data. I did pair programming with Fengyu and Hong to show them
+how the http request worked. Hong then refactored this part of the frontend code so it became easier to reuse. After
+the demo we talked about what we could have done better and recorded that in our sprint retrospective report. I put
+my name down to watch over the team's time management for next sprint.
+
+Attended weekly weekend meeting.
+
+Week 6
+During our flexi week I fixed some existing bugs and planned out how I was gonna approach the work required for demo 2.
+
+Attended weekly weekend meeting.
+
+Week 7
+Picked up new tickets from the second sprint and got to work on the tickets purchasing system. I learnt how to use
+riverpod for state management from Alan which was very helpful in creating an interactive ticket purchasing system.
+
+Attended weekly weekend meeting.
+
+Week 8
+The start of the week was busy again as we were rushing to build our features before the demo. I also created a screen
+for hosts to create tickets which was crucial for demoing the ticket purchasing feature. I also had to make a last
+minute change in which users had access to a cancel all button for their booked tickets. We also had the retrospective
+due so I helped complete the section on what went right and discussed ideas on how we could improve for next sprint.
+
+Attended weekly weekend meeting.
+
+Week 9
+From the previous demo we realised we had a lot left to implement particularly for providing the novel functionalities
+and a better user experience. I worked on implementing several features such as ticket discounting for vip customers,
+priority queing for vip customers as well as modifying the ticket creation page to accomodate these features. During our
+tutorial we talked about ways to improve the UI for vip customers and I modified the way ticket discounting was shown.
+
+Attended weekly weekend meeting.
+
+Week 10
+During the start of the week I worked on finalising features as well as implementing the subscription and notification
+features. We worked on ironing out bugs and testing before the final presentation. After the final presentation we focused
+our attention to the final report and I worked on the functionalities section with Hong Zhang as well as adding screenshots
+for better visual demonstration. In the report I also wrote up sections relating to what I implemented such as firebase.
+
+
