@@ -16,27 +16,29 @@ class CommentsProvider extends StateNotifier<List<CommentT>> {
   }
 
   Future<void> addComment({String? commentId, required String comment}) async {
-  CommentT newComment =
-      await createComment(eventId, commentId: commentId, comment: comment);
+    CommentT newComment =
+        await createComment(eventId, commentId: commentId, comment: comment);
 
-  List<CommentT> pinnedComments = [];
-  List<CommentT> unpinnedComments = [];
+    List<CommentT> pinnedComments = [];
+    List<CommentT> unpinnedComments = [];
 
-  // Sort comments into two lists: one for pinned, one for unpinned
-  for (CommentT comment in state) {
-    if (comment.isPinned) {
-      pinnedComments.add(comment);
-    } else {
-      unpinnedComments.add(comment);
+    // Sort comments into two lists: one for pinned, one for unpinned
+    for (CommentT comment in state) {
+      if (comment.isPinned) {
+        pinnedComments.add(comment);
+      } else {
+        unpinnedComments.add(comment);
+      }
     }
+
+    // Reconstruct the state list with pinned comments, the new comment, then unpinned comments
+    state = []
+      ..addAll(pinnedComments)
+      ..add(newComment)
+      ..addAll(unpinnedComments);
+
+    originalUnsortedList = state;
   }
-
-  // Reconstruct the state list with pinned comments, the new comment, then unpinned comments
-  state = []..addAll(pinnedComments)
-            ..add(newComment)
-            ..addAll(unpinnedComments);
-}
-
 
   void sortCommentByPin() {
     final List<CommentT> sortedPinnedComment = state.toList()
