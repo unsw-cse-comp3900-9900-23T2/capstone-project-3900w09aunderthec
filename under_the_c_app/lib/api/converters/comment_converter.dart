@@ -26,7 +26,7 @@ CommentT backendDataSingleCommentToComment(data) {
     isPinned: data['isPinned'],
     eventId: data['eventId'].toString(),
     content: data['comment'],
-    uid: data['customerId'].toString(),
+    uid: data['commenteruid'].toString(),
     replyToId: data['commentId'].toString(),
     nLikes: data['likes'],
     nDislikes: data['dislikes'],
