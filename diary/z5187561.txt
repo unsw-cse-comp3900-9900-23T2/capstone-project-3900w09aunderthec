@@ -1,0 +1,62 @@
+This is Fengyu(Alan) Wang's work diary
+
+Week 1
+1. Formally formed the group during the class,
+2. Shared and asked each other's skill sets so get a general idea of the capacity of the team and consider the role allocation.
+3. Provided insight analysis on each systems, it include both advantages and disadvantages of each systems.
+4. Helped allocating backend/frontend roles for each team members, I volunteered to take the software architecture design and frontend.
+5. Attended weekly weekend meeting.
+
+Week 2
+1. Researched on the number of software architectures include microservices, monolith, server-based architecture, pipeline architecture etc.
+2. Finished the first draft for the software architecture, received feedback and made further modifications.
+3. Attended weekly weekend meeting.
+
+Week 3
+1. Started to learn the frontend framework Flutter by reading the documentation and played with it.
+2. Set up the basic routing system (navigation bar) in the frontend based on types of users.
+3. Set up a general skeleton of each pages.
+4. Attended weekly weekend meeting.
+
+Week 4
+1. Implemented the frontend home page, it could display a list of events, showing event details, all those contents were static and 
+later transferred to dynamic with the help of other teammates 
+2. Implemented the frontend event page, it could display a list of incoming events if it's event attendants, a list of hosted events if it's host and later transformed to dynamic 
+with the help of other teammates 
+3. Attended weekly weekend meeting.
+4. Learnt the frontend state management tool Riverpod
+
+Week 5
+1. Finished the basic skeleton of the profile picture, it could display the user profile picture and reset password.
+2. Applied the Riverpod to the project and start to set up the general template for the state provider in the frontend.
+3. Attended weekly weekend meeting.
+
+Week 6
+1. Did the refactoring for the whole frontend, it includes the folder structure refactoring, naming convention refactoring, function refactoring, 
+component refactoring etc.
+2. Attended weekly weekend meeting.
+3. Debugged some existing bugs that we had.
+4. Implemented searching in the home page.
+
+Week 7
+1. Set up the connection with the backend, managed to ran the MySQL in my machine. 
+2. Helped frontend teammates debugging their state management related problems and reported backend bugs to the backend developers.
+3. Communicated the backend APIs needed for the frontend to the backend team.
+4. Attended weekly weekend meeting.
+5. Implemented sorting based on recency in the event listing, set up more advance template for the state management.
+
+Week 8
+1. Implemented comment create, comment listing, comment likes/dislikes features in the frontend.
+2. Attended weekly weekend meeting.
+
+
+Week 9
+1. Learnt the third party graph tool and implemented analytics page. 
+3. Helped frontend teammates to debug the state management related bugs in the frontend.
+4. Reported bugs in the backend and fixed some of the backend APIs.
+5. Attended weekly weekend meeting.
+
+Week 10
+1. Finalized the comment section by adding sorting/filtering UI and its functionalities to the comment section.
+2. Started drafting the overview, frontend challenges including sorting, infinite scrolling and 
+the third party tool Riverpod, fl_chart, percentage section of the report.
