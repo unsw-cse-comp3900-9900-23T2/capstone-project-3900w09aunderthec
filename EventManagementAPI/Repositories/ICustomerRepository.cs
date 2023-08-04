@@ -8,7 +8,7 @@ namespace EventManagementAPI.Repositories
     public interface ICustomerRepository
     {
         public Task<List<Customer>> GetAllCustomers();
-        public Task<Customer?> GetCustomerById(int customerId);
+        public Task<User?> GetCustomerById(int customerId);
         public Task<Customer> UpdateCustomerByPatch(int id, JsonPatchDocument<Customer> customer);
         public Task<Customer> UpdateCustomer(Customer customer);
         public Task<Subscription> SubscribeHoster(int customerId, int hosterId);
