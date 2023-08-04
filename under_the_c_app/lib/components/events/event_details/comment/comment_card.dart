@@ -27,7 +27,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
   bool dislikeSelected = false;
   Future<Customer>? customerFuture;
   final isHost = sessionVariables.sessionIsHost;
-  final uid = sessionVariables.uid;
+  // final uid = sessionVariables.uid;
 
   @override
   initState() {
@@ -35,21 +35,24 @@ class CommentCardState extends ConsumerState<CommentCard> {
     customerFuture = fetchCustomerData();
 
     // fetch if it's liked from the db and update in the UI
+    // this is for the current user
     ref
         .read(isLikeProvider.notifier)
-        .checkIfLiked(uid.toString(), widget.comment.id!)
+        .checkIfLiked(sessionVariables.uid.toString(), widget.comment.id!)
         .then((val) {
-      setState(() {
-        likeSelected = val;
-        // set nlikes in the UI
-        nLikes = widget.comment.nLikes;
-      });
+      setState(
+        () {
+          likeSelected = val;
+          // set nlikes in the UI
+          nLikes = widget.comment.nLikes;
+        },
+      );
     });
 
     // fetch if it's disliked from the db and update to the UI
     ref
         .read(isDislikeProvider.notifier)
-        .checkIfDislike(uid.toString(), widget.comment.id!)
+        .checkIfDislike(sessionVariables.uid.toString(), widget.comment.id!)
         .then((val) {
       setState(() {
         dislikeSelected = val;
@@ -68,6 +71,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
   }
 
   Future<Customer> fetchCustomerData() async {
+    // get the commenter's data (not the self) based on his id
     return await getCustomerById(widget.comment.uid);
   }
 
@@ -175,7 +179,7 @@ class CommentCardState extends ConsumerState<CommentCard> {
                           ],
                         ),
                         Pin(
-                          isOriginalHost: uid.toString() == originalHostUid,
+                          isOriginalHost: sessionVariables.uid.toString() == originalHostUid,
                           isPinned: widget.comment.isPinned,
                           commentId: widget.comment.id!,
                         )
